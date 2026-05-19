@@ -1,0 +1,105 @@
+.navBar {
+  height: 10vh;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background-color: var(--nav-color);
+  padding-inline: 2vw;
+  color: var(--font-color);
+}
+
+.navBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo {
+  font-size: 1.3rem;
+}
+
+.navBarLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navBarControls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.navLink {
+  text-decoration: none;
+  color: var(--font-color);
+}
+
+.navLink:hover {
+  text-decoration: underline;
+}
+
+.greetingMsg {
+  padding-inline-start: 1rem;
+  font-weight: 600;
+}
+
+.logoutBtn,
+.navBarLoginBtn {
+  margin-inline-end: 1rem;
+  padding: 3px 8px;
+  font-weight: 600;
+  text-decoration: none;
+  border: transparent;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+  background: var(--button-color);
+  color: var(--font-color);
+  border-radius: 4px;
+}
+
+.logoutBtn:hover,
+.navBarLoginBtn:hover {
+  background: var(--button-hover-color);
+  cursor: pointer;
+}
+
+.navBarLoginBtn {
+  font-size: 1rem;
+}
+
+
+
+@media (max-width: 1068px){
+  .logo {
+    font-size: 1rem;
+}
+}
+
+@media (max-width: 816px) {
+  .logo {
+  font-size: 1.3rem;
+}
+  .navBar {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding-block: 0.75rem;
+  }
+
+  .navBarLeft {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .navBarLinks {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .navBarControls {
+    justify-content: center;
+  }
+}

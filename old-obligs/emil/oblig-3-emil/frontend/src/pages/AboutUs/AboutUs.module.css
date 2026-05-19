@@ -1,0 +1,20 @@
+.aboutUsWrapper{
+    border: 1px solid var(--border-color);
+    color: var(--font-color);
+    border-radius: 20px;
+    padding: 1rem;
+    width: 90ch;
+}
+
+.aboutContainer > h1{
+    text-align: center;
+}
+.aboutContainer > p{
+    margin-block: 1rem;
+    font-size: 1rem;
+}
+.aboutContainer > span{
+    font-size: .8rem;
+    font-style: italic;
+
+}

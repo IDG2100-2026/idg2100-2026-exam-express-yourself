@@ -1,0 +1,13 @@
+### Create trophy
+POST http://localhost:2222/trophies
+Content-Type: application/json
+Role: admin
+
+{
+    "title": "Champions League Trophy",
+    "image": "cl.png",
+    "tournament": "69d17643ecf9f820558a775d"
+}
+
+### Get one trophy by id
+GET http://localhost:2222/trophies/69d17a7a762e51ebf2ebf473

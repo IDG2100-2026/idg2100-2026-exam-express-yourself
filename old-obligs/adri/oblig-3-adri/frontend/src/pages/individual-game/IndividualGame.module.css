@@ -1,0 +1,49 @@
+.individual-game {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.individual-game__board {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.individual-game__info {
+    outline: 1px solid black;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.individual-game__game-area {
+    outline: 1px solid black;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: var(--board-color); /*value passed from IndividualGame.jsx via inline css variable*/
+}
+
+.individual-game__comments {
+    display: flex;
+    flex-direction: column;
+    outline: 1px solid black;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.individual-game__comments ul {
+    list-style: none;
+    padding: 0;
+}
+
+.individual-game__comments ul li {
+    border-bottom: 1px solid black;
+    padding-block: 0.5rem;
+}
+
+.individual-game__comments form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 1rem;
+}

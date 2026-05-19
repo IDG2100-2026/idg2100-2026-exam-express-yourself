@@ -1,0 +1,20 @@
+### Create comment on a match
+POST http://localhost:2222/comments
+Content-Type: application/json
+Role: user
+
+{
+    "author": "69d14e469df15ebb6aa10a8f",
+    "content": "Hello gg wp",
+    "matchId": "69d17643ecf9f820558a7759"
+}
+
+### Get all comments
+GET http://localhost:2222/comments
+
+### Get comments filtered by match
+GET http://localhost:2222/comments?matchId=69d17643ecf9f820558a7759
+
+### Delete comment by id
+DELETE http://localhost:2222/comments/69d17a1e762e51ebf2ebf470
+Role: admin

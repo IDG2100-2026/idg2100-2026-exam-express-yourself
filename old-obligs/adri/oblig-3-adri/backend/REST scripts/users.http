@@ -1,0 +1,51 @@
+### Create user
+POST http://localhost:2222/users
+Content-Type: application/json
+
+{
+    "username": "Aliaksei",
+    "email": "ali@test.com",
+    "password": "fox123",
+    "dateOfBirth": "1992-01-01"
+}
+
+### Login
+POST http://localhost:2222/users/login
+Content-Type: application/json
+
+{
+    "email": "ali@test.com",
+    "password": "fox123"
+}
+
+### Fetch all users users, filterable by username
+GET http://localhost:2222/users?search=Ali
+Role: admin
+
+### Fetch one user by id
+GET http://localhost:2222/users/69d17643ecf9f820558a7751
+
+### Update user by id
+PATCH http://localhost:2222/users/69d17643ecf9f820558a7751
+Content-Type: application/json
+
+{
+    "password": "qwerty"
+}
+
+### Delete one user by id
+DELETE http://localhost:2222/users/69d17643ecf9f820558a7751
+Role: admin
+
+### Ban user by id
+PATCH http://localhost:2222/users/69d17643ecf9f820558a7752/ban
+Role: admin
+
+### Get leaderboard
+GET http://localhost:2222/users/leaderboard
+
+### Get platform activity
+GET http://localhost:2222/users/activity
+
+### Get leaderboard
+GET http://localhost:2222/users/leaderboard?sort=wins

@@ -1,0 +1,111 @@
+.homepageWrapper {
+  color: var(--font-color);
+  max-width: 950px;
+  display: grid;
+  gap: 1rem;
+  grid-template-rows: 1fr 5fr;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas:
+    "briefMsg briefMsg"
+    "lobbyPreview gameList";
+}
+.briefMsgContainer {
+  grid-area: briefMsg;
+}
+.lobbyPreviewWrapper {
+  grid-area: lobbyPreview;
+}
+.gameListWrapper {
+  grid-area: gameList;
+}
+
+.gameListWrapper,
+.lobbyPreviewWrapper,
+.briefMsgContainer {
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 2vh;
+}
+
+.homepageHeading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+}
+.gamesContainer {
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+}
+.gamesContent {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+}
+.gamesPlayers {
+  font-weight: 600;
+}
+.gameListWrapper,
+.lobbyPreviewWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gamesLimiter {
+  display: flex;
+  justify-content: space-around;
+}
+
+/* From Uiverse.io by arieshiphop */
+.createGameButton {
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 17px;
+  padding: 0.5em 1.5em;
+  border: transparent;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+  background: var(--button-color);
+  color: var(--font-color);
+  border-radius: 4px;
+}
+
+.createGameButton:hover {
+  background: var(--button-hover-color);
+  cursor: pointer;
+}
+
+.createGameButton:active {
+  transform: translate(0em, 0.2em);
+}
+
+.registerBtn{
+  text-decoration: none;
+  color: var(--font-color);
+  font-weight: 600;
+}
+.registerBtn:hover{
+  text-decoration: underline;
+}
+.linkToGame{
+  text-decoration: none;
+  color: var(--font-color);
+  transition: transform 0.3s ease;
+}
+.linkToGame:hover{
+  transform: scale(1.01);
+}
+
+@media(max-width: 1000px){
+  .homepageWrapper{
+    padding: 1rem;
+      grid-template-rows: 1fr 2fr;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "briefMsg"
+        "lobbyPreview"
+        "gameList"
+        ;
+  }
+}
