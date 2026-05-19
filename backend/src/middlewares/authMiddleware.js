@@ -19,7 +19,7 @@ export const setUserType = (req, _res, next) => {
 };
 
 // this will block the route if the user is not logged in
-const requireUser = (req, res, next) => {
+export const requireUser = (req, res, next) => {
   if (req.userType === 'anonymous') {
     return res.status(401).json({ error: 'You must be logged in' });
   }
@@ -27,12 +27,9 @@ const requireUser = (req, res, next) => {
 };
 
 // this will block the route if the user is not an admin
-const requireAdmin = (req, res, next) => {
+export const requireAdmin = (req, res, next) => {
   if (req.userType !== 'admin') {
     return res.status(403).json({ error: 'Admin access required' });
   }
   next();
 };
-
-
-export default { requireUser, requireAdmin };

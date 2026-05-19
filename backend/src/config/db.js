@@ -17,11 +17,11 @@ export async function connectDB() {
     });
     console.log("Connecting to MongoDB now..", MONGODB_URI);
     return mongoose.connect(MONGODB_URI, {
-      appName: DB_NAME,
+      appName: DATABASE_NAME,
       maxPoolSize: 50, // Current request MongoDB can be queued at the same time
     });
     throw new Error(
-      `Missing env variables needed to connect to MongoDB ${DATABASE_PROTOCOL} ${DB_HOSTNAME}, ${DB_PORT}, ${DB_NAME}`,
+      `Missing env variables needed to connect to MongoDB ${DATABASE_PROTOCOL} ${DATABASE_HOSTNAME}, ${DATABASE_PORT}, ${DATABASE_NAME}`,
     );
   }
 }

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // this defines what a match looks like in the database
 const matchSchema = new mongoose.Schema({
@@ -38,4 +38,4 @@ const matchSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model('Match', matchSchema);
+export default mongoose.model('Match', matchSchema);

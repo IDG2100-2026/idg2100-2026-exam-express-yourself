@@ -1,7 +1,8 @@
 import express from 'express';
+import { setUserType, requireUser } from '../middlewares/authMiddleware.js';
+import { getAllMatches, getMatch, createMatch, joinMatch, recordResult } from '../controllers/matchController.js';
+
 const matchRouter = express.Router();
-const { setUserType, requireUser } = require('../middlewares/authMiddleware');
-const { getAllMatches, getMatch, createMatch, joinMatch, recordResult } = require('../controllers/matchController');
 
 // this will run setUserType on all match routes so we know who is making the request
 matchRouter.use(setUserType);

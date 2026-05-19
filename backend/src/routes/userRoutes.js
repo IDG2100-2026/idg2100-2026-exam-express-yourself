@@ -1,8 +1,9 @@
 import express from 'express';
-const userRouter = express.Router();
 import { body, validationResult } from 'express-validator';
-import { requireUser, requireAdmin } from'../middlewares/authMiddleware.js';
-const { getAllUsers, getUser, registerUser, loginUser, updateUser, banUser } = require('../controllers/userController');
+import { requireUser, requireAdmin } from '../middlewares/authMiddleware.js';
+import { getAllUsers, getUser, registerUser, loginUser, updateUser, banUser } from '../controllers/userController.js';
+
+const userRouter = express.Router();
 // these are the validation rules that will run before the register controller
 const registerRules = [
   body('username').notEmpty().withMessage('Username is required'),

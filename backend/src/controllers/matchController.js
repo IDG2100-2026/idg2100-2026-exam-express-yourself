@@ -1,5 +1,5 @@
-const Match = require('../models/Match');
-const User = require('../models/User');
+import Match from '../models/Match.js';
+import User from '../models/User.js';
 
 // this is the standard elo formula used in chess and many competitive games
 // k=32 means ratings will change more per game, which is common for newer players
@@ -12,7 +12,7 @@ function calcElo(winnerRating, loserRating) {
 }
 
 // GET /api/matches?page=1&limit=10
-const getAllMatches = async (req, res, next) => {
+export const getAllMatches = async (req, res, next) => {
   try {
     // this will read pagination values from the query, defaulting to page 1 with 10 results
     const page = parseInt(req.query.page) || 1;
@@ -42,7 +42,7 @@ const getAllMatches = async (req, res, next) => {
 };
 
 // GET /api/matches/:id
-const getMatch = async (req, res, next) => {
+export const getMatch = async (req, res, next) => {
   try {
     // this will find one match by id and populate the player info
     const match = await Match.findById(req.params.id)
@@ -55,7 +55,7 @@ const getMatch = async (req, res, next) => {
 };
 
 // POST /api/matches
-const createMatch = async (req, res, next) => {
+export const createMatch = async (req, res, next) => {
   try {
     // this will grab the game format from the request body
     const { rounds, rules, timeControl } = req.body;
@@ -74,7 +74,7 @@ const createMatch = async (req, res, next) => {
 };
 
 // POST /api/matches/:id/join
-const joinMatch = async (req, res, next) => {
+export const joinMatch = async (req, res, next) => {
   try {
     // this will find the match by id
     const match = await Match.findById(req.params.id);
@@ -102,7 +102,7 @@ const joinMatch = async (req, res, next) => {
 };
 
 // PATCH /api/matches/:id/result
-const recordResult = async (req, res, next) => {
+export const recordResult = async (req, res, next) => {
   try {
     const { winnerId, score } = req.body;
 
@@ -137,5 +137,3 @@ const recordResult = async (req, res, next) => {
     next(err);
   }
 };
-
-module.exports = { getAllMatches, getMatch, createMatch, joinMatch, recordResult };

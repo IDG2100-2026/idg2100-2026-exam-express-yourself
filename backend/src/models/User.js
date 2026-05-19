@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // this defines what a user looks like in the database
 const userSchema = new mongoose.Schema({
@@ -70,4 +70,4 @@ const userSchema = new mongoose.Schema({
 // this will automatically add createdAt and updatedAt fields to every document
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);

@@ -1,10 +1,10 @@
-const User = require('../models/User');
-const Match = require('../models/Match');
-const bcrypt = require('bcryptjs');
+import User from '../models/User.js';
+import Match from '../models/Match.js';
+import bcrypt from 'bcryptjs';
 
 // GET /api/users, admin only
 // supports ?search= to filter by username or email
-const getAllUsers = async (req, res, next) => {
+export const getAllUsers = async (req, res, next) => {
   try {
     // this will read page and limit from the url query, with defaults if not provided
     const page = parseInt(req.query.page) || 1;
@@ -34,7 +34,7 @@ const getAllUsers = async (req, res, next) => {
 };
 
 // GET /api/users/:id
-const getUser = async (req, res, next) => {
+export const getUser = async (req, res, next) => {
   try {
     // this will find a user by their id and leave out the password
     const user = await User.findById(req.params.id).select('-password');
@@ -57,7 +57,7 @@ const getUser = async (req, res, next) => {
 };
 
 // POST /api/users/register
-const registerUser = async (req, res, next) => {
+export const registerUser = async (req, res, next) => {
   try {
     // this will pull the fields we need from the request body
     const { username, email, password, age } = req.body;
@@ -75,7 +75,7 @@ const registerUser = async (req, res, next) => {
 };
 
 // POST /api/users/login
-const loginUser = async (req, res, next) => {
+export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -98,7 +98,7 @@ const loginUser = async (req, res, next) => {
 };
 
 // PATCH /api/users/:id, logged in users only
-const updateUser = async (req, res, next) => {
+export const updateUser = async (req, res, next) => {
   try {
     const { email, bio, profileImageUrl, password, appearance } = req.body;
 
@@ -127,7 +127,7 @@ const updateUser = async (req, res, next) => {
 };
 
 // POST /api/users/:id/ban, admin only
-const banUser = async (req, res, next) => {
+export const banUser = async (req, res, next) => {
   try {
     // this will set isBanned to true, the user will be blocked from logging in
     const user = await User.findByIdAndUpdate(
@@ -142,4 +142,3 @@ const banUser = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllUsers, getUser, registerUser, loginUser, updateUser, banUser };

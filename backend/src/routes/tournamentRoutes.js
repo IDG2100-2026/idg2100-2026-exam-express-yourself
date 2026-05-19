@@ -1,8 +1,9 @@
 import express from 'express';
+import multer from 'multer';
+import { requireUser, requireAdmin } from '../middlewares/authMiddleware.js';
+import { getAllTournaments, getTournament, createTournament, joinTournament, startTournament, nextRound } from '../controllers/tournamentController.js';
+
 const tournamentRouter = express.Router();
-const multer = require('multer');
-const { requireUser, requireAdmin } = require('../middlewares/authMiddleware');
-const { getAllTournaments, getTournament, createTournament, joinTournament, startTournament, nextRound } = require('../controllers/tournamentController');
 
 // this will configure multer to save uploaded files to the uploads folder
 const upload = multer({ dest: 'uploads/' });
