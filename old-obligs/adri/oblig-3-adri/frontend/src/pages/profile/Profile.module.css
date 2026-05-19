@@ -1,0 +1,30 @@
+.profile {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.profile__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    outline: 1px solid black;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.profile__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.profile__field {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile__field label {
+    font-weight: bold;
+}

@@ -1,0 +1,68 @@
+.registrationWrapper {
+  min-height: 300px;
+  min-width: 400px;
+  max-width: 400px;
+  border-radius: 20px;
+  display: flex;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+  color: var(--font-color);
+}
+
+.registrationContainer {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  width: 100%;
+}
+.errorMsg {
+  color: red;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+.registrationLabel {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.registrationInput {
+  padding: 1vh 2vw;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  width: 100%;
+} 
+.termsAndConditionsText{
+  text-decoration: none;
+  color: var(--font-color);
+  font-weight: 500;
+  padding-inline-end: 10px;
+}
+.registerFormBtn {
+  margin-block-start: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 17px;
+  padding: 0.5em 1.5em;
+  border: transparent;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+  background: var(--button-color);
+  color: var(--font-color);
+  border-radius: 4px;
+}
+
+.registerFormBtn:hover {
+  background: var(--button-hover-color);
+  cursor: pointer;
+}
+.existingAccount{
+  margin-block-start: 10px;
+}
+.loginLink{
+  text-decoration: none;
+  color: var(--font-color);
+  font-weight: 600;
+}
+.loginLink:hover, .termsAndConditionsText:hover{
+  text-decoration: underline;
+}

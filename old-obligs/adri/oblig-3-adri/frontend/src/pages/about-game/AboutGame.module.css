@@ -1,0 +1,11 @@
+.about-game {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.about-game__section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}

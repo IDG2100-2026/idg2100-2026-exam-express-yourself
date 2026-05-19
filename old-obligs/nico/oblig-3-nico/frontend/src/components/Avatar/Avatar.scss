@@ -1,0 +1,27 @@
+@use '../../styles/variables' as *;
+
+.avatar {
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &--default {
+    background-color: $color-bg-secondary;
+    border: 1px solid $color-border;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-text-muted;
+
+    svg {
+      width: 60%;
+      height: 60%;
+    }
+  }
+}

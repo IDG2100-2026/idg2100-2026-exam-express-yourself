@@ -1,0 +1,50 @@
+.backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.panel {
+    background-color: white;
+    padding: 1rem;
+    outline: 1px solid black;
+    border-radius: 8px;
+}
+
+.panel__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.panel button {
+    padding: 4px;
+}
+
+.panel__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.panel__colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+
+.panel__colors .panel__color--active {
+    outline: 2px solid black;
+    border-radius: 8px;
+}

@@ -1,0 +1,20 @@
+.themeBtn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.themeBtn:active img {
+    transform: rotate(30deg) scale(0.85);
+}
+
+.darkIcon,
+.lightIcon {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease;
+}

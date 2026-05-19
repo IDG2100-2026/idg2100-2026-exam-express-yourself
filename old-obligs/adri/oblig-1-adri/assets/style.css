@@ -1,0 +1,28 @@
+/* 
+  Spanish Dice Poker - Component Styling
+  
+  This file is for styling your Web Components and custom design.
+  
+  IMPORTANT:
+  - layout.css contains only the main page layout (header, main, footer, intro section)
+  - Use THIS file (style.css) to style your game components and create your theme:
+    * dice-poker-board
+    * dice-poker-die
+    * dice-poker-monitor
+    * Buttons, game board, dice, player sections, etc.
+  
+  REQUIREMENTS:
+  - Use CSS custom properties (CSS variables) for theming
+  - Ensure all components are responsive (mobile, tablet, desktop)
+  Start adding your styles below:
+*/
+
+:root {
+  --board-bg-color: darkslategray;
+  --die-bg-color: ivory;
+  --die-face-color-red: crimson;
+  --die-face-color-black: black;
+  --die-held-color: gold;
+  --player1-color: tomato;
+  --player2-color: tomato;
+}

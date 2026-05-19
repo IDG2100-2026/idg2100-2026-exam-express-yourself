@@ -1,0 +1,28 @@
+:root {
+
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: serif;
+}
+
+body.dark * {
+    background-color: black !important;
+    color: white !important;
+}
+
+body.dark img {
+    background-color: transparent !important;
+}
+
+body.dark header img {
+    filter: invert(1); /*invert black icons to white in dark mode*/
+}

@@ -1,0 +1,38 @@
+:root {
+  --color-bg: #0d1117;
+  --color-bg-secondary: #161b22;
+  --color-bg-card: #1c2130;
+  --color-text: #e6edf3;
+  --color-text-muted: #8b949e;
+  --color-border: #30363d;
+}
+
+[data-theme=light] {
+  --color-bg: #f0f4f8;
+  --color-bg-secondary: #e2e8f0;
+  --color-bg-card: #ffffff;
+  --color-text: #1a2332;
+  --color-text-muted: #64748b;
+  --color-border: #cbd5e1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+a {
+  color: #e6b422;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}/*# sourceMappingURL=global.css.map */

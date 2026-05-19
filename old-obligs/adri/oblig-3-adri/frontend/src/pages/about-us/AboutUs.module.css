@@ -1,0 +1,11 @@
+.about-us {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.about-us__section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}

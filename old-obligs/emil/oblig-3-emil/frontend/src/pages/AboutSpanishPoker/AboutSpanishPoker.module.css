@@ -1,0 +1,11 @@
+.aboutSpanishPokerWrapper{
+    color: var(--font-color);
+    width: 70ch;
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    border-radius: 20px;
+}
+
+.aboutSpanishPokerContainer > p{
+    padding-block: 8px;
+}
