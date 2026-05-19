@@ -1,11 +1,10 @@
-require('dotenv').config(); // this will load the .env file so we can connect to mongo
-
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const User = require('../src/models/User');
-const Match = require('../src/models/Match');
-const Tournament = require('../src/models/Tournament');
-const Comment = require('../src/models/Comment');
+import 'dotenv/config';
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import User from '../src/models/User.js';
+import Match from '../src/models/Match.js';
+import Tournament from '../src/models/Tournament.js';
+import { Comment } from '../src/models/Comment.js';
 
 const seed = async () => {
   // this will connect to the database before doing anything

@@ -1,10 +1,10 @@
-const User = require('../models/User');
-const Match = require('../models/Match');
+import User from '../models/User.js';
+import Match from '../models/Match.js';
 
 // GET /api/leaderboard
 // optional filters: ?rounds=5&rules=straights&timeControl=10
 // optional sort: ?sortBy=wins | winPercentage | matches, default is eloRating
-const getLeaderboard = async (req, res, next) => {
+export const getLeaderboard = async (req, res, next) => {
   try {
     const { rounds, rules, timeControl, sortBy } = req.query;
 
@@ -73,7 +73,7 @@ const getLeaderboard = async (req, res, next) => {
 };
 
 // GET /api/leaderboard/activity
-const getActivity = async (req, res, next) => {
+export const getActivity = async (req, res, next) => {
   try {
     // this will count how many matches are being played right now
     const ongoingMatches = await Match.countDocuments({ status: 'in-progress' });
@@ -89,5 +89,3 @@ const getActivity = async (req, res, next) => {
     next(err);
   }
 };
-
-module.exports = { getLeaderboard, getActivity };

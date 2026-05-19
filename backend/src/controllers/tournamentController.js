@@ -1,9 +1,9 @@
-const Tournament = require('../models/Tournament');
-const Match = require('../models/Match');
-const User = require('../models/User');
+import Tournament from '../models/Tournament.js';
+import Match from '../models/Match.js';
+import User from '../models/User.js';
 
 // GET /api/tournaments?page=1&limit=10
-const getAllTournaments = async (req, res, next) => {
+export const getAllTournaments = async (req, res, next) => {
   try {
     // this will read pagination values from the query, defaulting to page 1 with 10 results
     const page = parseInt(req.query.page) || 1;
@@ -24,7 +24,7 @@ const getAllTournaments = async (req, res, next) => {
 };
 
 // GET /api/tournaments/:id
-const getTournament = async (req, res, next) => {
+export const getTournament = async (req, res, next) => {
   try {
     // this will find one tournament and populate all the related user data
     const tournament = await Tournament.findById(req.params.id)
@@ -39,7 +39,7 @@ const getTournament = async (req, res, next) => {
 };
 
 // POST /api/tournaments, admin only
-const createTournament = async (req, res, next) => {
+export const createTournament = async (req, res, next) => {
   try {
     // this will grab all the tournament details from the request body
     const { title, description, startDate, rounds, rules, timeControl } = req.body;
@@ -63,7 +63,7 @@ const createTournament = async (req, res, next) => {
 };
 
 // POST /api/tournaments/:id/join, logged in users only
-const joinTournament = async (req, res, next) => {
+export const joinTournament = async (req, res, next) => {
   try {
     // this will find the tournament by id
     const tournament = await Tournament.findById(req.params.id);
@@ -84,7 +84,7 @@ const joinTournament = async (req, res, next) => {
 };
 
 // POST /api/tournaments/:id/start, admin only
-const startTournament = async (req, res, next) => {
+export const startTournament = async (req, res, next) => {
   try {
     // this will find the tournament by id
     const tournament = await Tournament.findById(req.params.id);
@@ -131,7 +131,7 @@ const startTournament = async (req, res, next) => {
 };
 
 // POST /api/tournaments/:id/nextround, admin only
-const nextRound = async (req, res, next) => {
+export const nextRound = async (req, res, next) => {
   try {
     // this will find the tournament by id
     const tournament = await Tournament.findById(req.params.id);
@@ -205,5 +205,3 @@ const nextRound = async (req, res, next) => {
     next(err);
   }
 };
-
-module.exports = { getAllTournaments, getTournament, createTournament, joinTournament, startTournament, nextRound };

@@ -1,8 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const { getLeaderboard, getActivity } = require('../controllers/leaderboardController');
+import express from 'express';
+import { getLeaderboard, getActivity } from '../controllers/leaderboardController.js';
 
-router.get('/', getLeaderboard);       // this will return top 20 players, supports category filters and sortBy
-router.get('/activity', getActivity);  // this will return ongoing match count and last 10 completed matches
+const leaderboardRouter = express.Router();
 
-module.exports = router;
+leaderboardRouter.get('/', getLeaderboard);       // this will return top 20 players, supports category filters and sortBy
+leaderboardRouter.get('/activity', getActivity);  // this will return ongoing match count and last 10 completed matches
+
+export default leaderboardRouter;

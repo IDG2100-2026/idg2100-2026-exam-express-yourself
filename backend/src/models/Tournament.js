@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // this defines what a tournament looks like in the database
 const tournamentSchema = new mongoose.Schema({
@@ -41,4 +41,4 @@ const tournamentSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model('Tournament', tournamentSchema);
+export default mongoose.model('Tournament', tournamentSchema);

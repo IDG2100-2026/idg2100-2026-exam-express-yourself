@@ -1,16 +1,35 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
-// this will connect to mongodb using the url from the .env file
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('MongoDB connected');
-  } catch (err) {
-    // this will print the error and stop the server if connection fails
-    // no point running the server without a database
-    console.error('MongoDB connection error:', err.message);
-    process.exit(1);
+const { DATABASE_PORT, DATABASE_NAME, DATABASE_PROTOCOL, DATABASE_HOSTNAME } =
+  process.env;
+
+const MONGODB_URI = `${DATABASE_PROTOCOL}://${DATABASE_HOSTNAME}:${DATABASE_PORT}/${DATABASE_NAME}`;
+
+export async function connectDB() {
+  if (
+    DATABASE_PORT &&
+    DATABASE_NAME &&
+    DATABASE_PROTOCOL &&
+    DATABASE_HOSTNAME
+  ) {
+    mongoose.connection.on("error", (err) => {
+      console.error("Unhandled MongoDB / mongoose connection error: ", err);
+    });
+    console.log("Connecting to MongoDB now..", MONGODB_URI);
+    return mongoose.connect(MONGODB_URI, {
+      appName: DATABASE_NAME,
+      maxPoolSize: 50, // Current request MongoDB can be queued at the same time
+    });
+    throw new Error(
+      `Missing env variables needed to connect to MongoDB ${DATABASE_PROTOCOL} ${DATABASE_HOSTNAME}, ${DATABASE_PORT}, ${DATABASE_NAME}`,
+    );
   }
-};
+}
+export async function disconnectDB() {
+  return mongoose.disconnect();
+}
 
-module.exports = connectDB;
+export default {
+  connectDB,
+  disconnectDB,
+};

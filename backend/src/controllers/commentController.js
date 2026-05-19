@@ -1,8 +1,8 @@
-const Comment = require('../models/Comment');
+import { Comment } from '../models/Comment.js';
 
 // GET /api/comments?targetType=Match&targetId=xxx
 // also supports ?search= to filter comments by text content (admin use)
-const getComments = async (req, res, next) => {
+export const getComments = async (req, res, next) => {
   try {
     // this will grab targetType, targetId and optional search from the url query
     const { targetType, targetId, search } = req.query;
@@ -28,7 +28,7 @@ const getComments = async (req, res, next) => {
 };
 
 // POST /api/comments - logged in users only
-const createComment = async (req, res, next) => {
+export const createComment = async (req, res, next) => {
   try {
     // this will grab the comment data from the request body
     const { text, targetType, targetId } = req.body;
@@ -49,7 +49,7 @@ const createComment = async (req, res, next) => {
 };
 
 // DELETE /api/comments/:id - admin only
-const deleteComment = async (req, res, next) => {
+export const deleteComment = async (req, res, next) => {
   try {
     // this will set isDeleted to true instead of removing the comment from the database
     // soft delete means the data is still there if we ever need to recover it
@@ -66,5 +66,3 @@ const deleteComment = async (req, res, next) => {
     next(err);
   }
 };
-
-module.exports = { getComments, createComment, deleteComment };
