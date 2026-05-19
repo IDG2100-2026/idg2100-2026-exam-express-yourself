@@ -1,6 +1,6 @@
 // this will catch all errors passed with next(err) from any route
 // keeping it in one place means we dont repeat error handling in every controller
-const errorHandler = (err, _req, res, _next) => {
+export const errorHandler = (err, _req, res, _next) => {
   console.error(err.message);
 
   // this will catch duplicate value errors, like same username or email already exists
@@ -17,5 +17,3 @@ const errorHandler = (err, _req, res, _next) => {
   // this will handle anything else we did not expect
   res.status(500).json({ error: 'Something went wrong' });
 };
-
-module.exports = errorHandler;
