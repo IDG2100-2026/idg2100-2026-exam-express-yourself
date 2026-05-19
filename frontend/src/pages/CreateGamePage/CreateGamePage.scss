@@ -1,0 +1,109 @@
+@use '../../styles/variables' as *;
+
+.create {
+  max-width: 600px;
+
+  &__title {
+    font-size: 1.8rem;
+    color: $color-accent;
+    margin-bottom: 0.25rem;
+  }
+
+  &__subtitle {
+    color: $color-text-muted;
+    margin-bottom: 2rem;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  &__group {
+    background-color: $color-bg-card;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__group-label {
+    color: $color-text-muted;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  &__options {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__option {
+    background-color: $color-bg-secondary;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+
+    &:hover {
+      border-color: $color-accent;
+    }
+
+    &--selected {
+      background-color: $color-accent;
+      border-color: $color-accent;
+      color: #1a1200;
+      font-weight: 700;
+    }
+  }
+
+  &__slider {
+    width: 100%;
+    accent-color: $color-accent;
+  }
+
+  &__slider-hint {
+    color: $color-text-muted;
+    font-size: 0.8rem;
+  }
+
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $color-text-muted;
+    font-size: 0.9rem;
+  }
+
+  &__error {
+    color: $color-danger;
+    font-size: 0.875rem;
+  }
+
+  &__submit {
+    background-color: $color-accent;
+    border: none;
+    border-radius: $radius;
+    color: #1a1200;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    align-self: flex-start;
+
+    &:hover {
+      background-color: $color-accent-hover;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}

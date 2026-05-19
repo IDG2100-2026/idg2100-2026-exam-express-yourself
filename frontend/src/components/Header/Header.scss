@@ -1,0 +1,98 @@
+@use '../../styles/variables' as *;
+
+.header {
+  background-color: $color-bg-secondary;
+  border-bottom: 1px solid $color-border;
+
+  &__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__logo {
+    color: $color-accent;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  &__nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  &__nav-link {
+    color: $color-text-muted;
+    text-decoration: none;
+    font-size: 0.95rem;
+
+    &:hover {
+      color: $color-accent;
+      text-decoration: none;
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__auth {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__greeting {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: $color-text-muted;
+    text-decoration: none;
+    font-size: 0.9rem;
+
+    &:hover {
+      color: $color-accent;
+      text-decoration: none;
+    }
+  }
+
+  &__greeting-icon {
+    font-size: 1.1rem;
+  }
+
+  &__logout {
+    background: none;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text-muted;
+    font-size: 0.875rem;
+    padding: 0.3rem 0.75rem;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-accent;
+      border-color: $color-accent;
+    }
+  }
+
+  &__register {
+    background-color: $color-accent;
+    border-radius: $radius;
+    color: #1a1200;
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 0.3rem 0.75rem;
+    text-decoration: none;
+
+    &:hover {
+      background-color: $color-accent-hover;
+      text-decoration: none;
+    }
+  }
+}
