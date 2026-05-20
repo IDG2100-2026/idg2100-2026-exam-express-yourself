@@ -1,5 +1,6 @@
 backend:
     Create a services folder where business logic goes
-    Create a validator folder
+    Match validator
+    Tournament validator
     
     

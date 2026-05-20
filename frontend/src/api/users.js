@@ -1,43 +1,31 @@
-const BASE_URL = 'http://localhost:3000/api'
+import { apiFetch } from "../../api.js";
 
-export async function loginUser(email, password) {
-  const response = await fetch(`${BASE_URL}/users/login`, {
+export async function loginUser(credentials) {
+  return await apiFetch("/users/login", { 
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  })
-  const data = await response.json()
-  return { ok: response.ok, data }
+    body: JSON.stringify(credentials)
+  });
 }
 
-export async function registerUser(username, email, password, age) {
-  const response = await fetch(`${BASE_URL}/users/register`, {
+export async function registerUser(userData) {
+  return await apiFetch("/users/register", {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, email, password, age })
-  })
-  const data = await response.json()
-  return { ok: response.ok, data }
+    body: JSON.stringify(userData)
+  });''
 }
 
 export async function getUser(userId) {
-  const response = await fetch(`${BASE_URL}/users/${userId}`)
-  const data = await response.json()
-  return { ok: response.ok, data }
+  return await apiFetch(`/users/${userId}`);
 }
 
 export async function updateUser(userId, updates) {
   const role = localStorage.getItem('role')
-
-  const response = await fetch(`${BASE_URL}/users/${userId}`, {
+  return await apiFetch(`/users/${userId}`, {
     method: 'PATCH',
     headers: {
-      'Content-Type': 'application/json',
       'x-user-id': userId,
       'x-user-type': role || 'user'
     },
     body: JSON.stringify(updates)
-  })
-  const data = await response.json()
-  return { ok: response.ok, data }
+  });
 }

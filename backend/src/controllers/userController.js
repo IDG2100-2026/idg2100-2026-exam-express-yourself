@@ -1,6 +1,9 @@
 import User from '../models/User.js';
 import Match from '../models/Match.js';
 import bcrypt from 'bcryptjs';
+import userService from '../services/userService.js';
+import { matchedData } from 'express-validator';
+
 
 // GET /api/users, admin only
 // supports ?search= to filter by username or email
@@ -59,15 +62,13 @@ export const getUser = async (req, res, next) => {
 export const registerUser = async (req, res, next) => {
   try {
     // this will pull the fields we need from the request body
-    const { username, email, password, age } = req.body;
+    const data = matchedData(req);
+    const newUser = await userService.registerAUser(data);
 
-    // this will hash the password before saving, 10 salt rounds is a good balance of speed and security
-    // we never store plain text passwords
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // this will create and save the new user in the database
-    const user = await User.create({ username, email, password: hashedPassword, age });
-    res.status(201).json({ message: 'User created', userId: user._id });
+    if(newUser){
+      return res.status(201).json({message: "User created", newUser});
+    }
+    
   } catch (err) {
     next(err);
   }
@@ -77,23 +78,15 @@ export const registerUser = async (req, res, next) => {
 export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
-    // this will look up the user by email first
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) return res.status(401).json({ error: 'Invalid email or password' });
-
-    // this will compare what they typed with the stored hash
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: 'Invalid email or password' });
-
-    // this will block banned users from logging in
-    if (user.isBanned) return res.status(403).json({ error: 'Account is banned' });
-
+    const user = await userService.loginAUser(email, password);
+    if(!user){
+      return res.status(404).json({error: "User was not found"});
+    }
     // this will send back the user id and role so the client knows who is logged in
-    res.json({ message: 'Login successful', userId: user._id, role: user.role });
+    res.status(200).json({ message: 'Login successful', userId: user._id, role: user.role });
   } catch (err) {
     next(err);
-  }
+  };
 };
 
 // PATCH /api/users/:id, logged in users only
