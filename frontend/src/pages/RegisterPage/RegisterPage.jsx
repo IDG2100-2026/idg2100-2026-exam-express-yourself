@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../../api/users";
+import { registerUser } from "../../api/users.js";
 
 function RegisterPage() {
   // const [username, setUsername] = useState('')
@@ -45,7 +45,7 @@ function RegisterPage() {
     setLoading(true);
 
     try {
-      const birthDate = new Date(dateOfBirth);
+      const birthDate = new Date(formdata.dateOfBirth);
       const age = Math.floor(
         (Date.now() - birthDate) / (365.25 * 24 * 60 * 60 * 1000),
       );
@@ -58,7 +58,7 @@ function RegisterPage() {
 
       await registerUser({
         ...formdata, // insert the formdata
-        age: Number(formdata.age), // Convert the age from string to number
+        age, 
       });
       setIsSuccess(true);
       setFormdata({

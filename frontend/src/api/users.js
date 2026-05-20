@@ -1,4 +1,5 @@
-const BASE_URL = 'http://localhost:3000/api'
+// const BASE_URL = 'http://localhost:api';
+import { apiFetch } from "../../api.js";
 
 export async function loginUser(email, password) {
   const response = await fetch(`${BASE_URL}/users/login`, {
@@ -10,14 +11,19 @@ export async function loginUser(email, password) {
   return { ok: response.ok, data }
 }
 
-export async function registerUser(username, email, password, age) {
-  const response = await fetch(`${BASE_URL}/users/register`, {
+export async function registerUser(userData) {
+  return await apiFetch("/users/register", {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, email, password, age })
-  })
-  const data = await response.json()
-  return { ok: response.ok, data }
+    body: JSON.stringify(userData)
+  });
+
+  // const response = await fetch(`${BASE_URL}/users/register`, {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ username, email, password, age })
+  // })
+  // const data = await response.json()
+  // return { ok: response.ok, data }
 }
 
 export async function getUser(userId) {

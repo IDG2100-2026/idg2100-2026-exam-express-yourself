@@ -33,7 +33,7 @@ export const validateUser = () => {
         minNumber: 1,
       })
       .withMessage(
-        `Password needs to be between ${MIN_USER_PASSWORD_LENGTH} and ${MAX_USER_PASSWORD_LENGTH} characters long`,
+        `Password needs to be between ${MIN_USER_PASSWORD_LENGTH} and ${MAX_USER_PASSWORD_LENGTH} characters long, and have at least one upper, lower character with one special character`,
       ),
     body("email").trim().escape().isEmail().withMessage("Not a valid email"), // TODO: create a function to check if mail is in use
     body("age")
