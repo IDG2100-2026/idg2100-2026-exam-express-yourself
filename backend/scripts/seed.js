@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { connectDB, disconnectDB } from '../src/config/db.js';
 import User from '../src/models/User.js';
 import Match from '../src/models/Match.js';
 import Tournament from '../src/models/Tournament.js';
@@ -8,7 +8,7 @@ import { Comment } from '../src/models/Comment.js';
 
 const seed = async () => {
   // this will connect to the database before doing anything
-  await mongoose.connect(process.env.MONGODB_URI);
+  await connectDB();
   console.log('Connected to MongoDB');
 
   // this will delete everything in all collections so we start fresh every time
@@ -78,7 +78,7 @@ const seed = async () => {
   console.log('Seed complete!');
 
   // this will close the database connection and exit the script
-  await mongoose.disconnect();
+  await disconnectDB();
   process.exit(0);
 };
 
