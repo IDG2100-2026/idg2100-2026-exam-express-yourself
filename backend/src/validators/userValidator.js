@@ -14,7 +14,6 @@ export const validateUser = () => {
   return [
     body("username")
       .trim()
-      .escape()
       .isAlphanumeric()
       .withMessage("Username can only contain alpha numeric characters")
       .isLength({

@@ -1,7 +1,8 @@
 import User from '../models/User.js';
 import Match from '../models/Match.js';
 import bcrypt from 'bcryptjs';
-
+import userService from '../services/userService.js';
+import { matchedData } from 'express-validator';
 // GET /api/users, admin only
 // supports ?search= to filter by username or email
 export const getAllUsers = async (req, res, next) => {
@@ -59,15 +60,13 @@ export const getUser = async (req, res, next) => {
 export const registerUser = async (req, res, next) => {
   try {
     // this will pull the fields we need from the request body
-    const { username, email, password, age } = req.body;
+    const data = matchedData(req);
+    const newUser = await userService.registerAUser(data);
 
-    // this will hash the password before saving, 10 salt rounds is a good balance of speed and security
-    // we never store plain text passwords
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // this will create and save the new user in the database
-    const user = await User.create({ username, email, password: hashedPassword, age });
-    res.status(201).json({ message: 'User created', userId: user._id });
+    if(newUser){
+      return res.status(201).json({message: "User created", newUser});
+    }
+    
   } catch (err) {
     next(err);
   }
