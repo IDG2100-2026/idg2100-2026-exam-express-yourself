@@ -23,7 +23,6 @@ const getAllUsers = async (req, res, next) => {
 
     // this will fetch the users for this page and remove the password field from results
     const users = await User.find(filter)
-      .select('-password') // this will make sure passwords are never sent to the client
       .skip(skip)
       .limit(limit);
 
@@ -37,7 +36,7 @@ const getAllUsers = async (req, res, next) => {
 const getUser = async (req, res, next) => {
   try {
     // this will find a user by their id and leave out the password
-    const user = await User.findById(req.params.id).select('-password');
+    const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // this will fetch the 10 most recent completed matches this user played in
@@ -118,7 +117,7 @@ const updateUser = async (req, res, next) => {
       req.params.id,
       updates,
       { new: true }
-    ).select('-password');
+    );
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json(user);
   } catch (err) {
