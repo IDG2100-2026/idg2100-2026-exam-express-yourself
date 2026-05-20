@@ -23,12 +23,7 @@ function ProfilePage() {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const response = await getUser(id)
-        if (!response.ok) {
-          setError('User not found.')
-          return
-        }
-        const data = response.data
+        const data = await getUser(id)
         setUser(data)
         setEmail(data.email || '')
         setBio(data.bio || '')
@@ -51,18 +46,14 @@ function ProfilePage() {
       const updates = { email, bio, profileImageUrl }
       if (password) updates.password = password
 
-      const response = await updateUser(id, updates)
-      if (!response.ok) {
-        setSaveError(response.data.error || 'Could not save changes.')
-        return
-      }
+      await updateUser(id, updates)
 
       setSaveSuccess('Profile updated!')
       setPassword('')
       setEditing(false)
       if (isOwnProfile) updateProfileImage(profileImageUrl)
       const refreshed = await getUser(id)
-      setUser(refreshed.data)
+      setUser(refreshed)
     } catch (err) {
       setSaveError('Could not reach the server.')
     }

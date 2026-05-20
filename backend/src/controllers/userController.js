@@ -3,6 +3,8 @@ import Match from '../models/Match.js';
 import bcrypt from 'bcryptjs';
 import userService from '../services/userService.js';
 import { matchedData } from 'express-validator';
+
+
 // GET /api/users, admin only
 // supports ?search= to filter by username or email
 export const getAllUsers = async (req, res, next) => {
@@ -76,23 +78,15 @@ export const registerUser = async (req, res, next) => {
 export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
-    // this will look up the user by email first
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) return res.status(401).json({ error: 'Invalid email or password' });
-
-    // this will compare what they typed with the stored hash
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: 'Invalid email or password' });
-
-    // this will block banned users from logging in
-    if (user.isBanned) return res.status(403).json({ error: 'Account is banned' });
-
+    const user = await userService.loginAUser(email, password);
+    if(!user){
+      return res.status(404).json({error: "User was not found"});
+    }
     // this will send back the user id and role so the client knows who is logged in
-    res.json({ message: 'Login successful', userId: user._id, role: user.role });
+    res.status(200).json({ message: 'Login successful', userId: user._id, role: user.role });
   } catch (err) {
     next(err);
-  }
+  };
 };
 
 // PATCH /api/users/:id, logged in users only
