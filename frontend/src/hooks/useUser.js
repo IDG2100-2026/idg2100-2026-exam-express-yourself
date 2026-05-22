@@ -1,0 +1,28 @@
+import { useState, useEffect, useCallback } from "react";
+import { getUser } from "../services/users-service.js";
+
+export function useUser(id) {
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchUser = useCallback(async (staleObj = { stale: false }) => {
+    setIsLoading(true);
+    try {
+      const data = await getUser(id);
+      if (!staleObj.stale) setUser(data);
+    } catch (err) {
+      if (!staleObj.stale) setError(err.message);
+    } finally {
+      if (!staleObj.stale) setIsLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const staleObj = { stale: false };
+    fetchUser(staleObj);
+    return () => { staleObj.stale = true; };
+  }, [fetchUser]);
+
+  return { user, isLoading, error, refetch: fetchUser };
+}

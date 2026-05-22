@@ -1,26 +1,25 @@
 {
-  "name": "backend",
+  "name": "spanish-poker-dice-backend",
   "version": "1.0.0",
-  "description": "full stack exam idg2100",
-  "license": "ISC",
-  "author": "Nicolai, Emil & Adrian",
-  "type": "module",
+  "description": "Backend for the Spanish Poker Dice platform — merged starter from obligs",
   "main": "server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch --env-file=.env server.js",
+    "dev": "nodemon --env-file=.env server.js",
+    "start": "node --env-file=.env server.js",
     "seed": "node --env-file=.env scripts/seed.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "express-rate-limit": "^8.5.2",
+    "express-rate-limit": "^8.3.2",
     "express-validator": "^7.3.2",
     "helmet": "^8.1.0",
-    "mongoose": "^9.6.2",
-    "multer": "^2.1.1",
+    "mongoose": "^9.4.1",
+    "multer": "^2.1.1"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.14"
   }
 }

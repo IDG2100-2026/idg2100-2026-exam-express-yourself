@@ -1,32 +1,37 @@
 import express from "express";
-import multer from "multer";
 import { requireUser, requireAdmin } from "../middlewares/authMiddleware.js";
+import { validateCreateTournament, validateUpdateTournament } from "../validators/tournamentValidator.js";
+import { validate } from "../validators/validate.js";
+import upload from "../middlewares/upload.js";
 import {
   getAllTournaments,
   getTournament,
   createTournament,
   joinTournament,
+  leaveTournament,
   startTournament,
-  nextRound,
+  reportMatchResult,
+  getStandings,
+  updateTournament,
+  deleteTournament,
+  cancelTournament,
 } from "../controllers/tournamentController.js";
-import { validate } from "../validators/validate.js";
+
 const tournamentRouter = express.Router();
 
-// this will configure multer to save uploaded files to the uploads folder
-const upload = multer({ dest: "uploads/" });
+tournamentRouter.get("/", getAllTournaments);
+tournamentRouter.get("/:id", getTournament);
+tournamentRouter.get("/:id/standings", getStandings);
 
-tournamentRouter.get("/", getAllTournaments); // this will return all tournaments
-tournamentRouter.get("/:id", validate, getTournament); // this will return one tournament by id
-tournamentRouter.post(
-  "/",
-  requireAdmin,
-  upload.single("trophyImage"),
-  validate,
-  createTournament,
-); // this will block non admins, and handle optional image upload
+tournamentRouter.post("/", requireAdmin, upload.single("trophyImage"), validateCreateTournament(), validate, createTournament);
+tournamentRouter.put("/:id", requireAdmin, validateUpdateTournament(), validate, updateTournament);
+tournamentRouter.delete("/:id", requireAdmin, deleteTournament);
 
-tournamentRouter.post("/:id/join", requireUser, joinTournament); // this will block anonymous users from joining
-tournamentRouter.post("/:id/start", requireAdmin, startTournament); // this will randomly pair participants and create round 1 matches
-tournamentRouter.post("/:id/nextround", requireAdmin, nextRound); // this will collect winners and create matches for the next round
+tournamentRouter.post("/:id/join", requireUser, joinTournament);
+tournamentRouter.post("/:id/leave", requireUser, leaveTournament);
+tournamentRouter.post("/:id/start", requireAdmin, startTournament);
+tournamentRouter.post("/:id/cancel", requireAdmin, cancelTournament);
+
+tournamentRouter.put("/:id/matches/:matchId/result", requireAdmin, reportMatchResult);
 
 export default tournamentRouter;

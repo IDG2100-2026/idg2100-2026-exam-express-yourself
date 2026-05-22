@@ -1,78 +1,70 @@
 import mongoose from "mongoose";
 
-// this defines what a match looks like in the database
 const matchSchema = new mongoose.Schema(
   {
-    // this will store the player ids, ref: 'User' lets us use populate() to get full user data
-    player1: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    players: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          default: null, // null for anonymous players
+        },
+        stack: {
+          type: Number,
+          default: 0, // Points this player has in the game
+        },
+      },
+    ],
+    maxPlayers: {
+      type: Number,
+      enum: [2, 3, 5],
+      default: 2,
     },
-    player2: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-
-    // this will store the game format, 3 options each gives 18 possible combinations
     category: {
-      rounds: {
-        type: Number,
-        enum: [3, 5, 7],
-      }, // best of 3, 5 or 7
-      rules: {
-        type: String,
-        enum: ["straights", "no-straights"],
-      }, // game rule variant
-      timeControl: {
-        type: Number,
-        enum: [5, 10, 15],
-      }, // seconds per round
+      rounds: { type: Number, enum: [3, 5, 7] },
+      straightsAllowed: { type: Boolean, default: true },
+      timeControl: { type: Number, enum: [10, 30, 90] }, // seconds total
     },
-
-    // this will track how many rounds each player has won
+    buyIn: {
+      type: Number,
+      enum: [1, 10, 50],
+      default: 1,
+    },
     score: {
-      player1: {
-        type: Number,
-        default: 0,
-      },
-      player2: {
-        type: Number,
-        default: 0,
-      },
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
     },
-
-    // this will be set when the match is finished
     winnerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-
-    // this will track where the match is in its lifecycle
     status: {
       type: String,
       enum: ["waiting", "in-progress", "completed"],
       default: "waiting",
     },
-
-    // this will hide the match from leaderboards and platform activity if true
     isAnonymous: {
       type: Boolean,
       default: false,
     },
-
-    // these will be set if this match belongs to a tournament
+    // Tournament link
     tournamentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tournament",
       default: null,
     },
-    round: { 
-      type: Number, 
-      default: null 
-
-    }, // which round of the tournament this match is in
+    round: {
+      type: Number,
+      default: null, // Which tournament round
+    },
+    startedAt: { type: Date },
+    endedAt: { type: Date },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  }
 );
 
-export default mongoose.model("Match", matchSchema);
+const Match = mongoose.model("Match", matchSchema);
+
+export default Match;
