@@ -1,22 +1,27 @@
 @use 'global';
 
-@use '../components/Avatar/Avatar';
-@use '../components/Layout/Layout';
-@use '../components/Header/Header';
-@use '../components/Footer/Footer';
-@use '../components/AppearanceMenu/AppearanceMenu';
+// Components
+@use '../components/avatar/Avatar';
+@use '../components/header/Header';
+@use '../components/footer/Footer';
+@use '../components/appearance-menu/AppearanceMenu';
 
-@use '../pages/HomePage/HomePage';
-@use '../pages/LoginPage/LoginPage';
-@use '../pages/RegisterPage/RegisterPage';
-@use '../pages/LobbyPage/LobbyPage';
-@use '../pages/GamePage/GamePage';
-@use '../pages/CreateGamePage/CreateGamePage';
-@use '../pages/TournamentsPage/TournamentsPage';
-@use '../pages/TournamentPage/TournamentPage';
-@use '../pages/ProfilePage/ProfilePage';
-@use '../pages/AllGamesPage/AllGamesPage';
-@use '../pages/AboutUsPage/AboutUsPage';
-@use '../pages/AboutGamePage/AboutGamePage';
-@use '../pages/TermsPage/TermsPage';
-@use '../pages/PrivacyPage/PrivacyPage';
+// Layouts
+@use '../layouts/main-layout/MainLayout';
+
+// Pages
+@use '../pages/home/Home';
+@use '../pages/lobby/Lobby';
+@use '../pages/login/Login';
+@use '../pages/register/Register';
+@use '../pages/game/Game';
+@use '../pages/create-game/CreateGame';
+@use '../pages/profile/Profile';
+@use '../pages/all-games/AllGames';
+@use '../pages/tournament-list/TournamentList';
+@use '../pages/tournament/Tournament';
+@use '../pages/about-us/AboutUs';
+@use '../pages/about-game/AboutGame';
+@use '../pages/terms/Terms';
+@use '../pages/privacy/Privacy';
+@use '../pages/not-found/NotFound';

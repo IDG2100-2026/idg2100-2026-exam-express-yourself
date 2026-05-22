@@ -1,24 +1,21 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
-import AppearanceMenu from '../AppearanceMenu/AppearanceMenu'
-import Avatar from '../Avatar/Avatar'
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth.js";
+import AppearanceMenu from "../appearance-menu/AppearanceMenu.jsx";
+import Avatar from "../avatar/Avatar.jsx";
 
 function Header() {
-  const { isLoggedIn, userId, username, profileImageUrl, logout } = useAuth()
-  const navigate = useNavigate()
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   function handleLogout() {
-    logout()
-    navigate('/')
+    logout();
+    navigate("/");
   }
 
   return (
     <header className="header">
       <div className="header__inner">
-
-        <Link to="/" className="header__logo">
-          🎲 PokerDados
-        </Link>
+        <Link to="/" className="header__logo">🎲 PokerDados</Link>
 
         <nav className="header__nav">
           <Link to="/" className="header__nav-link">Home</Link>
@@ -29,13 +26,12 @@ function Header() {
 
         <div className="header__right">
           <AppearanceMenu />
-
           <div className="header__auth">
-            {isLoggedIn ? (
+            {user ? (
               <>
-                <Link to={`/profile/${userId}`} className="header__greeting">
-                  <Avatar imageUrl={profileImageUrl} size={28} />
-                  <span>Hello, {username}</span>
+                <Link to={`/profile/${user._id || user.userId}`} className="header__greeting">
+                  <Avatar imageUrl={user.profileImageUrl} size={28} />
+                  <span>Hello, {user.username}</span>
                 </Link>
                 <button className="header__logout" onClick={handleLogout}>Log out</button>
               </>
@@ -47,10 +43,9 @@ function Header() {
             )}
           </div>
         </div>
-
       </div>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;

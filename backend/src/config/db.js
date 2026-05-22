@@ -1,35 +1,24 @@
 import mongoose from "mongoose";
 
-const { DATABASE_PORT, DATABASE_NAME, DATABASE_PROTOCOL, DATABASE_HOSTNAME } =
-  process.env;
+const { DB_HOSTNAME, DB_PORT, DB_NAME, NODE_ENV } = process.env;
 
-const MONGODB_URI = `${DATABASE_PROTOCOL}://${DATABASE_HOSTNAME}:${DATABASE_PORT}/${DATABASE_NAME}`;
+const MONGODB_URI = `mongodb://${DB_HOSTNAME}:${DB_PORT}/${DB_NAME}`;
 
 export async function connectDB() {
-  if (
-    DATABASE_PORT &&
-    DATABASE_NAME &&
-    DATABASE_PROTOCOL &&
-    DATABASE_HOSTNAME
-  ) {
+  if (DB_HOSTNAME && DB_PORT && DB_NAME) {
     mongoose.connection.on("error", (err) => {
-      console.error("Unhandled MongoDB / mongoose connection error: ", err);
+      console.error("MongoDB connection error:", err);
     });
-    console.log("Connecting to MongoDB now..", MONGODB_URI);
+    console.log("Connecting to MongoDB...", MONGODB_URI);
     return mongoose.connect(MONGODB_URI, {
-      appName: DATABASE_NAME,
-      maxPoolSize: 50, // Current request MongoDB can be queued at the same time
+      appName: `${DB_NAME}-${NODE_ENV}`,
     });
-    throw new Error(
-      `Missing env variables needed to connect to MongoDB ${DATABASE_PROTOCOL} ${DATABASE_HOSTNAME}, ${DATABASE_PORT}, ${DATABASE_NAME}`,
-    );
   }
+  throw new Error(
+    `Missing env variables needed to connect to MongoDB: DB_HOSTNAME, DB_PORT, DB_NAME`
+  );
 }
+
 export async function disconnectDB() {
   return mongoose.disconnect();
 }
-
-export default {
-  connectDB,
-  disconnectDB,
-};

@@ -1,100 +1,104 @@
 import mongoose from "mongoose";
-import {
-  MIN_TOURNAMENT_TITLE_LENGTH,
-  MAX_TOURNAMENT_TITLE_LENGTH,
-  MIN_TOURNAMENT_DESCRIPTION_LENGTH,
-  MAX_TOURNAMENT_DESCRIPTION_LENGTH,
-} from "../config/constants.js";
-// this defines what a tournament looks like in the database
+
 const tournamentSchema = new mongoose.Schema(
   {
     title: {
       type: String,
       required: true,
       trim: true,
-      minLength: [
-        MIN_TOURNAMENT_TITLE_LENGTH,
-        `Title needs to be at least ${MIN_TOURNAMENT_TITLE_LENGTH}`,
-      ],
-      maxLength: [
-        MAX_TOURNAMENT_TITLE_LENGTH,
-        `Title can not have more characters than ${MAX_TOURNAMENT_TITLE_LENGTH}`,
-      ],
+      minlength: 3,
+      maxlength: 64,
     },
     description: {
       type: String,
       trim: true,
-      required: true,
-      minLength: [
-        MIN_TOURNAMENT_DESCRIPTION_LENGTH,
-        `Description needs at least ${MIN_TOURNAMENT_DESCRIPTION_LENGTH} characters!`,
-      ],
-      maxLength: [
-        MAX_TOURNAMENT_DESCRIPTION_LENGTH,
-        `Description cannot have more than ${MAX_TOURNAMENT_DESCRIPTION_LENGTH} characters!`,
-      ],
+      maxlength: 500,
     },
-    // this will store who created the tournament, only admins can do this
+    rules: {
+      type: String,
+      trim: true,
+      maxlength: 1000,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-
     startDate: {
       type: Date,
       required: true,
     },
-
-    // this will store the game format, all matches in this tournament use these settings
-    category: {
-      rounds: {
-        type: Number,
-        enum: [3, 5, 7],
-      },
-      rules: {
-        type: String,
-        enum: ["straights", "no-straights"],
-      },
-      timeControl: {
-        type: Number,
-        enum: [5, 10, 15],
-      },
+    numberOfRounds: {
+      type: Number,
+      default: 3,
     },
-
-    // this will store all users who have joined the tournament
+    category: {
+      rounds: { type: Number, enum: [3, 5, 7] },
+      straightsAllowed: { type: Boolean, default: true },
+      timeControl: { type: Number, enum: [10, 30, 90] },
+    },
+    buyIn: {
+      type: Number,
+      default: 0,
+    },
+    eloRange: {
+      min: { type: Number, default: 0 },
+      max: { type: Number, default: 9999 },
+    },
     participants: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
-
-    // this will track where the tournament is in its lifecycle
     status: {
       type: String,
-      enum: ["upcoming", "in-progress", "completed"],
+      enum: ["upcoming", "cancelled", "in-progress", "completed"],
       default: "upcoming",
     },
-
-    // this will store the trophy info, imageUrl points to an uploaded file in /uploads
     trophy: {
-      title: String,
-      imageUrl: String,
+      title: { type: String, trim: true },
+      imageUrl: { type: String, trim: true },
     },
-
-    // this will track which round the tournament is currently on
+    // Bracket for round-based random pairing (from Emil)
+    bracket: [
+      {
+        round: { type: Number, required: true },
+        matches: [
+          {
+            gameId: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "Match",
+              default: null,
+            },
+            players: [
+              {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+              },
+            ],
+            winner: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "User",
+              default: null,
+            },
+          },
+        ],
+      },
+    ],
     currentRound: {
       type: Number,
       default: 0,
     },
-
-    // this will be set when the tournament is finished
     winnerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  }
 );
 
-export default mongoose.model("Tournament", tournamentSchema);
+const Tournament = mongoose.model("Tournament", tournamentSchema);
+
+export default Tournament;
