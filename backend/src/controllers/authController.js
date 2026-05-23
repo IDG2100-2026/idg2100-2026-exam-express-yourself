@@ -98,6 +98,7 @@ export const createAccessToken = async (req, res, next) => {
 };
 
 export const logoutUser = (req, res, next) => {
+    // TODO: Delete after route insert in auth
   try {
     const refreshToken = req.signedCookies?.refreshToken; // extracting the refresh token from the signed cookie
     if (!refreshToken)

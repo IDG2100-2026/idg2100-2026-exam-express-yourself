@@ -1,6 +1,6 @@
 import express from "express";
 import errorHandler from "./src/middlewares/errorMiddleware.js";
-import { setUserType } from "./src/middlewares/authMiddleware.js";
+// import { setUserType } from "./src/middlewares/authMiddleware.js";
 import cors from "cors";
 import userRouter from "./src/routes/userRoutes.js";
 import tournamentRouter from "./src/routes/tournamentRoutes.js";
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 
 // Attach userType and userId to every request
-app.use(setUserType);
+// app.use(setUserType); TODO: Delete after checking we dont need it anymore
 
 
 app.use("/api/users", userRouter, authRouter);
