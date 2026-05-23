@@ -1,5 +1,4 @@
 import express from "express";
-import { requireUser } from "../middlewares/authMiddleware.js";
 import { validateCreateMatch } from "../validators/matchValidator.js";
 import { validate } from "../validators/validate.js";
 import {
@@ -10,14 +9,18 @@ import {
   leaveMatch,
   recordResult,
 } from "../controllers/matchController.js";
-
+import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 const matchRouter = express.Router();
 
+// public routes
 matchRouter.get("/", getAllMatches);
 matchRouter.get("/:id", getMatch);
-matchRouter.post("/", validateCreateMatch(), validate, createMatch);
-matchRouter.post("/:id/join", requireUser, joinMatch);
-matchRouter.post("/:id/leave", requireUser, leaveMatch);
-matchRouter.patch("/:id/result", recordResult);
+
+matchRouter.use(authenticate);
+
+matchRouter.post("/", authorize("user"), validateCreateMatch(), validate, createMatch); // create a game
+matchRouter.post("/:id/join", authorize("user"), joinMatch); // join a game
+matchRouter.post("/:id/leave", authorize("user"), leaveMatch); // leave a game
+matchRouter.patch("/:id/result", authorize("user", "admin"), recordResult); // 
 
 export default matchRouter;

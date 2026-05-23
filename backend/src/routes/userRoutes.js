@@ -1,6 +1,9 @@
 import express from "express";
-import { requireUser, requireAdmin } from "../middlewares/authMiddleware.js";
-import { validateRegister, validateLogin, validateUpdateUser } from "../validators/userValidator.js";
+import {
+  validateRegister,
+  validateLogin,
+  validateUpdateUser,
+} from "../validators/userValidator.js";
 import { validate } from "../validators/validate.js";
 import {
   getAllUsers,
@@ -9,13 +12,26 @@ import {
   banUser,
   makeAdmin,
 } from "../controllers/userController.js";
+import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/", requireAdmin, getAllUsers);
-userRouter.get("/:id", getUser);
-userRouter.patch("/:id", requireUser, validateUpdateUser(), validate, updateUser);
-userRouter.post("/:id/ban", requireAdmin, banUser);
-userRouter.post("/:id/make-admin", requireAdmin, makeAdmin);
+userRouter.get("/:id", getUser); // public — profile pages don't require login
+
+userRouter.use(authenticate);
+
+userRouter.get("/", authorize("admin"), getAllUsers);
+
+userRouter.patch(
+  "/:id",
+  authorize("admin", "user"),
+  validateUpdateUser(),
+  validate,
+  updateUser,
+);
+
+userRouter.post("/:id/ban", authorize("admin"), banUser);
+
+userRouter.post("/:id/make-admin", authorize("admin"), makeAdmin);
 
 export default userRouter;

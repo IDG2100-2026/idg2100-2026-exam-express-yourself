@@ -1,12 +1,12 @@
 import express from "express";
-import { requireUser, requireAdmin } from "../middlewares/authMiddleware.js";
 import { commentRateLimiter } from "../middlewares/rateLimiter.js";
 import { getComments, createComment, deleteComment } from "../controllers/commentController.js";
-
+import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 const commentsRouter = express.Router();
+commentsRouter.use(authenticate);
 
-commentsRouter.get("/", getComments);
-commentsRouter.post("/", requireUser, commentRateLimiter, createComment);
-commentsRouter.delete("/:id", requireAdmin, deleteComment);
+commentsRouter.get("/", authorize("admin"), getComments);
+commentsRouter.post("/", authorize("user", "admin"), commentRateLimiter, createComment);
+commentsRouter.delete("/:id", authorize("admin"), deleteComment);
 
 export default commentsRouter;

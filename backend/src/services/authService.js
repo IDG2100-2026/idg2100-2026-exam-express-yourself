@@ -6,8 +6,8 @@ import { BusinessLogicError } from "../utils/errors.js";
 export const createSession = async (user, ip, agent) => {
   const session = await new Session({ // creates a new session and storing user's id, ip and agent. 
     userId: user._id,
-    ip: user.ip,
-    agent: user.agent
+    ip: ip,
+    agent: agent
   });
   await session.save(); // Saves the new session to db
   return session.refreshToken; // return sessions refresh token

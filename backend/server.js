@@ -29,11 +29,9 @@ app.use(express.urlencoded({ extended: true }));
 // Serve uploaded files (trophy images etc.)
 app.use("/uploads", express.static("uploads"));
 
-// Attach userType and userId to every request
-// app.use(setUserType); TODO: Delete after checking we dont need it anymore
 
-
-app.use("/api/users", userRouter, authRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
 app.use("/api/matches", matchRouter);
 app.use("/api/tournaments", tournamentRouter);
 app.use("/api/comments", commentsRouter);
