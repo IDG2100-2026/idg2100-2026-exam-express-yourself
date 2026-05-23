@@ -1,12 +1,12 @@
-import crypto from 'node:crypto';
+import crypto from 'node:crypto'; // node's built in module for hashing
 
-const salt = process.env.PASSWORD_SALT;
+const salt = process.env.PASSWORD_SALT; // get the password salt from .env
 
 export const hashPassword = (password) => {
-    const hash = password + salt;
-    return crypto.createHash('md5').update(hash).digest('hex').toString();
+    const hash = password + salt; // attach the raw password and salt together 
+    return crypto.createHash('sha256').update(hash).digest('hex').toString(); // create a md5 hash
 }
 
 export const chechPassword = (password, existingHash) => {
-    return hashPassword(password === existingHash);
+    return hashPassword(password) === existingHash; // hash the incoming password and check if it matches the one in DB
 }

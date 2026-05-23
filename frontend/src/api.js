@@ -19,11 +19,12 @@ export async function apiFetch(endpoint, options = {}) {
     headers,
   });
 
-  const data = await response.json();
+  const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error || data.message || "Something went wrong");
+    const validationMsg = result?.errors?.[0]?.msg;
+    throw new Error(validationMsg || result?.msg || result?.message || result?.error || "An error occurred while fetching data");
   }
 
-  return data;
+  return result;
 }

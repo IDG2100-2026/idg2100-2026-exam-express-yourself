@@ -1,6 +1,11 @@
 // Catches all errors passed with next(err)
 const errorHandler = (err, req, res, _next) => {
-  console.error(err.message);
+  console.error(err);
+
+  // Known operational error thrown by services
+  if (err.name === "BusinessLogicError") {
+    return res.status(err.statusCode).json({ error: err.message });
+  }
 
   // Duplicate key error (e.g. same username or email)
   if (err.code === 11000) {

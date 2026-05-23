@@ -49,47 +49,6 @@ export async function getUser(req, res, next) {
   }
 }
 
-// POST /api/users/register
-// export async function registerUser(req, res, next) {
-//   try {
-//     const { username, email, password, age } = req.body;
-
-//     const user = await User.create({ username, email, password, age });
-//     res.status(201).json({ message: "User created", userId: user._id });
-//   } catch (err) {
-//     next(err);
-//   }
-// } // TODO: remove when checked that auth controller works
-
-// POST /api/users/login
-export async function loginUser(req, res, next) {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) return res.status(401).json({ error: "Invalid email or password" });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(401).json({ error: "Invalid email or password" });
-
-    if (user.isBanned)
-      return res.status(403).json({ error: "Account is banned" });
-
-    res.json({
-      message: "Login successful",
-      userId: user._id,
-      username: user.username,
-      role: user.role,
-      eloRating: user.eloRating,
-      profileImageUrl: user.profileImageUrl,
-      appearance: user.appearance,
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
 // PATCH /api/users/:id
 export async function updateUser(req, res, next) {
   try {

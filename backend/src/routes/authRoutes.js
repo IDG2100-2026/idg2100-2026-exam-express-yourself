@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUserController } from "../controllers/authController.js";
+import { registerUserController, loginUserController } from "../controllers/authController.js";
 import {
   validateRegister,
   validateLogin,
@@ -8,6 +8,7 @@ import { validate } from "../validators/validate.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/register", validateRegister(), validate, registerUserController);
+authRouter.post("/register", validateRegister(), validate, registerUserController); // Create a new user
+authRouter.post("/login", validateLogin(), validate, loginUserController) // Login an existing user
 
 export default authRouter;
