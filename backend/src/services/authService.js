@@ -3,6 +3,16 @@ import { chechPassword, hashPassword } from "../utils/passwordHash.js";
 import { Session } from "../models/Sessions.js";
 import { BusinessLogicError } from "../utils/errors.js";
 
+export const createSession = async (user, ip, agent) => {
+  const session = await new Session({ // creates a new session and storing user's id, ip and agent. 
+    userId: user._id,
+    ip: user.ip,
+    agent: user.agent
+  });
+  await session.save(); // Saves the new session to db
+  return session.refreshToken; // return sessions refresh token
+}
+
 export const registerUser = async (userData) => {
   const newUser = await new User({ // creates a new User document 
     username: userData.username,
