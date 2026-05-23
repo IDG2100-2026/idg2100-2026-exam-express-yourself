@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import Match from "../models/Match.js";
 import bcrypt from "bcryptjs";
+import { matchedData } from "express-validator";
 
 // GET /api/users — admin only, supports ?search=
 export async function getAllUsers(req, res, next) {
@@ -43,47 +44,6 @@ export async function getUser(req, res, next) {
       .limit(10);
 
     res.json({ ...user.toObject(), recentMatches });
-  } catch (err) {
-    next(err);
-  }
-}
-
-// POST /api/users/register
-export async function registerUser(req, res, next) {
-  try {
-    const { username, email, password, age } = req.body;
-
-    const user = await User.create({ username, email, password, age });
-    res.status(201).json({ message: "User created", userId: user._id });
-  } catch (err) {
-    next(err);
-  }
-}
-
-// POST /api/users/login
-export async function loginUser(req, res, next) {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) return res.status(401).json({ error: "Invalid email or password" });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(401).json({ error: "Invalid email or password" });
-
-    if (user.isBanned)
-      return res.status(403).json({ error: "Account is banned" });
-
-    res.json({
-      message: "Login successful",
-      userId: user._id,
-      username: user.username,
-      role: user.role,
-      eloRating: user.eloRating,
-      profileImageUrl: user.profileImageUrl,
-      appearance: user.appearance,
-    });
   } catch (err) {
     next(err);
   }

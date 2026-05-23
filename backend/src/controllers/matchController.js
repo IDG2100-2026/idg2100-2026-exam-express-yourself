@@ -48,8 +48,8 @@ export async function getMatch(req, res, next) {
 export async function createMatch(req, res, next) {
   try {
     const { rounds, straightsAllowed, timeControl, maxPlayers, buyIn } = req.body;
-    const isAnonymous = req.userType === "anonymous";
-    const userId = isAnonymous ? null : req.userId;
+    const isAnonymous = !req.userId;
+    const userId = req.userId ?? null;
 
     // Check buy-in points
     if (!isAnonymous && buyIn) {

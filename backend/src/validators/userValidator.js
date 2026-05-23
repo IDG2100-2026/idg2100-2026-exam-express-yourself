@@ -6,6 +6,7 @@ import {
   MIN_PASSWORD_LENGTH,
   MAX_PASSWORD_LENGTH,
   MIN_USER_AGE,
+  MAX_USER_AGE,
 } from "../config/constants.js";
 
 export function validateRegister() {
@@ -16,7 +17,7 @@ export function validateRegister() {
       .withMessage("Username can only contain letters and numbers")
       .isLength({ min: MIN_USERNAME_LENGTH, max: MAX_USERNAME_LENGTH })
       .withMessage(
-        `Username must be ${MIN_USERNAME_LENGTH}-${MAX_USERNAME_LENGTH} characters`
+        `Username must be ${MIN_USERNAME_LENGTH}-${MAX_USERNAME_LENGTH} characters`,
       )
       .bail()
       .custom(async (username) => {
@@ -35,18 +36,24 @@ export function validateRegister() {
     body("password")
       .isLength({ min: MIN_PASSWORD_LENGTH, max: MAX_PASSWORD_LENGTH })
       .withMessage(
-        `Password must be ${MIN_PASSWORD_LENGTH}-${MAX_PASSWORD_LENGTH} characters`
+        `Password must be ${MIN_PASSWORD_LENGTH}-${MAX_PASSWORD_LENGTH} characters`,
       ),
     body("age")
-      .isInt({ min: MIN_USER_AGE })
-      .withMessage(`You must be at least ${MIN_USER_AGE} years old`)
+      .isInt({ min: MIN_USER_AGE, max: MAX_USER_AGE })
+      .withMessage(
+        `You must be between the age of ${MIN_USER_AGE} to ${MAX_USER_AGE} years old to play this`,
+      )
       .toInt(),
   ];
 }
 
 export function validateLogin() {
   return [
-    body("email").trim().notEmpty().isEmail().withMessage("Valid email required"),
+    body("email")
+      .trim()
+      .notEmpty()
+      .isEmail()
+      .withMessage("Valid email required"),
     body("password").trim().notEmpty().withMessage("Password is required"),
   ];
 }
@@ -57,11 +64,9 @@ export function validateUpdateUser() {
     body("password")
       .optional()
       .isLength({ min: MIN_PASSWORD_LENGTH })
-      .withMessage(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`),
+      .withMessage(
+        `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+      ),
     body("bio").optional().isString(),
-    body("age")
-      .optional()
-      .isInt({ min: MIN_USER_AGE })
-      .withMessage(`Must be at least ${MIN_USER_AGE} years old`),
   ];
 }

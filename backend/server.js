@@ -1,12 +1,13 @@
 import express from "express";
 import errorHandler from "./src/middlewares/errorMiddleware.js";
-import { setUserType } from "./src/middlewares/authMiddleware.js";
+// import { setUserType } from "./src/middlewares/authMiddleware.js";
 import cors from "cors";
 import userRouter from "./src/routes/userRoutes.js";
 import tournamentRouter from "./src/routes/tournamentRoutes.js";
 import matchRouter from "./src/routes/matchRoutes.js";
 import commentsRouter from "./src/routes/commentRoutes.js";
 import leaderboardRouter from "./src/routes/leaderboardRoutes.js";
+import authRouter from './src/routes/authRoutes.js';
 import helmet from "helmet";
 import { connectDB, disconnectDB } from "./src/config/db.js";
 import activityRoutes from './src/routes/activityRoutes.js';
@@ -28,10 +29,8 @@ app.use(express.urlencoded({ extended: true }));
 // Serve uploaded files (trophy images etc.)
 app.use("/uploads", express.static("uploads"));
 
-// Attach userType and userId to every request
-app.use(setUserType);
 
-
+app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/matches", matchRouter);
 app.use("/api/tournaments", tournamentRouter);

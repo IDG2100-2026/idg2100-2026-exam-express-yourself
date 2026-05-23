@@ -4,7 +4,7 @@ import rateLimit from "express-rate-limit";
 export const commentRateLimiter = rateLimit({
   windowMs: 5000,
   max: 5,
-  handler: (_req, res) => {
+  handler: (req, res) => {
     res
       .status(429)
       .json({ error: "Slow down! You are posting comments too fast." });
