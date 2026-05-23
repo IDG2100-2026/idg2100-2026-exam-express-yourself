@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 // Reads headers and attaches userType and userId to req
-export function setUserType(req, _res, next) {
+export function setUserType(req, res, next) {
   const userType = req.headers["x-user-type"] || "anonymous";
   const rawId = req.headers["x-user-id"];
 

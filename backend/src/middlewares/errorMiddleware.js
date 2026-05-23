@@ -1,5 +1,5 @@
 // Catches all errors passed with next(err)
-const errorHandler = (err, _req, res, _next) => {
+const errorHandler = (err, req, res, _next) => {
   console.error(err.message);
 
   // Duplicate key error (e.g. same username or email)

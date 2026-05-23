@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
 import { DEFAULT_ELO_RATING } from "../config/constants.js";
+import { hashPassword } from "../utils/passwordHash.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -76,17 +76,13 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Hash password before saving
-userSchema.pre("save", async function () {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
+userSchema.pre("save", async function(){
+  if(this.isModified("password")){
+    this.password = await hashPassword(this.password);
+  };
 });
 
-// Helper to check password
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
-};
+
 
 const User = mongoose.model("User", userSchema);
 
