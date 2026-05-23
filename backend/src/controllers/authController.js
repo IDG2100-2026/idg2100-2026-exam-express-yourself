@@ -66,28 +66,53 @@ export const loginUserController = async (req, res, next) => {
   }
 };
 
-// POST /sessions/refresh. Get a new access token from a valid refresh token 
-export const createAccessToken = async (req, res, next) => { // TODO: delete this after creating the route!
-    try{
-        const refreshToken = req.signedCookies?.refreshToken; // extracting the refresh token from the signed cookie
-        if(!refreshToken) throw new BusinessLogicError("No refresh token provided", 401); // cookie expired or never logged in
+// POST /sessions/refresh. Get a new access token from a valid refresh token
+export const createAccessToken = async (req, res, next) => {
+  // TODO: delete this after creating the route!
+  try {
+    const refreshToken = req.signedCookies?.refreshToken; // extracting the refresh token from the signed cookie
+    if (!refreshToken)
+      throw new BusinessLogicError("No refresh token provided", 401); // cookie expired or never logged in
 
-        const session = await Session.findOne({refreshToken}); // looking up the session from db. 
-        if(!session) throw new BusinessLogicError("Invalid refresh token", 401); // session expired, revoked or never existed
+    const session = await Session.findOne({ refreshToken }); // looking up the session from db.
+    if (!session) throw new BusinessLogicError("Invalid refresh token", 401); // session expired, revoked or never existed
 
-        const user = await User.findById(session.userId); // get the user linked to this session 
-        if(!user) throw new BusinessLogicError("User not found", 404); // did not find the user
+    const user = await User.findById(session.userId); // get the user linked to this session
+    if (!user) throw new BusinessLogicError("User not found", 404); // did not find the user
 
-        const accessToken = getAccessToken(user); // generate a new short lived access token 
+    const accessToken = getAccessToken(user); // generate a new short lived access token
 
-        // return access token with minimal user info for frontend
-        return res.status(200).json({accessToken, user: {
-            _id: user._id,
-            username: user.username,
-            email: user.email,
-            role: user.role
-        }});
-    }catch(err){
-        next(err); // global error handler
-    }
-}
+    // return access token with minimal user info for frontend
+    return res.status(200).json({
+      accessToken,
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    next(err); // global error handler
+  }
+};
+
+export const logoutUser = (req, res, next) => {
+  try {
+    const refreshToken = req.signedCookies?.refreshToken; // extracting the refresh token from the signed cookie
+    if (!refreshToken)
+      throw new BusinessLogicError("No refresh token provided", 401); // cookie expired or never logged in
+
+    const session = Session.findOneAndDelete({ refreshToken }); // finds the session with that refreshToken and deletes it from db
+    if (!session) throw new BusinessLogicError("Session not found", 401); // session expired, revoked or never existed
+
+    res.clearCookie("refreshToken", { // deletes the cookie from the client side
+        signed: true,
+        httpOnly: true,
+        path: req.baseUrl + "/sessions"
+    });
+    return res.status(200).json({message: "logged out successfully"});
+  } catch (err) {
+    next(err);
+  }
+};
