@@ -7,6 +7,7 @@ import tournamentRouter from "./src/routes/tournamentRoutes.js";
 import matchRouter from "./src/routes/matchRoutes.js";
 import commentsRouter from "./src/routes/commentRoutes.js";
 import leaderboardRouter from "./src/routes/leaderboardRoutes.js";
+import authRouter from './src/routes/authRoutes.js';
 import helmet from "helmet";
 import { connectDB, disconnectDB } from "./src/config/db.js";
 import activityRoutes from './src/routes/activityRoutes.js';
@@ -32,7 +33,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(setUserType);
 
 
-app.use("/api/users", userRouter);
+app.use("/api/users", userRouter, authRouter);
 app.use("/api/matches", matchRouter);
 app.use("/api/tournaments", tournamentRouter);
 app.use("/api/comments", commentsRouter);

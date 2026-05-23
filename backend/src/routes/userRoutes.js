@@ -5,7 +5,6 @@ import { validate } from "../validators/validate.js";
 import {
   getAllUsers,
   getUser,
-  registerUser,
   loginUser,
   updateUser,
   banUser,
@@ -14,7 +13,6 @@ import {
 
 const userRouter = express.Router();
 
-userRouter.post("/register", validateRegister(), validate, registerUser);
 userRouter.post("/login", validateLogin(), validate, loginUser);
 userRouter.get("/", requireAdmin, getAllUsers);
 userRouter.get("/:id", getUser);
