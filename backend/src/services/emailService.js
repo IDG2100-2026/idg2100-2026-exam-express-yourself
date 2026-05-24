@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendVerificationMail = async (to, token) => {
-  const verificationLink = `${process.env.LOGIN_FRONTEND_URI}/login?code=${token}`; // Link the user will click on
+  const verificationLink = `${process.env.FRONTEND_URI}/login?code=${token}`; // Link the user will click on
 
   await transporter.sendMail({
     from: process.send.EMAIL_USER, // our email name
@@ -21,5 +21,21 @@ export const sendVerificationMail = async (to, token) => {
             <a href="${verificationLink}">${verificationLink}</a>
             <p>This link will expire after 15 minutes</p>
         `, // what the user will be sent
+  });
+};
+
+export const sendPasswordResetMail = async (to, token) => {
+  const resetPasswordLink = `${process.env.FRONTEND_URI}/reset-password?code=${token}`;
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to,
+    subject: "Reset your password",
+    html: `
+      <h1>Reset your password</h1>
+      <p>Click on the link below to be redirected to the reset password page</p>
+      <a href="${resetPasswordLink}">${resetPasswordLink}</a>
+      <p>This link will expire after 15 minutes</p>
+    `,
   });
 };

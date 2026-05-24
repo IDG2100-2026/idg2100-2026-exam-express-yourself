@@ -4,7 +4,9 @@ import {
   loginUserController,
   createAccessToken,
   logoutUser,
-  verifyEmailController
+  verifyEmailController,
+  resetPasswordController,
+  forgotPasswordController
 } from "../controllers/authController.js";
 import {
   validateRegister,
@@ -24,6 +26,8 @@ authRouter.post(
   registerUserController,
 ); // Create a new user
 
+authRouter.post("/forgot-password", forgotPasswordController); // sends the email with reset link
+authRouter.post("/reset-password", resetPasswordController); // changes the password
 authRouter.get("/verify-email", verifyEmailController);
 
 authRouter.post("/login", validateLogin(), validate, loginUserController); // Login an existing user
