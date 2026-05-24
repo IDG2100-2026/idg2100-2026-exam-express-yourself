@@ -13,6 +13,7 @@ export default function Register() {
   });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -36,7 +37,9 @@ export default function Register() {
     }
 
     const birthDate = new Date(formData.dateOfBirth);
-    const age = Math.floor((Date.now() - birthDate) / (365.25 * 24 * 60 * 60 * 1000));
+    const age = Math.floor(
+      (Date.now() - birthDate) / (365.25 * 24 * 60 * 60 * 1000),
+    );
 
     if (age < 18) {
       return setError("You must be at least 18 years old");
@@ -51,7 +54,10 @@ export default function Register() {
         password: formData.password,
         age,
       });
-      navigate("/login");
+      setSuccess(true); // for showing confirmation msg
+      setTimeout(() => {
+        navigate("/"); // navigate to homepage after 3 seconds
+      }, 3000);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -64,43 +70,94 @@ export default function Register() {
       <div className="register__card">
         <h1 className="register__title">Create Account</h1>
         <p className="register__subtitle">Join PokerDados today</p>
-
+        {success && <p>Registration successful! Confirm your account from the email you got to login</p>}
         <form className="register__form" onSubmit={handleSubmit}>
           <div className="register__field">
             <label htmlFor="username">Username</label>
-            <input id="username" type="text" name="username" value={formData.username} onChange={handleChange} placeholder="coolplayer42" required />
+            <input
+              id="username"
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="coolplayer42"
+              required
+            />
           </div>
 
           <div className="register__field">
             <label htmlFor="email">Email</label>
-            <input id="email" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="you@example.com" required />
+            <input
+              id="email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+              required
+            />
           </div>
 
           <div className="register__field">
             <label htmlFor="password">Password</label>
-            <input id="password" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="••••••••" required />
+            <input
+              id="password"
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+            />
           </div>
 
           <div className="register__field">
             <label htmlFor="confirmPassword">Repeat Password</label>
-            <input id="confirmPassword" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="••••••••" required />
+            <input
+              id="confirmPassword"
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+            />
           </div>
 
           <div className="register__field">
             <label htmlFor="dateOfBirth">Date of Birth</label>
-            <input id="dateOfBirth" type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />
+            <input
+              id="dateOfBirth"
+              type="date"
+              name="dateOfBirth"
+              value={formData.dateOfBirth}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="register__checkbox">
-            <input id="agreedToTerms" type="checkbox" name="agreedToTerms" checked={formData.agreedToTerms} onChange={handleChange} />
+            <input
+              id="agreedToTerms"
+              type="checkbox"
+              name="agreedToTerms"
+              checked={formData.agreedToTerms}
+              onChange={handleChange}
+            />
             <label htmlFor="agreedToTerms">
-              I agree to the <Link to="/terms" target="_blank">Terms & Conditions</Link>
+              I agree to the{" "}
+              <Link to="/terms" target="_blank">
+                Terms & Conditions
+              </Link>
             </label>
           </div>
 
           {error && <p className="register__error">{error}</p>}
 
-          <button type="submit" className="register__submit" disabled={isSubmitting}>
+          <button
+            className="register__submit"
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Creating account..." : "Create Account"}
           </button>
         </form>

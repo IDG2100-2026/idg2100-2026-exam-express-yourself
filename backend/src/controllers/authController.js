@@ -9,6 +9,8 @@ import User from "../models/User.js";
 import { signedAccessToken } from "../utils/jwt.js";
 import { REFRESH_TOKEN_TTL } from "../config/auth.config.js";
 import { BusinessLogicError } from "../utils/errors.js";
+import { TokenVerification } from "../models/tokenVerification.js";
+import { sendVerificationMail } from "../services/emailService.js";
 
 // helper function so we don't have to write duplicated code.
 const getAccessToken = (user) => {
@@ -22,11 +24,41 @@ export const registerUserController = async (req, res, next) => {
   try {
     const userData = matchedData(req); // get only validated fields
     const newUser = await registerUser(userData); // gives the userData that the user inputted to registerUser in authService
+
+    const verificationToken = await TokenVerification.create({
+      // generates  verification token linked to the user
+      userId: newUser._id,
+    });
+    await sendVerificationMail(newUser.email, verificationToken.token); // this is the to and token in sendVerificationMail in service.
+
     res.status(201).json({ message: "User registered successfully", newUser }); // Success msg, user was created successfully
   } catch (err) {
     next(err); // global error handling middleware
   }
 };
+
+export const verifyEmailController = async (req, res, next) => {
+  try {
+    const { code } = req.query; // get the code from url
+    if (!code)
+      throw new BusinessLogicError("Verification code is required", 400);
+
+    const token = await TokenVerification.findOne({ token: code }); // finds the token in db
+
+    if (!token)
+      throw new BusinessLogicError("Invalid or expired verification code", 400);
+
+    await User.findByIdAndUpdate(token.userId, { isVerified: true }); // marking the user as verified
+
+    await token.deleteOne(); // delete the used or expired token
+    res
+      .status(200)
+      .json({ message: "email verified successfully! You can now login" });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // POST /api/users/login
 export const loginUserController = async (req, res, next) => {
   try {
@@ -51,17 +83,17 @@ export const loginUserController = async (req, res, next) => {
       path: req.baseUrl + "/sessions", // only sent to this endpoint
     });
 
-res.status(200).json({
-    accessToken,
-    user: {
+    res.status(200).json({
+      accessToken,
+      user: {
         _id: user._id,
         username: user.username,
         role: user.role,
         eloRating: user.eloRating,
         profileImageUrl: user.profileImageUrl,
         appearance: user.appearance,
-    }
-});
+      },
+    });
   } catch (err) {
     next(err); // global error handling middleware
   }
@@ -69,7 +101,6 @@ res.status(200).json({
 
 // POST /sessions/refresh. Get a new access token from a valid refresh token
 export const createAccessToken = async (req, res, next) => {
-  // TODO: delete this after creating the route!
   try {
     const refreshToken = req.signedCookies?.refreshToken; // extracting the refresh token from the signed cookie
     if (!refreshToken)
@@ -107,12 +138,13 @@ export const logoutUser = async (req, res, next) => {
     const session = await Session.findOneAndDelete({ refreshToken });
     if (!session) throw new BusinessLogicError("Session not found", 401);
 
-    res.clearCookie("refreshToken", { // deletes the cookie from the client side
-        signed: true,
-        httpOnly: true,
-        path: req.baseUrl + "/sessions"
+    res.clearCookie("refreshToken", {
+      // deletes the cookie from the client side
+      signed: true,
+      httpOnly: true,
+      path: req.baseUrl + "/sessions",
     });
-    return res.status(200).json({message: "logged out successfully"});
+    return res.status(200).json({ message: "logged out successfully" });
   } catch (err) {
     next(err);
   }

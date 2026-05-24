@@ -65,6 +65,10 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     eloRating: {
       type: Number,
       default: DEFAULT_ELO_RATING,

@@ -4,6 +4,7 @@ import {
   loginUserController,
   createAccessToken,
   logoutUser,
+  verifyEmailController
 } from "../controllers/authController.js";
 import {
   validateRegister,
@@ -22,6 +23,8 @@ authRouter.post(
   validate,
   registerUserController,
 ); // Create a new user
+
+authRouter.get("/verify-email", verifyEmailController);
 
 authRouter.post("/login", validateLogin(), validate, loginUserController); // Login an existing user
 
