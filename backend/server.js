@@ -1,6 +1,5 @@
 import express from "express";
 import errorHandler from "./src/middlewares/errorMiddleware.js";
-// import { setUserType } from "./src/middlewares/authMiddleware.js";
 import cors from "cors";
 import userRouter from "./src/routes/userRoutes.js";
 import tournamentRouter from "./src/routes/tournamentRoutes.js";
@@ -14,7 +13,7 @@ import activityRoutes from './src/routes/activityRoutes.js';
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet()); // TODO: Do we need? It blocks with /uploads
 
 app.use(
   cors({
@@ -27,9 +26,6 @@ await connectDB();
 
 // Parse JSON bodies
 app.use(express.json());
-
-// Parse form data
-app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded files (trophy images etc.)
 app.use("/uploads", express.static("uploads"));
