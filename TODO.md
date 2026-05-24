@@ -34,7 +34,7 @@ FRONTEND PAGES
   [ ] TournamentsPage — upcoming/past split, pagination, sort, search
   [ ] TournamentPage — full detail, standings, join/leave, countdown, admin controls
   [ ] ProfilePage — 3 Elo ratings, stats, points, paginated games
-  [ ] LoginPage / RegisterPage — wire up real JWT auth
+  [X] LoginPage / RegisterPage — wire up real JWT auth
   [ ] ForgotPasswordPage (new)
   [ ] 404 Not Found page (new)
   [ ] Verify static pages (Privacy, About Us, About Game, Terms)
