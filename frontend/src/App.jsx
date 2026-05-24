@@ -22,8 +22,8 @@ import NotFound from "./pages/not-found/NotFound.jsx";
 function App() {
   return (
     <AppearanceProvider>
-      <AuthProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
           <Routes>
             <Route element={<MainLayout />}>
               <Route path="/" element={<Home />} />
@@ -45,8 +45,8 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </AppearanceProvider>
   );
 }
