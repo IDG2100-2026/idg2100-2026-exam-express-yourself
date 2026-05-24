@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { registerUser } from "../../services/authService.js";
 
 export default function Register() {
@@ -13,7 +13,6 @@ export default function Register() {
   });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
@@ -51,7 +50,6 @@ export default function Register() {
         password: formData.password,
         age,
       });
-      navigate("/login");
     } catch (err) {
       setError(err.message);
     } finally {
