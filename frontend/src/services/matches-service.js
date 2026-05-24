@@ -7,7 +7,10 @@ export async function getMatches(status, page = 1, limit = 20) {
 }
 
 export async function getPlayerMatches(playerId, page = 1, limit = 50) {
-  return await apiFetch(`/matches?playerId=${playerId}&page=${page}&limit=${limit}`, { method: "GET" });
+  return await apiFetch(
+    `/matches?playerId=${playerId}&page=${page}&limit=${limit}`,
+    { method: "GET" },
+  );
 }
 
 export async function getMatch(id) {
