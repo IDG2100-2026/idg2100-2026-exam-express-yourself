@@ -33,5 +33,6 @@ export const authenticateUser = async (email, password) => {
     throw new BusinessLogicError("Invalid credentials", 401); // global error handler
 
   if (user.isBanned) throw new BusinessLogicError("Account is banned", 403); // global error handler
+  if(!user.isVerified) throw new BusinessLogicError("Please verify your email before login"); // checking if user is verified
   return user; // returns the authenticated user to controller
 };

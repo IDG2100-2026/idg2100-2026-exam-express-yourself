@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../../services/authService.js";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { loginUser, verifyEmail } from "../../services/authService.js";
 import { getUser } from "../../services/users-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
@@ -11,9 +11,26 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [verifyMsg, setVerifyMsg] = useState("");
   const navigate = useNavigate();
   const { user, login } = useAuth();
   const { loadAppearance } = useAppearance();
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (!code) return;
+    setSearchParams({}); // clear the code from the url
+
+    const verifyUserEmail = async () => {
+      try {
+        const data = await verifyEmail(code); // runs the verify-email endpoint
+      } catch (err) {
+        setError(err.message); // error msg
+      }
+    };
+
+    verifyUserEmail();
+  }, [searchParams]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -28,15 +45,12 @@ export default function Login() {
       const result = await loginUser(formData);
       login(result.user, result.accessToken);
       setSuccess(true);
-      // Fetch full user data for context
-      // const userData = await getUser(result.userId);
-      // login({ ...userData, role: result.role });
-
-      // Load user appearance preferences
-      loadAppearance(result.appearance);
       setTimeout(() => {
         navigate("/"); // navigate to homepage after 3 sec
       }, 3000);
+
+      // Load user appearance preferences
+      loadAppearance(result.appearance);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -49,7 +63,10 @@ export default function Login() {
       <div className="login__card">
         <h1 className="login__title">Log In</h1>
         <p className="login__subtitle">Welcome back to PokerDados</p>
-        {success && <p>Login successful! You will be redirected to the homepage</p>}
+        {verifyMsg && <p>{verifyMsg}</p>}
+        {success && (
+          <p>Login successful! You will be redirected to the homepage</p>
+        )}
         <form className="login__form" onSubmit={handleSubmit}>
           <div className="login__field">
             <label htmlFor="email">Email</label>

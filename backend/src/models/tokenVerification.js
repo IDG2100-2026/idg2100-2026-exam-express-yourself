@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import { randomUUID } from "crypto";
 import { VERIFICATION_TOKEN_TTL } from "../config/auth.config.js";
-const tokenVerification = new Schema({
+const tokenVerification = new mongoose.Schema({
   token: {
-    type: "UUID",
+    type: String,
     unique: true,
     required: true,
     default: () => randomUUID(),

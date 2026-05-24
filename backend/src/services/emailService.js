@@ -9,11 +9,11 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendVerificationMail = async (to, token) => {
-  const verificationLink = `${process.env.LOGIN_FRONTEND_URI}/verify-email?code=${token}`; // Link the user will click on
+  const verificationLink = `${process.env.LOGIN_FRONTEND_URI}/login?code=${token}`; // Link the user will click on
 
   await transporter.sendMail({
     from: process.send.EMAIL_USER, // our email name
-    to, // this will be set in controller TODO: verify
+    to, // this will be set in controller with newUser.email
     subject: "Verify your email", // subject on the email
     html: `
             <h1>Welcome to PokerDados</h1>
