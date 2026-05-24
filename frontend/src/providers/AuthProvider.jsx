@@ -1,30 +1,71 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router";
 import { AuthContext } from "../contexts/AuthContext.js";
+import { logoutUser } from "../services/authService.js";
+import { setAccessToken, clearAccessToken } from "../services/tokenManager.js";
+import { apiFetch, refreshAccessToken } from "../api.js";
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("user");
-    return saved ? JSON.parse(saved) : null;
-  });
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const navigate = useNavigate();
 
-  function login(userData) {
+  useEffect(() => {
+    const restoreSession = async () => {
+      try {
+        setLoading(true);
+        const refresh = await refreshAccessToken();
+        if (refresh) {
+          setAccessToken(refresh.accessToken);
+          setUser(refresh.user);
+        }
+      } catch (err) {
+        setUser(null); // if session could not be restored, we set user to null
+        console.error("Could not restore session");
+      }finally{
+        setLoading(false);
+      }
+    };
+
+    restoreSession();
+  }, []); // render only on mount
+
+  const login = useCallback((userData, accessToken) => {
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
-    // Also store userId and role separately for apiFetch headers
-    localStorage.setItem("userId", userData._id || userData.userId);
-    localStorage.setItem("role", userData.role || "user");
-  }
+    setAccessToken(accessToken);
+  }, []);
 
-  function logout() {
-    setUser(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("role");
-  }
+  const logout = useCallback(async () => {
+    try {
+      await logoutUser();
+    } catch (err) {
+      console.error(err.message);
+    } finally {
+      setUser(null);
+      clearAccessToken();
+    }
+  }, []);
 
+  useEffect(() => {
+    const handleExpiredSession = () => {
+      setUser(null);
+      clearAccessToken();
+      navigate("/login");
+    }
+
+    window.addEventListener("auth-expired", handleExpiredSession);
+
+
+    return () => {
+      window.removeEventListener("auth-expired", handleExpiredSession);
+    }
+  }, [navigate]);
+
+  if(loading) return <p>Loading...</p>;
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};

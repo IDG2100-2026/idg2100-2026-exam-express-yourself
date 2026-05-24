@@ -1,18 +1,3 @@
-
-// export async function loginUser(email, password) {
-//   return await apiFetch("/auth/login", {
-//     method: "POST",
-//     body: JSON.stringify({ email, password }),
-//   });
-// } // TODO: delete after we don't need
-
-// export async function registerUser(userData) {
-//   return await apiFetch("/auth/register", {
-//     method: "POST",
-//     body: JSON.stringify(userData),
-//   });
-// }// TODO: delete after we don't need
-
 import { apiFetch } from "../api.js";
 import { setAccessToken, clearAccessToken } from "./tokenManager.js";
 
@@ -23,19 +8,18 @@ export const registerUser = async (userData) => {
     });
 };
 
-export const loginUser = (credentials) => {
+export const loginUser = async (credentials) => {
     const loginData =  await apiFetch("/auth/login", {
         method: 'POST',
         body: JSON.stringify(credentials)
     });
-    setAccessToken(loginData.accessToken);
     return loginData;
 }
 
 
-export const logoutUser = () => {
+export const logoutUser = async () => {
     try{
-        await apiFetch("/sessions/current", { // deletes session from db
+        await apiFetch("/auth/sessions/current", { // deletes session from db
             method: 'DELETE'
         });
     }finally{

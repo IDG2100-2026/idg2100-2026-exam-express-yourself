@@ -51,16 +51,17 @@ export const loginUserController = async (req, res, next) => {
       path: req.baseUrl + "/sessions", // only sent to this endpoint
     });
 
-    res.status(200).json({
-      message: "Login successful",
-      userId: user._id, // identifier for the user
-      username: user.username, // display name
-      role: user.role, // for client side auth
-      eloRating: user.eloRating, // players elo rating
-      profileImageUrl: user.profileImageUrl, // for ui display of avatar img
-      appearance: user.appearance, // user's ui preference
-      accessToken,
-    });
+res.status(200).json({
+    accessToken,
+    user: {
+        _id: user._id,
+        username: user.username,
+        role: user.role,
+        eloRating: user.eloRating,
+        profileImageUrl: user.profileImageUrl,
+        appearance: user.appearance,
+    }
+});
   } catch (err) {
     next(err); // global error handling middleware
   }
@@ -97,15 +98,14 @@ export const createAccessToken = async (req, res, next) => {
   }
 };
 
-export const logoutUser = (req, res, next) => {
-    // TODO: Delete after route insert in auth
+export const logoutUser = async (req, res, next) => {
   try {
-    const refreshToken = req.signedCookies?.refreshToken; // extracting the refresh token from the signed cookie
+    const refreshToken = req.signedCookies?.refreshToken;
     if (!refreshToken)
-      throw new BusinessLogicError("No refresh token provided", 401); // cookie expired or never logged in
+      throw new BusinessLogicError("No refresh token provided", 401);
 
-    const session = Session.findOneAndDelete({ refreshToken }); // finds the session with that refreshToken and deletes it from db
-    if (!session) throw new BusinessLogicError("Session not found", 401); // session expired, revoked or never existed
+    const session = await Session.findOneAndDelete({ refreshToken });
+    if (!session) throw new BusinessLogicError("Session not found", 401);
 
     res.clearCookie("refreshToken", { // deletes the cookie from the client side
         signed: true,

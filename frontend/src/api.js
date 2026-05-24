@@ -10,7 +10,7 @@ import {
 export const refreshAccessToken = async () => {
   // Try to get a new access token on refresh page and session expire
   try {
-    const response = await fetch(API_URL + "/sessions/token", {
+    const response = await fetch(API_URL + "/auth/sessions/token", {
       // backend endpoint for refreshing access tokens
       method: "POST",
       credentials: "include", // include refresh token cookie in the request, without this, browser don't send httpOnly cookie
@@ -18,9 +18,9 @@ export const refreshAccessToken = async () => {
 
     const data = await response.json(); // gets the data in json response
     setAccessToken(data.accessToken); // Store the new access token in memory, so api calls can use it
-    return true; // to indicate refresh successful
+    return data; // returns access token and user
   } catch {
-    return false; // to indicate refresh was not successful. cookie expires, session revoked, server down...
+    return null; // to indicate refresh was not successful. cookie expires, session revoked, server down...
   }
 };
 
