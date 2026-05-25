@@ -1,5 +1,5 @@
 import { apiFetch } from "../api.js";
-import { setAccessToken, clearAccessToken } from "./tokenManager.js";
+import { setAccessToken, clearAccessToken } from "./token-manager.js";
 
 export const registerUser = async (userData) => {
   return await apiFetch("/auth/register", {

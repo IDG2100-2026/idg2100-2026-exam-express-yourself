@@ -5,13 +5,13 @@ import {
   createAccessToken,
   logoutUser,
   verifyEmailController
-} from "../controllers/authController.js";
+} from "../controllers/auth-controller.js";
 import {
   validateRegister,
   validateLogin,
-} from "../validators/userValidator.js";
+} from "../validators/user-validator.js";
 import { validate } from "../validators/validate.js";
-import { authenticate, authorize } from "../middlewares/authMiddleware.js";
+import { authenticate, authorize } from "../middlewares/auth-middleware.js";
 import cookieParser from "cookie-parser";
 
 const authRouter = express.Router();

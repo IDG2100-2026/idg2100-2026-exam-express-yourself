@@ -27,7 +27,7 @@
 
 ### 1. Folders - kebab-case
 
-All folders in the project use kebab-case, no exceptions.
+All folders use kebab-case. If a specific case is not listed below, kebab-case is the default.
 
 `components/avatar/`, `pages/about-game/`, `hooks/`, `services/`
 
@@ -35,7 +35,17 @@ All folders in the project use kebab-case, no exceptions.
 
 ---
 
-### 2. React component files - PascalCase .jsx
+### 2. Files - kebab-case
+
+All files use kebab-case. If a specific case is not listed below, kebab-case is the default.
+
+`matches-service.js`, `auth-context.js`, `main.scss`
+
+**Why:** Same reason as folders. kebab-case is safe across all operating systems and is the most readable style for filenames.
+
+---
+
+### 3. React component files - PascalCase .jsx
 
 Every file that contains a React component is named in PascalCase with a `.jsx` extension. The filename must exactly match the component name inside the file.
 
@@ -45,7 +55,7 @@ Every file that contains a React component is named in PascalCase with a `.jsx` 
 
 ---
 
-### 3. SCSS files for components - kebab-case .scss
+### 4. SCSS files for components - kebab-case .scss
 
 The stylesheet that belongs to a component uses kebab-case, even though the component file next to it is PascalCase.
 
@@ -55,11 +65,13 @@ avatar/
   avatar.scss
 ```
 
-**Why:** A stylesheet is not a component. It has no exports and is not a class in the programming sense. CSS has always been a lowercase language. Only the `.jsx` file earns PascalCase because it is the actual component.
+**Why:** A stylesheet is not a component. It has no exports and is not a class in the programming sense. CSS has always been a lowercase language. Only the `.jsx` file earns PascalCase because it is the actual component.  
+
+**Note:** This only applies if you are using plain SCSS with BEM for scoping. If you use CSS Modules (.module.scss), name the file PascalCase to match the component (Avatar.module.scss), then BEM becomes optional, the module handles scoping automatically.
 
 ---
 
-### 4. Global and shared SCSS files - kebab-case, partials with underscore prefix
+### 5. Global and shared SCSS files - kebab-case, partials with underscore prefix
 
 `main.scss`, `global.scss`, `_variables.scss`, `_mixins.scss`
 
@@ -67,7 +79,7 @@ avatar/
 
 ---
 
-### 5. Custom hook files - camelCase .js, always starts with "use"
+### 6. Custom hook files - camelCase .js, always starts with "use"
 
 `useAuth.js`, `useMatch.js`, `useComments.js`
 
@@ -75,7 +87,7 @@ avatar/
 
 ---
 
-### 6. Service, utility, and context files - kebab-case .js
+### 7. Service, utility, and context files - kebab-case .js
 
 `matches-service.js`, `auth-context.js`, `token-manager.js`, `date-utils.js`
 
@@ -83,7 +95,7 @@ avatar/
 
 ---
 
-### 7. JavaScript class files - PascalCase .js
+### 8. JavaScript class files - PascalCase .js
 
 `MatchQueue.js`, `EventEmitter.js`, `RateLimiter.js`
 
@@ -91,17 +103,17 @@ avatar/
 
 ---
 
-### 8. Mongoose model files - PascalCase singular .js
+### 9. Mongoose model files - PascalCase singular .js
 
 `User.js`, `Match.js`, `Tournament.js`, `Comment.js`
 
-**Why PascalCase:** Mongoose models are classes under the hood. When you call `mongoose.model('User', userSchema)` you get back a class, so the file follows the same rule as point 7.
+**Why PascalCase:** Mongoose models are classes under the hood. When you call `mongoose.model('User', userSchema)` you get back a class, so the file follows the same rule as point 8.
 
 **Why singular:** The model represents one single thing, one User, one Match. Mongoose automatically makes the database collection plural (`User` model creates a `users` collection in MongoDB), so you never need to signal plural in the filename.
 
 ---
 
-### 9. CSS class names - BEM, all lowercase
+### 10. CSS class names - BEM, all lowercase
 
 ```css
 .lobby {}
@@ -133,7 +145,7 @@ The separators in BEM each have a specific job and must not be mixed up:
 
 ---
 
-### 10. JavaScript variables and functions - camelCase
+### 11. JavaScript variables and functions - camelCase
 
 `const isLoading`, `function handleSubmit()`, `const fetchUser`
 
@@ -141,7 +153,7 @@ The separators in BEM each have a specific job and must not be mixed up:
 
 ---
 
-### 11. JavaScript constants - UPPER_SNAKE_CASE
+### 12. JavaScript constants - UPPER_SNAKE_CASE
 
 `const MAX_PLAYERS = 5`, `const DEFAULT_ELO = 1000`
 
@@ -149,7 +161,7 @@ The separators in BEM each have a specific job and must not be mixed up:
 
 ---
 
-### 12. Environment variables inside .env - UPPER_SNAKE_CASE
+### 13. Environment variables inside .env - UPPER_SNAKE_CASE
 
 `VITE_BACKEND_PORT=3000`, `DB_HOSTNAME=localhost`, `APP_SALT=secret`
 
@@ -157,7 +169,7 @@ The separators in BEM each have a specific job and must not be mixed up:
 
 ---
 
-### 13. Config and dotfiles - exactly what the tool requires
+### 14. Config and dotfiles - exactly what the tool requires
 
 `.env`, `.gitignore`, `vite.config.js`, `package.json`
 
@@ -165,11 +177,29 @@ The separators in BEM each have a specific job and must not be mixed up:
 
 ---
 
+### 15. Imports - always include the file extension
+
+Always write the full file extension in every import statement, SCSS `@use`, and any other place where you reference a file by path.
+
+```js
+import Avatar from '../../components/avatar/Avatar.jsx';
+import { getUser } from '../services/users-service.js';
+```
+
+```scss
+@use '../components/avatar/avatar.scss';
+```
+
+**Why:** Without an extension, the bundler has to guess what file you mean by trying several extensions in order. With an extension it is explicit, there is no guessing, and it is immediately clear what type of file is being imported. Both Vite and the SCSS compiler support explicit extensions.
+
+---
+
 ## Quick Reference
 
 | What | Style | Example |
 |---|---|---|
-| Folder | kebab-case | `about-game/` |
+| Folder (default) | kebab-case | `about-game/` |
+| File (default) | kebab-case | `auth-context.js` |
 | React component file | PascalCase | `Avatar.jsx` |
 | Component SCSS file | kebab-case | `avatar.scss` |
 | Global SCSS file | kebab-case | `main.scss` |

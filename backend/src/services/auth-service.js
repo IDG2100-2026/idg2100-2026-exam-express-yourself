@@ -1,6 +1,6 @@
 import User from "../models/User.js";
-import { chechPassword, hashPassword } from "../utils/passwordHash.js";
-import { Session } from "../models/Sessions.js";
+import { chechPassword, hashPassword } from "../utils/password-hash.js";
+import { Session } from "../models/Session.js";
 import { BusinessLogicError } from "../utils/errors.js";
 
 export const createSession = async (user, ip, agent) => {

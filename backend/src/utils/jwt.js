@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ACCESS_TOKEN_TTL } from "../config/auth.config.js";
+import { ACCESS_TOKEN_TTL } from "../config/auth-config.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 

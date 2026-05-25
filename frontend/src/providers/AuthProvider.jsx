@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
-import { AuthContext } from "../contexts/AuthContext.js";
-import { logoutUser } from "../services/authService.js";
-import { setAccessToken, clearAccessToken } from "../services/tokenManager.js";
+import { AuthContext } from "../contexts/auth-context.js";
+import { logoutUser } from "../services/auth-service.js";
+import { setAccessToken, clearAccessToken } from "../services/token-manager.js";
 import { apiFetch, refreshAccessToken } from "../api.js";
 
 export const AuthProvider = ({ children }) => {

@@ -1,7 +1,7 @@
 import express from "express";
-import { commentRateLimiter } from "../middlewares/rateLimiter.js";
-import { getComments, createComment, deleteComment } from "../controllers/commentController.js";
-import { authenticate, authorize } from "../middlewares/authMiddleware.js";
+import { commentRateLimiter } from "../middlewares/rate-limiter.js";
+import { getComments, createComment, deleteComment } from "../controllers/comment-controller.js";
+import { authenticate, authorize } from "../middlewares/auth-middleware.js";
 const commentsRouter = express.Router();
 commentsRouter.use(authenticate);
 

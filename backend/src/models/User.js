@@ -8,7 +8,7 @@ import {
   MIN_USER_AGE,
   MAX_USER_AGE,
 } from "../config/constants.js";
-import { hashPassword } from "../utils/passwordHash.js";
+import { hashPassword } from "../utils/password-hash.js";
 
 const userSchema = new mongoose.Schema(
   {
