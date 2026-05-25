@@ -3,7 +3,8 @@ import User from "../models/User.js";
 import { updateEloRating, updateEloMultiplayer } from "./elo-service.js";
 import { BusinessLogicError } from "../utils/errors.js";
 
-export async function getAllMatches(filters) { // fetches a paginated, filtered list of matches for the lobby
+export async function getAllMatches(filters) {
+  // fetches a paginated, filtered list of matches for the lobby
   const page = filters.page || 1;
   const limit = filters.limit || 10;
   const skip = (page - 1) * limit;
@@ -38,7 +39,8 @@ export async function getAllMatches(filters) { // fetches a paginated, filtered 
   return { page, limit, total, results: matches };
 }
 
-export async function getMatch(matchId) { // fetches a single match by ID
+export async function getMatch(matchId) {
+  // fetches a single match by ID
   const match = await Match.findById(matchId)
     .populate("players.userId", "username eloRating profileImageUrl")
     .populate("winnerId", "username");
@@ -50,7 +52,8 @@ export async function getMatch(matchId) { // fetches a single match by ID
   return match;
 }
 
-export async function createMatch(userId, matchData) { // creates a new match room and joins the creator as the first player
+export async function createMatch(userId, matchData) {
+  // creates a new match room and joins the creator as the first player
   const rounds = matchData.rounds;
   const timeControl = matchData.timeControl;
   const maxPlayers = matchData.maxPlayers;
@@ -96,7 +99,8 @@ export async function createMatch(userId, matchData) { // creates a new match ro
   return savedMatch;
 }
 
-export async function joinMatch(matchId, userId) { // adds a player to an existing waiting match
+export async function joinMatch(matchId, userId) {
+  // adds a player to an existing waiting match
   const match = await Match.findById(matchId);
   if (!match) {
     throw new BusinessLogicError("Match not found", 404);
@@ -145,14 +149,18 @@ export async function joinMatch(matchId, userId) { // adds a player to an existi
   return savedMatch;
 }
 
-export async function leaveMatch(matchId, userId) { // removes a player from a waiting match and refunds their buy-in
+export async function leaveMatch(matchId, userId) {
+  // removes a player from a waiting match and refunds their buy-in
   const match = await Match.findById(matchId);
   if (!match) {
     throw new BusinessLogicError("Match not found", 404);
   }
 
   if (match.status !== "waiting") {
-    throw new BusinessLogicError("Cannot leave a match that has already started", 400);
+    throw new BusinessLogicError(
+      "Cannot leave a match that has already started",
+      400,
+    );
   }
 
   // Refund the buy-in to the player who is leaving
@@ -177,14 +185,18 @@ export async function leaveMatch(matchId, userId) { // removes a player from a w
   return { deleted: false, match: savedMatch };
 }
 
-export async function recordResult(matchId, winnerId, score) { // records the result of a completed match, awards the buy-in pot and updates ELO
+export async function recordResult(matchId, winnerId, score) {
+  // records the result of a completed match, awards the buy-in pot and updates ELO
   const match = await Match.findById(matchId);
   if (!match) {
     throw new BusinessLogicError("Match not found", 404);
   }
 
   if (match.status === "completed") {
-    throw new BusinessLogicError("Result has already been recorded for this match", 400);
+    throw new BusinessLogicError(
+      "Result has already been recorded for this match",
+      400,
+    );
   }
 
   if (match.status !== "in-progress") {
@@ -196,7 +208,10 @@ export async function recordResult(matchId, winnerId, score) { // records the re
     return player.userId.toString() === winnerId;
   });
   if (!winnerIsAPlayer) {
-    throw new BusinessLogicError("Winner must be one of the players in this match", 400);
+    throw new BusinessLogicError(
+      "Winner must be one of the players in this match",
+      400,
+    );
   }
 
   // Record the result on the match
