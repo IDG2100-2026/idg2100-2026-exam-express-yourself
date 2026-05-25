@@ -65,12 +65,17 @@ export default function Login() {
     }
   }
 
-  const sendForgotPasswordMail = async () => {
+  const sendForgotPasswordMail = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
     try {
       const data = await requestResetPassword(sendMail);
       setResetMsg(data.message);
     } catch (err) {
       setError(err.message);
+    }finally{
+      setIsSubmitting(false);
     }
   };
 
@@ -127,7 +132,7 @@ export default function Login() {
             </button>
           </form>
         ) : (
-          <div className="login__field">
+          <form className="login__field" onSubmit={sendForgotPasswordMail}>
             <h2 className="login__title">Forgot Password</h2>
             {resetMsg ? <p>{resetMsg}</p> : <p>{error}</p>}
             <input
@@ -136,8 +141,8 @@ export default function Login() {
               onChange={(e) => setSendMail(e.target.value)}
               placeholder="Enter your email.."
             />
-            <button className="login__submit" onClick={sendForgotPasswordMail}>
-              Send reset link
+            <button className="login__submit">
+              {isSubmitting ? "Sending email" : "Send reset link"}
             </button>
             <button
               className="login__forgot"
@@ -145,7 +150,7 @@ export default function Login() {
             >
               Back to login
             </button>
-          </div>
+          </form>
         )}
 
         <p className="login__register">

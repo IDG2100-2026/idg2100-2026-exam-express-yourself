@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { resetPassword } from "../../services/authService.js";
+import "./ResetPassword.scss";
 
 export const ResetPassword = () => {
   const [error, setError] = useState(null);
@@ -8,17 +9,19 @@ export const ResetPassword = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
+  const [invalidReqError, setInvalidReqError] = useState(null);
   const navigate = useNavigate();
 
   const code = searchParams.get("code");
 
   useEffect(() => {
     if (!code) {
-      setError("Invalid or missing reset link");
+      setInvalidReqError("Invalid or missing reset link");
     }
   }, [code]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setError(null);
     setLoading(true);
     try {
@@ -35,29 +38,40 @@ export const ResetPassword = () => {
   };
 
   return (
-    <div>
-      <h2>Reset Password</h2>
-      {error ? (
-        <p>{error}</p>
-      ) : (
-        <div>
-          {success && (
-            <p>
-              Reset password successful. You will be redirected to the login page
-            </p>
-          )}
-          <input
-            type="password"
-            placeholder="New Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button onClick={handleSubmit} disabled={loading}>
-            {loading ? "Resetting..." : "Reset Password"}
-          </button>
-        </div>
-      )}
-    </div>
+    <section className="reset">
+      <div className="reset__card">
+        {invalidReqError ? (
+          <p>{invalidReqError}</p>
+        ) : (
+          <form className="reset__form" onSubmit={handleSubmit}>
+            <h2 className="reset__title">Reset Password</h2>
+            {success ? (
+              <p>
+                Reset password successful. You will be redirected to the login
+                page
+              </p>
+            ) : (
+              <p>{error}</p>
+            )}
+            <div className="reset__field">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="New Password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button className="reset__submit" disabled={loading}>
+                {loading ? "Resetting..." : "Reset Password"}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </section>
   );
 };
 

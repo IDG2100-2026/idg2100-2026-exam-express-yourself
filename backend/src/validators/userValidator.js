@@ -34,9 +34,17 @@ export function validateRegister() {
         if (exists) throw new Error("Email already in use");
       }),
     body("password")
-      .isLength({ min: MIN_PASSWORD_LENGTH, max: MAX_PASSWORD_LENGTH })
+      .trim()
+      .isStrongPassword({
+        min: MIN_PASSWORD_LENGTH,
+        max: MAX_PASSWORD_LENGTH,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+      })
       .withMessage(
-        `Password must be ${MIN_PASSWORD_LENGTH}-${MAX_PASSWORD_LENGTH} characters`,
+        `Password needs to be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters long and contain 1 of each lower and upper case characters, and minimum 1 special character`,
       ),
     body("age")
       .isInt({ min: MIN_USER_AGE, max: MAX_USER_AGE })
@@ -63,9 +71,17 @@ export function validateUpdateUser() {
     body("email").optional().isEmail().withMessage("Must be a valid email"),
     body("password")
       .optional()
-      .isLength({ min: MIN_PASSWORD_LENGTH })
+      .trim()
+      .isStrongPassword({
+        min: MIN_PASSWORD_LENGTH,
+        max: MAX_PASSWORD_LENGTH,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+      })
       .withMessage(
-        `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+        `Password needs to be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters long and contain 1 of each lower and upper case characters, and minimum 1 special character`,
       ),
     body("bio").optional().isString(),
   ];

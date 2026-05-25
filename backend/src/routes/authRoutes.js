@@ -6,12 +6,16 @@ import {
   logoutUser,
   verifyEmailController,
   resetPasswordController,
-  forgotPasswordController
+  forgotPasswordController,
 } from "../controllers/authController.js";
 import {
   validateRegister,
   validateLogin,
 } from "../validators/userValidator.js";
+import {
+  validatePasswordReset,
+  validateForgotPassword,
+} from "../validators/passwordResetValidator.js";
 import { validate } from "../validators/validate.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import cookieParser from "cookie-parser";
@@ -26,9 +30,18 @@ authRouter.post(
   registerUserController,
 ); // Create a new user
 
-authRouter.post("/forgot-password", forgotPasswordController); // sends the email with reset link
-authRouter.post("/reset-password", resetPasswordController); // changes the password
-authRouter.get("/verify-email", verifyEmailController);
+authRouter.post("/forgot-password", validateForgotPassword(), validate, forgotPasswordController); // sends the email with reset link
+authRouter.post(
+  "/reset-password",
+  validatePasswordReset(),
+  validate,
+  resetPasswordController,
+); // changes the password
+
+authRouter.get(
+  "/verify-email",
+  verifyEmailController,
+);
 
 authRouter.post("/login", validateLogin(), validate, loginUserController); // Login an existing user
 
