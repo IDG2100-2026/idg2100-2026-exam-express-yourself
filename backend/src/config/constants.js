@@ -26,12 +26,13 @@ export const MAX_TOURNAMENT_TITLE_LENGTH = 64;
 export const MIN_TOURNAMENT_DESCRIPTION_LENGTH = 4;
 export const MAX_TOURNAMENT_DESCRIPTION_LENGTH = 500;
 
-// Game variants
+// Match schema constraints
 export const VALID_ROUNDS = [3, 5, 7];
 export const VALID_TIME_CONTROLS = [10, 30, 90]; // seconds total for all rounds
 export const VALID_PLAYER_COUNTS = [2, 3, 5];
 export const VALID_BUY_INS = [1, 10, 50];
 export const MATCH_STATUSES = ["waiting", "in-progress", "completed"];
 
+// Utilities
 export const MSEC_PER_DAY = 1000 * 60 * 60 * 24; // 24 hours
 export const MAX_LENGTH_AGENT_STRING = 1024;
