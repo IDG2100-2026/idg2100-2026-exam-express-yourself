@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router";
-import { resetPassword } from "../../services/authService.js";
+import { resetPassword } from "../../services/auth-service.js";
 import "./ResetPassword.scss";
 
 export const ResetPassword = () => {
