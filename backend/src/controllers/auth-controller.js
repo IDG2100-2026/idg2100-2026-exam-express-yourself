@@ -76,17 +76,18 @@ export const forgotPasswordController = async (req, res, next) => {
 };
 
 export const resetPasswordController = async (req, res, next) => {
-  try{
+  try {
     const { code, newPassword } = req.body;
-    if(!code || !newPassword) throw new BusinessLogicError("code and password are required", 400);
+    if (!code || !newPassword)
+      throw new BusinessLogicError("code and password are required", 400);
 
     await resetPassword(code, newPassword);
 
-    res.status(201).json({message: "Password has been changes successfully"});
-  }catch(err){
+    res.status(201).json({ message: "Password has been changes successfully" });
+  } catch (err) {
     next(err);
   }
-}
+};
 
 // POST /api/users/login
 export const loginUserController = async (req, res, next) => {
@@ -137,6 +138,12 @@ export const createAccessToken = async (req, res, next) => {
 
     const session = await Session.findOne({ refreshToken }); // looking up the session from db.
     if (!session) throw new BusinessLogicError("Invalid refresh token", 401); // session expired, revoked or never existed
+
+    if (session.ip !== "unknown" && session.ip !== req.ip) {
+      // If the ip that makes the request is different from the session ip
+      await session.deleteOne(); // deletes the session if the request is from another ip
+      throw new BusinessLogicError("Session invalidated due to IP change", 401);
+    }
 
     const user = await User.findById(session.userId); // get the user linked to this session
     if (!user) throw new BusinessLogicError("User not found", 404); // did not find the user
