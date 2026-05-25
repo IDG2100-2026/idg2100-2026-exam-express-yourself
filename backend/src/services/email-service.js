@@ -12,7 +12,7 @@ export const sendVerificationMail = async (to, token) => {
   const verificationLink = `${process.env.FRONTEND_URI}/login?code=${token}`; // Link the user will click on
 
   await transporter.sendMail({
-    from: process.send.EMAIL_USER, // our email name
+    from: process.env.EMAIL_USER, // our email name
     to, // this will be set in controller with newUser.email
     subject: "Verify your email", // subject on the email
     html: `

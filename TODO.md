@@ -36,8 +36,8 @@ FRONTEND PAGES
   [ ] ProfilePage — 3 Elo ratings, stats, points, paginated games
   [X] LoginPage / RegisterPage — wire up real JWT auth
   [ ] ForgotPasswordPage (new)
-  [ ] 404 Not Found page (new)
-  [ ] Verify static pages (Privacy, About Us, About Game, Terms)
+  [X] 404 Not Found page (new)
+  [X] Verify static pages (Privacy, About Us, About Game, Terms)
 
 ADMIN PAGES (none exist yet)
   [ ] Dashboard (activity, security incidents, links)
