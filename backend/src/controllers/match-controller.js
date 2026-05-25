@@ -63,7 +63,11 @@ export async function leaveMatch(req, res, next) {
 // PATCH /api/matches/:id/result
 export async function recordResult(req, res, next) {
   try {
-    const match = await recordResultService(req.params.id, req.validated.winnerId, req.validated.score);
+    const match = await recordResultService(
+      req.params.id,
+      req.validated.winnerId,
+      req.validated.score,
+    );
     res.json(match);
   } catch (err) {
     next(err);
