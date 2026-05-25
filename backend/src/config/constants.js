@@ -1,7 +1,7 @@
 // User schema constraints
 export const MIN_USERNAME_LENGTH = 1;
 export const MAX_USERNAME_LENGTH = 64;
-export const ALLOWED_USERNAME_FORMAT = /^[a-zA-ZæøåÆØÅ0-9_-]+$/;
+export const ALLOWED_USERNAME_FORMAT = /^[a-zA-Z0-9]+$/;
 export const MIN_PASSWORD_LENGTH = 8;
 export const MAX_PASSWORD_LENGTH = 72;
 export const MAX_USER_EMAIL_LENGTH = 254;

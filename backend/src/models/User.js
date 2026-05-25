@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       minLength: [MIN_USERNAME_LENGTH, `Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters. [schema]`],
       maxLength: [MAX_USERNAME_LENGTH, `Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters. [schema]`],
-      match: [ALLOWED_USERNAME_FORMAT, "Username can only contain letters, numbers, underscores, and hyphens. [schema]"],
+      match: [ALLOWED_USERNAME_FORMAT, "Username can only contain letters and numbers. [schema]"],
     },
     email: {
       type: String,
