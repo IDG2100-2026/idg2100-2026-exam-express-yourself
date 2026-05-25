@@ -2,6 +2,8 @@ import {
   registerUser,
   authenticateUser,
   createSession,
+  resetPassword,
+  resetPasswordRequest,
 } from "../services/auth-service.js";
 import { matchedData } from "express-validator";
 import { Session } from "../models/Session.js";
@@ -58,6 +60,33 @@ export const verifyEmailController = async (req, res, next) => {
     next(err);
   }
 };
+
+export const forgotPasswordController = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) throw new BusinessLogicError("email is required", 400);
+
+    await resetPasswordRequest(email);
+    res.json({
+      message: "If the email exists, a password reset link has been sent",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const resetPasswordController = async (req, res, next) => {
+  try{
+    const { code, newPassword } = req.body;
+    if(!code || !newPassword) throw new BusinessLogicError("code and password are required", 400);
+
+    await resetPassword(code, newPassword);
+
+    res.status(201).json({message: "Password has been changes successfully"});
+  }catch(err){
+    next(err);
+  }
+}
 
 // POST /api/users/login
 export const loginUserController = async (req, res, next) => {

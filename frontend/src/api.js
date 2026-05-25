@@ -37,16 +37,18 @@ export async function apiFetch(endpoint, options = {}) {
     return headers;
   };
 
-  const authFetch = async () => // helper function so we don't write the same thing two times 
+  const authFetch = async () =>
+    // helper function so we don't write the same thing two times
     await fetch(API_URL + endpoint, {
       ...options, // whatever the method and body is
       headers: buildHeader(), // builds the header with content type and the token
-      credentials: "include", 
+      credentials: "include",
     });
 
   let response = await authFetch(); // first attempt to fetch endpoint and build header
 
-  if (response.status === 401) { // is access token is expired
+  if (response.status === 401) {
+    // is access token is expired
     const refresh = await refreshAccessToken(); // try to get a new access token
     if (!refresh) {
       clearAccessToken(); // refresh failed, and the user needs to login again.
@@ -69,5 +71,28 @@ export async function apiFetch(endpoint, options = {}) {
     );
   }
 
+  return result;
+}
+
+export async function fetchWithoutAccesstoken(endpoint, options = {}) {
+  const headers = {
+    ...(options?.headers || {}),
+    "Content-type": "application/json",
+  }; // Sets headers
+  const response = await fetch(API_URL + endpoint, {
+    ...options,
+    headers,
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result?.msg ||
+        result?.message ||
+        result?.errors?.[0]?.msg ||
+        "An error occurred while fetching data",
+    );
+  }
   return result;
 }

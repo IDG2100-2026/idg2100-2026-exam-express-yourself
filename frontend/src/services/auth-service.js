@@ -1,4 +1,4 @@
-import { apiFetch } from "../api.js";
+import { apiFetch, fetchWithoutAccesstoken } from "../api.js";
 import { setAccessToken, clearAccessToken } from "./token-manager.js";
 
 export const registerUser = async (userData) => {
@@ -29,10 +29,21 @@ export const logoutUser = async () => {
   }
 };
 
-export const verifyEmail = async (code) => { // Had to be hardcoded because apiFetch tries to give access token, but we don't have that yet
-  const API_URL = "http://localhost:3000/api/auth";
-  const response = await fetch(`${API_URL}/verify-email?code=${code}`);
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Verification failed");
-  return data;
+export const verifyEmail = async (code) => {
+  // Had to be hardcoded because apiFetch tries to give access token, but we don't have that yet
+  return await fetchWithoutAccesstoken(`/auth/verify-email?code=${code}`);
+};
+
+export const requestResetPassword = async (email) => {
+  return await fetchWithoutAccesstoken("/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+};
+
+export const resetPassword = async (code, newPassword) => {
+  return await fetchWithoutAccesstoken("/auth/reset-password", {
+    method: "POST",
+    body: JSON.stringify({ code, newPassword }),
+  });
 };

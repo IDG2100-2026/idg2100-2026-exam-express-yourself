@@ -2,7 +2,8 @@ import User from "../models/User.js";
 import Match from "../models/Match.js";
 import bcrypt from "bcryptjs";
 import { matchedData } from "express-validator";
-
+import { hashPassword, chechPassword } from "../utils/passwordHash.js";
+import { BusinessLogicError } from "../utils/errors.js";
 // GET /api/users — admin only, supports ?search=
 export async function getAllUsers(req, res, next) {
   try {
@@ -52,17 +53,27 @@ export async function getUser(req, res, next) {
 // PATCH /api/users/:id
 export async function updateUser(req, res, next) {
   try {
-    const { email, bio, profileImageUrl, password, appearance } = req.body;
+    const { email, bio, profileImageUrl, password, oldPassword, appearance } =
+      req.body;
 
     const updates = {};
     if (email !== undefined) updates.email = email;
     if (bio !== undefined) updates.bio = bio;
-    if (profileImageUrl !== undefined) updates.profileImageUrl = profileImageUrl;
+    if (profileImageUrl !== undefined)
+      updates.profileImageUrl = profileImageUrl;
     if (appearance !== undefined) updates.appearance = appearance;
 
     // Hash new password if provided
     if (password) {
-      updates.password = await bcrypt.hash(password, 10);
+      const user = await User.findById(req.params.id).select("+password"); // User needs to confirm change with the old password
+      if (!user) throw new BusinessLogicError("User not found", 404);
+
+      if (!chechPassword(oldPassword, user.password)) {
+        // checks if the old password is the same user typed
+        throw new BusinessLogicError("Old password is incorrect", 401);
+      }
+      
+      updates.password = hashPassword(password); // hashes the new password
     }
 
     const user = await User.findByIdAndUpdate(req.params.id, updates, {
@@ -82,7 +93,7 @@ export async function banUser(req, res, next) {
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { isBanned: true },
-      { new: true }
+      { new: true },
     );
     if (!user) return res.status(404).json({ error: "User not found" });
     res.json({ message: `${user.username} has been banned` });
@@ -97,7 +108,7 @@ export async function makeAdmin(req, res, next) {
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { role: "admin" },
-      { new: true }
+      { new: true },
     );
     if (!user) return res.status(404).json({ error: "User not found" });
     res.json({ message: `${user.username} is now an admin` });

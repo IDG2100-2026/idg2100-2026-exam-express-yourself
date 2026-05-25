@@ -18,7 +18,7 @@ import AboutGame from "./pages/about-game/AboutGame.jsx";
 import Terms from "./pages/terms/Terms.jsx";
 import Privacy from "./pages/privacy/Privacy.jsx";
 import NotFound from "./pages/not-found/NotFound.jsx";
-
+import ResetPassword from "./pages/ResetPassword/ResetPassword.jsx";
 function App() {
   return (
     <AppearanceProvider>
@@ -30,6 +30,7 @@ function App() {
               <Route path="/lobby" element={<Lobby />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/game/:id" element={<Game />} />
               <Route path="/tournaments" element={<TournamentList />} />
               <Route path="/tournament/:id" element={<Tournament />} />

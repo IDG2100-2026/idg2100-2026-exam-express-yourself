@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { loginUser, verifyEmail } from "../../services/auth-service.js";
+import {
+  loginUser,
+  requestResetPassword,
+  verifyEmail,
+} from "../../services/auth-service.js";
 import { getUser } from "../../services/users-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
@@ -11,11 +15,14 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [verifyMsg, setVerifyMsg] = useState("");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [sendMail, setSendMail] = useState("");
+  const [resetMsg, setResetMsg] = useState("");
   const navigate = useNavigate();
   const { user, login } = useAuth();
   const { loadAppearance } = useAppearance();
   const [searchParams, setSearchParams] = useSearchParams();
+
   useEffect(() => {
     const code = searchParams.get("code");
     if (!code) return;
@@ -58,56 +65,93 @@ export default function Login() {
     }
   }
 
+  const sendForgotPasswordMail = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      const data = await requestResetPassword(sendMail);
+      setResetMsg(data.message);
+    } catch (err) {
+      setError(err.message);
+    }finally{
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="login">
       <div className="login__card">
-        <h1 className="login__title">Log In</h1>
-        <p className="login__subtitle">Welcome back to PokerDados</p>
-        {verifyMsg && <p>{verifyMsg}</p>}
-        {success && (
-          <p>Login successful! You will be redirected to the homepage</p>
-        )}
-        <form className="login__form" onSubmit={handleSubmit}>
-          <div className="login__field">
-            <label htmlFor="email">Email</label>
+        {!showForgotPassword ? (
+          <form className="login__form" onSubmit={handleSubmit}>
+            <h1 className="login__title">Log In</h1>
+            <p className="login__subtitle">Welcome back to PokerDados</p>
+            {success && (
+              <p>Login successful! You will be redirected to the homepage</p>
+            )}
+            <div className="login__field">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div className="login__field">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <button
+              className="login__forgot"
+              onClick={() => setShowForgotPassword(true)}
+            >
+              Forgot Password?
+            </button>
+
+            {error && <p className="login__error">{error}</p>}
+
+            <button
+              type="submit"
+              className="login__submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Logging in..." : "Log In"}
+            </button>
+          </form>
+        ) : (
+          <form className="login__field" onSubmit={sendForgotPasswordMail}>
+            <h2 className="login__title">Forgot Password</h2>
+            {resetMsg ? <p>{resetMsg}</p> : <p>{error}</p>}
             <input
-              id="email"
               type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="you@example.com"
-              required
+              value={sendMail}
+              onChange={(e) => setSendMail(e.target.value)}
+              placeholder="Enter your email.."
             />
-          </div>
-
-          <div className="login__field">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              required
-            />
-          </div>
-
-          <button type="button" className="login__forgot">
-            Forgot password?
-          </button>
-
-          {error && <p className="login__error">{error}</p>}
-
-          <button
-            type="submit"
-            className="login__submit"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Logging in..." : "Log In"}
-          </button>
-        </form>
+            <button className="login__submit">
+              {isSubmitting ? "Sending email" : "Send reset link"}
+            </button>
+            <button
+              className="login__forgot"
+              onClick={() => setShowForgotPassword(false)}
+            >
+              Back to login
+            </button>
+          </form>
+        )}
 
         <p className="login__register">
           Don't have an account? <Link to="/register">Register</Link>

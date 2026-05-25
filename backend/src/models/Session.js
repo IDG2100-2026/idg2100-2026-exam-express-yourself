@@ -28,8 +28,8 @@ const sessionSchema = new Schema({
     },
     expiresAt: {
         type: Date,
-        default: Date.now,
-        expires: REFRESH_TOKEN_TTL
+        default: () => new Date(Date.now() + REFRESH_TOKEN_TTL),
+        expires: 0
     }
 },{
     toJSON: {
