@@ -177,6 +177,23 @@ The separators in BEM each have a specific job and must not be mixed up:
 
 ---
 
+### 15. Imports - always include the file extension
+
+Always write the full file extension in every import statement, SCSS `@use`, and any other place where you reference a file by path.
+
+```js
+import Avatar from '../../components/avatar/Avatar.jsx';
+import { getUser } from '../services/users-service.js';
+```
+
+```scss
+@use '../components/avatar/avatar.scss';
+```
+
+**Why:** Without an extension, the bundler has to guess what file you mean by trying several extensions in order. With an extension it is explicit, there is no guessing, and it is immediately clear what type of file is being imported. Both Vite and the SCSS compiler support explicit extensions.
+
+---
+
 ## Quick Reference
 
 | What | Style | Example |
