@@ -1,5 +1,5 @@
 import express from "express";
-import { validateCreateMatch } from "../validators/matchValidator.js";
+import { validateCreateMatch } from "../validators/match-validator.js";
 import { validate } from "../validators/validate.js";
 import {
   getAllMatches,
@@ -8,8 +8,8 @@ import {
   joinMatch,
   leaveMatch,
   recordResult,
-} from "../controllers/matchController.js";
-import { authenticate, authorize } from "../middlewares/authMiddleware.js";
+} from "../controllers/match-controller.js";
+import { authenticate, authorize } from "../middlewares/auth-middleware.js";
 const matchRouter = express.Router();
 
 // public routes

@@ -1,15 +1,15 @@
 import express from "express";
-import errorHandler from "./src/middlewares/errorMiddleware.js";
+import errorHandler from "./src/middlewares/error-middleware.js";
 import cors from "cors";
-import userRouter from "./src/routes/userRoutes.js";
-import tournamentRouter from "./src/routes/tournamentRoutes.js";
-import matchRouter from "./src/routes/matchRoutes.js";
-import commentsRouter from "./src/routes/commentRoutes.js";
-import leaderboardRouter from "./src/routes/leaderboardRoutes.js";
-import authRouter from './src/routes/authRoutes.js';
+import userRouter from "./src/routes/user-routes.js";
+import tournamentRouter from "./src/routes/tournament-routes.js";
+import matchRouter from "./src/routes/match-routes.js";
+import commentsRouter from "./src/routes/comment-routes.js";
+import leaderboardRouter from "./src/routes/leaderboard-routes.js";
+import authRouter from "./src/routes/auth-routes.js";
 import helmet from "helmet";
 import { connectDB, disconnectDB } from "./src/config/db.js";
-import activityRoutes from './src/routes/activityRoutes.js';
+import activityRoutes from "./src/routes/activity-routes.js";
 
 const app = express();
 

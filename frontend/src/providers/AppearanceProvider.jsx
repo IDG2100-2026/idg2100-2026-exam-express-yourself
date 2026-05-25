@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { AppearanceContext } from "../contexts/AppearanceContext.js";
+import { AppearanceContext } from "../contexts/appearance-context.js";
 import { updateUser } from "../services/users-service.js";
 
 const defaultAppearance = {

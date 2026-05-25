@@ -1,4 +1,4 @@
 import { useContext } from "react";
-import { AppearanceContext } from "../contexts/AppearanceContext.js";
+import { AppearanceContext } from "../contexts/appearance-context.js";
 
 export const useAppearance = () => useContext(AppearanceContext);

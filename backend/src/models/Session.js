@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { randomUUID } from "crypto";
-import { REFRESH_TOKEN_TTL } from "../config/auth.config.js";
+import { REFRESH_TOKEN_TTL } from "../config/auth-config.js";
 import { MAX_LENGTH_AGENT_STRING } from "../config/constants.js";
 
 

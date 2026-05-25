@@ -1,5 +1,5 @@
 import express from "express";
-import { validateCreateTournament, validateUpdateTournament } from "../validators/tournamentValidator.js";
+import { validateCreateTournament, validateUpdateTournament } from "../validators/tournament-validator.js";
 import { validate } from "../validators/validate.js";
 import upload from "../middlewares/upload.js";
 import {
@@ -14,8 +14,8 @@ import {
   updateTournament,
   deleteTournament,
   cancelTournament,
-} from "../controllers/tournamentController.js";
-import { authenticate, authorize } from "../middlewares/authMiddleware.js";
+} from "../controllers/tournament-controller.js";
+import { authenticate, authorize } from "../middlewares/auth-middleware.js";
 
 const tournamentRouter = express.Router();
 

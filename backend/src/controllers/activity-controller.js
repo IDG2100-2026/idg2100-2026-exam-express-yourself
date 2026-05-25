@@ -1,4 +1,4 @@
-import { getPlatformActivity } from "../services/activityService.js";
+import { getPlatformActivity } from "../services/activity-service.js";
 
 export async function getActivity(req, res, next) {
   try {

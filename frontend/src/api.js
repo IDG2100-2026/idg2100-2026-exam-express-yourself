@@ -5,7 +5,7 @@ import {
   getAccessToken,
   setAccessToken,
   clearAccessToken,
-} from "./services/tokenManager.js";
+} from "./services/token-manager.js";
 
 export const refreshAccessToken = async () => {
   // Try to get a new access token on refresh page and session expire
