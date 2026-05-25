@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import Match from "../models/Match.js";
 import bcrypt from "bcryptjs";
 import { matchedData } from "express-validator";
-import { hashPassword, chechPassword } from "../utils/passwordHash.js";
+import { hashPassword, chechPassword } from "../utils/password-hash.js";
 import { BusinessLogicError } from "../utils/errors.js";
 // GET /api/users — admin only, supports ?search=
 export async function getAllUsers(req, res, next) {

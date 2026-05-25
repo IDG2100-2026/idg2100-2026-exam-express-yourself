@@ -3,7 +3,7 @@ import { chechPassword, hashPassword } from "../utils/password-hash.js";
 import { Session } from "../models/Session.js";
 import { BusinessLogicError } from "../utils/errors.js";
 import { ResetPassword } from "../models/passwordReset.js";
-import { sendPasswordResetMail } from "./emailService.js";
+import { sendPasswordResetMail } from "./email-service.js";
 
 export const createSession = async (user, ip, agent) => {
   const session = await new Session({
