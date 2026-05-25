@@ -23,7 +23,7 @@ The following errors might be returned by the endpoints for sessions.
 | HTTP status code | Error code | Description |
 |---|---|---|
 | 400 | INVALID_REQUEST | Request has either missing required field(s), contains invalid field(s), and/or has incorrect format(s). |
-| 401 | UNAUTHORIZED | Invalid credentials, unverified account, no refresh token cookie, or session not found. |
+| 401 | UNAUTHORIZED | Invalid credentials, unverified account, no refresh token cookie, session not found, or IP mismatch detected. |
 | 403 | FORBIDDEN_ACCESS | Account is banned. |
 | 500 | INTERNAL_SERVER_ERROR | Unexpected error occurred on the server side. |
 
