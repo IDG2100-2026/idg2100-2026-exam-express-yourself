@@ -129,7 +129,7 @@ export default function Login() {
         ) : (
           <div className="login__field">
             <h2 className="login__title">Forgot Password</h2>
-            {resetMsg && <p>{resetMsg}</p>}
+            {resetMsg ? <p>{resetMsg}</p> : <p>{error}</p>}
             <input
               type="email"
               value={sendMail}
