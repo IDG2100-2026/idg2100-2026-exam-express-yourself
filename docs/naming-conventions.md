@@ -55,7 +55,9 @@ avatar/
   avatar.scss
 ```
 
-**Why:** A stylesheet is not a component. It has no exports and is not a class in the programming sense. CSS has always been a lowercase language. Only the `.jsx` file earns PascalCase because it is the actual component.
+**Why:** A stylesheet is not a component. It has no exports and is not a class in the programming sense. CSS has always been a lowercase language. Only the `.jsx` file earns PascalCase because it is the actual component.  
+
+**Note:** This only applies if you are using plain SCSS with BEM for scoping. If you use CSS Modules (.module.scss), name the file PascalCase to match the component (Avatar.module.scss), then BEM becomes optional, the module handles scoping automatically.
 
 ---
 
