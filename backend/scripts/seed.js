@@ -19,7 +19,12 @@ await Comment.deleteMany({});
 console.log("Cleared all collections");
 
 // Shared hashed password — all seed users use "password123"
-const hashedPassword = await bcrypt.hash("password123", 10);
+const hashPassword = (password) => {
+  const hash = password + process.env.PASSWORD_SALT;
+  return crypto.createHash("sha256").update(hash).digest("hex").toString();
+};
+const hashedPassword = hashPassword("Password123!");
+const verified = { isVerified: true };
 
 // ─── Users ────────────────────────────────────────────────────────────
 const users = await User.insertMany([
