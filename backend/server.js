@@ -10,6 +10,7 @@ import authRouter from "./src/routes/auth-routes.js";
 import helmet from "helmet";
 import { connectDB, disconnectDB } from "./src/config/db.js";
 import activityRoutes from "./src/routes/activity-routes.js";
+import { setupWebSocket } from "./src/config/ws.config.js";
 
 const app = express();
 
@@ -48,6 +49,8 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 const httpServer = app.listen(process.env.BACKEND_APP_PORT);
+setupWebSocket(httpServer);
+
 httpServer.on("listening", () => {
   console.log("Server is listening on port:", httpServer.address().port);
 });
