@@ -12,9 +12,9 @@ import {
   MAX_USER_AGE,
   MIN_USER_ELO_RATING,
   MIN_USER_POINTS,
-  MIN_USER_LOBBY_SIZE,
-  MAX_USER_LOBBY_SIZE,
+  MAX_USER_EMAIL_LENGTH,
   MAX_USER_BIO_LENGTH,
+  ALLOWED_USERNAME_FORMAT,
   ALLOWED_USER_EMAIL_FORMAT,
 } from "../config/constants.js";
 import { hashPassword } from "../utils/password-hash.js";
@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       minLength: [MIN_USERNAME_LENGTH, `Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters. [schema]`],
       maxLength: [MAX_USERNAME_LENGTH, `Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters. [schema]`],
+      match: [ALLOWED_USERNAME_FORMAT, "Username can only contain letters, numbers, underscores, and hyphens. [schema]"],
     },
     email: {
       type: String,
@@ -35,6 +36,7 @@ const userSchema = new mongoose.Schema(
       required: [true, "Email is required. [schema]"],
       unique: true,
       lowercase: true,
+      maxLength: [MAX_USER_EMAIL_LENGTH, `Email cannot be longer than ${MAX_USER_EMAIL_LENGTH} characters. [schema]`],
       match: [ALLOWED_USER_EMAIL_FORMAT, "Must be a valid email address, e.g. user@mail.com. [schema]"],
     },
     password: {
@@ -89,7 +91,7 @@ const userSchema = new mongoose.Schema(
       theme: { type: String, default: "dark", enum: { values: ["light", "dark"], message: "Theme must be either light or dark. [schema]" } },
       boardColor: { type: String, default: DEFAULT_USER_BOARD_COLOR },
       sound: { type: Boolean, default: true },
-      lobbySize: { type: Number, default: DEFAULT_USER_LOBBY_SIZE, min: [MIN_USER_LOBBY_SIZE, `Lobby size must be between ${MIN_USER_LOBBY_SIZE} and ${MAX_USER_LOBBY_SIZE}. [schema]`], max: [MAX_USER_LOBBY_SIZE, `Lobby size must be between ${MIN_USER_LOBBY_SIZE} and ${MAX_USER_LOBBY_SIZE}. [schema]`] },
+      lobbySize: { type: Number, default: DEFAULT_USER_LOBBY_SIZE },
     },
     trophies: [
       {

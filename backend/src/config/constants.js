@@ -1,11 +1,20 @@
 // User schema constraints
 export const MIN_USERNAME_LENGTH = 1;
 export const MAX_USERNAME_LENGTH = 64;
+export const ALLOWED_USERNAME_FORMAT = /^[a-zA-ZæøåÆØÅ0-9_-]+$/;
 export const MIN_PASSWORD_LENGTH = 8;
-export const MAX_PASSWORD_LENGTH = 32;
+export const MAX_PASSWORD_LENGTH = 72;
+export const MAX_USER_EMAIL_LENGTH = 254;
+export const ALLOWED_USER_EMAIL_FORMAT = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const MIN_USER_AGE = 18;
 export const MAX_USER_AGE = 100;
-export const DEFAULT_ELO_RATING = 1000;
+export const MAX_USER_BIO_LENGTH = 300;
+export const DEFAULT_USER_ELO_RATING = 1000;
+export const MIN_USER_ELO_RATING = 0;
+export const DEFAULT_USER_POINTS = 100;
+export const MIN_USER_POINTS = 0;
+export const DEFAULT_USER_BOARD_COLOR = "#1c2130";
+export const DEFAULT_USER_LOBBY_SIZE = 5;
 
 // Comment constraints
 export const MIN_COMMENT_LENGTH = 2;
