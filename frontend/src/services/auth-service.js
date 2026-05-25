@@ -10,8 +10,7 @@ export const registerUser = async (userData) => {
 };
 
 export const loginUser = async (credentials) => {
-  const loginData = await apiFetch("/auth/login", {
-    // fetch the login endpoint, and get the form data in a json string
+  const loginData = await fetchWithoutAccesstoken("/auth/login", {
     method: "POST",
     body: JSON.stringify(credentials),
   });

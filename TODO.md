@@ -39,15 +39,17 @@ FRONTEND PAGES
   [X] 404 Not Found page (new)
   [X] Verify static pages (Privacy, About Us, About Game, Terms)
 
-ADMIN PAGES (none exist yet)
-  [ ] Dashboard (activity, security incidents, links)
-  [ ] User administration (search, list, ban, promote)
-  [ ] Comment administration (list, delete)
-  [ ] Tournament creation form
+ADMIN PAGES
+  [X] Dashboard (activity stats, links to other admin pages)
+  [X] Dashboard security incidents — rate-limit + IP-change hits stored in DB, displayed on dashboard
+  [X] User administration (search, list, ban, promote)
+  [X] Comment administration (list, delete)
+  [X] Tournament creation form
+  [X] Admin layout (no footer, stripped header)
 HEADER
   [ ] Expandable appearance menu (theme, sound, board color, lobby size)
   [ ] Greeting + profile pic when logged in
-  [ ] Admin-only nav link
+  [X] Admin-only nav link
 
 MATCHMAKING
   [ ] Room-based matchmaking (replace queue)

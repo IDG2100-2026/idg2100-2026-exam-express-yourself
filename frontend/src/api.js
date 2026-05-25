@@ -16,6 +16,7 @@ export const refreshAccessToken = async () => {
       credentials: "include", // include refresh token cookie in the request, without this, browser don't send httpOnly cookie
     });
 
+    if (!response.ok) return null; // refresh failed (no cookie, expired session, etc.)
     const data = await response.json(); // gets the data in json response
     setAccessToken(data.accessToken); // Store the new access token in memory, so api calls can use it
     return data; // returns access token and user

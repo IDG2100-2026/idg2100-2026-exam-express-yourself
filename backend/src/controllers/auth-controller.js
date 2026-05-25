@@ -14,12 +14,9 @@ import { BusinessLogicError } from "../utils/errors.js";
 import { TokenVerification } from "../models/TokenVerification.js";
 import { sendVerificationMail } from "../services/email-service.js";
 
-// helper function so we don't have to write duplicated code.
-const getAccessToken = (user) => {
-  return signedAccessToken({
-    userId: user._id.toString(),
-    role: user.role,
-  });
+// helper — pass ip so it gets embedded in the token for IP-change detection
+const getAccessToken = (user, ip = null) => {
+  return signedAccessToken({ userId: user._id.toString(), role: user.role, ip });
 };
 // POST /api/users/register
 export const registerUserController = async (req, res, next) => {
@@ -102,7 +99,7 @@ export const loginUserController = async (req, res, next) => {
     );
 
     // Short lived access token with user id and role
-    const accessToken = getAccessToken(user);
+    const accessToken = getAccessToken(user, req.ip);
 
     // store refreshToken in a secure cookie
     res.cookie("refreshToken", refreshToken, {
@@ -141,7 +138,7 @@ export const createAccessToken = async (req, res, next) => {
     const user = await User.findById(session.userId); // get the user linked to this session
     if (!user) throw new BusinessLogicError("User not found", 404); // did not find the user
 
-    const accessToken = getAccessToken(user); // generate a new short lived access token
+    const accessToken = getAccessToken(user, req.ip); // generate a new short lived access token
 
     // return access token with minimal user info for frontend
     return res.status(200).json({

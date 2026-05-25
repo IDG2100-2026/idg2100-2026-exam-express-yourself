@@ -1,0 +1,138 @@
+@use "../../../styles/variables" as *;
+
+.admin-users {
+  &__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  &__toolbar {
+    margin-bottom: 1.5rem;
+  }
+
+  &__search {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.6rem 1rem;
+    background: $color-bg-card;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    font-size: 0.9rem;
+    outline: none;
+
+    &:focus {
+      border-color: $color-accent;
+    }
+  }
+
+  &__table-wrap {
+    overflow-x: auto;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+
+    th {
+      background: $color-bg-secondary;
+      color: $color-text-muted;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      border-bottom: 1px solid $color-border;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid $color-border;
+      color: $color-text;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: $color-bg-secondary;
+    }
+  }
+
+  &__row--banned td {
+    opacity: 0.5;
+  }
+
+  &__cell--center {
+    text-align: center;
+    color: $color-text-muted;
+    padding: 2rem !important;
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &--admin { background: rgba($color-accent, 0.15); color: $color-accent; }
+    &--user  { background: $color-bg; color: $color-text-muted; }
+    &--active { background: rgba($color-success, 0.15); color: $color-success; }
+    &--banned { background: rgba($color-danger, 0.15); color: $color-danger; }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  &__btn {
+    padding: 0.35rem 0.75rem;
+    border-radius: $radius;
+    border: 1px solid $color-border;
+    background: transparent;
+    color: $color-text;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &--danger {
+      border-color: $color-danger;
+      color: $color-danger;
+      &:hover { background: rgba($color-danger, 0.1); }
+    }
+
+    &--promote {
+      border-color: $color-accent;
+      color: $color-accent;
+      &:hover { background: rgba($color-accent, 0.1); }
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  &__page {
+    font-size: 0.875rem;
+    color: $color-text-muted;
+  }
+
+  &__error {
+    color: $color-danger;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+}
