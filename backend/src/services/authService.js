@@ -44,7 +44,7 @@ export const authenticateUser = async (email, password) => {
 
 export const resetPasswordRequest = async (email) => {
   const user = await User.findOne({ email }); // finding the user with their email
-  if (!user) return; // don't reveal that the user exists in case of unwanted request
+  if (!user) return; // don't reveal that the user don't exists in case of unwanted request
 
   await ResetPassword.deleteMany({ userId: user._id }); // delete any existing reset tokens
 
