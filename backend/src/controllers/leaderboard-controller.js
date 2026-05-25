@@ -1,4 +1,4 @@
-import { getLeaderboard } from "../services/leaderboardService.js";
+import { getLeaderboard } from "../services/leaderboard-service.js";
 
 export async function getLeaderboardData(req, res, next) {
   try {

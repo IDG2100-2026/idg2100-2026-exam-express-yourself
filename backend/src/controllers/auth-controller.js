@@ -2,15 +2,15 @@ import {
   registerUser,
   authenticateUser,
   createSession,
-} from "../services/authService.js";
+} from "../services/auth-service.js";
 import { matchedData } from "express-validator";
-import { Session } from "../models/Sessions.js";
+import { Session } from "../models/Session.js";
 import User from "../models/User.js";
 import { signedAccessToken } from "../utils/jwt.js";
-import { REFRESH_TOKEN_TTL } from "../config/auth.config.js";
+import { REFRESH_TOKEN_TTL } from "../config/auth-config.js";
 import { BusinessLogicError } from "../utils/errors.js";
-import { TokenVerification } from "../models/tokenVerification.js";
-import { sendVerificationMail } from "../services/emailService.js";
+import { TokenVerification } from "../models/TokenVerification.js";
+import { sendVerificationMail } from "../services/email-service.js";
 
 // helper function so we don't have to write duplicated code.
 const getAccessToken = (user) => {

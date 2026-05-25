@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { loginUser, verifyEmail } from "../../services/authService.js";
+import { loginUser, verifyEmail } from "../../services/auth-service.js";
 import { getUser } from "../../services/users-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";

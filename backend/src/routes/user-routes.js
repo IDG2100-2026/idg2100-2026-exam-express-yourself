@@ -3,7 +3,7 @@ import {
   validateRegister,
   validateLogin,
   validateUpdateUser,
-} from "../validators/userValidator.js";
+} from "../validators/user-validator.js";
 import { validate } from "../validators/validate.js";
 import {
   getAllUsers,
@@ -11,8 +11,8 @@ import {
   updateUser,
   banUser,
   makeAdmin,
-} from "../controllers/userController.js";
-import { authenticate, authorize } from "../middlewares/authMiddleware.js";
+} from "../controllers/user-controller.js";
+import { authenticate, authorize } from "../middlewares/auth-middleware.js";
 
 const userRouter = express.Router();
 

@@ -1,7 +1,7 @@
 import Match from "../models/Match.js";
 import User from "../models/User.js";
-import { updateEloRating } from "../services/eloService.js";
-import { joinMatchQueue } from "../services/matchmakingService.js";
+import { updateEloRating } from "../services/elo-service.js";
+import { joinMatchQueue } from "../services/matchmaking-service.js";
 
 // GET /api/matches?page=1&limit=10&status=waiting&playerId=xxx
 export async function getAllMatches(req, res, next) {
