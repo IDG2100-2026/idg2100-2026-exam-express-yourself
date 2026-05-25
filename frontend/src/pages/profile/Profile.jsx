@@ -18,6 +18,7 @@ export default function Profile() {
     bio: "",
     profileImageUrl: "",
     password: "",
+    newPassword: "",
   });
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(null);
@@ -44,17 +45,22 @@ export default function Profile() {
     setSaveError(null);
     setSaveSuccess(null);
 
+    if(formData.password === formData.newPassword){
+    return setSaveError("You cannot use the same password as the new ");
+    }
+
     try {
       const updates = {
         email: formData.email,
         bio: formData.bio,
         profileImageUrl: formData.profileImageUrl,
+        password: formData.newPassword,
+        oldPassword: formData.password
       };
-      if (formData.password) updates.password = formData.password;
 
       await updateUser(id, updates);
       setSaveSuccess("Profile updated!");
-      setEditing(false);
+      // setEditing(false); // TODO: close or not? 
       refetch();
     } catch (err) {
       setSaveError(err.message);
@@ -150,13 +156,22 @@ export default function Profile() {
             />
           </div>
           <div className="profile__field">
-            <label>
-              New Password
-            </label>
+            <label htmlFor="password">Old Password</label>
             <input
               type="password"
               name="password"
+              id="password"
               value={formData.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+            />
+          </div>
+          <div className="profile__field">
+            <label htmlFor="newPassword">New Password</label>
+            <input
+              type="password"
+              name="newPassword"
+              value={formData.newPassword}
               onChange={handleChange}
               placeholder="••••••••"
             />
