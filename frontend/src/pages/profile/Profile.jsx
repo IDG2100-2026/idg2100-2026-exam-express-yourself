@@ -214,8 +214,16 @@ export default function Profile() {
 
       <div className="profile__stats">
         <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating}</span>
-          <span className="profile__stat-label">Elo</span>
+          <span className="profile__stat-value">{user.eloRating?.tc10 ?? 1000}</span>
+          <span className="profile__stat-label">Elo (10s)</span>
+        </div>
+        <div className="profile__stat">
+          <span className="profile__stat-value">{user.eloRating?.tc30 ?? 1000}</span>
+          <span className="profile__stat-label">Elo (30s)</span>
+        </div>
+        <div className="profile__stat">
+          <span className="profile__stat-value">{user.eloRating?.tc90 ?? 1000}</span>
+          <span className="profile__stat-label">Elo (90s)</span>
         </div>
         <div className="profile__stat">
           <span className="profile__stat-value">{user.points ?? 0}</span>

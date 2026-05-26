@@ -93,12 +93,21 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     eloRating: {
-      type: Number,
-      default: DEFAULT_USER_ELO_RATING,
-      min: [
-        MIN_USER_ELO_RATING,
-        `Elo rating cannot be lower than ${MIN_USER_ELO_RATING}. [schema]`,
-      ],
+      tc10: {
+        type: Number,
+        default: DEFAULT_USER_ELO_RATING,
+        min: [MIN_USER_ELO_RATING, `Elo rating cannot be lower than ${MIN_USER_ELO_RATING}. [schema]`],
+      },
+      tc30: {
+        type: Number,
+        default: DEFAULT_USER_ELO_RATING,
+        min: [MIN_USER_ELO_RATING, `Elo rating cannot be lower than ${MIN_USER_ELO_RATING}. [schema]`],
+      },
+      tc90: {
+        type: Number,
+        default: DEFAULT_USER_ELO_RATING,
+        min: [MIN_USER_ELO_RATING, `Elo rating cannot be lower than ${MIN_USER_ELO_RATING}. [schema]`],
+      },
     },
     points: {
       type: Number,

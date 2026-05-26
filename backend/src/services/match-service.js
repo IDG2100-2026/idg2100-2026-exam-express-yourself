@@ -329,6 +329,8 @@ export async function recordResult(matchId, winnerId, score) {
     }
   }
 
+  const timeControl = match.category?.timeControl || 10;
+
   // ELO update works differently for 2-player vs multiplayer matches
   if (match.players.length === 2) {
     // 2-player: one clear winner and one loser
@@ -336,7 +338,7 @@ export async function recordResult(matchId, winnerId, score) {
       return player.userId.toString() !== winnerId;
     });
     if (loserPlayer) {
-      await updateEloRating(winnerId, loserPlayer.userId.toString(), false);
+      await updateEloRating(winnerId, loserPlayer.userId.toString(), timeControl, false);
     }
   } else {
     // Multiplayer: winner gets finalPoints 1, everyone else 0, used for ranked ELO calculation
@@ -350,7 +352,7 @@ export async function recordResult(matchId, winnerId, score) {
         finalPoints: finalPoints,
       };
     });
-    await updateEloMultiplayer(playerResults);
+    await updateEloMultiplayer(playerResults, timeControl);
   }
 
   return match;

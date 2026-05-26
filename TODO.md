@@ -2,7 +2,7 @@ AUTH
   [X] Fix bcrypt await bug in authService.js
   [X] Email verification flow (send link, 15-min expiry, resend)
   [X] Forgot password flow
-  [ ] Split eloRating into 3 values (10/30/90 sec time controls) — User model still has single eloRating
+  [X] Split eloRating into 3 values (10/30/90 sec time controls) — User model, elo-service, match-service, leaderboard, tournament, seed, all frontend displays updated
   [X] IP-change incident logging in authMiddleware.js
 
 BACKEND — GAME LOGIC

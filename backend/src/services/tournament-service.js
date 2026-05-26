@@ -141,8 +141,10 @@ export async function joinTournament(tournamentId, userId) {
     throw new BusinessLogicError("Banned users cannot join tournaments", 403);
   }
 
-  // ELO range is the min/max rating the tournament allows, defaults are 0 and 9999 (open to all)
-  if (user.eloRating < tournament.eloRange.min || user.eloRating > tournament.eloRange.max) {
+  // ELO range check uses the tournament's time-control-specific rating
+  const tc = tournament.category?.timeControl || 10;
+  const userElo = user.eloRating?.[`tc${tc}`] ?? 1000;
+  if (userElo < tournament.eloRange.min || userElo > tournament.eloRange.max) {
     throw new BusinessLogicError("Your ELO rating is not within the required range for this tournament", 400);
   }
 

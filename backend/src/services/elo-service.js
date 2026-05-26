@@ -17,8 +17,8 @@ export function calcEloPair(ratingA, ratingB, K, outcome) {
   return { newRatingA, newRatingB };
 }
 
-// Update ELO ratings for two players after a match
-export async function updateEloRating(winnerId, loserId, isDraw = false) {
+// Update ELO ratings for two players after a match, for the given time control (10, 30, or 90)
+export async function updateEloRating(winnerId, loserId, timeControl, isDraw = false) {
   const winner = await User.findById(winnerId);
   const loser = await User.findById(loserId);
 
@@ -26,28 +26,26 @@ export async function updateEloRating(winnerId, loserId, isDraw = false) {
     throw new Error("One or more players not found for ELO update");
   }
 
+  const tcKey = `tc${timeControl}`;
   const outcome = isDraw ? 0.5 : 1;
   const K = 32;
 
   const { newRatingA, newRatingB } = calcEloPair(
-    winner.eloRating,
-    loser.eloRating,
+    winner.eloRating[tcKey] ?? 1000,
+    loser.eloRating[tcKey] ?? 1000,
     K,
     outcome
   );
 
-  winner.eloRating = newRatingA;
-  loser.eloRating = newRatingB;
-
-  await winner.save();
-  await loser.save();
+  await User.findByIdAndUpdate(winnerId, { $set: { [`eloRating.${tcKey}`]: newRatingA } });
+  await User.findByIdAndUpdate(loserId, { $set: { [`eloRating.${tcKey}`]: newRatingB } });
 
   return { winnerElo: newRatingA, loserElo: newRatingB };
 }
 
 // Multi-player ELO update: run pairwise comparisons
 // Players who ended with more points "win" against those with fewer
-export async function updateEloMultiplayer(playerResults) {
+export async function updateEloMultiplayer(playerResults, timeControl) {
   // playerResults = [{ userId, finalPoints }, ...]
   // Sort by points descending
   const sorted = [...playerResults].sort((a, b) => b.finalPoints - a.finalPoints);
@@ -56,9 +54,9 @@ export async function updateEloMultiplayer(playerResults) {
     for (let j = i + 1; j < sorted.length; j++) {
       const isDraw = sorted[i].finalPoints === sorted[j].finalPoints;
       if (isDraw) {
-        await updateEloRating(sorted[i].userId, sorted[j].userId, true);
+        await updateEloRating(sorted[i].userId, sorted[j].userId, timeControl, true);
       } else {
-        await updateEloRating(sorted[i].userId, sorted[j].userId, false);
+        await updateEloRating(sorted[i].userId, sorted[j].userId, timeControl, false);
       }
     }
   }

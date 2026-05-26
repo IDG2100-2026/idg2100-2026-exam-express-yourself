@@ -328,7 +328,9 @@ export default function Tournament() {
                   {p.username}
                 </Link>
                 {p.eloRating && (
-                  <span className="tournament__participant-elo">{p.eloRating} Elo</span>
+                  <span className="tournament__participant-elo">
+                    {p.eloRating[`tc${tournament.category?.timeControl || 10}`] ?? p.eloRating.tc10 ?? "—"} Elo
+                  </span>
                 )}
               </li>
             ))}

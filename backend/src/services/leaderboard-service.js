@@ -4,11 +4,11 @@ import User from "../models/User.js";
 export async function getLeaderboard(filters) {
   const { rounds, timeControl, straightsAllowed, sortBy } = filters;
 
-  // Simple ELO-based leaderboard if no filters
+  // Simple ELO-based leaderboard if no filters — sort by 10s Elo as default
   if (!rounds && !timeControl && !straightsAllowed && !sortBy) {
     const users = await User.find({ isBanned: false })
       .select("username eloRating profileImageUrl")
-      .sort({ eloRating: -1 })
+      .sort({ "eloRating.tc10": -1 })
       .limit(20);
     return users;
   }
