@@ -12,6 +12,11 @@ const errorHandler = (err, req, res, _next) => {
     return res.status(400).json({ error: "That value already exists" });
   }
 
+  // Invalid ObjectId in URL params (e.g. /api/users/not-a-valid-id)
+  if (err.name === "CastError") {
+    return res.status(400).json({ error: "Invalid ID format." });
+  }
+
   // Mongoose validation error
   if (err.name === "ValidationError") {
     return res.status(400).json({ error: err.message });

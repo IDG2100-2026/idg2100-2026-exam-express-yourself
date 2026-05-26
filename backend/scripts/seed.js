@@ -28,7 +28,7 @@ const hashPassword = (password) => {
 const hashedPassword = hashPassword("password123");
 const verified = { isVerified: true };
 
-// ─── Users ────────────────────────────────────────────────────────────
+// ---- Users ----
 await User.collection.insertMany([
   { username: "admin", email: "admin@test.com", password: hashedPassword, ...verified, age: 29, role: "admin", eloRating: { tc10: 1200, tc30: 1150, tc90: 1100 }, points: 500 },
   { username: "emil", email: "emil@test.com", password: hashedPassword, ...verified, age: 20, eloRating: { tc10: 2867, tc30: 2700, tc90: 2500 }, points: 300 },
@@ -57,7 +57,7 @@ console.log(`Created ${users.length} users`);
 // Helper to find user by username
 const u = (name) => users.find((u) => u.username === name);
 
-// ─── Completed matches ────────────────────────────────────────────────
+// ---- Completed matches ----
 const completedMatches = await Match.insertMany([
   {
     players: [{ userId: u("thea")._id }, { userId: u("silje")._id }],
@@ -98,7 +98,7 @@ const completedMatches = await Match.insertMany([
 ]);
 console.log(`Created ${completedMatches.length} completed matches`);
 
-// ─── Ongoing matches ──────────────────────────────────────────────────
+// ---- Ongoing matches ----
 const ongoingMatches = await Match.insertMany([
   {
     players: [{ userId: u("ingrid")._id }, { userId: u("fredrik")._id }],
@@ -131,7 +131,7 @@ const ongoingMatches = await Match.insertMany([
 ]);
 console.log(`Created ${ongoingMatches.length} ongoing matches`);
 
-// ─── Waiting matches (lobby) ──────────────────────────────────────────
+// ---- Waiting matches ----
 const waitingMatches = await Match.insertMany([
   {
     players: [{ userId: u("jonas")._id }],
@@ -171,7 +171,7 @@ const waitingMatches = await Match.insertMany([
 ]);
 console.log(`Created ${waitingMatches.length} waiting matches`);
 
-// ─── Tournaments ──────────────────────────────────────────────────────
+// ---- Tournaments ----
 const tournament1 = await Tournament.create({
   title: "Spring Championship 2026",
   description: "The first major tournament of the year. Battle it out for the Spring Trophy!",
@@ -244,12 +244,12 @@ const tournament5 = await Tournament.create({
 
 console.log("Created 5 tournaments");
 
-// ─── Comments ─────────────────────────────────────────────────────────
+// ---- Comments ----
 await Comment.insertMany([
   { authorId: u("nicolai")._id, text: "Great match! Really intense finish.", targetType: "Match", targetId: completedMatches[0]._id },
   { authorId: u("adrian")._id, text: "That was so close, well played both!", targetType: "Match", targetId: completedMatches[0]._id },
   { authorId: u("emil")._id, text: "Sara is just too good at this game.", targetType: "Match", targetId: completedMatches[2]._id },
-  { authorId: u("sara")._id, text: "GG! Better luck next time 😄", targetType: "Match", targetId: completedMatches[2]._id },
+  { authorId: u("sara")._id, text: "GG! Better luck next time!", targetType: "Match", targetId: completedMatches[2]._id },
   { authorId: u("hanna")._id, text: "Can't wait for the Spring Championship!", targetType: "Tournament", targetId: tournament1._id },
   { authorId: u("max")._id, text: "I'm coming for that trophy!", targetType: "Tournament", targetId: tournament1._id },
   { authorId: u("tobias")._id, text: "Beginner friendly is perfect for me", targetType: "Tournament", targetId: tournament3._id },
@@ -258,7 +258,7 @@ await Comment.insertMany([
 ]);
 console.log("Created comments");
 
-// ─── Award trophy to past tournament winner ──────────────────────────
+// ---- Award trophy to last year's winner ----
 await User.findByIdAndUpdate(u("sara")._id, {
   $push: {
     trophies: {
@@ -269,7 +269,7 @@ await User.findByIdAndUpdate(u("sara")._id, {
 });
 console.log("Awarded trophy to sara");
 
-console.log("\n✅ Seed complete!");
+console.log("\nSeed complete!");
 console.log(`   ${users.length} users (login with any email + 'password123')`);
 console.log(`   Admin: admin@test.com / password123`);
 console.log(`   ${completedMatches.length + ongoingMatches.length + waitingMatches.length} matches`);

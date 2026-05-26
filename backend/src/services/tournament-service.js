@@ -2,7 +2,7 @@ import Tournament from "../models/Tournament.js";
 import Match from "../models/Match.js";
 import User from "../models/User.js";
 import { BusinessLogicError } from "../utils/errors.js";
-import { TOURNAMENT_WIN_POINTS } from "../config/constants.js";
+import { TOURNAMENT_WIN_POINTS, ELO_FIELD_BY_TIME_CONTROL } from "../config/constants.js";
 
 
 // Get a paginated, filtered list of tournaments
@@ -141,9 +141,12 @@ export async function joinTournament(tournamentId, userId) {
     throw new BusinessLogicError("Banned users cannot join tournaments", 403);
   }
 
-  // ELO range check uses the tournament's time-control-specific rating
-  const tc = tournament.category?.timeControl || 10;
-  const userElo = user.eloRating?.[`tc${tc}`] ?? 1000;
+  // Use the ELO rating for this tournament's time control, fall back to tc30 if none is set
+  let eloField = ELO_FIELD_BY_TIME_CONTROL[tournament.category.timeControl];
+  if (eloField === undefined) {
+    eloField = "tc30";
+  }
+  const userElo = user.eloRating[eloField];
   if (userElo < tournament.eloRange.min || userElo > tournament.eloRange.max) {
     throw new BusinessLogicError("Your ELO rating is not within the required range for this tournament", 400);
   }

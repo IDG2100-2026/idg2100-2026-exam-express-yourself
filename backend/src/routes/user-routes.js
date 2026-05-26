@@ -2,11 +2,12 @@ import express from "express";
 import {
   validateRegister,
   validateLogin,
+  validateGetUsers,
   validateUpdateUser,
 } from "../validators/user-validator.js";
 import { validate } from "../validators/validate.js";
 import {
-  getAllUsers,
+  getUsers,
   getUser,
   updateUser,
   uploadAvatar,
@@ -18,29 +19,24 @@ import upload from "../middlewares/upload.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/:id", getUser); // public — profile pages don't require login
+
+// Public routes
+userRouter.get("/:id", getUser); // get a user profile
+
 
 userRouter.use(authenticate);
 
-userRouter.get("/", authorize("admin"), getAllUsers);
 
-userRouter.patch(
-  "/:id",
-  authorize("admin", "user"),
-  validateUpdateUser(),
-  validate,
-  updateUser,
-);
+// Authenticated users
+userRouter.patch("/:id", authorize("admin", "user"), validateUpdateUser(), validate, updateUser); // update a user profile
 
-userRouter.patch(
-  "/:id/avatar",
-  authorize("admin", "user"),
-  upload.single("avatar"),
-  uploadAvatar,
-);
+userRouter.patch("/:id/avatar", authorize("admin", "user"), upload.single("avatar"), uploadAvatar); // upload a profile avatar
 
-userRouter.post("/:id/ban", authorize("admin"), banUser);
 
-userRouter.post("/:id/make-admin", authorize("admin"), makeAdmin);
+// Admin only
+userRouter.get("/", authorize("admin"), validateGetUsers(), validate, getUsers); // get all users
+userRouter.post("/:id/ban", authorize("admin"), banUser); // ban a user
+userRouter.post("/:id/make-admin", authorize("admin"), makeAdmin); // make a user an admin
+
 
 export default userRouter;

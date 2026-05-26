@@ -1,31 +1,42 @@
 import mongoose from "mongoose";
-import { MAX_COMMENT_LENGTH, MIN_COMMENT_LENGTH } from "../config/constants.js";
+import {
+  MIN_COMMENT_LENGTH,
+  MAX_COMMENT_LENGTH,
+  COMMENT_TARGET_TYPES,
+} from "../config/constants.js";
 
 const commentSchema = new mongoose.Schema(
   {
     authorId: {
       type: mongoose.Schema.Types.ObjectId,
+      required: [true, "Author is required. [schema]"],
       ref: "User",
-      required: true,
     },
     text: {
       type: String,
-      required: true,
       trim: true,
-      minlength: MIN_COMMENT_LENGTH,
-      maxlength: MAX_COMMENT_LENGTH,
+      required: [true, "Text is required. [schema]"],
+      minLength: [
+        MIN_COMMENT_LENGTH,
+        `Text must be between ${MIN_COMMENT_LENGTH} and ${MAX_COMMENT_LENGTH} characters. [schema]`,
+      ],
+      maxLength: [
+        MAX_COMMENT_LENGTH,
+        `Text must be between ${MIN_COMMENT_LENGTH} and ${MAX_COMMENT_LENGTH} characters. [schema]`,
+      ],
     },
-    // Polymorphic: comment can belong to a Match or Tournament
     targetType: {
       type: String,
-      enum: ["Match", "Tournament"],
-      required: true,
+      required: [true, "Target type is required. [schema]"],
+      enum: {
+        values: COMMENT_TARGET_TYPES,
+        message: `Target type must be one of: ${COMMENT_TARGET_TYPES.join(", ")}. [schema]`,
+      },
     },
     targetId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      required: [true, "Target ID is required. [schema]"],
     },
-    // Soft delete — keeps data for recovery
     isDeleted: {
       type: Boolean,
       default: false,
@@ -33,9 +44,9 @@ const commentSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-const Comment = mongoose.model("Comment", commentSchema);
+const Comment = mongoose.model("Comment", commentSchema, "comments");
 
 export default Comment;
