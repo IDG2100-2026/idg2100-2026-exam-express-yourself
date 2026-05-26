@@ -5,6 +5,7 @@ import { useComments } from "../../hooks/useComments.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { createComment } from "../../services/comments-service.js";
+import GameBoard from "../../components/game-board/GameBoard.jsx";
 import Avatar from "../../components/avatar/Avatar.jsx";
 
 export default function Game() {
@@ -72,11 +73,7 @@ export default function Game() {
             className="game__dice-area"
             style={{ backgroundColor: appearance.boardColor }}
           >
-            <p>
-              Board — Best of {match.category?.rounds} —{" "}
-              {match.category?.straightsAllowed ? "Straights" : "No straights"}{" "}
-              — {match.category?.timeControl}s
-            </p>
+            <GameBoard matchId={id} userId={user?._id} />
           </div>
         </div>
 
