@@ -134,7 +134,7 @@ export default function Tournament() {
   const isAdmin = user?.role === "admin";
   const alreadyJoined = tournament.participants?.some((p) => p._id === userId || p === userId);
   const canJoin = user && tournament.status === "upcoming" && !alreadyJoined;
-  const canLeave = user && tournament.status === "upcoming" && alreadyJoined;
+  const canLeave = user && alreadyJoined;
 
   return (
     <div className="tournament">

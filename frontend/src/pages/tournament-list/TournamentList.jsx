@@ -8,30 +8,46 @@ const LIMIT = 9;
 
 export default function TournamentList() {
   const [tournaments, setTournaments] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [sort, setSort] = useState("date");
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState(null);
 
+  // Reset and fetch from page 1 whenever filters change
   useEffect(() => {
     let stale = false;
     setIsLoading(true);
-    getTournaments({ page, limit: LIMIT, search, status, sort })
+    setPage(1);
+    getTournaments({ page: 1, limit: LIMIT, search, status, sort })
       .then((data) => {
         if (!stale) {
           setTournaments(data.results || []);
-          setTotal(data.total || 0);
+          setHasMore((data.results?.length || 0) < (data.total || 0));
         }
       })
       .catch((err) => { if (!stale) setError(err.message); })
       .finally(() => { if (!stale) setIsLoading(false); });
     return () => { stale = true; };
-  }, [page, search, status, sort]);
+  }, [search, status, sort]);
 
-  const totalPages = Math.ceil(total / LIMIT);
+  function loadMore() {
+    const nextPage = page + 1;
+    setIsLoadingMore(true);
+    getTournaments({ page: nextPage, limit: LIMIT, search, status, sort })
+      .then((data) => {
+        setTournaments((prev) => [...prev, ...(data.results || [])]);
+        setHasMore(
+          tournaments.length + (data.results?.length || 0) < (data.total || 0)
+        );
+        setPage(nextPage);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setIsLoadingMore(false));
+  }
 
   function handleSearch(e) {
     setSearch(e.target.value);
@@ -108,24 +124,14 @@ export default function TournamentList() {
         ))}
       </div>
 
-      {totalPages > 1 && (
-        <div className="tournaments__pagination">
+      {hasMore && (
+        <div className="tournaments__load-more">
           <button
-            className="tournaments__page-btn"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
+            className="tournaments__load-more-btn"
+            onClick={loadMore}
+            disabled={isLoadingMore}
           >
-            Previous
-          </button>
-          <span className="tournaments__page-info">
-            Page {page} of {totalPages}
-          </span>
-          <button
-            className="tournaments__page-btn"
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Next
+            {isLoadingMore ? "Loading..." : "Load more"}
           </button>
         </div>
       )}

@@ -135,30 +135,23 @@
     margin-top: 0.25rem;
   }
 
-  &__pagination {
+  &__load-more {
     display: flex;
-    align-items: center;
-    gap: 1rem;
     justify-content: center;
     padding-top: 0.5rem;
   }
 
-  &__page-btn {
+  &__load-more-btn {
     background: $color-bg-card;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
     cursor: pointer;
-    font-size: 0.875rem;
-    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    padding: 0.6rem 2rem;
     transition: border-color 0.15s;
 
-    &:hover:not(:disabled) { border-color: $color-accent; }
-    &:disabled { opacity: 0.4; cursor: not-allowed; }
-  }
-
-  &__page-info {
-    color: $color-text-muted;
-    font-size: 0.875rem;
+    &:hover:not(:disabled) { border-color: $color-accent; color: $color-accent; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
 }
