@@ -32,6 +32,7 @@ export const MIN_TOURNAMENT_BUY_IN = 0;
 export const DEFAULT_TOURNAMENT_ELO_MIN = 0;
 export const DEFAULT_TOURNAMENT_ELO_MAX = 9999;
 export const TOURNAMENT_STATUSES = ["upcoming", "cancelled", "in-progress", "completed"];
+export const TOURNAMENT_WIN_POINTS = 50;
 
 // Match schema constraints
 export const VALID_ROUNDS = [3, 5, 7];

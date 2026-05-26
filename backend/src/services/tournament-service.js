@@ -2,6 +2,7 @@ import Tournament from "../models/Tournament.js";
 import Match from "../models/Match.js";
 import User from "../models/User.js";
 import { BusinessLogicError } from "../utils/errors.js";
+import { TOURNAMENT_WIN_POINTS } from "../config/constants.js";
 
 
 // Get a paginated, filtered list of tournaments
@@ -312,6 +313,8 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
           imageUrl: trophyImageUrl,
           wonAt: new Date(),
         });
+        // Award bonus points for winning the tournament
+        trophyWinner.points = trophyWinner.points + TOURNAMENT_WIN_POINTS;
         await trophyWinner.save();
       }
     } else {
