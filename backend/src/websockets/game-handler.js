@@ -1,65 +1,9 @@
-import User from '../models/User.js';
+import User from "../models/User.js";
 import Match from "../models/Match.js";
+import { updateEloMultiplayer } from "../services/elo-service.js";
 import { rollDic, findRoundWinner } from "../services/match-service.js";
 const games = new Map(); // keeps track of active game rooms, and their connected players
 
-// helper function
-const sendError = (socket, errorMessage) => {
-  socket.send(
-    JSON.stringify({
-      // sends error message to a room
-      type: "error",
-      message: errorMessage,
-    }),
-  );
-};
-
-// helper function
-const sendToPlayer = (socket, data) => {
-  socket.send(JSON.stringify(data)); // sends a message to a player
-};
-// helper function
-const sendToRoom = (matchId, data) => {
-  const room = games.get(matchId); // finds the game
-  if (!room) return;
-
-  for (const player of room) {
-    player.socket.send(JSON.stringify(data)); // sends every player a message that is in this game
-  }
-};
-
-// helper function
-const getNextBettingPlayer = (match) => {
-  let nextIndex = match.currentPlayerIndex + 1; // increment index by one
-
-  for (let i = 0; i < match.players.length; i++) {
-    const checkIndex = (nextIndex + i) % match.players.length; // calculate which players to check. Goes back to start if we passed the last player
-    const player = match.players[checkIndex]; // get the players data to check if they have folded or not
-  }
-
-  if (!player.hasFolded && !player.hasMatchedBet) {
-    // skips players that have hasFolded: true and hasMatchedBet: true
-    return checkIndex;
-  }
-
-  return -1; // fallback if something happens and every player has folded. keeps the game from crashing
-};
-
-// helper function
-const isBettingOver = (match) => {
-  // check if all players have folded or matched the highest bet
-  for (const player of match.players) {
-    if (player.hasFolded) continue; // skip over folded players
-    if (!player.hasMatchedBet) return false;
-  }
-  return true; // everyone has folded or matched bet
-};
-
-// helper function
-const getActivePlayers = (match) => {
-  // get the players that have not folded
-  return match.players.filter((player) => !player.hasFolded);
-};
 
 export const handleGameMessage = (socket, message) => {
   const { type, matchId, userId } = message; // extract what kind of action, game and user
@@ -298,10 +242,10 @@ const endRound = async (match, matchId) => {
     const realWinnerIndexes = winners.map(
       (winnerIndex) => activeIndexes[winnerIndex],
     ); // finds the index of the winner. e.g, winners = [1] = player 2 won, or winners = [1, 2] = player 2 and 3 won
-      const sharePot = Math.floor(match.pot / realWinnerIndexes.length); // shares the pot if we have multiple winners
-      for (const winnerIndex of winners) {
-        match.players[winnerIndex].stack += sharePot; // gives the winners equal amount to the stack, and if there is one winner, it will / 1 which will be the same amount
-      }
+    const sharePot = Math.floor(match.pot / realWinnerIndexes.length); // shares the pot if we have multiple winners
+    for (const winnerIndex of winners) {
+      match.players[winnerIndex].stack += sharePot; // gives the winners equal amount to the stack, and if there is one winner, it will / 1 which will be the same amount
+    }
 
     sendToRoom(matchId, {
       type: "round:ended",
@@ -320,10 +264,11 @@ const endRound = async (match, matchId) => {
     return endGame(match, matchId); // end the game if current round is bigger than the round we set at the start
   }
 
-  for (const player of match.players) { // game si not over, and we resets on a new round for the players to play a new round
+  for (const player of match.players) {
+    // game si not over, and we resets on a new round for the players to play a new round
     player.dice = [0, 0, 0, 0, 0]; // reset dice
     ((player.held = [false, false, false, false, false]), // reset dice held
-      (player.rollsUsed = 0)); // reset rolls used 
+      (player.rollsUsed = 0)); // reset rolls used
     ((player.hasFolded = false), // reset folded
       (player.currentBet = 0), // no bet yet
       (player.hasMatchedBet = false)); // no matched bet yet
@@ -334,7 +279,8 @@ const endRound = async (match, matchId) => {
 
   await match.save(); // save the match to db
 
-  sendToRoom(matchId, { // msg to room that we start a new round
+  sendToRoom(matchId, {
+    // msg to room that we start a new round
     type: "round:started",
     currentRound: match.currentRound,
     currentPlayerIndex: match.currentPlayerIndex,
@@ -342,29 +288,38 @@ const endRound = async (match, matchId) => {
 };
 
 const endGame = async (match, matchId) => {
-  match.status = "complete" // change status to know the game are done
+  match.status = "complete"; // change status to know the game are done
   match.endedAt = Date.now(); // track when the match ended at
 
   let bestStack = 0; // assume the index 0 player has the best stack
-  for(const player of match.players){
-    if(player.stack > bestStack){ // check if the current looped over player has more points than the current best stack holder
-      bestStack = player.stack; // if true, the best stack variable is updated to the new player that has more points. 
+  for (const player of match.players) {
+    if (player.stack > bestStack) {
+      // check if the current looped over player has more points than the current best stack holder
+      bestStack = player.stack; // if true, the best stack variable is updated to the new player that has more points.
       winnerId = player.userId; // That player also becomes the winnerId
     }
   }
   match.winnerId = winnerId; // update the match winnerId to the winner we just found out
 
-  for(const player of match.players){
-    await User.findByIdAndUpdate(player.userId, { // finds the user by userId and un
-      $inc: { points: player.stack } // updates the players now stack. e.g, if you won, you got more points
+  for (const player of match.players) {
+    await User.findByIdAndUpdate(player.userId, {
+      // finds the user by userId and un
+      $inc: { points: player.stack }, // updates the players now stack. e.g, if you won, you got more points
     });
-  };
+  }
+
+  const playerResult = match.players.map((player) => ({
+    userId: player.userId,
+    finalPoints: player.stack,
+  }));
+  await updateEloMultiplayer(playerResult);
 
   await match.save(); // save changes to DB
 
-  sendToRoom(matchId, { // send a message to all players that the game is over. 
+  sendToRoom(matchId, {
+    // send a message to all players that the game is over.
     type: "game:ended",
     players: match.players,
     winnerId: winnerId,
   });
-}
+};

@@ -163,18 +163,8 @@ export async function recordResult(req, res, next) {
       { winnerId, score, status: "completed", endedAt: new Date() },
       { new: true }
     );
+    
     if (!match) return res.status(404).json({ error: "Match not found" });
-
-    // Update ELO for non-anonymous 2-player matches
-    if (!match.isAnonymous && match.players.length === 2 && winnerId) {
-      const loserId = match.players.find(
-        (p) => p.userId?.toString() !== winnerId
-      )?.userId;
-
-      if (loserId) {
-        await updateEloRating(winnerId, loserId, false);
-      }
-    }
 
     res.json(match);
   } catch (err) {
