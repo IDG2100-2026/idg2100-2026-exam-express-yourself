@@ -1,7 +1,5 @@
 import express from "express";
 import {
-  validateRegister,
-  validateLogin,
   validateGetUsers,
   validateUpdateUser,
 } from "../validators/user-validator.js";

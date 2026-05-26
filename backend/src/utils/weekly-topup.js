@@ -1,9 +1,10 @@
 import User from "../models/User.js";
 import SystemSettings from "../models/SystemSettings.js";
+import { MSEC_PER_DAY } from "../config/constants.js";
 
 const TOPUP_AMOUNT = 100;
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-const CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000; // check once per day
+const WEEK_MS = 7 * MSEC_PER_DAY;
+const CHECK_INTERVAL_MS = MSEC_PER_DAY; // check once per day
 
 async function runTopup() {
   const result = await User.updateMany({}, { $inc: { points: TOPUP_AMOUNT } });

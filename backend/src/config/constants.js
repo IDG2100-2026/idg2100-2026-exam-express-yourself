@@ -44,6 +44,7 @@ export const VALID_TIME_CONTROLS = [10, 30, 90]; // seconds total for all rounds
 export const VALID_PLAYER_COUNTS = [2, 3, 5];
 export const VALID_BUY_INS = [1, 10, 50];
 export const MATCH_STATUSES = ["waiting", "in-progress", "completed"];
+export const MATCH_PHASES = ["rolling", "betting", "reveal"];
 
 // Leaderboard
 export const LEADERBOARD_SORT_OPTIONS = ["wins", "winPercentage", "matches"];
