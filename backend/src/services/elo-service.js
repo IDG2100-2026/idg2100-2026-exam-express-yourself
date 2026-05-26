@@ -41,12 +41,14 @@ export async function updateEloRating(winnerId, loserId, timeControl, isDraw = f
 
   const K = 32;
 
-  const { newRatingA, newRatingB } = calcEloPair(
+  const calcResult = calcEloPair(
     winner.eloRating[eloField],
     loser.eloRating[eloField],
     K,
     outcome,
   );
+  const newRatingA = calcResult.newRatingA;
+  const newRatingB = calcResult.newRatingB;
 
   winner.eloRating[eloField] = newRatingA;
   loser.eloRating[eloField] = newRatingB;

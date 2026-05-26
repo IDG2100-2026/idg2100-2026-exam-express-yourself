@@ -66,6 +66,7 @@ export function validateRegister() {
   ];
 }
 
+
 // Validates required body fields when logging in (POST /api/auth/login)
 export function validateLogin() {
   return [
@@ -81,6 +82,7 @@ export function validateLogin() {
       .withMessage("Password is required."),
   ];
 }
+
 
 // Validates optional body fields when updating a user profile (PATCH /api/users/:id)
 export function validateUpdateUser() {
