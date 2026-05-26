@@ -234,7 +234,7 @@ export async function recordResult(matchId, winnerId, score) {
       return player.userId.toString() !== winnerId;
     });
     if (loserPlayer) {
-      await updateEloRating(winnerId, loserPlayer.userId.toString(), false);
+      await updateEloRating(winnerId, loserPlayer.userId.toString(), match.category.timeControl, false);
     }
   } else {
     // Multiplayer: winner gets finalPoints 1, everyone else 0, used for ranked ELO calculation
@@ -248,7 +248,7 @@ export async function recordResult(matchId, winnerId, score) {
         finalPoints: finalPoints,
       };
     });
-    await updateEloMultiplayer(playerResults);
+    await updateEloMultiplayer(playerResults, match.category.timeControl);
   }
 
   return match;
