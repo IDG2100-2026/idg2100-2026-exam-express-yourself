@@ -45,6 +45,9 @@ export const VALID_PLAYER_COUNTS = [2, 3, 5];
 export const VALID_BUY_INS = [1, 10, 50];
 export const MATCH_STATUSES = ["waiting", "in-progress", "completed"];
 
+// Leaderboard
+export const LEADERBOARD_SORT_OPTIONS = ["wins", "winPercentage", "matches"];
+
 // Utilities
 export const MSEC_PER_DAY = 1000 * 60 * 60 * 24; // 24 hours
 export const MAX_LENGTH_AGENT_STRING = 1024;

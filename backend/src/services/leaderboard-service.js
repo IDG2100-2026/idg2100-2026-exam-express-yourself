@@ -1,15 +1,16 @@
 import Match from "../models/Match.js";
 import User from "../models/User.js";
+import { LEADERBOARD_SORT_OPTIONS } from "../config/constants.js";
 
 
-// Get a ranked list of players, either by ELO rating or by match win stats with optional filters
+// Get the top 20 players ranked by ELO or win stats, with optional game variant filters
 export async function getLeaderboard(filters) {
   const rounds = filters.rounds;
   const timeControl = filters.timeControl;
   const straightsAllowed = filters.straightsAllowed;
   const sortBy = filters.sortBy;
 
-  // Simple ELO-based leaderboard if no filters
+  // No filters given, just rank everyone by their 30-second ELO rating
   if (!rounds && !timeControl && !straightsAllowed && !sortBy) {
     const users = await User.find({ isBanned: false })
       .select("username eloRating profileImageUrl")
@@ -18,25 +19,27 @@ export async function getLeaderboard(filters) {
     return users;
   }
 
-  // Build match filter
+  // Narrow down which completed matches to count based on the filters
   const matchFilter = { status: "completed" };
-  if (rounds) matchFilter["category.rounds"] = Number(rounds);
-  if (timeControl) matchFilter["category.timeControl"] = Number(timeControl);
+  if (rounds) {
+    matchFilter["category.rounds"] = rounds;
+  }
+  if (timeControl) {
+    matchFilter["category.timeControl"] = timeControl;
+  }
   if (straightsAllowed !== undefined) {
-    matchFilter["category.straightsAllowed"] = straightsAllowed === "true";
+    matchFilter["category.straightsAllowed"] = straightsAllowed;
   }
 
-  // Aggregation pipeline to compute stats per player
-  const validSortFields = ["wins", "winPercentage", "matches"];
+  // Pick which stat to rank by, defaulting to wins
   let sortField = "wins";
-  if (validSortFields.includes(sortBy)) {
+  if (LEADERBOARD_SORT_OPTIONS.includes(sortBy)) {
     sortField = sortBy;
   }
 
   const pipeline = [
     { $match: matchFilter },
     { $unwind: "$players" },
-    { $match: { "players.userId": { $ne: null } } },
     {
       $group: {
         _id: "$players.userId",
