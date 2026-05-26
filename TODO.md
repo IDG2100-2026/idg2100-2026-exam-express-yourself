@@ -2,16 +2,16 @@ AUTH
   [X] Fix bcrypt await bug in authService.js
   [X] Email verification flow (send link, 15-min expiry, resend)
   [X] Forgot password flow
-  [ ] Split eloRating into 3 values (10/30/90 sec time controls)
+  [ ] Split eloRating into 3 values (10/30/90 sec time controls) — User model still has single eloRating
   [X] IP-change incident logging in authMiddleware.js
 
 BACKEND — GAME LOGIC
-  [~] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s) — model + constants done, no create-match UI/validation
+  [~] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s) — model + constants done, match-service filters by variant
   [ ] Betting logic (pot, fold, raise, match)
-  [~] Multi-player Elo re-estimation (pair-wise) — elo-service.js has updateEloMultiplayer(), not wired to match result flow
-  [ ] Weekly 100-point top-up for users
-  [~] Tournament round logic (random pairing, standings, winner bonus) — bracket structure in model, no auto-pairing logic
-  [X] Tournament status field (upcoming/ongoing/finished) + cancel flag — status has upcoming/in-progress/completed/cancelled
+  [X] Multi-player Elo re-estimation (pair-wise) — updateEloMultiplayer() wired in match-service
+  [ ] Weekly 100-point top-up for users — no cron job exists
+  [X] Tournament round logic (random pairing, standings, winner bonus) — league format in tournament-service.js, TOURNAMENT_WIN_POINTS awarded
+  [X] Tournament status field (upcoming/ongoing/finished) + cancel flag
   [X] Rate limiting incident logging (IP/user-agent/timestamp)
   [X] DB seeding script
 
@@ -22,16 +22,16 @@ WEBSOCKETS
   [ ] Real-time comments on game + tournament pages
 
 WEB COMPONENTS
-  [~] Finish dice-poker-board, dice-poker-die, dice-poker-monitor — components exist but not used in Game.jsx
+  [~] Finish dice-poker-board, dice-poker-die, dice-poker-monitor — components exist but not integrated in Game.jsx
   [ ] Wrap game board in React component
   [ ] Restore game state on reload
-  [ ] Sound effects (gated by user sound setting) — appearance model has sound field, no audio logic
+  [ ] Sound effects (gated by user sound setting)
 
 FRONTEND PAGES
   [~] HomePage — has activity stats + top games + tournaments, missing some detail
-  [~] LobbyPage — lists games, missing sort/filter by elo/time control/pagination
+  [~] LobbyPage — lists games, missing filter by variant (rounds/time control/straights)
   [~] GamePage — shows game info + comments, missing dice board, betting UI, leave button, spectator view
-  [X] TournamentsPage — search, sort, status tabs (all/upcoming/in-progress/completed/cancelled), pagination
+  [X] TournamentsPage — search, sort, status tabs, load-more pagination
   [X] TournamentPage — countdown, standings, join/leave, admin controls (start/cancel/delete/edit)
   [~] ProfilePage — shows stats + games + trophies, has single eloRating (not 3), no game pagination
   [X] LoginPage / RegisterPage — wire up real JWT auth
