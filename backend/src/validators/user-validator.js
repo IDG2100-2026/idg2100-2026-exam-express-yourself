@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import User from "../models/User.js";
 import {
   MIN_USERNAME_LENGTH,
@@ -12,6 +12,16 @@ import {
   MAX_USER_BIO_LENGTH,
   USER_THEMES,
 } from "../config/constants.js";
+
+// Validates optional query params when listing all users (GET /api/users)
+export function validateGetUsers() {
+  return [
+    query("page").optional().isInt({ min: 1 }).withMessage("Page must be a positive number.").toInt(),
+    query("limit").optional().isInt({ min: 1 }).withMessage("Limit must be a positive number.").toInt(),
+    query("search").optional().trim().escape(),
+  ];
+}
+
 
 // Validates required body fields when registering a new user (POST /api/auth/register)
 export function validateRegister() {
