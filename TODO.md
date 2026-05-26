@@ -6,7 +6,7 @@ AUTH
   [X] IP-change incident logging in authMiddleware.js
 
 BACKEND — GAME LOGIC
-  [~] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s) — model + constants done, match-service filters by variant
+  [*] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s) — model + constants done, match-service filters by variant
   [*] Betting logic (pot, fold, raise, match)
   [X] Multi-player Elo re-estimation (pair-wise) — updateEloMultiplayer() wired in match-service
   [X] Weekly 100-point top-up for users — scheduleWeeklyTopup() in server.js, stores lastWeeklyTopUp in SystemSettings
@@ -22,15 +22,15 @@ WEBSOCKETS
   [ ] Real-time comments on game + tournament pages
 
 WEB COMPONENTS
-  [~] Finish dice-poker-board, dice-poker-die, dice-poker-monitor — components exist but not integrated in Game.jsx
+  [*] Finish dice-poker-board, dice-poker-die, dice-poker-monitor — components exist but not integrated in Game.jsx
   [ ] Wrap game board in React component
   [ ] Restore game state on reload
   [ ] Sound effects (gated by user sound setting)
 
 FRONTEND PAGES
-  [~] HomePage — has activity stats + top games + tournaments, missing some detail
+  [*] HomePage — has activity stats + top games + tournaments, missing some detail
   [X] LobbyPage — sort/filter by elo/time control/pagination + load-more
-  [~] GamePage — shows game info + comments, missing dice board, betting UI, leave button, spectator view
+  [*] GamePage — shows game info + comments, missing dice board, betting UI, leave button, spectator view
   [X] TournamentsPage — search, sort, status tabs, load-more pagination
   [X] TournamentPage — countdown, standings, join/leave, admin controls (start/cancel/delete/edit)
   [X] ProfilePage — points balance added, game history with load-more pagination
