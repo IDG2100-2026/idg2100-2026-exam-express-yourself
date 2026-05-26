@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import Match from "../models/Match.js";
 import { chechPassword } from "../utils/password-hash.js";
 import { BusinessLogicError } from "../utils/errors.js";
+import { MSEC_PER_DAY } from "../config/constants.js";
 
 
 // Get a paginated, filtered list of all users
@@ -25,12 +26,48 @@ export async function getAllUsers(filters) {
 }
 
 
-// Get a single user by ID along with their ten most recent completed matches
-export async function getUser(userId) {
+// Get a single user by ID with stats and paginated recent matches, hiding email from other users
+export async function getUser(userId, requestingUserId, filters = {}) {
   const user = await User.findById(userId);
   if (!user) {
     throw new BusinessLogicError("User not found", 404);
   }
+
+  // Convert to plain object so we can remove fields before sending
+  const userObj = user.toObject();
+
+  // Email is only visible to the user themselves, not to other users
+  if (!requestingUserId || requestingUserId !== user._id.toString()) {
+    delete userObj.email;
+  }
+
+  // Count all completed matches this user has played
+  const totalGames = await Match.countDocuments({
+    "players.userId": user._id,
+    status: "completed",
+  });
+
+  // Count wins and losses in the last 30 days
+  const lastMonth = new Date(Date.now() - 30 * MSEC_PER_DAY);
+
+  const winsLastMonth = await Match.countDocuments({
+    winnerId: user._id,
+    status: "completed",
+    endedAt: { $gte: lastMonth },
+  });
+
+  const totalLastMonth = await Match.countDocuments({
+    "players.userId": user._id,
+    status: "completed",
+    endedAt: { $gte: lastMonth },
+  });
+
+  const lossesLastMonth = totalLastMonth - winsLastMonth;
+
+  // Paginated recent matches
+  const matchPage = filters.matchPage || 1;
+  const matchLimit = filters.matchLimit || 10;
+  const skip = (matchPage - 1) * matchLimit;
 
   const recentMatches = await Match.find({
     "players.userId": user._id,
@@ -39,14 +76,36 @@ export async function getUser(userId) {
     .populate("players.userId", "username")
     .populate("winnerId", "username")
     .sort({ updatedAt: -1 })
-    .limit(10);
+    .skip(skip)
+    .limit(matchLimit);
 
-  return { user, recentMatches };
+  return {
+    user: userObj,
+    stats: {
+      totalGames,
+      winsLastMonth,
+      lossesLastMonth,
+    },
+    recentMatches: {
+      page: matchPage,
+      limit: matchLimit,
+      total: totalGames,
+      results: recentMatches,
+    },
+  };
 }
 
 
 // Update a user's profile fields, handling password change with old password verification
-export async function updateUser(userId, updateData) {
+export async function updateUser(userId, updateData, requestingUserId) {
+  // Only the owner or an admin can update a profile
+  if (requestingUserId !== userId) {
+    const requestingUser = await User.findById(requestingUserId);
+    if (!requestingUser || requestingUser.role !== "admin") {
+      throw new BusinessLogicError("You can only update your own profile", 403);
+    }
+  }
+
   const user = await User.findById(userId).select("+password");
   if (!user) {
     throw new BusinessLogicError("User not found", 404);

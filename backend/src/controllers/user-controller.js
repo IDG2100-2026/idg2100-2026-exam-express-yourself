@@ -15,9 +15,9 @@ export async function getUsers(req, res, next) {
 }
 
 
-// Get a single user profile with their recent matches (GET /api/users/:id)
+// Get a single user profile with their recent matches (GET /api/users/:id?matchPage=&matchLimit=)
 export async function getUser(req, res, next) {
-  const result = await getUserService(req.params.id);
+  const result = await getUserService(req.params.id, req.userId, req.validated);
   res.status(200);
   res.json(result);
 }
@@ -25,7 +25,7 @@ export async function getUser(req, res, next) {
 
 // Update a user's profile fields or password (PATCH /api/users/:id)
 export async function updateUser(req, res, next) {
-  const user = await updateUserService(req.params.id, req.validated);
+  const user = await updateUserService(req.params.id, req.validated, req.userId);
   res.status(200);
   res.json(user);
 }

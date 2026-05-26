@@ -2,11 +2,12 @@ import express from "express";
 import {
   validateRegister,
   validateLogin,
+  validateGetUsers,
   validateUpdateUser,
 } from "../validators/user-validator.js";
 import { validate } from "../validators/validate.js";
 import {
-  getAllUsers,
+  getUsers,
   getUser,
   updateUser,
   banUser,
@@ -16,22 +17,22 @@ import { authenticate, authorize } from "../middlewares/auth-middleware.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/:id", getUser); // public — profile pages don't require login
+
+// Public routes
+userRouter.get("/:id", getUser);
+
 
 userRouter.use(authenticate);
 
-userRouter.get("/", authorize("admin"), getAllUsers);
 
-userRouter.patch(
-  "/:id",
-  authorize("admin", "user"),
-  validateUpdateUser(),
-  validate,
-  updateUser,
-);
+// Authenticated users
+userRouter.patch("/:id", authorize("admin", "user"), validateUpdateUser(), validate, updateUser);
 
+
+// Admin only
+userRouter.get("/", authorize("admin"), validateGetUsers(), validate, getUsers);
 userRouter.post("/:id/ban", authorize("admin"), banUser);
-
 userRouter.post("/:id/make-admin", authorize("admin"), makeAdmin);
+
 
 export default userRouter;
