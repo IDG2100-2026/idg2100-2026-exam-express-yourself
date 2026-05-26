@@ -10,15 +10,17 @@ import { Session } from "../models/Session.js";
 import User from "../models/User.js";
 import { signedAccessToken } from "../utils/jwt.js";
 import { REFRESH_TOKEN_TTL } from "../config/auth-config.js";
+import { normalizeIp } from "../utils/normalize-ip.js";
 import { BusinessLogicError } from "../utils/errors.js";
 import { TokenVerification } from "../models/TokenVerification.js";
 import { sendVerificationMail } from "../services/email-service.js";
 
-// helper function so we don't have to write duplicated code.
-const getAccessToken = (user) => {
+// helper function! pass ip so it gets embedded in the token for IP-change detection
+const getAccessToken = (user, ip = null) => {
   return signedAccessToken({
     userId: user._id.toString(),
     role: user.role,
+    ip: normalizeIp(ip),
   });
 };
 // POST /api/users/register
@@ -98,12 +100,12 @@ export const loginUserController = async (req, res, next) => {
     // create a session in db
     const refreshToken = await createSession(
       user,
-      req.ip,
+      normalizeIp(req.ip),
       req.headers["user-agent"],
     );
 
     // Short lived access token with user id and role
-    const accessToken = getAccessToken(user);
+    const accessToken = getAccessToken(user, req.ip);
 
     // store refreshToken in a secure cookie
     res.cookie("refreshToken", refreshToken, {
@@ -139,7 +141,7 @@ export const createAccessToken = async (req, res, next) => {
     const session = await Session.findOne({ refreshToken }); // looking up the session from db.
     if (!session) throw new BusinessLogicError("Invalid refresh token", 401); // session expired, revoked or never existed
 
-    if (session.ip !== "unknown" && session.ip !== req.ip) {
+    if (session.ip !== "unknown" && session.ip !== normalizeIp(req.ip)) {
       // If the ip that makes the request is different from the session ip
       await session.deleteOne(); // deletes the session if the request is from another ip
       throw new BusinessLogicError("Session invalidated due to IP change", 401);
@@ -148,7 +150,7 @@ export const createAccessToken = async (req, res, next) => {
     const user = await User.findById(session.userId); // get the user linked to this session
     if (!user) throw new BusinessLogicError("User not found", 404); // did not find the user
 
-    const accessToken = getAccessToken(user); // generate a new short lived access token
+    const accessToken = getAccessToken(user, req.ip); // generate a new short lived access token
 
     // return access token with minimal user info for frontend
     return res.status(200).json({

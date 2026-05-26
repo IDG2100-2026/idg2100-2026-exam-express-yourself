@@ -68,6 +68,12 @@
   }
 
   &__dice-area {
+    width: 100%;
+    min-height: 200px;
+    border-radius: $radius;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: $color-text-muted;
     font-style: italic;
     font-size: 0.9rem;

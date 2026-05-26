@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getMatches, joinMatch } from "../../services/matches-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
+import { useAppearance } from "../../hooks/useAppearance.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
 
 export default function Lobby() {
@@ -9,6 +10,7 @@ export default function Lobby() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
+  const { appearance } = useAppearance();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,7 +52,7 @@ export default function Lobby() {
         <p className="lobby__status">No open games right now. Be the first!</p>
       )}
       <div className="lobby__grid">
-        {matches.map((match) => {
+        {matches.slice(0, appearance.lobbySize).map((match) => {
           const p1 = match.players?.[0]?.userId;
           return (
             <button key={match._id} className="lobby__card" onClick={() => handleJoin(match)}>

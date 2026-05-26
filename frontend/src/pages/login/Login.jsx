@@ -115,6 +115,7 @@ export default function Login() {
               />
             </div>
             <button
+              type="button"
               className="login__forgot"
               onClick={() => setShowForgotPassword(true)}
             >

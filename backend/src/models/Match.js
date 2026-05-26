@@ -1,4 +1,11 @@
 import mongoose from "mongoose";
+import {
+  VALID_PLAYER_COUNTS,
+  VALID_ROUNDS,
+  VALID_TIME_CONTROLS,
+  VALID_BUY_INS,
+  MATCH_STATUSES,
+} from "../config/constants.js";
 
 const matchSchema = new mongoose.Schema(
   {
@@ -6,8 +13,8 @@ const matchSchema = new mongoose.Schema(
       {
         userId: {
           type: mongoose.Schema.Types.ObjectId,
+          required: [true, "Player user ID is required. [schema]"],
           ref: "User",
-          default: null, // null for anonymous players
         },
         stack: {
           type: Number,
@@ -41,18 +48,38 @@ const matchSchema = new mongoose.Schema(
     ],
     maxPlayers: {
       type: Number,
-      enum: [2, 3, 5],
       default: 2,
+      enum: {
+        values: VALID_PLAYER_COUNTS,
+        message: `Max players must be one of: ${VALID_PLAYER_COUNTS.join(", ")}. [schema]`,
+      },
     },
     category: {
-      rounds: { type: Number, enum: [3, 5, 7] },
+      rounds: {
+        type: Number,
+        required: [true, "Rounds is required. [schema]"],
+        enum: {
+          values: VALID_ROUNDS,
+          message: `Rounds must be one of: ${VALID_ROUNDS.join(", ")}. [schema]`,
+        },
+      },
       straightsAllowed: { type: Boolean, default: true },
-      timeControl: { type: Number, enum: [10, 30, 90] }, // seconds total
+      timeControl: {
+        type: Number,
+        required: [true, "Time control is required. [schema]"],
+        enum: {
+          values: VALID_TIME_CONTROLS,
+          message: `Time control must be one of: ${VALID_TIME_CONTROLS.join(", ")}. [schema]`,
+        },
+      }, // seconds total
     },
     buyIn: {
       type: Number,
-      enum: [1, 10, 50],
       default: 1,
+      enum: {
+        values: VALID_BUY_INS,
+        message: `Buy-in must be one of: ${VALID_BUY_INS.join(", ")}. [schema]`,
+      },
     },
     score: {
       type: mongoose.Schema.Types.Mixed,
@@ -64,27 +91,30 @@ const matchSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["waiting", "in-progress", "completed"],
       default: "waiting",
+      enum: {
+        values: MATCH_STATUSES,
+        message: `Status must be one of: ${MATCH_STATUSES.join(", ")}. [schema]`,
+      },
     },
-    currentRound: { // tracks which round we are on
+    currentRound: {
       type: Number,
       default: 0
     },
-    currentPlayerIndex: { // tracks which players turn it is
+    currentPlayerIndex: {
       type: Number,
       default: 0
     },
-    phase: { // tells if we are rolling, betting or showing dice's
+    phase: {
       type: String,
       enum: ["rolling", "betting", "reveal"],
       default: "rolling"
     },
-    pot: { // total points bet by all the players
+    pot: {
       type: Number,
       default: 0
     },
-    highestBet: { // current amount of point all players need to match for moving forward
+    highestBet: {
       type: Number,
       default: 0
     },
@@ -110,6 +140,6 @@ const matchSchema = new mongoose.Schema(
   },
 );
 
-const Match = mongoose.model("Match", matchSchema);
+const Match = mongoose.model("Match", matchSchema, "matches");
 
 export default Match;

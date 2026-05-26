@@ -9,10 +9,12 @@ import {
   getAllUsers,
   getUser,
   updateUser,
+  uploadAvatar,
   banUser,
   makeAdmin,
 } from "../controllers/user-controller.js";
 import { authenticate, authorize } from "../middlewares/auth-middleware.js";
+import upload from "../middlewares/upload.js";
 
 const userRouter = express.Router();
 
@@ -28,6 +30,13 @@ userRouter.patch(
   validateUpdateUser(),
   validate,
   updateUser,
+);
+
+userRouter.patch(
+  "/:id/avatar",
+  authorize("admin", "user"),
+  upload.single("avatar"),
+  uploadAvatar,
 );
 
 userRouter.post("/:id/ban", authorize("admin"), banUser);

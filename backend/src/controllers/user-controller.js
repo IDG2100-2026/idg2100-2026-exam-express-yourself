@@ -87,6 +87,23 @@ export async function updateUser(req, res, next) {
   }
 }
 
+// PATCH /api/users/:id/avatar — upload profile picture
+export async function uploadAvatar(req, res, next) {
+  try {
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+    const profileImageUrl = `/uploads/${req.file.filename}`;
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { profileImageUrl },
+      { new: true },
+    );
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json({ profileImageUrl });
+  } catch (err) {
+    next(err);
+  }
+}
+
 // POST /api/users/:id/ban — admin only
 export async function banUser(req, res, next) {
   try {

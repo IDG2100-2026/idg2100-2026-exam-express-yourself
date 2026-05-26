@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+import crypto from "node:crypto";
 import User from "../src/models/User.js";
 import Match from "../src/models/Match.js";
 import Tournament from "../src/models/Tournament.js";
 import Comment from "../src/models/Comment.js";
+import { Session } from "../src/models/Session.js";
 
 const { DB_HOSTNAME, DB_PORT, DB_NAME } = process.env;
 const MONGODB_URI = `mongodb://${DB_HOSTNAME}:${DB_PORT}/${DB_NAME}`;
@@ -16,6 +17,7 @@ await User.deleteMany({});
 await Match.deleteMany({});
 await Tournament.deleteMany({});
 await Comment.deleteMany({});
+await Session.deleteMany({});
 console.log("Cleared all collections");
 
 // Shared hashed password — all seed users use "password123"
@@ -23,32 +25,33 @@ const hashPassword = (password) => {
   const hash = password + process.env.PASSWORD_SALT;
   return crypto.createHash("sha256").update(hash).digest("hex").toString();
 };
-const hashedPassword = hashPassword("Password123!");
+const hashedPassword = hashPassword("password123");
 const verified = { isVerified: true };
 
 // ─── Users ────────────────────────────────────────────────────────────
-const users = await User.insertMany([
-  { username: "admin", email: "admin@test.com", password: hashedPassword, age: 29, role: "admin", eloRating: 1200, points: 500 },
-  { username: "emil", email: "emil@test.com", password: hashedPassword, age: 20, eloRating: 2867, points: 300 },
-  { username: "nicolai", email: "nicolai@test.com", password: hashedPassword, age: 22, eloRating: 1100, points: 200 },
-  { username: "adrian", email: "adrian@test.com", password: hashedPassword, age: 23, eloRating: 1450, points: 150 },
-  { username: "sara", email: "sara@test.com", password: hashedPassword, age: 22, eloRating: 3700, points: 400 },
-  { username: "tobias", email: "tobias@test.com", password: hashedPassword, age: 23, eloRating: 860, points: 50 },
-  { username: "lena", email: "lena@test.com", password: hashedPassword, age: 27, eloRating: 1490, points: 200 },
-  { username: "jonas", email: "jonas@test.com", password: hashedPassword, age: 24, eloRating: 1498, points: 180 },
-  { username: "mira", email: "mira@test.com", password: hashedPassword, age: 30, eloRating: 2999, points: 350 },
-  { username: "hanna", email: "hanna@test.com", password: hashedPassword, age: 21, eloRating: 1400, points: 100 },
-  { username: "max", email: "max@test.com", password: hashedPassword, age: 25, eloRating: 3000, points: 500 },
-  { username: "kristian", email: "kristian@test.com", password: hashedPassword, age: 26, eloRating: 1300, points: 100 },
-  { username: "ingrid", email: "ingrid@test.com", password: hashedPassword, age: 29, eloRating: 2465, points: 250 },
-  { username: "fredrik", email: "fredrik@test.com", password: hashedPassword, age: 31, eloRating: 1100, points: 100 },
-  { username: "camilla", email: "camilla@test.com", password: hashedPassword, age: 19, eloRating: 1244, points: 100 },
-  { username: "petter", email: "petter@test.com", password: hashedPassword, age: 34, eloRating: 1460, points: 150 },
-  { username: "silje", email: "silje@test.com", password: hashedPassword, age: 22, eloRating: 1085, points: 80 },
-  { username: "anders", email: "anders@test.com", password: hashedPassword, age: 27, eloRating: 1290, points: 100 },
-  { username: "stian", email: "stian@test.com", password: hashedPassword, age: 20, eloRating: 3800, points: 500 },
-  { username: "thea", email: "thea@test.com", password: hashedPassword, age: 23, eloRating: 2000, points: 200 },
+await User.collection.insertMany([
+  { username: "admin", email: "admin@test.com", password: hashedPassword, ...verified, age: 29, role: "admin", eloRating: 1200, points: 500 },
+  { username: "emil", email: "emil@test.com", password: hashedPassword, ...verified, age: 20, eloRating: 2867, points: 300 },
+  { username: "nicolai", email: "nicolai@test.com", password: hashedPassword, ...verified, age: 22, eloRating: 1100, points: 200 },
+  { username: "adrian", email: "adrian@test.com", password: hashedPassword, ...verified, age: 23, eloRating: 1450, points: 150 },
+  { username: "sara", email: "sara@test.com", password: hashedPassword, ...verified, age: 22, eloRating: 3700, points: 400 },
+  { username: "tobias", email: "tobias@test.com", password: hashedPassword, ...verified, age: 23, eloRating: 860, points: 50 },
+  { username: "lena", email: "lena@test.com", password: hashedPassword, ...verified, age: 27, eloRating: 1490, points: 200 },
+  { username: "jonas", email: "jonas@test.com", password: hashedPassword, ...verified, age: 24, eloRating: 1498, points: 180 },
+  { username: "mira", email: "mira@test.com", password: hashedPassword, ...verified, age: 30, eloRating: 2999, points: 350 },
+  { username: "hanna", email: "hanna@test.com", password: hashedPassword, ...verified, age: 21, eloRating: 1400, points: 100 },
+  { username: "max", email: "max@test.com", password: hashedPassword, ...verified, age: 25, eloRating: 3000, points: 500 },
+  { username: "kristian", email: "kristian@test.com", password: hashedPassword, ...verified, age: 26, eloRating: 1300, points: 100 },
+  { username: "ingrid", email: "ingrid@test.com", password: hashedPassword, ...verified, age: 29, eloRating: 2465, points: 250 },
+  { username: "fredrik", email: "fredrik@test.com", password: hashedPassword, ...verified, age: 31, eloRating: 1100, points: 100 },
+  { username: "camilla", email: "camilla@test.com", password: hashedPassword, ...verified, age: 19, eloRating: 1244, points: 100 },
+  { username: "petter", email: "petter@test.com", password: hashedPassword, ...verified, age: 34, eloRating: 1460, points: 150 },
+  { username: "silje", email: "silje@test.com", password: hashedPassword, ...verified, age: 22, eloRating: 1085, points: 80 },
+  { username: "anders", email: "anders@test.com", password: hashedPassword, ...verified, age: 27, eloRating: 1290, points: 100 },
+  { username: "stian", email: "stian@test.com", password: hashedPassword, ...verified, age: 20, eloRating: 3800, points: 500 },
+  { username: "thea", email: "thea@test.com", password: hashedPassword, ...verified, age: 23, eloRating: 2000, points: 200 },
 ]);
+const users = await User.find({});
 console.log(`Created ${users.length} users`);
 
 // Helper to find user by username

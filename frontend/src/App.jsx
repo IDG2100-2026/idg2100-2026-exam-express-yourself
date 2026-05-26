@@ -2,7 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./providers/AuthProvider.jsx";
 import { AppearanceProvider } from "./providers/AppearanceProvider.jsx";
 import MainLayout from "./layouts/main-layout/MainLayout.jsx";
+import AdminLayout from "./layouts/admin-layout/AdminLayout.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import AdminRoute from "./routes/AdminRoute.jsx";
 import Home from "./pages/home/Home.jsx";
 import Lobby from "./pages/lobby/Lobby.jsx";
 import Login from "./pages/login/Login.jsx";
@@ -19,6 +21,11 @@ import Terms from "./pages/terms/Terms.jsx";
 import Privacy from "./pages/privacy/Privacy.jsx";
 import NotFound from "./pages/not-found/NotFound.jsx";
 import ResetPassword from "./pages/ResetPassword/ResetPassword.jsx";
+import AdminDashboard from "./pages/admin/dashboard/AdminDashboard.jsx";
+import AdminUsers from "./pages/admin/users/AdminUsers.jsx";
+import AdminComments from "./pages/admin/comments/AdminComments.jsx";
+import AdminTournamentCreate from "./pages/admin/tournament-create/AdminTournamentCreate.jsx";
+
 function App() {
   return (
     <AppearanceProvider>
@@ -44,6 +51,16 @@ function App() {
                 <Route path="/create-game" element={<CreateGame />} />
               </Route>
               <Route path="*" element={<NotFound />} />
+            </Route>
+
+            <Route element={<AdminRoute />}>
+              <Route element={<AdminLayout />}>
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/users" element={<AdminUsers />} />
+                <Route path="/admin/comments" element={<AdminComments />} />
+                <Route path="/admin/tournament/create" element={<AdminTournamentCreate />} />
+                <Route path="/admin/tournament/:id/edit" element={<AdminTournamentCreate />} />
+              </Route>
             </Route>
           </Routes>
         </AuthProvider>
