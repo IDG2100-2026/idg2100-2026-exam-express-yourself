@@ -10,10 +10,14 @@ import authRouter from "./src/routes/auth-routes.js";
 import helmet from "helmet";
 import { connectDB, disconnectDB } from "./src/config/db.js";
 import platformActivityRouter from "./src/routes/platform-activity-routes.js";
+import { setupWebSocket } from "./src/websockets/index.js";
+import { apiRateLimiter } from "./src/middlewares/rate-limiter.js";
+import securityIncidentsRouter from "./src/routes/security-incidents-routes.js";
+import { scheduleWeeklyTopup } from "./src/utils/weekly-topup.js";
 
 const app = express();
 
-app.use(helmet()); // TODO: Do we need? It blocks with /uploads
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 
 app.use(
   cors({
@@ -23,6 +27,10 @@ app.use(
 );
 
 await connectDB();
+scheduleWeeklyTopup();
+
+// Apply rate limiter to all API routes
+app.use("/api", apiRateLimiter);
 
 // Parse JSON bodies
 app.use(express.json());
@@ -38,6 +46,7 @@ app.use("/api/tournaments", tournamentRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/leaderboard", leaderboardRouter);
 app.use("/api/platform-activity", platformActivityRouter);
+app.use("/api/security-incidents", securityIncidentsRouter);
 
 
 app.use((req, res) => {
@@ -48,6 +57,8 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 const httpServer = app.listen(process.env.BACKEND_APP_PORT);
+setupWebSocket(httpServer);
+
 httpServer.on("listening", () => {
   console.log("Server is listening on port:", httpServer.address().port);
 });

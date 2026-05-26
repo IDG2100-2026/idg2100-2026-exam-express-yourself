@@ -10,9 +10,14 @@ function getPlayer(match, index) {
   return match.players?.[index]?.userId || null;
 }
 
+function getPlayerElo(player, tc) {
+  return player?.eloRating?.[`tc${tc || 10}`] || player?.eloRating?.tc10 || 0;
+}
+
 function avgElo(match) {
-  const p1 = getPlayer(match, 0)?.eloRating || 0;
-  const p2 = getPlayer(match, 1)?.eloRating || 0;
+  const tc = match.category?.timeControl;
+  const p1 = getPlayerElo(getPlayer(match, 0), tc);
+  const p2 = getPlayerElo(getPlayer(match, 1), tc);
   return p2 ? Math.round((p1 + p2) / 2) : p1;
 }
 
@@ -112,7 +117,7 @@ export default function Home() {
                     <button key={match._id} className="home__card home__card--btn" onClick={() => handleJoinGame(match)}>
                       <div className="home__card-player">{p1?.username || "Unknown"}</div>
                       <div className="home__card-variant">Best of {match.category?.rounds} — {match.category?.timeControl}s</div>
-                      <div className="home__card-elo">Elo: {p1?.eloRating || "—"}</div>
+                      <div className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "—"}</div>
                       <div className="home__card-waiting">Click to join</div>
                     </button>
                   );

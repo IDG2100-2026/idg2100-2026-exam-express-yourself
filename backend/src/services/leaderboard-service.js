@@ -10,11 +10,11 @@ export async function getLeaderboard(filters) {
   const straightsAllowed = filters.straightsAllowed;
   const sortBy = filters.sortBy;
 
-  // No filters given, just rank everyone by their 30-second ELO rating
+  // No filters given, just rank everyone by their 10-second ELO rating
   if (!rounds && !timeControl && !straightsAllowed && !sortBy) {
     const users = await User.find({ isBanned: false })
       .select("username eloRating profileImageUrl")
-      .sort({ "eloRating.tc30": -1 })
+      .sort({ "eloRating.tc10": -1 })
       .limit(20);
     return users;
   }

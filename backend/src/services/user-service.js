@@ -151,6 +151,23 @@ export async function updateUser(userId, updateData, requestingUserId) {
 }
 
 
+// Set a new profile image URL on a user, enforcing ownership (only owner or admin can change it)
+export async function uploadAvatar(userId, profileImageUrl, requestingUserId) {
+  if (requestingUserId !== userId) {
+    const requestingUser = await User.findById(requestingUserId);
+    if (!requestingUser || requestingUser.role !== "admin") {
+      throw new BusinessLogicError("You can only update your own profile", 403);
+    }
+  }
+
+  const user = await User.findByIdAndUpdate(userId, { profileImageUrl }, { new: true });
+  if (!user) {
+    throw new BusinessLogicError("User not found", 404);
+  }
+  return user;
+}
+
+
 // Set a user as banned so they can no longer join tournaments or matches
 export async function banUser(userId) {
   const user = await User.findById(userId);

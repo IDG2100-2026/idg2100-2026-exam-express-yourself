@@ -41,20 +41,15 @@ export async function updateEloRating(winnerId, loserId, timeControl, isDraw = f
 
   const K = 32;
 
-  const calcResult = calcEloPair(
+  const { newRatingA, newRatingB } = calcEloPair(
     winner.eloRating[eloField],
     loser.eloRating[eloField],
     K,
     outcome,
   );
-  const newRatingA = calcResult.newRatingA;
-  const newRatingB = calcResult.newRatingB;
 
-  winner.eloRating[eloField] = newRatingA;
-  loser.eloRating[eloField] = newRatingB;
-
-  await winner.save();
-  await loser.save();
+  await User.findByIdAndUpdate(winnerId, { $set: { [`eloRating.${eloField}`]: newRatingA } });
+  await User.findByIdAndUpdate(loserId, { $set: { [`eloRating.${eloField}`]: newRatingB } });
 
   return { winnerElo: newRatingA, loserElo: newRatingB };
 }

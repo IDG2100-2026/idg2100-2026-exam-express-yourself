@@ -22,6 +22,9 @@ function Header() {
           <Link to="/lobby" className="header__nav-link">Lobby</Link>
           <Link to="/tournaments" className="header__nav-link">Tournaments</Link>
           <Link to="/about-game" className="header__nav-link">About the Game</Link>
+          {user?.role === "admin" && (
+            <Link to="/admin" className="header__nav-link header__nav-link--admin">Dashboard</Link>
+          )}
         </nav>
 
         <div className="header__right">

@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+import crypto from "node:crypto";
 import User from "../src/models/User.js";
 import Match from "../src/models/Match.js";
 import Tournament from "../src/models/Tournament.js";
 import Comment from "../src/models/Comment.js";
+import { Session } from "../src/models/Session.js";
 
 const { DB_HOSTNAME, DB_PORT, DB_NAME } = process.env;
 const MONGODB_URI = `mongodb://${DB_HOSTNAME}:${DB_PORT}/${DB_NAME}`;
@@ -16,34 +17,41 @@ await User.deleteMany({});
 await Match.deleteMany({});
 await Tournament.deleteMany({});
 await Comment.deleteMany({});
+await Session.deleteMany({});
 console.log("Cleared all collections");
 
-// All seed users share the same password, "password123"
-const hashedPassword = await bcrypt.hash("password123", 10);
+// Shared hashed password — all seed users use "password123"
+const hashPassword = (password) => {
+  const hash = password + process.env.PASSWORD_SALT;
+  return crypto.createHash("sha256").update(hash).digest("hex").toString();
+};
+const hashedPassword = hashPassword("password123");
+const verified = { isVerified: true };
 
 // ---- Users ----
-const users = await User.insertMany([
-  { username: "admin", email: "admin@test.com", password: hashedPassword, age: 29, role: "admin", eloRating: { tc10: 1200, tc30: 1200, tc90: 1200 }, points: 500 },
-  { username: "emil", email: "emil@test.com", password: hashedPassword, age: 20, eloRating: { tc10: 2867, tc30: 2867, tc90: 2867 }, points: 300 },
-  { username: "nicolai", email: "nicolai@test.com", password: hashedPassword, age: 22, eloRating: { tc10: 1100, tc30: 1100, tc90: 1100 }, points: 200 },
-  { username: "adrian", email: "adrian@test.com", password: hashedPassword, age: 23, eloRating: { tc10: 1450, tc30: 1450, tc90: 1450 }, points: 150 },
-  { username: "sara", email: "sara@test.com", password: hashedPassword, age: 22, eloRating: { tc10: 3700, tc30: 3700, tc90: 3700 }, points: 400 },
-  { username: "tobias", email: "tobias@test.com", password: hashedPassword, age: 23, eloRating: { tc10: 860, tc30: 860, tc90: 860 }, points: 50 },
-  { username: "lena", email: "lena@test.com", password: hashedPassword, age: 27, eloRating: { tc10: 1490, tc30: 1490, tc90: 1490 }, points: 200 },
-  { username: "jonas", email: "jonas@test.com", password: hashedPassword, age: 24, eloRating: { tc10: 1498, tc30: 1498, tc90: 1498 }, points: 180 },
-  { username: "mira", email: "mira@test.com", password: hashedPassword, age: 30, eloRating: { tc10: 2999, tc30: 2999, tc90: 2999 }, points: 350 },
-  { username: "hanna", email: "hanna@test.com", password: hashedPassword, age: 21, eloRating: { tc10: 1400, tc30: 1400, tc90: 1400 }, points: 100 },
-  { username: "max", email: "max@test.com", password: hashedPassword, age: 25, eloRating: { tc10: 3000, tc30: 3000, tc90: 3000 }, points: 500 },
-  { username: "kristian", email: "kristian@test.com", password: hashedPassword, age: 26, eloRating: { tc10: 1300, tc30: 1300, tc90: 1300 }, points: 100 },
-  { username: "ingrid", email: "ingrid@test.com", password: hashedPassword, age: 29, eloRating: { tc10: 2465, tc30: 2465, tc90: 2465 }, points: 250 },
-  { username: "fredrik", email: "fredrik@test.com", password: hashedPassword, age: 31, eloRating: { tc10: 1100, tc30: 1100, tc90: 1100 }, points: 100 },
-  { username: "camilla", email: "camilla@test.com", password: hashedPassword, age: 19, eloRating: { tc10: 1244, tc30: 1244, tc90: 1244 }, points: 100 },
-  { username: "petter", email: "petter@test.com", password: hashedPassword, age: 34, eloRating: { tc10: 1460, tc30: 1460, tc90: 1460 }, points: 150 },
-  { username: "silje", email: "silje@test.com", password: hashedPassword, age: 22, eloRating: { tc10: 1085, tc30: 1085, tc90: 1085 }, points: 80 },
-  { username: "anders", email: "anders@test.com", password: hashedPassword, age: 27, eloRating: { tc10: 1290, tc30: 1290, tc90: 1290 }, points: 100 },
-  { username: "stian", email: "stian@test.com", password: hashedPassword, age: 20, eloRating: { tc10: 3800, tc30: 3800, tc90: 3800 }, points: 500 },
-  { username: "thea", email: "thea@test.com", password: hashedPassword, age: 23, eloRating: { tc10: 2000, tc30: 2000, tc90: 2000 }, points: 200 },
+await User.collection.insertMany([
+  { username: "admin", email: "admin@test.com", password: hashedPassword, ...verified, age: 29, role: "admin", eloRating: { tc10: 1200, tc30: 1150, tc90: 1100 }, points: 500 },
+  { username: "emil", email: "emil@test.com", password: hashedPassword, ...verified, age: 20, eloRating: { tc10: 2867, tc30: 2700, tc90: 2500 }, points: 300 },
+  { username: "nicolai", email: "nicolai@test.com", password: hashedPassword, ...verified, age: 22, eloRating: { tc10: 1100, tc30: 1050, tc90: 1000 }, points: 200 },
+  { username: "adrian", email: "adrian@test.com", password: hashedPassword, ...verified, age: 23, eloRating: { tc10: 1450, tc30: 1400, tc90: 1350 }, points: 150 },
+  { username: "sara", email: "sara@test.com", password: hashedPassword, ...verified, age: 22, eloRating: { tc10: 3700, tc30: 3500, tc90: 3200 }, points: 400 },
+  { username: "tobias", email: "tobias@test.com", password: hashedPassword, ...verified, age: 23, eloRating: { tc10: 860, tc30: 900, tc90: 950 }, points: 50 },
+  { username: "lena", email: "lena@test.com", password: hashedPassword, ...verified, age: 27, eloRating: { tc10: 1490, tc30: 1450, tc90: 1400 }, points: 200 },
+  { username: "jonas", email: "jonas@test.com", password: hashedPassword, ...verified, age: 24, eloRating: { tc10: 1498, tc30: 1460, tc90: 1420 }, points: 180 },
+  { username: "mira", email: "mira@test.com", password: hashedPassword, ...verified, age: 30, eloRating: { tc10: 2999, tc30: 2800, tc90: 2600 }, points: 350 },
+  { username: "hanna", email: "hanna@test.com", password: hashedPassword, ...verified, age: 21, eloRating: { tc10: 1400, tc30: 1350, tc90: 1300 }, points: 100 },
+  { username: "max", email: "max@test.com", password: hashedPassword, ...verified, age: 25, eloRating: { tc10: 3000, tc30: 2900, tc90: 2750 }, points: 500 },
+  { username: "kristian", email: "kristian@test.com", password: hashedPassword, ...verified, age: 26, eloRating: { tc10: 1300, tc30: 1280, tc90: 1250 }, points: 100 },
+  { username: "ingrid", email: "ingrid@test.com", password: hashedPassword, ...verified, age: 29, eloRating: { tc10: 2465, tc30: 2300, tc90: 2100 }, points: 250 },
+  { username: "fredrik", email: "fredrik@test.com", password: hashedPassword, ...verified, age: 31, eloRating: { tc10: 1100, tc30: 1080, tc90: 1050 }, points: 100 },
+  { username: "camilla", email: "camilla@test.com", password: hashedPassword, ...verified, age: 19, eloRating: { tc10: 1244, tc30: 1200, tc90: 1180 }, points: 100 },
+  { username: "petter", email: "petter@test.com", password: hashedPassword, ...verified, age: 34, eloRating: { tc10: 1460, tc30: 1420, tc90: 1380 }, points: 150 },
+  { username: "silje", email: "silje@test.com", password: hashedPassword, ...verified, age: 22, eloRating: { tc10: 1085, tc30: 1060, tc90: 1030 }, points: 80 },
+  { username: "anders", email: "anders@test.com", password: hashedPassword, ...verified, age: 27, eloRating: { tc10: 1290, tc30: 1260, tc90: 1230 }, points: 100 },
+  { username: "stian", email: "stian@test.com", password: hashedPassword, ...verified, age: 20, eloRating: { tc10: 3800, tc30: 3600, tc90: 3300 }, points: 500 },
+  { username: "thea", email: "thea@test.com", password: hashedPassword, ...verified, age: 23, eloRating: { tc10: 2000, tc30: 1900, tc90: 1800 }, points: 200 },
 ]);
+const users = await User.find({});
 console.log(`Created ${users.length} users`);
 
 // Helper to find user by username

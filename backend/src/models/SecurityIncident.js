@@ -1,0 +1,18 @@
+import mongoose from "mongoose";
+
+const securityIncidentSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ["rate-limit", "ip-change"],
+      required: true,
+    },
+    ip: { type: String, default: "unknown" },
+    userAgent: { type: String, default: "unknown" },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+  },
+  { timestamps: true }
+);
+
+const SecurityIncident = mongoose.model("SecurityIncident", securityIncidentSchema);
+export default SecurityIncident;

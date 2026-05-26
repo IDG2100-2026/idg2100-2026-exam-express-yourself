@@ -13,3 +13,11 @@ export async function createComment(text, targetType, targetId) {
     body: JSON.stringify({ text, targetType, targetId }),
   });
 }
+
+export async function getAllComments() {
+  return await apiFetch("/comments", { method: "GET" });
+}
+
+export async function deleteComment(id) {
+  return await apiFetch(`/comments/${id}`, { method: "DELETE" });
+}

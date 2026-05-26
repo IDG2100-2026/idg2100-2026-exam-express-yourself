@@ -1,7 +1,9 @@
+import { BusinessLogicError } from "../utils/errors.js";
 import {
   getAllUsers as getAllUsersService,
   getUser as getUserService,
   updateUser as updateUserService,
+  uploadAvatar as uploadAvatarService,
   banUser as banUserService,
   makeAdmin as makeAdminService,
 } from "../services/user-service.js";
@@ -28,6 +30,18 @@ export async function updateUser(req, res, next) {
   const user = await updateUserService(req.params.id, req.validated, req.userId);
   res.status(200);
   res.json(user);
+}
+
+
+// Upload a profile avatar image (PATCH /api/users/:id/avatar)
+export async function uploadAvatar(req, res, next) {
+  if (!req.file) {
+    throw new BusinessLogicError("No file uploaded", 400);
+  }
+  const profileImageUrl = `/uploads/${req.file.filename}`;
+  const user = await uploadAvatarService(req.params.id, profileImageUrl, req.userId);
+  res.status(200);
+  res.json({ profileImageUrl });
 }
 
 

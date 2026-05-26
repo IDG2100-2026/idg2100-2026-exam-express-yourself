@@ -1,23 +1,39 @@
 import { verifyAccessToken } from "../utils/jwt.js";
 import { BusinessLogicError } from "../utils/errors.js";
+import SecurityIncident from "../models/SecurityIncident.js";
+import { normalizeIp } from "../utils/normalize-ip.js";
+
 export const authenticate = (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1]; // get the token from authorization: bearer <token>
-    if (!token) throw new BusinessLogicError("Access token required", 401); // no token
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) throw new BusinessLogicError("Access token required", 401);
 
-    const { userId, role } = verifyAccessToken(token); // verify the Jwt signature and check if it is valid.
-    req.userId = userId;
-    req.role = role;
+    const decoded = verifyAccessToken(token);
 
-    next(); // token is valid. go to next middleware or route handler
+    // IP-change detection. log incident and force new login
+    if (decoded.ip && decoded.ip !== normalizeIp(req.ip)) {
+      SecurityIncident.create({
+        type: "ip-change",
+        ip: req.ip,
+        userAgent: req.headers["user-agent"] || "unknown",
+        userId: decoded.userId || null,
+      }).catch(() => {});
+
+      throw new BusinessLogicError("IP mismatch — please re-authenticate", 401);
+    }
+
+    req.userId = decoded.userId;
+    req.role = decoded.role;
+    next();
   } catch (err) {
-    next(err); // global error handler
+    next(err);
   }
 };
+
 export const authorize = (...allowedRoles) => {
   return (req, res, next) => {
-    if (!allowedRoles.includes(req.role)) // check if the user's role is allowed
-      throw new BusinessLogicError("Insufficient permissions", 403); // user is authenticated, but does not have permission to go here
-    next(); // role is allowed
+    if (!allowedRoles.includes(req.role))
+      throw new BusinessLogicError("Insufficient permissions", 403);
+    next();
   };
 };

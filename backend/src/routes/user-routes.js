@@ -10,10 +10,12 @@ import {
   getUsers,
   getUser,
   updateUser,
+  uploadAvatar,
   banUser,
   makeAdmin,
 } from "../controllers/user-controller.js";
 import { authenticate, authorize } from "../middlewares/auth-middleware.js";
+import upload from "../middlewares/upload.js";
 
 const userRouter = express.Router();
 
@@ -27,6 +29,8 @@ userRouter.use(authenticate);
 
 // Authenticated users
 userRouter.patch("/:id", authorize("admin", "user"), validateUpdateUser(), validate, updateUser); // update a user profile
+
+userRouter.patch("/:id/avatar", authorize("admin", "user"), upload.single("avatar"), uploadAvatar); // upload a profile avatar
 
 
 // Admin only

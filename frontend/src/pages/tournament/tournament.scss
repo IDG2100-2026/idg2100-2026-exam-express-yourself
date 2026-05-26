@@ -22,12 +22,64 @@
     background-color: $color-bg-card;
     border: 1px solid $color-border;
     border-radius: $radius;
-    color: $color-text-muted;
     font-size: 0.8rem;
+    font-weight: 700;
     padding: 0.2rem 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    &--upcoming    { color: $color-accent; border-color: $color-accent; }
+    &--in-progress { color: #58a6ff; border-color: #58a6ff; }
+    &--completed   { color: $color-success; border-color: $color-success; }
+    &--cancelled   { color: $color-danger; border-color: $color-danger; }
+  }
+
+  /* Countdown */
+  &__countdown {
+    background: $color-bg-card;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__countdown-label {
+    color: $color-text-muted;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__countdown-units {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  &__countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+  }
+
+  &__countdown-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: $color-accent;
+    font-variant-numeric: tabular-nums;
+    min-width: 2.5ch;
+    text-align: center;
+  }
+
+  &__countdown-text {
+    font-size: 0.7rem;
+    color: $color-text-muted;
     text-transform: uppercase;
   }
 
+  /* Info block */
   &__info {
     background-color: $color-bg-card;
     border: 1px solid $color-border;
@@ -49,37 +101,52 @@
     min-width: 80px;
   }
 
-  &__description {
+  &__description, &__rules-text {
     color: $color-text-muted;
     line-height: 1.7;
   }
 
-  &__join {
-    background-color: $color-accent;
+  /* Action buttons */
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  &__btn {
     border: none;
     border-radius: $radius;
-    color: #1a1200;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    padding: 0.75rem 2rem;
-    align-self: flex-start;
+    padding: 0.6rem 1.4rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: opacity 0.15s;
 
-    &:hover {
-      background-color: $color-accent-hover;
-    }
+    &:hover { opacity: 0.85; }
+
+    &--primary   { background: $color-accent; color: #1a1200; }
+    &--secondary { background: $color-bg-card; border: 1px solid $color-border; color: $color-text; }
+    &--warning   { background: #e09000; color: #1a1200; }
+    &--danger    { background: $color-danger; color: #fff; }
   }
 
-  &__joined {
-    color: $color-success;
-    font-size: 0.9rem;
+  &__admin-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-left: auto;
+    padding-left: 1rem;
+    border-left: 1px solid $color-border;
   }
 
-  &__join-message {
-    color: $color-text-muted;
-    font-size: 0.9rem;
-  }
+  &__joined        { color: $color-success; font-size: 0.9rem; }
+  &__action-msg    { color: $color-success; font-size: 0.9rem; }
 
+  /* Sections */
   &__section-title {
     font-size: 1.1rem;
     color: $color-accent;
@@ -88,6 +155,81 @@
     border-bottom: 1px solid $color-border;
   }
 
+  /* Trophy */
+  &__trophy-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__trophy-img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: $radius;
+  }
+
+  &__trophy-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $color-accent;
+  }
+
+  &__winner {
+    margin-top: 0.5rem;
+    color: $color-text-muted;
+    font-size: 0.9rem;
+
+    strong { color: $color-accent; }
+  }
+
+  /* Standings */
+  &__round {
+    margin-bottom: 1.25rem;
+  }
+
+  &__round-title {
+    font-size: 0.9rem;
+    color: $color-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  &__round-matches {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  &__match {
+    background: $color-bg-card;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  &__match-vs {
+    color: $color-text-muted;
+    font-size: 0.8rem;
+  }
+
+  &__match-player--winner {
+    color: $color-success;
+    font-weight: 700;
+  }
+
+  &__match-result {
+    margin-left: auto;
+    color: $color-success;
+    font-size: 0.85rem;
+  }
+
+  /* Participants */
   &__participant-list {
     list-style: none;
     display: flex;
@@ -96,14 +238,24 @@
   }
 
   &__participant {
-    color: $color-text-muted;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     font-size: 0.9rem;
-
-    &::before {
-      content: '👤 ';
-    }
   }
 
+  &__participant-link {
+    color: $color-text;
+    text-decoration: none;
+    &:hover { color: $color-accent; }
+  }
+
+  &__participant-elo {
+    color: $color-text-muted;
+    font-size: 0.8rem;
+  }
+
+  /* Comments */
   &__comments {
     display: flex;
     flex-direction: column;
@@ -153,10 +305,7 @@
     padding: 0.6rem;
     resize: vertical;
 
-    &:focus {
-      outline: none;
-      border-color: $color-accent;
-    }
+    &:focus { outline: none; border-color: $color-accent; }
   }
 
   &__comment-submit {
@@ -169,18 +318,9 @@
     padding: 0.5rem 1rem;
     align-self: flex-start;
 
-    &:hover {
-      background-color: $color-accent-hover;
-    }
+    &:hover { background-color: $color-accent-hover; }
   }
 
-  &__status {
-    color: $color-text-muted;
-    font-size: 0.9rem;
-  }
-
-  &__error {
-    color: $color-danger;
-    font-size: 0.875rem;
-  }
+  &__status { color: $color-text-muted; font-size: 0.9rem; }
+  &__error  { color: $color-danger; font-size: 0.875rem; }
 }
