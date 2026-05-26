@@ -29,7 +29,7 @@ WEB COMPONENTS
 
 FRONTEND PAGES
   [~] HomePage — has activity stats + top games + tournaments, missing some detail
-  [~] LobbyPage — lists games, missing sort/filter by elo/time control/pagination
+  [X] LobbyPage — sort/filter by elo/time control/pagination + load-more
   [~] GamePage — shows game info + comments, missing dice board, betting UI, leave button, spectator view
   [X] TournamentsPage — search, sort, status tabs (all/upcoming/in-progress/completed/cancelled), pagination
   [X] TournamentPage — countdown, standings, join/leave, admin controls (start/cancel/delete/edit)
