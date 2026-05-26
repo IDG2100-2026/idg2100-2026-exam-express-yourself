@@ -1,20 +1,25 @@
 import Match from "../models/Match.js";
 import User from "../models/User.js";
 
+
+// Get a ranked list of players, either by ELO rating or by match win stats with optional filters
 export async function getLeaderboard(filters) {
-  const { rounds, timeControl, straightsAllowed, sortBy } = filters;
+  const rounds = filters.rounds;
+  const timeControl = filters.timeControl;
+  const straightsAllowed = filters.straightsAllowed;
+  const sortBy = filters.sortBy;
 
   // Simple ELO-based leaderboard if no filters
   if (!rounds && !timeControl && !straightsAllowed && !sortBy) {
     const users = await User.find({ isBanned: false })
       .select("username eloRating profileImageUrl")
-      .sort({ eloRating: -1 })
+      .sort({ "eloRating.tc30": -1 })
       .limit(20);
     return users;
   }
 
   // Build match filter
-  const matchFilter = { status: "completed", isAnonymous: false };
+  const matchFilter = { status: "completed" };
   if (rounds) matchFilter["category.rounds"] = Number(rounds);
   if (timeControl) matchFilter["category.timeControl"] = Number(timeControl);
   if (straightsAllowed !== undefined) {
@@ -23,7 +28,10 @@ export async function getLeaderboard(filters) {
 
   // Aggregation pipeline to compute stats per player
   const validSortFields = ["wins", "winPercentage", "matches"];
-  const sortField = validSortFields.includes(sortBy) ? sortBy : "wins";
+  let sortField = "wins";
+  if (validSortFields.includes(sortBy)) {
+    sortField = sortBy;
+  }
 
   const pipeline = [
     { $match: matchFilter },
@@ -43,10 +51,7 @@ export async function getLeaderboard(filters) {
     {
       $addFields: {
         winPercentage: {
-          $round: [
-            { $multiply: [{ $divide: ["$wins", "$matches"] }, 100] },
-            0,
-          ],
+          $round: [{ $multiply: [{ $divide: ["$wins", "$matches"] }, 100] }, 0],
         },
       },
     },
