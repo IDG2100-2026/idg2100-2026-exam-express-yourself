@@ -3,7 +3,9 @@ import User from "../models/User.js";
 import { updateEloRating, updateEloMultiplayer } from "./elo-service.js";
 import { BusinessLogicError } from "../utils/errors.js";
 
-export async function getAllMatches(filters) { // fetches a paginated, filtered list of matches for the lobby
+
+// Get a paginated, filtered list of matches for the lobby
+export async function getAllMatches(filters) {
   const page = filters.page || 1;
   const limit = filters.limit || 10;
   const skip = (page - 1) * limit;
@@ -39,7 +41,8 @@ export async function getAllMatches(filters) { // fetches a paginated, filtered 
 }
 
 
-export async function getMatch(matchId) { // fetches a single match by ID
+// Get a single match by ID with player details filled in
+export async function getMatch(matchId) {
   const match = await Match.findById(matchId)
     .populate("players.userId", "username eloRating profileImageUrl")
     .populate("winnerId", "username");
@@ -52,12 +55,12 @@ export async function getMatch(matchId) { // fetches a single match by ID
 }
 
 
-export async function createMatch(userId, matchData) { // creates a new match room and joins the creator as the first player
+// Create a new match room and join the creator as the first player
+export async function createMatch(userId, matchData) {
   const rounds = matchData.rounds;
   const timeControl = matchData.timeControl;
   const maxPlayers = matchData.maxPlayers;
 
-  // Resolve optional fields with their defaults
   let buyIn = 1;
   if (matchData.buyIn !== undefined) {
     buyIn = matchData.buyIn;
@@ -68,7 +71,6 @@ export async function createMatch(userId, matchData) { // creates a new match ro
     straightsAllowed = matchData.straightsAllowed;
   }
 
-  // Check the user exists and has enough points for the buy-in
   const user = await User.findById(userId);
   if (!user) {
     throw new BusinessLogicError("User not found", 404);
@@ -77,14 +79,14 @@ export async function createMatch(userId, matchData) { // creates a new match ro
     throw new BusinessLogicError("Not enough points for buy-in", 400);
   }
 
-  // Deduct buy-in from the creator's points
+  // Subtract the buy-in before creating the match so the user can't create without paying
   user.points = user.points - buyIn;
   await user.save();
 
-  // Create the match with the creator as the first player
+  // stack is how many points this player has put into the current match pot
   const newMatch = new Match({
     players: [{ userId: userId, stack: buyIn }],
-    maxPlayers: maxPlayers, // uses schema default of 2 if not provided
+    maxPlayers: maxPlayers,
     category: {
       rounds: rounds,
       straightsAllowed: straightsAllowed,
@@ -99,7 +101,8 @@ export async function createMatch(userId, matchData) { // creates a new match ro
 }
 
 
-export async function joinMatch(matchId, userId) { // adds a player to an existing waiting match
+// Add a player to an existing waiting match and start it automatically when full
+export async function joinMatch(matchId, userId) {
   const match = await Match.findById(matchId);
   if (!match) {
     throw new BusinessLogicError("Match not found", 404);
@@ -109,7 +112,6 @@ export async function joinMatch(matchId, userId) { // adds a player to an existi
     throw new BusinessLogicError("Match is not open to join", 400);
   }
 
-  // Check the user is not already in this match
   const alreadyInMatch = match.players.some(function (player) {
     return player.userId.toString() === userId;
   });
@@ -117,12 +119,10 @@ export async function joinMatch(matchId, userId) { // adds a player to an existi
     throw new BusinessLogicError("You are already in this match", 400);
   }
 
-  // Check the match is not full
   if (match.players.length >= match.maxPlayers) {
     throw new BusinessLogicError("Match is full", 400);
   }
 
-  // Check the user exists and has enough points for the buy-in
   const user = await User.findById(userId);
   if (!user) {
     throw new BusinessLogicError("User not found", 404);
@@ -131,14 +131,13 @@ export async function joinMatch(matchId, userId) { // adds a player to an existi
     throw new BusinessLogicError("Not enough points for buy-in", 400);
   }
 
-  // Subtract buy-in from the joining player's points
+  // Deduct the buy-in before adding the player to the match
   user.points = user.points - match.buyIn;
   await user.save();
 
-  // Add the player to the match
   match.players.push({ userId: userId, stack: match.buyIn });
 
-  // Start the match automatically when enough players have joined
+  // Start the match automatically once all player slots are filled
   if (match.players.length >= match.maxPlayers) {
     match.status = "in-progress";
     match.startedAt = new Date();
@@ -149,7 +148,8 @@ export async function joinMatch(matchId, userId) { // adds a player to an existi
 }
 
 
-export async function leaveMatch(matchId, userId) { // removes a player from a waiting match and refunds their buy-in
+// Remove a player from a waiting match and refund their buy-in
+export async function leaveMatch(matchId, userId) {
   const match = await Match.findById(matchId);
   if (!match) {
     throw new BusinessLogicError("Match not found", 404);
@@ -162,19 +162,17 @@ export async function leaveMatch(matchId, userId) { // removes a player from a w
     );
   }
 
-  // Refund the buy-in to the player who is leaving
   const user = await User.findById(userId);
   if (user) {
     user.points = user.points + match.buyIn;
     await user.save();
   }
 
-  // Remove the player from the match
   match.players = match.players.filter(function (player) {
     return player.userId.toString() !== userId;
   });
 
-  // If no players are left, delete the match entirely
+  // Delete the match entirely if the last player leaves
   if (match.players.length === 0) {
     await match.deleteOne();
     return { deleted: true };
@@ -185,7 +183,8 @@ export async function leaveMatch(matchId, userId) { // removes a player from a w
 }
 
 
-export async function recordResult(matchId, winnerId, score) { // records the result of a completed match, awards the buy-in pot and updates ELO
+// Record the match result, award the full pot to the winner, and update ELO ratings for all players
+export async function recordResult(matchId, winnerId, score) {
   const match = await Match.findById(matchId);
   if (!match) {
     throw new BusinessLogicError("Match not found", 404);
@@ -202,7 +201,6 @@ export async function recordResult(matchId, winnerId, score) { // records the re
     throw new BusinessLogicError("Match is not in progress", 400);
   }
 
-  // Check the winner is actually one of the players in this match
   const winnerIsAPlayer = match.players.some(function (player) {
     return player.userId.toString() === winnerId;
   });
@@ -213,14 +211,13 @@ export async function recordResult(matchId, winnerId, score) { // records the re
     );
   }
 
-  // Record the result on the match
   match.winnerId = winnerId;
   match.score = score;
   match.status = "completed";
   match.endedAt = new Date();
   await match.save();
 
-  // Award the full buy-in pot to the winner
+  // The pot is the buy-in multiplied by the number of players, all goes to the winner
   const totalPot = match.buyIn * match.players.length;
   if (totalPot > 0) {
     const winner = await User.findById(winnerId);
@@ -230,9 +227,9 @@ export async function recordResult(matchId, winnerId, score) { // records the re
     }
   }
 
-  // Update ELO ratings for all players
+  // ELO update works differently for 2-player vs multiplayer matches
   if (match.players.length === 2) {
-    // 2-player match: straightforward winner vs loser
+    // 2-player: one clear winner and one loser
     const loserPlayer = match.players.find(function (player) {
       return player.userId.toString() !== winnerId;
     });
@@ -240,7 +237,7 @@ export async function recordResult(matchId, winnerId, score) { // records the re
       await updateEloRating(winnerId, loserPlayer.userId.toString(), false);
     }
   } else {
-    // Multiplayer: winner gets finalPoints 1, everyone else gets 0 for ranking
+    // Multiplayer: winner gets finalPoints 1, everyone else 0, used for ranked ELO calculation
     const playerResults = match.players.map(function (player) {
       let finalPoints = 0;
       if (player.userId.toString() === winnerId) {
