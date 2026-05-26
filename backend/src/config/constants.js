@@ -17,6 +17,7 @@ export const DEFAULT_USER_BOARD_COLOR = "#1c2130";
 export const DEFAULT_USER_LOBBY_SIZE = 5;
 export const USER_ROLES = ["user", "admin"];
 export const USER_THEMES = ["light", "dark"];
+export const ELO_FIELD_BY_TIME_CONTROL = { 10: "tc10", 30: "tc30", 90: "tc90" };
 
 // Comment constraints
 export const MIN_COMMENT_LENGTH = 2;
