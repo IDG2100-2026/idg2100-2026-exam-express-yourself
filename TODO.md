@@ -33,7 +33,7 @@ FRONTEND PAGES
   [~] GamePage — shows game info + comments, missing dice board, betting UI, leave button, spectator view
   [X] TournamentsPage — search, sort, status tabs, load-more pagination
   [X] TournamentPage — countdown, standings, join/leave, admin controls (start/cancel/delete/edit)
-  [~] ProfilePage — shows stats + games + trophies, has single eloRating (not 3), no game pagination
+  [X] ProfilePage — points balance added, game history with load-more pagination
   [X] LoginPage / RegisterPage — wire up real JWT auth
   [X] ForgotPasswordPage (new)
   [X] 404 Not Found page (new)
