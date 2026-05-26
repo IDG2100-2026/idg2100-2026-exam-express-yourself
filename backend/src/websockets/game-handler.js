@@ -1,7 +1,7 @@
 import Match from "../models/Match.js";
 import { rollDice} from "../services/match-service.js";
 import { sendError, games, sendToPlayer, sendToRoom } from './helpers.js';
-import { handleBet, handleRaise, handleMatch, handleFold } from './betting-handler.js';
+import { handleBet, handleMatchedBet, handleFolding } from './betting-handler.js';
 
 export const handleGameMessage = (socket, message) => {
   const { type, matchId, userId } = message; // extract what kind of action, game and user
@@ -25,13 +25,13 @@ export const handleGameMessage = (socket, message) => {
       handleBet(socket, matchId, userId, message.amount);
       break;
     case "raise":
-      handleRaise(socket, matchId, userId, message.amount, true);
+      handleBet(socket, matchId, userId, message.amount, true);
       break;
     case "match":
-      handleMatch(socket, matchId, userId);
+      handleMatchedBet(socket, matchId, userId);
       break;
     case "fold":
-      handleFold(socket, matchId, userId);
+      handleFolding(socket, matchId, userId);
       break;
     default:
       console.log("Unknown message type", type);
