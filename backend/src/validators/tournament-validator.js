@@ -194,3 +194,14 @@ export function validateUpdateTournament() { // Validates body when updating tou
       .withMessage("Trophy title cannot be empty."),
   ];
 }
+
+
+export function validateReportMatchResult() { // Validates body when reporting a tournament match result (PUT /api/tournaments/:id/matches/:matchId/result)
+  return [
+    body("winnerId")
+      .notEmpty()
+      .withMessage("Winner ID is required.")
+      .isMongoId()
+      .withMessage("Winner ID must be a valid ID."),
+  ];
+}
