@@ -1,3 +1,4 @@
+import User from '../models/User.js';
 import Match from "../models/Match.js";
 import { rollDic, findRoundWinner } from "../services/match-service.js";
 const games = new Map(); // keeps track of active game rooms, and their connected players
@@ -340,7 +341,6 @@ const endRound = async (match, matchId) => {
   });
 };
 
-
 const endGame = async (match, matchId) => {
   match.status = "complete" // change status to know the game are done
   match.endedAt = Date.now(); // track when the match ended at
@@ -353,6 +353,12 @@ const endGame = async (match, matchId) => {
     }
   }
   match.winnerId = winnerId; // update the match winnerId to the winner we just found out
+
+  for(const player of match.players){
+    await User.findByIdAndUpdate(player.userId, { // finds the user by userId and un
+      $inc: { points: player.stack } // updates the players now stack. e.g, if you won, you got more points
+    });
+  };
 
   await match.save(); // save changes to DB
 
