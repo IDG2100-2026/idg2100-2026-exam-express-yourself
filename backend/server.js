@@ -13,6 +13,7 @@ import activityRoutes from "./src/routes/activity-routes.js";
 import { setupWebSocket } from "./src/websockets/index.js";
 import { apiRateLimiter } from "./src/middlewares/rate-limiter.js";
 import securityIncidentsRouter from "./src/routes/security-incidents-routes.js";
+import { scheduleWeeklyTopup } from "./src/utils/weekly-topup.js";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(
 );
 
 await connectDB();
+scheduleWeeklyTopup();
 
 // Apply rate limiter to all API routes
 app.use("/api", apiRateLimiter);

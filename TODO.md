@@ -9,7 +9,7 @@ BACKEND — GAME LOGIC
   [~] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s) — model + constants done, match-service filters by variant
   [*] Betting logic (pot, fold, raise, match)
   [X] Multi-player Elo re-estimation (pair-wise) — updateEloMultiplayer() wired in match-service
-  [ ] Weekly 100-point top-up for users — no cron job exists
+  [X] Weekly 100-point top-up for users — scheduleWeeklyTopup() in server.js, stores lastWeeklyTopUp in SystemSettings
   [X] Tournament round logic (random pairing, standings, winner bonus) — league format in tournament-service.js, TOURNAMENT_WIN_POINTS awarded
   [X] Tournament status field (upcoming/ongoing/finished) + cancel flag
   [X] Rate limiting incident logging (IP/user-agent/timestamp)
