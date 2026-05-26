@@ -25,6 +25,13 @@ export const MIN_TOURNAMENT_TITLE_LENGTH = 3;
 export const MAX_TOURNAMENT_TITLE_LENGTH = 64;
 export const MIN_TOURNAMENT_DESCRIPTION_LENGTH = 4;
 export const MAX_TOURNAMENT_DESCRIPTION_LENGTH = 500;
+export const MAX_TOURNAMENT_RULES_LENGTH = 1000;
+export const DEFAULT_TOURNAMENT_NUMBER_OF_ROUNDS = 3;
+export const DEFAULT_TOURNAMENT_BUY_IN = 0;
+export const MIN_TOURNAMENT_BUY_IN = 0;
+export const DEFAULT_TOURNAMENT_ELO_MIN = 0;
+export const DEFAULT_TOURNAMENT_ELO_MAX = 9999;
+export const TOURNAMENT_STATUSES = ["upcoming", "cancelled", "in-progress", "completed"];
 
 // Match schema constraints
 export const VALID_ROUNDS = [3, 5, 7];
