@@ -1,6 +1,7 @@
 import { verifyAccessToken } from "../utils/jwt.js";
 import { BusinessLogicError } from "../utils/errors.js";
 import SecurityIncident from "../models/SecurityIncident.js";
+import { normalizeIp } from "../utils/normalize-ip.js";
 
 export const authenticate = (req, res, next) => {
   try {
@@ -10,7 +11,7 @@ export const authenticate = (req, res, next) => {
     const decoded = verifyAccessToken(token);
 
     // IP-change detection — log incident and force re-authentication
-    if (decoded.ip && decoded.ip !== req.ip) {
+    if (decoded.ip && decoded.ip !== normalizeIp(req.ip)) {
       SecurityIncident.create({
         type: "ip-change",
         ip: req.ip,
