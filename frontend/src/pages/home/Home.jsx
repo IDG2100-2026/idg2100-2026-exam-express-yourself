@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getMatches, joinMatch } from "../../services/matches-service.js";
 import { getTournaments } from "../../services/tournaments-service.js";
-import { getActivity } from "../../services/activity-service.js";
+import { getPlatformActivity } from "../../services/platform-activity-service.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { useAuth } from "../../hooks/useAuth.js";
 
@@ -39,7 +39,7 @@ export default function Home() {
           getMatches("in-progress"),
           getMatches("completed"),
           getTournaments(),
-          getActivity(),
+          getPlatformActivity(),
         ]);
 
         if (stale) return;
