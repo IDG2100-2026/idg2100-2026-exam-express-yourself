@@ -50,38 +50,67 @@ export default function Game() {
           <div className="game__players">
             <div className="game__player">
               <Avatar imageUrl={p1?.profileImageUrl} size={56} />
-              <span className="game__player-name">{p1?.username || "Unknown"}</span>
-              <span className="game__player-elo">Elo: {p1?.eloRating || "—"}</span>
+              <span className="game__player-name">
+                {p1?.username || "Unknown"}
+              </span>
+              <span className="game__player-elo">
+                Elo: {p1?.eloRating || "—"}
+              </span>
             </div>
             <span className="game__vs">vs</span>
             <div className="game__player">
               <Avatar imageUrl={p2?.profileImageUrl} size={56} />
-              <span className="game__player-name">{p2?.username || "Waiting..."}</span>
-              <span className="game__player-elo">{p2 ? `Elo: ${p2.eloRating}` : ""}</span>
+              <span className="game__player-name">
+                {p2?.username || "Waiting..."}
+              </span>
+              <span className="game__player-elo">
+                {p2 ? `Elo: ${p2.eloRating}` : ""}
+              </span>
             </div>
           </div>
-          <div className="game__dice-area" style={{ backgroundColor: appearance.boardColor }}>
-            <p>Board — Best of {match.category?.rounds} — {match.category?.straightsAllowed ? "Straights" : "No straights"} — {match.category?.timeControl}s</p>
+          <div
+            className="game__dice-area"
+            style={{ backgroundColor: appearance.boardColor }}
+          >
+            <p>
+              Board — Best of {match.category?.rounds} —{" "}
+              {match.category?.straightsAllowed ? "Straights" : "No straights"}{" "}
+              — {match.category?.timeControl}s
+            </p>
           </div>
         </div>
 
         <aside className="game__sidebar">
           <h2 className="game__sidebar-title">Comments</h2>
           <div className="game__comments">
-            {comments.length === 0 && <p className="game__no-comments">No comments yet.</p>}
+            {comments.length === 0 && (
+              <p className="game__no-comments">No comments yet.</p>
+            )}
             {comments.map((c) => (
               <div key={c._id} className="game__comment">
-                <span className="game__comment-author">{c.authorId?.username || "Unknown"}</span>
-                <span className="game__comment-date">{new Date(c.createdAt).toLocaleDateString()}</span>
+                <span className="game__comment-author">
+                  {c.authorId?.username || "Unknown"}
+                </span>
+                <span className="game__comment-date">
+                  {new Date(c.createdAt).toLocaleDateString()}
+                </span>
                 <p className="game__comment-text">{c.text}</p>
               </div>
             ))}
           </div>
           {user ? (
             <form className="game__comment-form" onSubmit={handleCommentSubmit}>
-              <textarea className="game__comment-input" value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="Leave a comment..." rows={3} />
+              <textarea
+                className="game__comment-input"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                placeholder="Leave a comment..."
+                rows={3}
+              />
               {commentError && <p className="game__error">{commentError}</p>}
-              <button type="submit" className="game__comment-submit">Post Comment</button>
+              <button type="submit" className="game__comment-submit">
+                Post Comment
+              </button>
             </form>
           ) : (
             <p className="game__no-comments">Log in to leave a comment.</p>
