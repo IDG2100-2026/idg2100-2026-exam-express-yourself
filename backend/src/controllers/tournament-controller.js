@@ -16,6 +16,7 @@ import {
 // Get a paginated, filtered list of tournaments (GET /api/tournaments?page=&limit=&status=&search=&sort=)
 export async function getAllTournaments(req, res, next) {
   const result = await getAllTournamentsService(req.validated);
+  res.status(200);
   res.json(result);
 }
 
@@ -23,6 +24,7 @@ export async function getAllTournaments(req, res, next) {
 // Get a single tournament with all its details (GET /api/tournaments/:id)
 export async function getTournament(req, res, next) {
   const tournament = await getTournamentService(req.params.id);
+  res.status(200);
   res.json(tournament);
 }
 
@@ -34,20 +36,23 @@ export async function createTournament(req, res, next) {
     imageUrl = "/uploads/" + req.file.filename;
   }
   const tournament = await createTournamentService(req.userId, req.validated, imageUrl);
-  res.status(201).json({ message: "Tournament created", tournament });
+  res.status(201);
+  res.json({ message: "Tournament created", tournament });
 }
 
 
 // Join a tournament as a participant (POST /api/tournaments/:id/join)
 export async function joinTournament(req, res, next) {
   const tournament = await joinTournamentService(req.params.id, req.userId);
+  res.status(200);
   res.json({ message: "Joined tournament", tournament });
 }
 
 
-// Leave a tournament before it starts (POST /api/tournaments/:id/leave)
+// Leave a tournament at any point (POST /api/tournaments/:id/leave)
 export async function leaveTournament(req, res, next) {
   await leaveTournamentService(req.params.id, req.userId);
+  res.status(200);
   res.json({ message: "Left tournament" });
 }
 
@@ -55,6 +60,7 @@ export async function leaveTournament(req, res, next) {
 // Start a tournament and generate the first round of matches (POST /api/tournaments/:id/start)
 export async function startTournament(req, res, next) {
   const matches = await startTournamentService(req.params.id);
+  res.status(200);
   res.json({ message: "Tournament started", matches });
 }
 
@@ -66,6 +72,7 @@ export async function reportMatchResult(req, res, next) {
     req.params.matchId,
     req.validated.winnerId,
   );
+  res.status(200);
   res.json({ message: "Result recorded", tournament });
 }
 
@@ -73,6 +80,7 @@ export async function reportMatchResult(req, res, next) {
 // Get the bracket standings for a tournament (GET /api/tournaments/:id/standings)
 export async function getStandings(req, res, next) {
   const standings = await getStandingsService(req.params.id);
+  res.status(200);
   res.json(standings);
 }
 
@@ -80,6 +88,7 @@ export async function getStandings(req, res, next) {
 // Update tournament details (PUT /api/tournaments/:id)
 export async function updateTournament(req, res, next) {
   const tournament = await updateTournamentService(req.params.id, req.validated);
+  res.status(200);
   res.json({ message: "Tournament updated", tournament });
 }
 
@@ -87,6 +96,7 @@ export async function updateTournament(req, res, next) {
 // Delete a tournament permanently (DELETE /api/tournaments/:id)
 export async function deleteTournament(req, res, next) {
   await deleteTournamentService(req.params.id);
+  res.status(200);
   res.json({ message: "Tournament deleted" });
 }
 
@@ -94,5 +104,6 @@ export async function deleteTournament(req, res, next) {
 // Cancel a tournament (POST /api/tournaments/:id/cancel)
 export async function cancelTournament(req, res, next) {
   const tournament = await cancelTournamentService(req.params.id);
+  res.status(200);
   res.json({ message: "Tournament cancelled", tournament });
 }
