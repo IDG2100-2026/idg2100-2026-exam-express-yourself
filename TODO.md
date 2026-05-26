@@ -6,12 +6,12 @@ AUTH
   [X] IP-change incident logging in authMiddleware.js
 
 BACKEND — GAME LOGIC
-  [ ] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s)
+  [~] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s) — model + constants done, no create-match UI/validation
   [ ] Betting logic (pot, fold, raise, match)
-  [ ] Multi-player Elo re-estimation (pair-wise)
+  [~] Multi-player Elo re-estimation (pair-wise) — elo-service.js has updateEloMultiplayer(), not wired to match result flow
   [ ] Weekly 100-point top-up for users
-  [ ] Tournament round logic (random pairing, standings, winner bonus)
-  [ ] Tournament status field (upcoming/ongoing/finished) + cancel flag
+  [~] Tournament round logic (random pairing, standings, winner bonus) — bracket structure in model, no auto-pairing logic
+  [X] Tournament status field (upcoming/ongoing/finished) + cancel flag — status has upcoming/in-progress/completed/cancelled
   [X] Rate limiting incident logging (IP/user-agent/timestamp)
   [X] DB seeding script
 
@@ -22,18 +22,18 @@ WEBSOCKETS
   [ ] Real-time comments on game + tournament pages
 
 WEB COMPONENTS
-  [ ] Finish dice-poker-board, dice-poker-die, dice-poker-monitor
+  [~] Finish dice-poker-board, dice-poker-die, dice-poker-monitor — components exist but not used in Game.jsx
   [ ] Wrap game board in React component
   [ ] Restore game state on reload
-  [ ] Sound effects (gated by user sound setting)
+  [ ] Sound effects (gated by user sound setting) — appearance model has sound field, no audio logic
 
 FRONTEND PAGES
-  [ ] HomePage — tournament overview + platform activity stats
-  [ ] LobbyPage — variant filtering + pagination
-  [ ] GamePage — live board, betting UI, leave button, spectator view
-  [ ] TournamentsPage — upcoming/past split, pagination, sort, search
-  [ ] TournamentPage — full detail, standings, join/leave, countdown, admin controls
-  [ ] ProfilePage — 3 Elo ratings, stats, points, paginated games
+  [~] HomePage — has activity stats + top games + tournaments, missing some detail
+  [~] LobbyPage — lists games, missing sort/filter by elo/time control/pagination
+  [~] GamePage — shows game info + comments, missing dice board, betting UI, leave button, spectator view
+  [~] TournamentsPage — lists tournaments with status badges, missing upcoming/past split, pagination, search, sort
+  [~] TournamentPage — shows details, join/leave, trophy, missing countdown, standings, admin controls
+  [~] ProfilePage — shows stats + games + trophies, has single eloRating (not 3), no game pagination
   [X] LoginPage / RegisterPage — wire up real JWT auth
   [X] ForgotPasswordPage (new)
   [X] 404 Not Found page (new)
@@ -46,9 +46,10 @@ ADMIN PAGES
   [X] Comment administration (list, delete)
   [X] Tournament creation form
   [X] Admin layout (no footer, stripped header)
+
 HEADER
-  [ ] Expandable appearance menu (theme, sound, board color, lobby size)
-  [ ] Greeting + profile pic when logged in
+  [X] Expandable appearance menu (theme, sound, board color, lobby size)
+  [X] Greeting + profile pic when logged in
   [X] Admin-only nav link
 
 MATCHMAKING
