@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useUser } from "../../hooks/useUser.js";
 import { useAuth } from "../../hooks/useAuth.js";
-import { updateUser } from "../../services/users-service.js";
+import { updateUser, uploadAvatar } from "../../services/users-service.js";
 
 export default function Profile() {
   const { id } = useParams();
@@ -16,10 +16,10 @@ export default function Profile() {
   const [formData, setFormData] = useState({
     email: "",
     bio: "",
-    profileImageUrl: "",
     password: "",
     newPassword: "",
   });
+  const [avatarFile, setAvatarFile] = useState(null);
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(null);
 
@@ -27,9 +27,10 @@ export default function Profile() {
     setFormData({
       email: user?.email || "",
       bio: user?.bio || "",
-      profileImageUrl: user?.profileImageUrl || "",
-      password: user?.password || "",
+      password: "",
+      newPassword: "",
     });
+    setAvatarFile(null);
     setEditing(true);
     setSaveError(null);
     setSaveSuccess(null);
@@ -45,22 +46,26 @@ export default function Profile() {
     setSaveError(null);
     setSaveSuccess(null);
 
-    if(formData.password === formData.newPassword){
-    return setSaveError("You cannot use the same password as the new ");
+    if (formData.newPassword && formData.password === formData.newPassword) {
+      return setSaveError("New password must differ from old password.");
     }
 
     try {
+      if (avatarFile) {
+        await uploadAvatar(id, avatarFile);
+      }
+
       const updates = {
-        email: formData.email,
+        ...(formData.email && { email: formData.email }),
         bio: formData.bio,
-        profileImageUrl: formData.profileImageUrl,
-        password: formData.newPassword,
-        oldPassword: formData.password
+        ...(formData.newPassword && {
+          password: formData.newPassword,
+          oldPassword: formData.password,
+        }),
       };
 
       await updateUser(id, updates);
       setSaveSuccess("Profile updated!");
-      // setEditing(false); // TODO: close or not? 
       refetch();
     } catch (err) {
       setSaveError(err.message);
@@ -136,13 +141,11 @@ export default function Profile() {
             />
           </div>
           <div className="profile__field">
-            <label>Profile image URL</label>
+            <label>Profile image</label>
             <input
-              type="url"
-              name="profileImageUrl"
-              value={formData.profileImageUrl}
-              onChange={handleChange}
-              placeholder="https://example.com/photo.jpg"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setAvatarFile(e.target.files[0] || null)}
             />
           </div>
           <div className="profile__field">

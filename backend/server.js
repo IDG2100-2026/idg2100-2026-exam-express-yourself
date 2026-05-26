@@ -15,7 +15,7 @@ import securityIncidentsRouter from "./src/routes/security-incidents-routes.js";
 
 const app = express();
 
-app.use(helmet()); // TODO: Do we need? It blocks with /uploads
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 
 app.use(
   cors({
