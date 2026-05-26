@@ -1,56 +1,36 @@
-import Comment from "../models/Comment.js";
+import {
+  getAllComments as getAllCommentsService,
+  createComment as createCommentService,
+  deleteComment as deleteCommentService,
+} from "../services/comment-service.js";
 
-// GET /api/comments?targetType=Match&targetId=xxx&search=
+
+// Get a paginated, filtered list of comments
 export async function getComments(req, res, next) {
   try {
-    const { targetType, targetId, search } = req.query;
-
-    const filter = { isDeleted: false };
-    if (targetType) filter.targetType = targetType;
-    if (targetId) filter.targetId = targetId;
-    if (search) {
-      filter.text = { $regex: search, $options: "i" };
-    }
-
-    const comments = await Comment.find(filter)
-      .populate("authorId", "username profileImageUrl")
-      .sort({ createdAt: -1 });
-
+    const comments = await getAllCommentsService(req.validated);
     res.json(comments);
   } catch (err) {
     next(err);
   }
 }
 
-// POST /api/comments — logged-in users only
+
+// Post a new comment on a match or tournament
 export async function createComment(req, res, next) {
   try {
-    const { text, targetType, targetId } = req.body;
-
-    const comment = await Comment.create({
-      authorId: req.userId,
-      text,
-      targetType,
-      targetId,
-    });
-
+    const comment = await createCommentService(req.userId, req.validated);
     res.status(201).json(comment);
   } catch (err) {
     next(err);
   }
 }
 
-// DELETE /api/comments/:id — admin only (soft delete)
+
+// Mark a comment as deleted (admin only)
 export async function deleteComment(req, res, next) {
   try {
-    const comment = await Comment.findByIdAndUpdate(
-      req.params.id,
-      { isDeleted: true },
-      { new: true }
-    );
-
-    if (!comment) return res.status(404).json({ error: "Comment not found" });
-
+    await deleteCommentService(req.params.id);
     res.json({ message: "Comment deleted" });
   } catch (err) {
     next(err);
