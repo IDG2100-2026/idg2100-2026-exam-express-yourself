@@ -8,7 +8,7 @@ import {
 } from "./helpers.js";
 import { endRound } from "./route-handler.js"; // TODO: not yet done
 
-export const handleBet = async (socket, userId, matchId, amount) => {
+export const handleBet = async (socket, matchId, userId, amount, isRaise = false) => {
   const match = await Match.findById(matchId);
   if (!match) return sendError(socket, "Game not found");
 
@@ -27,6 +27,10 @@ export const handleBet = async (socket, userId, matchId, amount) => {
 
   if (amount > player.stack)
     return sendError(socket, "Not enough points to bet");
+
+  if(isRaise && player.currentBet + amount <= match.highestBet){ // if isRaise is true, we check if the bet is equal or less than the highest
+    return sendError(socket, "Raise must be higher than the current bet");
+  };
 
   player.stack -= amount; // removes points from players stack
   player.currentBet += amount; // how much the player betted

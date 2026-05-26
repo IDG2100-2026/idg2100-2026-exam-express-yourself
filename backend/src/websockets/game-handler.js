@@ -25,7 +25,7 @@ export const handleGameMessage = (socket, message) => {
       handleBet(socket, matchId, userId, message.amount);
       break;
     case "raise":
-      handleRaise(socket, matchId, userId, message.amount);
+      handleRaise(socket, matchId, userId, message.amount, true);
       break;
     case "match":
       handleMatch(socket, matchId, userId);
@@ -94,7 +94,7 @@ export const handleRoll = async (socket, matchId, userId) => {
   });
 };
 
-export const handleHold = async (socket, userId, matchId, held) => {
+export const handleHold = async (socket, matchId, userId, held) => {
   const match = await Match.findById(matchId); // finds the match
   if (!match) return sendError(socket, "Game not found");
 
@@ -126,7 +126,7 @@ export const handleHold = async (socket, userId, matchId, held) => {
   });
 };
 
-export const handleEndTurn = async (socket, userId, matchId) => {
+export const handleEndTurn = async (socket,matchId, userId) => {
   const match = await Match.findById(matchId); // finds the match
   if (!match) return sendError(socket, "Game not found");
 
