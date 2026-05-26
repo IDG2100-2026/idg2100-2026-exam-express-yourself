@@ -1,6 +1,6 @@
 export const games = new Map(); // keep track of active games and active players
 
-const sendError = (socket, errorMessage) => {
+export const sendError = (socket, errorMessage) => {
   socket.send(
     JSON.stringify({
       // sends error message to a room
@@ -31,11 +31,10 @@ export const getNextBettingPlayer = (match) => {
   for (let i = 0; i < match.players.length; i++) {
     const checkIndex = (nextIndex + i) % match.players.length; // calculate which players to check. Goes back to start if we passed the last player
     const player = match.players[checkIndex]; // get the players data to check if they have folded or not
-  }
 
-  if (!player.hasFolded && !player.hasMatchedBet) {
-    // skips players that have hasFolded: true and hasMatchedBet: true
-    return checkIndex;
+    if (!player.hasFolded && !player.hasMatchedBet) {
+      return checkIndex; // skips players that have hasFolded: true and hasMatchedBet: true
+    }
   }
 
   return -1; // fallback if something happens and every player has folded. keeps the game from crashing

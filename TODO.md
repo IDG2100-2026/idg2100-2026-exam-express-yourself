@@ -7,18 +7,18 @@ AUTH
 
 BACKEND — GAME LOGIC
   [ ] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s)
-  [ ] Betting logic (pot, fold, raise, match)
+  [*] Betting logic (pot, fold, raise, match)
   [ ] Multi-player Elo re-estimation (pair-wise)
   [ ] Weekly 100-point top-up for users
   [ ] Tournament round logic (random pairing, standings, winner bonus)
   [ ] Tournament status field (upcoming/ongoing/finished) + cancel flag
   [ ] Rate limiting incident logging (IP/user-agent/timestamp)
-  [ ] DB seeding script
+  [*] DB seeding script
 
 WEBSOCKETS
-  [ ] Integrate WS server into Express
-  [ ] Game channel (rolls on backend, holds from frontend, time enforcement)
-  [ ] Broadcast other players' holds in real-time
+  [*] Integrate WS server into Express
+  [*] Game channel (rolls on backend, holds from frontend, time enforcement)
+  [*] Broadcast other players' holds in real-time
   [ ] Real-time comments on game + tournament pages
 
 WEB COMPONENTS
