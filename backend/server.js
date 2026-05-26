@@ -10,7 +10,7 @@ import authRouter from "./src/routes/auth-routes.js";
 import helmet from "helmet";
 import { connectDB, disconnectDB } from "./src/config/db.js";
 import activityRoutes from "./src/routes/activity-routes.js";
-import { setupWebSocket } from "./src/config/ws.config.js";
+import { setupWebSocket } from "./src/websockets/index.js";
 
 const app = express();
 

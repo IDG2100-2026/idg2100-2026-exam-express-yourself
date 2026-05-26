@@ -72,13 +72,13 @@ export const getTieBreaker = (hand) => {
   return entries.map((entry) => entry.value); // extracts the die face value in order
 };
 
+
 export const findRoundWinner = (players, straightAllowed) => {
   const hands = players.map((player) =>
     evaluateHand(player.dice, straightAllowed),
   ); // getting the players dices, and check if straight is allowed
 
   let bestPlayer = 0; // assume index 0 player is the best, if a better comes, this will increment to that player index;
-
   for (let i = 1; i < hands.length; i++) {
     const result = compareHands(hands[i], hands[bestPlayer]); // checks if the now looping player has better dices than current best player
     if (result === 1) {
