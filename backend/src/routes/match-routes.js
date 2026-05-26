@@ -12,12 +12,15 @@ import {
 import { authenticate, authorize } from "../middlewares/auth-middleware.js";
 const matchRouter = express.Router();
 
-// public routes
+// Public routes
 matchRouter.get("/", validateGetMatches(), validate, getAllMatches); // get all matches (lobby)
 matchRouter.get("/:id", getMatch); // get a single match
 
+
 matchRouter.use(authenticate);
 
+
+// Authenticated users
 matchRouter.post("/", authorize("user"), validateCreateMatch(), validate, createMatch); // create a match
 matchRouter.post("/:id/join", authorize("user"), joinMatch); // join a match
 matchRouter.post("/:id/leave", authorize("user"), leaveMatch); // leave a match
