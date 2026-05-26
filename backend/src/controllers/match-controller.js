@@ -68,6 +68,7 @@ export async function recordResult(req, res, next) {
       req.validated.winnerId,
       req.validated.score,
     );
+    if (!match) return res.status(404).json({ error: "Match not found" });
     res.json(match);
   } catch (err) {
     next(err);

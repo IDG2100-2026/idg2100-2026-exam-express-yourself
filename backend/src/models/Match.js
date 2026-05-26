@@ -20,6 +20,30 @@ const matchSchema = new mongoose.Schema(
           type: Number,
           default: 0, // Points this player has in the game
         },
+        dice: {
+          type: [Number],
+          default: [0, 0, 0, 0, 0], // signals that no dices are rolled yet
+        },
+        held: { // if a user are holding dices
+          type: [Boolean],
+          default: [false, false, false, false, false],
+        },
+        rollsUsed: { // how many times a user have rolled
+          type: Number,
+          default: 0,
+        },
+        hasFolded: { // if a user is still in the game or not
+          type: Boolean,
+          default: false,
+        },
+        currentBet: { // what the current bet is to be matched
+          type: Number,
+          default: 0,
+        },
+        hasMatchedBet: { // if the user has matched the highest bet
+          type: Boolean,
+          default: false,
+        },
       },
     ],
     maxPlayers: {
@@ -72,6 +96,31 @@ const matchSchema = new mongoose.Schema(
         values: MATCH_STATUSES,
         message: `Status must be one of: ${MATCH_STATUSES.join(", ")}. [schema]`,
       },
+    },
+    currentRound: {
+      type: Number,
+      default: 0
+    },
+    currentPlayerIndex: {
+      type: Number,
+      default: 0
+    },
+    phase: {
+      type: String,
+      enum: ["rolling", "betting", "reveal"],
+      default: "rolling"
+    },
+    pot: {
+      type: Number,
+      default: 0
+    },
+    highestBet: {
+      type: Number,
+      default: 0
+    },
+    isAnonymous: {
+      type: Boolean,
+      default: false,
     },
     // Tournament link
     tournamentId: {

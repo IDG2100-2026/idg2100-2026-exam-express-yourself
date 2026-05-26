@@ -10,7 +10,7 @@ export const authenticate = (req, res, next) => {
 
     const decoded = verifyAccessToken(token);
 
-    // IP-change detection — log incident and force re-authentication
+    // IP-change detection. log incident and force new login
     if (decoded.ip && decoded.ip !== normalizeIp(req.ip)) {
       SecurityIncident.create({
         type: "ip-change",
