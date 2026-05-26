@@ -241,7 +241,7 @@ export async function startTournament(tournamentId) {
 }
 
 
-// Record who won a bracket match and advance the tournament bracket if the whole round is done
+// Record who won a match, then re-pair all players for the next round or end the tournament after all rounds
 export async function reportMatchResult(tournamentId, matchId, winnerId) {
   const tournament = await Tournament.findById(tournamentId);
   if (!tournament) {
@@ -293,16 +293,78 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
   });
 
   if (allMatchesDone) {
-    const roundWinners = currentRound.matches.map(function (match) {
-      return match.winner;
-    });
+    if (tournament.currentRound < tournament.numberOfRounds) {
+      // More rounds left — re-pair ALL participants randomly for the next round
+      const nextRoundNumber = tournament.currentRound + 1;
 
-    // Only one winner in the round means the final match just finished
-    if (roundWinners.length === 1) {
-      tournament.winnerId = roundWinners[0];
+      const shuffled = tournament.participants.slice().sort(function () {
+        return 0.5 - Math.random();
+      });
+
+      const nextBracketMatches = [];
+
+      for (let i = 0; i + 1 < shuffled.length; i += 2) {
+        const newMatch = new Match({
+          players: [
+            { userId: shuffled[i] },
+            { userId: shuffled[i + 1] },
+          ],
+          maxPlayers: 2,
+          category: tournament.category,
+          status: "waiting",
+          tournamentId: tournament._id,
+          round: nextRoundNumber,
+        });
+        const savedMatch = await newMatch.save();
+
+        nextBracketMatches.push({
+          gameId: savedMatch._id,
+          players: [shuffled[i], shuffled[i + 1]],
+          winner: null,
+        });
+      }
+
+      tournament.bracket.push({
+        round: nextRoundNumber,
+        matches: nextBracketMatches,
+      });
+      tournament.currentRound = nextRoundNumber;
+    } else {
+      // All rounds done — count wins per participant across every round to find the winner
+      const winCounts = {};
+
+      for (const round of tournament.bracket) {
+        for (const match of round.matches) {
+          if (match.winner) {
+            const matchWinnerId = match.winner.toString();
+            if (winCounts[matchWinnerId] === undefined) {
+              winCounts[matchWinnerId] = 0;
+            }
+            winCounts[matchWinnerId] = winCounts[matchWinnerId] + 1;
+          }
+        }
+      }
+
+      // The participant with the most wins across all rounds is the tournament winner
+      let topWinnerId = null;
+      let topWinCount = 0;
+
+      for (const participantId of tournament.participants) {
+        const participantIdStr = participantId.toString();
+        let wins = 0;
+        if (winCounts[participantIdStr] !== undefined) {
+          wins = winCounts[participantIdStr];
+        }
+        if (wins > topWinCount) {
+          topWinCount = wins;
+          topWinnerId = participantIdStr;
+        }
+      }
+
+      tournament.winnerId = topWinnerId;
       tournament.status = "completed";
 
-      const trophyWinner = await User.findById(roundWinners[0]);
+      const trophyWinner = await User.findById(topWinnerId);
       if (trophyWinner) {
         let trophyImageUrl = null;
         if (tournament.trophy.imageUrl) {
@@ -317,21 +379,6 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
         trophyWinner.points = trophyWinner.points + TOURNAMENT_WIN_POINTS;
         await trophyWinner.save();
       }
-    } else {
-      // More than one winner means we pair them up again for the next round
-      const nextMatches = [];
-      for (let i = 0; i + 1 < roundWinners.length; i += 2) {
-        nextMatches.push({
-          gameId: null,
-          players: [roundWinners[i], roundWinners[i + 1]],
-          winner: null,
-        });
-      }
-      tournament.bracket.push({
-        round: currentRound.round + 1,
-        matches: nextMatches,
-      });
-      tournament.currentRound = currentRound.round + 1;
     }
   }
 
