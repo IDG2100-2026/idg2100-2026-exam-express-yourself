@@ -83,6 +83,7 @@ export async function fetchWithoutAccesstoken(endpoint, options = {}) {
   const response = await fetch(API_URL + endpoint, {
     ...options,
     headers,
+    credentials: "include",
   });
 
   const result = await response.json();

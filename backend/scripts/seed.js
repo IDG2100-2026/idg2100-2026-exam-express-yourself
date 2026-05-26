@@ -4,6 +4,7 @@ import User from "../src/models/User.js";
 import Match from "../src/models/Match.js";
 import Tournament from "../src/models/Tournament.js";
 import Comment from "../src/models/Comment.js";
+import { Session } from "../src/models/Session.js";
 
 const { DB_HOSTNAME, DB_PORT, DB_NAME } = process.env;
 const MONGODB_URI = `mongodb://${DB_HOSTNAME}:${DB_PORT}/${DB_NAME}`;
@@ -16,6 +17,7 @@ await User.deleteMany({});
 await Match.deleteMany({});
 await Tournament.deleteMany({});
 await Comment.deleteMany({});
+await Session.deleteMany({});
 console.log("Cleared all collections");
 
 // Shared hashed password — all seed users use "password123"

@@ -31,8 +31,8 @@ FRONTEND PAGES
   [~] HomePage — has activity stats + top games + tournaments, missing some detail
   [~] LobbyPage — lists games, missing sort/filter by elo/time control/pagination
   [~] GamePage — shows game info + comments, missing dice board, betting UI, leave button, spectator view
-  [~] TournamentsPage — lists tournaments with status badges, missing upcoming/past split, pagination, search, sort
-  [~] TournamentPage — shows details, join/leave, trophy, missing countdown, standings, admin controls
+  [X] TournamentsPage — search, sort, status tabs (all/upcoming/in-progress/completed/cancelled), pagination
+  [X] TournamentPage — countdown, standings, join/leave, admin controls (start/cancel/delete/edit)
   [~] ProfilePage — shows stats + games + trophies, has single eloRating (not 3), no game pagination
   [X] LoginPage / RegisterPage — wire up real JWT auth
   [X] ForgotPasswordPage (new)

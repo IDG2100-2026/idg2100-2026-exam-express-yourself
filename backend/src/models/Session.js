@@ -6,7 +6,7 @@ import { MAX_LENGTH_AGENT_STRING } from "../config/constants.js";
 
 const sessionSchema = new Schema({
     refreshToken: {
-        type: "UUID",
+        type: String,
         unique: true,
         required: true,
         default: () => randomUUID()

@@ -10,13 +10,14 @@ import { Session } from "../models/Session.js";
 import User from "../models/User.js";
 import { signedAccessToken } from "../utils/jwt.js";
 import { REFRESH_TOKEN_TTL } from "../config/auth-config.js";
+import { normalizeIp } from "../utils/normalize-ip.js";
 import { BusinessLogicError } from "../utils/errors.js";
 import { TokenVerification } from "../models/TokenVerification.js";
 import { sendVerificationMail } from "../services/email-service.js";
 
 // helper — pass ip so it gets embedded in the token for IP-change detection
 const getAccessToken = (user, ip = null) => {
-  return signedAccessToken({ userId: user._id.toString(), role: user.role, ip });
+  return signedAccessToken({ userId: user._id.toString(), role: user.role, ip: normalizeIp(ip) });
 };
 // POST /api/users/register
 export const registerUserController = async (req, res, next) => {
@@ -95,7 +96,7 @@ export const loginUserController = async (req, res, next) => {
     // create a session in db
     const refreshToken = await createSession(
       user,
-      req.ip,
+      normalizeIp(req.ip),
       req.headers["user-agent"],
     );
 
@@ -136,7 +137,7 @@ export const createAccessToken = async (req, res, next) => {
     const session = await Session.findOne({ refreshToken }); // looking up the session from db.
     if (!session) throw new BusinessLogicError("Invalid refresh token", 401); // session expired, revoked or never existed
 
-    if (session.ip !== "unknown" && session.ip !== req.ip) {
+    if (session.ip !== "unknown" && session.ip !== normalizeIp(req.ip)) {
       // If the ip that makes the request is different from the session ip
       await session.deleteOne(); // deletes the session if the request is from another ip
       throw new BusinessLogicError("Session invalidated due to IP change", 401);
