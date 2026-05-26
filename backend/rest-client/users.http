@@ -1,0 +1,6 @@
+@baseUrl = http://localhost:3000
+@userId = 
+
+
+### Get a single user profile by ID (public)
+GET {{baseUrl}}/api/users/{{userId}}
