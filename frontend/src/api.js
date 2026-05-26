@@ -93,6 +93,7 @@ export async function fetchWithoutAccesstoken(endpoint, options = {}) {
       result?.msg ||
         result?.message ||
         result?.errors?.[0]?.msg ||
+        result?.error ||
         "An error occurred while fetching data",
     );
   }
