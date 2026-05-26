@@ -19,7 +19,7 @@ export const authenticate = (req, res, next) => {
         userId: decoded.userId || null,
       }).catch(() => {});
 
-      throw new BusinessLogicError("IP mismatch — please re-authenticate", 401);
+      throw new BusinessLogicError("IP mismatch, please re-authenticate", 401);
     }
 
     req.userId = decoded.userId;

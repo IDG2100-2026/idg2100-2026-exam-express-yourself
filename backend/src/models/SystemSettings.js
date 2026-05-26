@@ -5,4 +5,4 @@ const systemSettingsSchema = new mongoose.Schema({
   value: mongoose.Schema.Types.Mixed,
 });
 
-export default mongoose.model("SystemSettings", systemSettingsSchema);
+export default mongoose.model("SystemSettings", systemSettingsSchema, "system_settings");
