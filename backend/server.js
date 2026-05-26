@@ -9,7 +9,7 @@ import leaderboardRouter from "./src/routes/leaderboard-routes.js";
 import authRouter from "./src/routes/auth-routes.js";
 import helmet from "helmet";
 import { connectDB, disconnectDB } from "./src/config/db.js";
-import activityRoutes from "./src/routes/activity-routes.js";
+import platformActivityRouter from "./src/routes/platform-activity-routes.js";
 
 const app = express();
 
@@ -37,7 +37,7 @@ app.use("/api/matches", matchRouter);
 app.use("/api/tournaments", tournamentRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/leaderboard", leaderboardRouter);
-app.use("/api/activity", activityRoutes);
+app.use("/api/platform-activity", platformActivityRouter);
 
 
 app.use((req, res) => {
