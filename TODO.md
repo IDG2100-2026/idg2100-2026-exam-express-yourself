@@ -7,7 +7,7 @@ AUTH
 
 BACKEND — GAME LOGIC
   [~] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s) — model + constants done, match-service filters by variant
-  [ ] Betting logic (pot, fold, raise, match)
+  [*] Betting logic (pot, fold, raise, match)
   [X] Multi-player Elo re-estimation (pair-wise) — updateEloMultiplayer() wired in match-service
   [ ] Weekly 100-point top-up for users — no cron job exists
   [X] Tournament round logic (random pairing, standings, winner bonus) — league format in tournament-service.js, TOURNAMENT_WIN_POINTS awarded
@@ -16,9 +16,9 @@ BACKEND — GAME LOGIC
   [X] DB seeding script
 
 WEBSOCKETS
-  [ ] Integrate WS server into Express
-  [ ] Game channel (rolls on backend, holds from frontend, time enforcement)
-  [ ] Broadcast other players' holds in real-time
+  [*] Integrate WS server into Express
+  [*] Game channel (rolls on backend, holds from frontend, time enforcement)
+  [*] Broadcast other players' holds in real-time
   [ ] Real-time comments on game + tournament pages
 
 WEB COMPONENTS

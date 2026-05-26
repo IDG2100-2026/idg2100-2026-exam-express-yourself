@@ -15,9 +15,13 @@ import { BusinessLogicError } from "../utils/errors.js";
 import { TokenVerification } from "../models/TokenVerification.js";
 import { sendVerificationMail } from "../services/email-service.js";
 
-// helper — pass ip so it gets embedded in the token for IP-change detection
+// helper function! pass ip so it gets embedded in the token for IP-change detection
 const getAccessToken = (user, ip = null) => {
-  return signedAccessToken({ userId: user._id.toString(), role: user.role, ip: normalizeIp(ip) });
+  return signedAccessToken({
+    userId: user._id.toString(),
+    role: user.role,
+    ip: normalizeIp(ip),
+  });
 };
 // POST /api/users/register
 export const registerUserController = async (req, res, next) => {
