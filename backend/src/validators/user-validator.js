@@ -10,8 +10,10 @@ import {
   MIN_USER_AGE,
   MAX_USER_AGE,
   MAX_USER_BIO_LENGTH,
+  USER_THEMES,
 } from "../config/constants.js";
 
+// Validates required body fields when registering a new user (POST /api/auth/register)
 export function validateRegister() {
   return [
     body("username")
@@ -64,6 +66,7 @@ export function validateRegister() {
   ];
 }
 
+// Validates required body fields when logging in (POST /api/auth/login)
 export function validateLogin() {
   return [
     body("email")
@@ -79,6 +82,7 @@ export function validateLogin() {
   ];
 }
 
+// Validates optional body fields when updating a user profile (PATCH /api/users/:id)
 export function validateUpdateUser() {
   return [
     body("email")
@@ -119,8 +123,8 @@ export function validateUpdateUser() {
       .withMessage("Profile image must be a valid URL."),
     body("appearance.theme")
       .optional()
-      .isIn(["light", "dark"])
-      .withMessage("Theme must be either light or dark."),
+      .isIn(USER_THEMES)
+      .withMessage(`Theme must be one of: ${USER_THEMES.join(", ")}.`),
     body("appearance.boardColor")
       .optional()
       .trim(),

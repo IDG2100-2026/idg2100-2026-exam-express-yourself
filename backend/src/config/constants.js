@@ -15,6 +15,8 @@ export const DEFAULT_USER_POINTS = 100;
 export const MIN_USER_POINTS = 0;
 export const DEFAULT_USER_BOARD_COLOR = "#1c2130";
 export const DEFAULT_USER_LOBBY_SIZE = 5;
+export const USER_ROLES = ["user", "admin"];
+export const USER_THEMES = ["light", "dark"];
 
 // Comment constraints
 export const MIN_COMMENT_LENGTH = 2;
