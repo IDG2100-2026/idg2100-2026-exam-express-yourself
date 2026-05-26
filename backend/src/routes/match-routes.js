@@ -1,5 +1,5 @@
 import express from "express";
-import { validateCreateMatch } from "../validators/match-validator.js";
+import { validateGetMatches, validateCreateMatch, validateRecordResult } from "../validators/match-validator.js";
 import { validate } from "../validators/validate.js";
 import {
   getAllMatches,
@@ -12,15 +12,18 @@ import {
 import { authenticate, authorize } from "../middlewares/auth-middleware.js";
 const matchRouter = express.Router();
 
-// public routes
-matchRouter.get("/", getAllMatches);
-matchRouter.get("/:id", getMatch);
+// Public routes
+matchRouter.get("/", validateGetMatches(), validate, getAllMatches); // get all matches (lobby)
+matchRouter.get("/:id", getMatch); // get a single match
+
 
 matchRouter.use(authenticate);
 
-matchRouter.post("/", authorize("user"), validateCreateMatch(), validate, createMatch); // create a game
-matchRouter.post("/:id/join", authorize("user"), joinMatch); // join a game
-matchRouter.post("/:id/leave", authorize("user"), leaveMatch); // leave a game
-matchRouter.patch("/:id/result", authorize("user", "admin"), recordResult); // 
+
+// Authenticated users
+matchRouter.post("/", authorize("user"), validateCreateMatch(), validate, createMatch); // create a match
+matchRouter.post("/:id/join", authorize("user"), joinMatch); // join a match
+matchRouter.post("/:id/leave", authorize("user"), leaveMatch); // leave a match
+matchRouter.patch("/:id/result", authorize("user", "admin"), validateRecordResult(), validate, recordResult); // record result
 
 export default matchRouter;

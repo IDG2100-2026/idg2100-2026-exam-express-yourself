@@ -1,12 +1,21 @@
 import mongoose from "mongoose";
 import {
-  DEFAULT_ELO_RATING,
+  DEFAULT_USER_ELO_RATING,
+  DEFAULT_USER_POINTS,
+  DEFAULT_USER_BOARD_COLOR,
+  DEFAULT_USER_LOBBY_SIZE,
   MIN_USERNAME_LENGTH,
   MAX_USERNAME_LENGTH,
   MIN_PASSWORD_LENGTH,
   MAX_PASSWORD_LENGTH,
   MIN_USER_AGE,
   MAX_USER_AGE,
+  MIN_USER_ELO_RATING,
+  MIN_USER_POINTS,
+  MAX_USER_EMAIL_LENGTH,
+  MAX_USER_BIO_LENGTH,
+  ALLOWED_USERNAME_FORMAT,
+  ALLOWED_USER_EMAIL_FORMAT,
 } from "../config/constants.js";
 import { hashPassword } from "../utils/password-hash.js";
 
@@ -14,56 +23,70 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
-      unique: true,
       trim: true,
+      required: [true, "Username is required. [schema]"],
+      unique: true,
       minLength: [
         MIN_USERNAME_LENGTH,
-        `Username has to be at least ${MIN_USERNAME_LENGTH} characters long`,
+        `Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters. [schema]`,
       ],
       maxLength: [
         MAX_USERNAME_LENGTH,
-        `Username cannot be longer than ${MAX_USERNAME_LENGTH} characters`,
+        `Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters. [schema]`,
+      ],
+      match: [
+        ALLOWED_USERNAME_FORMAT,
+        "Username can only contain letters and numbers. [schema]",
       ],
     },
     email: {
       type: String,
-      required: true,
+      trim: true,
+      required: [true, "Email is required. [schema]"],
       unique: true,
       lowercase: true,
-      trim: true,
-      match: [/^.+@[a-z]+\.[a-z]+$/, "{VALUE} isn't an email."],
+      maxLength: [
+        MAX_USER_EMAIL_LENGTH,
+        `Email cannot be longer than ${MAX_USER_EMAIL_LENGTH} characters. [schema]`,
+      ],
+      match: [
+        ALLOWED_USER_EMAIL_FORMAT,
+        "Must be a valid email address, e.g. user@mail.com. [schema]",
+      ],
     },
     password: {
       type: String,
       trim: true,
-      required: true,
+      required: [true, "Password is required. [schema]"],
       select: false, // So we don't accidentally expose our password
       minLength: [
         MIN_PASSWORD_LENGTH,
-        `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`,
+        `Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters. [schema]`,
       ],
       maxLength: [
         MAX_PASSWORD_LENGTH,
-        `Password cannot be longer than  ${MAX_PASSWORD_LENGTH} characters`,
+        `Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters. [schema]`,
       ],
     },
     age: {
       type: Number,
-      required: true,
+      required: [true, "Age is required. [schema]"],
       min: [
         MIN_USER_AGE,
-        `You must be at least ${MIN_USER_AGE} years old to play this game!`,
+        `Age must be between ${MIN_USER_AGE} and ${MAX_USER_AGE}. [schema]`,
       ],
       max: [
         MAX_USER_AGE,
-        `You can not be older than ${MAX_USER_AGE} years old to play on this platform `,
+        `Age must be between ${MIN_USER_AGE} and ${MAX_USER_AGE}. [schema]`,
       ],
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
       default: "user",
+      enum: {
+        values: ["user", "admin"],
+        message: "Role must be either user or admin. [schema]",
+      },
     },
     isVerified: {
       type: Boolean,
@@ -71,11 +94,19 @@ const userSchema = new mongoose.Schema(
     },
     eloRating: {
       type: Number,
-      default: DEFAULT_ELO_RATING,
+      default: DEFAULT_USER_ELO_RATING,
+      min: [
+        MIN_USER_ELO_RATING,
+        `Elo rating cannot be lower than ${MIN_USER_ELO_RATING}. [schema]`,
+      ],
     },
     points: {
       type: Number,
-      default: 100, // Weekly allowance for betting
+      default: DEFAULT_USER_POINTS, // Weekly allowance for betting
+      min: [
+        MIN_USER_POINTS,
+        `Points cannot be lower than ${MIN_USER_POINTS}. [schema]`,
+      ],
     },
     isBanned: {
       type: Boolean,
@@ -83,18 +114,30 @@ const userSchema = new mongoose.Schema(
     },
     bio: {
       type: String,
+      trim: true,
       default: "",
-      maxlength: 300,
+      maxLength: [
+        MAX_USER_BIO_LENGTH,
+        `Bio cannot be longer than ${MAX_USER_BIO_LENGTH} characters. [schema]`,
+      ],
     },
     profileImageUrl: {
       type: String,
+      trim: true,
       default: "",
     },
     appearance: {
-      theme: { type: String, enum: ["light", "dark"], default: "dark" },
-      boardColor: { type: String, default: "#1c2130" },
+      theme: {
+        type: String,
+        default: "dark",
+        enum: {
+          values: ["light", "dark"],
+          message: "Theme must be either light or dark. [schema]",
+        },
+      },
+      boardColor: { type: String, default: DEFAULT_USER_BOARD_COLOR },
       sound: { type: Boolean, default: true },
-      lobbySize: { type: Number, default: 5 },
+      lobbySize: { type: Number, default: DEFAULT_USER_LOBBY_SIZE },
     },
     trophies: [
       {
@@ -121,6 +164,6 @@ userSchema.pre("save", async function () {
   }
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema, "users");
 
 export default User;
