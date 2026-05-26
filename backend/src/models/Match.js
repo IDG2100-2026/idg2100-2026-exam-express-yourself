@@ -122,10 +122,6 @@ const matchSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
-    isAnonymous: {
-      type: Boolean,
-      default: false,
-    },
     // Tournament link
     tournamentId: {
       type: mongoose.Schema.Types.ObjectId,
