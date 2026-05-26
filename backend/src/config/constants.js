@@ -19,6 +19,7 @@ export const DEFAULT_USER_LOBBY_SIZE = 5;
 // Comment constraints
 export const MIN_COMMENT_LENGTH = 2;
 export const MAX_COMMENT_LENGTH = 500;
+export const COMMENT_TARGET_TYPES = ["Match", "Tournament"];
 
 // Tournament constraints
 export const MIN_TOURNAMENT_TITLE_LENGTH = 3;
