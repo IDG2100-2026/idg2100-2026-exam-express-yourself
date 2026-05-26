@@ -7,6 +7,7 @@ import {
   MATCH_STATUSES,
 } from "../config/constants.js";
 
+
 // Validates optional query params for filtering the match lobby (GET /api/matches)
 export function validateGetMatches() {
   return [
@@ -48,6 +49,7 @@ export function validateGetMatches() {
   ];
 }
 
+
 // Validates required and optional body fields when creating a new match (POST /api/matches)
 export function validateCreateMatch() {
   return [
@@ -84,6 +86,7 @@ export function validateCreateMatch() {
       .toInt(),
   ];
 }
+
 
 // Validates winnerId and score when recording a match result (PATCH /api/matches/:id/result)
 export function validateRecordResult() {

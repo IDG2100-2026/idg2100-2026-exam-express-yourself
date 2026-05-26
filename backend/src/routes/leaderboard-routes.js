@@ -7,7 +7,7 @@ const leaderboardRouter = express.Router();
 
 
 // Public routes
-leaderboardRouter.get("/", validateGetLeaderboard(), validate, getLeaderboardData);
+leaderboardRouter.get("/", validateGetLeaderboard(), validate, getLeaderboardData); // get the leaderboard
 
 
 export default leaderboardRouter;

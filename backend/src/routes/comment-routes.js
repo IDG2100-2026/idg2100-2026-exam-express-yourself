@@ -9,18 +9,18 @@ const commentsRouter = express.Router();
 
 
 // Public routes
-commentsRouter.get("/", validateGetComments(), validate, getComments);
+commentsRouter.get("/", validateGetComments(), validate, getComments); // get all comments
 
 
 commentsRouter.use(authenticate);
 
 
 // Authenticated users
-commentsRouter.post("/", authorize("user", "admin"), commentRateLimiter, validateCreateComment(), validate, createComment);
+commentsRouter.post("/", authorize("user", "admin"), commentRateLimiter, validateCreateComment(), validate, createComment); // post a comment
 
 
 // Admin only
-commentsRouter.delete("/:id", authorize("admin"), deleteComment);
+commentsRouter.delete("/:id", authorize("admin"), deleteComment); // soft delete a comment
 
 
 export default commentsRouter;

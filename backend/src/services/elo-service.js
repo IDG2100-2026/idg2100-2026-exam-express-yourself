@@ -62,7 +62,7 @@ export async function updateEloRating(winnerId, loserId, timeControl, isDraw = f
 
 // Update ELO for games with more than 2 players, comparing each player against every other
 export async function updateEloMultiplayer(playerResults, timeControl) {
-  const sorted = [...playerResults].sort(function (a, b) {
+  const sorted = playerResults.slice().sort(function (a, b) {
     return b.finalPoints - a.finalPoints;
   });
 

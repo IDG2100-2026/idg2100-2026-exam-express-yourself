@@ -26,26 +26,26 @@ const tournamentRouter = express.Router();
 
 
 // Public routes
-tournamentRouter.get("/", validateGetTournaments(), validate, getAllTournaments);
-tournamentRouter.get("/:id", getTournament);
-tournamentRouter.get("/:id/standings", getStandings);
+tournamentRouter.get("/", validateGetTournaments(), validate, getAllTournaments); // get all tournaments
+tournamentRouter.get("/:id", getTournament); // get a single tournament
+tournamentRouter.get("/:id/standings", getStandings); // get bracket standings
 
 
 tournamentRouter.use(authenticate);
 
 
 // Authenticated users
-tournamentRouter.post("/:id/join", authorize("user"), joinTournament);
-tournamentRouter.post("/:id/leave", authorize("user"), leaveTournament);
+tournamentRouter.post("/:id/join", authorize("user"), joinTournament); // join a tournament
+tournamentRouter.post("/:id/leave", authorize("user"), leaveTournament); // leave a tournament
 
 
 // Admin only
-tournamentRouter.post("/", authorize("admin"), upload.single("trophyImage"), validateCreateTournament(), validate, createTournament);
-tournamentRouter.put("/:id", authorize("admin"), validateUpdateTournament(), validate, updateTournament);
-tournamentRouter.post("/:id/start", authorize("admin"), startTournament);
-tournamentRouter.post("/:id/cancel", authorize("admin"), cancelTournament);
-tournamentRouter.put("/:id/matches/:matchId/result", authorize("admin"), validateReportMatchResult(), validate, reportMatchResult);
-tournamentRouter.delete("/:id", authorize("admin"), deleteTournament);
+tournamentRouter.post("/", authorize("admin"), upload.single("trophyImage"), validateCreateTournament(), validate, createTournament); // create a tournament
+tournamentRouter.put("/:id", authorize("admin"), validateUpdateTournament(), validate, updateTournament); // update a tournament
+tournamentRouter.post("/:id/start", authorize("admin"), startTournament); // start a tournament
+tournamentRouter.post("/:id/cancel", authorize("admin"), cancelTournament); // cancel a tournament
+tournamentRouter.put("/:id/matches/:matchId/result", authorize("admin"), validateReportMatchResult(), validate, reportMatchResult); // record a bracket match result
+tournamentRouter.delete("/:id", authorize("admin"), deleteTournament); // delete a tournament
 
 
 export default tournamentRouter;

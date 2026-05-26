@@ -13,11 +13,20 @@ import {
   USER_THEMES,
 } from "../config/constants.js";
 
+
 // Validates optional query params when listing all users (GET /api/users)
 export function validateGetUsers() {
   return [
-    query("page").optional().isInt({ min: 1 }).withMessage("Page must be a positive number.").toInt(),
-    query("limit").optional().isInt({ min: 1 }).withMessage("Limit must be a positive number.").toInt(),
+    query("page")
+      .optional()
+      .isInt({ min: 1 })
+      .withMessage("Page must be a positive number.")
+      .toInt(),
+    query("limit")
+      .optional()
+      .isInt({ min: 1 })
+      .withMessage("Limit must be a positive number.")
+      .toInt(),
     query("search").optional().trim().escape(),
   ];
 }
@@ -32,7 +41,9 @@ export function validateRegister() {
       .notEmpty()
       .withMessage("Username is required.")
       .isLength({ min: MIN_USERNAME_LENGTH, max: MAX_USERNAME_LENGTH })
-      .withMessage(`Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters.`)
+      .withMessage(
+        `Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters.`,
+      )
       .matches(ALLOWED_USERNAME_FORMAT)
       .withMessage("Username can only contain letters and numbers.")
       .bail()
@@ -45,7 +56,9 @@ export function validateRegister() {
       .notEmpty()
       .withMessage("Email is required.")
       .isLength({ max: MAX_USER_EMAIL_LENGTH })
-      .withMessage(`Email cannot be longer than ${MAX_USER_EMAIL_LENGTH} characters.`)
+      .withMessage(
+        `Email cannot be longer than ${MAX_USER_EMAIL_LENGTH} characters.`,
+      )
       .isEmail()
       .withMessage("Must be a valid email address, e.g. user@mail.com.")
       .bail()
@@ -58,7 +71,9 @@ export function validateRegister() {
       .notEmpty()
       .withMessage("Password is required.")
       .isLength({ min: MIN_PASSWORD_LENGTH, max: MAX_PASSWORD_LENGTH })
-      .withMessage(`Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters.`)
+      .withMessage(
+        `Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters.`,
+      )
       .isStrongPassword({
         minLength: MIN_PASSWORD_LENGTH,
         minLowercase: 1,
@@ -66,7 +81,9 @@ export function validateRegister() {
         minNumbers: 1,
         minSymbols: 1,
       })
-      .withMessage("Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character."),
+      .withMessage(
+        "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.",
+      ),
     body("age")
       .notEmpty()
       .withMessage("Age is required.")
@@ -86,10 +103,7 @@ export function validateLogin() {
       .withMessage("Email is required.")
       .isEmail()
       .withMessage("Must be a valid email address, e.g. user@mail.com."),
-    body("password")
-      .trim()
-      .notEmpty()
-      .withMessage("Password is required."),
+    body("password").trim().notEmpty().withMessage("Password is required."),
   ];
 }
 
@@ -101,7 +115,9 @@ export function validateUpdateUser() {
       .optional()
       .trim()
       .isLength({ max: MAX_USER_EMAIL_LENGTH })
-      .withMessage(`Email cannot be longer than ${MAX_USER_EMAIL_LENGTH} characters.`)
+      .withMessage(
+        `Email cannot be longer than ${MAX_USER_EMAIL_LENGTH} characters.`,
+      )
       .isEmail()
       .withMessage("Must be a valid email address, e.g. user@mail.com."),
     body("oldPassword")
@@ -113,7 +129,9 @@ export function validateUpdateUser() {
       .optional()
       .trim()
       .isLength({ min: MIN_PASSWORD_LENGTH, max: MAX_PASSWORD_LENGTH })
-      .withMessage(`Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters.`)
+      .withMessage(
+        `Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters.`,
+      )
       .isStrongPassword({
         minLength: MIN_PASSWORD_LENGTH,
         minLowercase: 1,
@@ -121,13 +139,17 @@ export function validateUpdateUser() {
         minNumbers: 1,
         minSymbols: 1,
       })
-      .withMessage("Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character."),
+      .withMessage(
+        "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.",
+      ),
     body("bio")
       .optional()
       .trim()
       .escape()
       .isLength({ max: MAX_USER_BIO_LENGTH })
-      .withMessage(`Bio cannot be longer than ${MAX_USER_BIO_LENGTH} characters.`),
+      .withMessage(
+        `Bio cannot be longer than ${MAX_USER_BIO_LENGTH} characters.`,
+      ),
     body("profileImageUrl")
       .optional()
       .trim()
@@ -137,9 +159,7 @@ export function validateUpdateUser() {
       .optional()
       .isIn(USER_THEMES)
       .withMessage(`Theme must be one of: ${USER_THEMES.join(", ")}.`),
-    body("appearance.boardColor")
-      .optional()
-      .trim(),
+    body("appearance.boardColor").optional().trim(),
     body("appearance.sound")
       .optional()
       .isBoolean()

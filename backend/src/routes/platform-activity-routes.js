@@ -5,7 +5,7 @@ const platformActivityRouter = express.Router();
 
 
 // Public routes
-platformActivityRouter.get("/", getPlatformActivityData);
+platformActivityRouter.get("/", getPlatformActivityData); // get platform activity stats
 
 
 export default platformActivityRouter;

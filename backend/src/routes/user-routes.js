@@ -19,20 +19,20 @@ const userRouter = express.Router();
 
 
 // Public routes
-userRouter.get("/:id", getUser);
+userRouter.get("/:id", getUser); // get a user profile
 
 
 userRouter.use(authenticate);
 
 
 // Authenticated users
-userRouter.patch("/:id", authorize("admin", "user"), validateUpdateUser(), validate, updateUser);
+userRouter.patch("/:id", authorize("admin", "user"), validateUpdateUser(), validate, updateUser); // update a user profile
 
 
 // Admin only
-userRouter.get("/", authorize("admin"), validateGetUsers(), validate, getUsers);
-userRouter.post("/:id/ban", authorize("admin"), banUser);
-userRouter.post("/:id/make-admin", authorize("admin"), makeAdmin);
+userRouter.get("/", authorize("admin"), validateGetUsers(), validate, getUsers); // get all users
+userRouter.post("/:id/ban", authorize("admin"), banUser); // ban a user
+userRouter.post("/:id/make-admin", authorize("admin"), makeAdmin); // make a user an admin
 
 
 export default userRouter;
