@@ -11,7 +11,9 @@ import {
   VALID_TIME_CONTROLS,
 } from "../config/constants.js";
 
-export function validateGetTournaments() { // Validates optional query params for browsing tournaments (GET /api/tournaments)
+
+// Validates optional query params for browsing tournaments (GET /api/tournaments)
+export function validateGetTournaments() {
   return [
     query("page")
       .optional()
@@ -40,7 +42,8 @@ export function validateGetTournaments() { // Validates optional query params fo
 }
 
 
-export function validateCreateTournament() { // Validates body when creating a new tournament (POST /api/tournaments)
+// Validates body when creating a new tournament (POST /api/tournaments)
+export function validateCreateTournament() {
   return [
     body("title")
       .trim()
@@ -118,7 +121,8 @@ export function validateCreateTournament() { // Validates body when creating a n
 }
 
 
-export function validateUpdateTournament() { // Validates body when updating tournament details (PUT /api/tournaments/:id)
+// Validates body when updating tournament details (PUT /api/tournaments/:id)
+export function validateUpdateTournament() {
   return [
     body("title")
       .optional()
@@ -196,7 +200,8 @@ export function validateUpdateTournament() { // Validates body when updating tou
 }
 
 
-export function validateReportMatchResult() { // Validates body when reporting a tournament match result (PUT /api/tournaments/:id/matches/:matchId/result)
+// Validates body when reporting a tournament match result (PUT /api/tournaments/:id/matches/:matchId/result)
+export function validateReportMatchResult() {
   return [
     body("winnerId")
       .notEmpty()
