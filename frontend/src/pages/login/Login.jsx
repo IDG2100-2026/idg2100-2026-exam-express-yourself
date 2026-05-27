@@ -26,18 +26,17 @@ export default function Login() {
   useEffect(() => {
     const code = searchParams.get("code");
     if (!code) return;
-    setSearchParams({}); // clear the code from the url
-
     const verifyUserEmail = async () => {
       try {
         const data = await verifyEmail(code); // runs the verify-email endpoint
+        setSuccess("Email verified! You can not log in!")
       } catch (err) {
         setError(err.message); // error msg
       }
     };
 
     verifyUserEmail();
-  }, [searchParams]);
+  }, []);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -51,7 +50,7 @@ export default function Login() {
     try {
       const result = await loginUser(formData);
       login(result.user, result.accessToken);
-      setSuccess(true);
+      setSuccess("Login successful! You will be redirected to the homepage");
       setTimeout(() => {
         navigate("/"); // navigate to homepage after 3 sec
       }, 3000);
@@ -87,7 +86,7 @@ export default function Login() {
             <h1 className="login__title">Log In</h1>
             <p className="login__subtitle">Welcome back to PokerDados</p>
             {success && (
-              <p>Login successful! You will be redirected to the homepage</p>
+              <p>{success}</p>
             )}
             <div className="login__field">
               <label htmlFor="email">Email</label>
