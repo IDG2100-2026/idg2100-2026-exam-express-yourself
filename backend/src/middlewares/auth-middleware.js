@@ -1,7 +1,8 @@
 import { verifyAccessToken } from "../utils/jwt.js";
 import { BusinessLogicError } from "../utils/errors.js";
-import SecurityIncident from "../models/SecurityIncident.js";
+import { logIncident } from "../services/security-incidents-service.js";
 import { normalizeIp } from "../utils/normalize-ip.js";
+
 
 export const authenticate = (req, res, next) => {
   try {
@@ -12,12 +13,12 @@ export const authenticate = (req, res, next) => {
 
     // IP-change detection. log incident and force new login
     if (decoded.ip && decoded.ip !== normalizeIp(req.ip)) {
-      SecurityIncident.create({
+      logIncident({
         type: "ip-change",
         ip: req.ip,
         userAgent: req.headers["user-agent"] || "unknown",
         userId: decoded.userId || null,
-      }).catch(() => {});
+      }).catch(() => {}); // fire and forget, don't block the request
 
       throw new BusinessLogicError("IP mismatch, please re-authenticate", 401);
     }
@@ -29,6 +30,7 @@ export const authenticate = (req, res, next) => {
     next(err);
   }
 };
+
 
 export const authorize = (...allowedRoles) => {
   return (req, res, next) => {
