@@ -91,8 +91,8 @@ export default function Profile() {
       };
 
       await updateUser(id, updates);
-      setSaveSuccess("Profile updated!");
       refetch();
+      setEditing(false);
     } catch (err) {
       setSaveError(err.message);
     }
