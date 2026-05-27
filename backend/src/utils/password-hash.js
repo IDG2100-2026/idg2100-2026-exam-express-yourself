@@ -7,6 +7,6 @@ export const hashPassword = (password) => {
     return crypto.createHash('sha256').update(hash).digest('hex').toString(); // create a sha256 hash
 }
 
-export const chechPassword = (password, existingHash) => {
+export const checkPassword = (password, existingHash) => {
     return hashPassword(password) === existingHash; // hash the incoming password and check if it matches the one in DB
 }
