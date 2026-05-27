@@ -12,6 +12,9 @@ const BOARD_COLORS = [
 function AppearanceMenu() {
   const [open, setOpen] = useState(false);
   const { appearance, saveAppearance } = useAppearance();
+  const [sliderValue, setSliderValue] = useState(null);
+
+  const lobbySize = sliderValue ?? appearance.lobbySize;
 
   function update(key, value) {
     saveAppearance({ ...appearance, [key]: value });
@@ -50,8 +53,15 @@ function AppearanceMenu() {
           </div>
 
           <div className="appearance__row">
-            <span className="appearance__label">Lobby preview ({appearance.lobbySize})</span>
-            <input type="range" min="1" max="10" value={appearance.lobbySize} onChange={(e) => update("lobbySize", parseInt(e.target.value))} className="appearance__slider" />
+            <span className="appearance__label">Lobby preview ({lobbySize})</span>
+            <input
+              type="range" min="1" max="10"
+              value={lobbySize}
+              onChange={(e) => setSliderValue(parseInt(e.target.value))}
+              onMouseUp={(e) => update("lobbySize", parseInt(e.target.value))}
+              onTouchEnd={(e) => update("lobbySize", parseInt(e.target.value))}
+              className="appearance__slider"
+            />
           </div>
         </div>
       )}
