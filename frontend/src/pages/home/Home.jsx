@@ -35,10 +35,10 @@ export default function Home() {
     async function fetchAll() {
       try {
         const [waitingRes, activeRes, completedRes, tournamentsRes, activityRes] = await Promise.all([
-          getMatches("waiting"),
-          getMatches("in-progress"),
-          getMatches("completed"),
-          getTournaments(),
+          getMatches({ status: "waiting", limit: 9 }),
+          getMatches({ status: "in-progress", limit: 9 }),
+          getMatches({ status: "completed", limit: 9 }),
+          getTournaments({ status: "upcoming", limit: 5 }),
           getPlatformActivity(),
         ]);
 

@@ -28,9 +28,9 @@ WEB COMPONENTS
   [ ] Sound effects (gated by user sound setting)
 
 FRONTEND PAGES
-  [*] HomePage — has activity stats + top games + tournaments, missing some detail
+  [X] HomePage — activity stats, open games, top games, upcoming tournaments
   [X] LobbyPage — sort/filter by elo/time control/pagination + load-more
-  [*] GamePage — shows game info + comments, missing dice board, betting UI, leave button, spectator view
+  [*] GamePage — shows game info + comments, missing dice board, betting UI, spectator view (leave button added)
   [X] TournamentsPage — search, sort, status tabs, load-more pagination
   [X] TournamentPage — countdown, standings, join/leave, admin controls (start/cancel/delete/edit)
   [X] ProfilePage — points balance added, game history with load-more pagination
@@ -55,4 +55,4 @@ HEADER
 MATCHMAKING
   [ ] Room-based matchmaking (replace queue)
   [ ] Auto-start when required players joined
-  [ ] Anonymous users — spectate only, redirect to login on join
+  [*] Anonymous users — spectate only, redirect to login on join (redirect done, spectate not implemented)

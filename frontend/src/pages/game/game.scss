@@ -39,6 +39,22 @@
     }
   }
 
+  &__leave-btn {
+    background: none;
+    border: 1px solid $color-danger;
+    border-radius: $radius;
+    color: $color-danger;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    padding: 0.4rem 1rem;
+
+    &:hover {
+      background-color: $color-danger;
+      color: #fff;
+    }
+  }
+
   &__players {
     display: flex;
     align-items: center;

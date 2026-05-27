@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useMatch } from "../../hooks/useMatch.js";
 import { useComments } from "../../hooks/useComments.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { createComment } from "../../services/comments-service.js";
+import { leaveMatch } from "../../services/matches-service.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
 
 export default function Game() {
@@ -13,9 +14,15 @@ export default function Game() {
   const { appearance } = useAppearance();
   const { match, isLoading, error } = useMatch(id);
   const { comments, refetch } = useComments("Match", id);
+  const navigate = useNavigate();
 
   const [commentText, setCommentText] = useState("");
   const [commentError, setCommentError] = useState(null);
+
+  async function handleLeave() {
+    try { await leaveMatch(id); } catch { /* ignore, navigate anyway */ }
+    navigate("/lobby");
+  }
 
   async function handleCommentSubmit(e) {
     e.preventDefault();
@@ -36,6 +43,8 @@ export default function Game() {
 
   const p1 = match.players?.[0]?.userId;
   const p2 = match.players?.[1]?.userId;
+  const userId = user?._id || user?.userId;
+  const isPlayer = match.players?.some((p) => (p.userId?._id || p.userId) === userId);
 
   return (
     <div className="game">
@@ -45,6 +54,9 @@ export default function Game() {
             <div className="game__waiting">
               <p>Waiting for another player to join...</p>
               <small>This page refreshes every 15 seconds</small>
+              {isPlayer && (
+                <button className="game__leave-btn" onClick={handleLeave}>Leave Game</button>
+              )}
             </div>
           )}
           <div className="game__players">
