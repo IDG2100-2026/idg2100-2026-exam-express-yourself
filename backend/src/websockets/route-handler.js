@@ -51,7 +51,8 @@ export const endRound = async (match, matchId) => {
   }
 
   match.pot = 0; // resets the pot
-  ((match.highestBet = 0), (match.currentRound += 1)); // resets the highest bet, and increment the round with one
+  match.highestBet = 0;
+  match.currentRound += 1; // resets the highest bet, and increment the round with one
 
   if (match.currentRound > match.category.rounds) {
     return endGame(match, matchId); // end the game if current round is bigger than the round we set at the start

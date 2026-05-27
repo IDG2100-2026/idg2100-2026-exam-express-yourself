@@ -1,51 +1,73 @@
 import Match from "../models/Match.js";
-import { rollDice} from "../services/match-service.js";
-import { sendError, games, sendToPlayer, sendToRoom } from './helpers.js';
-import { handleBet, handleMatchedBet, handleFolding } from './betting-handler.js';
+import { rollDice } from "../services/match-service.js";
+import { sendError, games, sendToPlayer, sendToRoom } from "./helpers.js";
+import {
+  handleBet,
+  handleMatchedBet,
+  handleFolding,
+} from "./betting-handler.js";
 
-export const handleGameMessage = (socket, message) => {
+export const handleGameMessage = async (socket, message) => {
   const { type, matchId, userId } = message; // extract what kind of action, game and user
 
   switch (
     type // check the action type and call the right handler
   ) {
     case "join": // player wants to join a game room
-      handleJoin(socket, matchId, userId);
+      await handleJoin(socket, matchId, userId);
       break;
     case "roll": // player want to roll their dices
-      handleRoll(socket, matchId, userId);
+      await handleRoll(socket, matchId, userId);
       break;
     case "hold": // player want to hold a dice
-      handleHold(socket, matchId, userId, message.held);
+      await handleHold(socket, matchId, userId, message.held);
       break;
     case "endTurn":
-      handleEndTurn(socket, matchId, userId);
+      await handleEndTurn(socket, matchId, userId);
       break;
     case "bet":
-      handleBet(socket, matchId, userId, message.amount);
+      await handleBet(socket, matchId, userId, message.amount);
       break;
     case "raise":
-      handleBet(socket, matchId, userId, message.amount, true);
+      await handleBet(socket, matchId, userId, message.amount, true);
       break;
     case "match":
-      handleMatchedBet(socket, matchId, userId);
+      await handleMatchedBet(socket, matchId, userId);
       break;
     case "fold":
-      handleFolding(socket, matchId, userId);
+      await handleFolding(socket, matchId, userId);
       break;
     default:
       console.log("Unknown message type", type);
   }
 };
 
-export const handleJoin = (socket, matchId, userId) => {
+export const handleJoin = async (socket, matchId, userId) => {
   // adds a players socket to the game room
   if (!games.has(matchId)) {
-    // create a game room if its the first time a player enters e.g, newly cerated game
+    // create a game room if its the first time a player enters e.g, newly created game
     games.set(matchId, []);
+  }
+  const match = await Match.findById(matchId).populate("players.userId", "username");
+  if (match && match.status === "in-progress") {
+    sendToPlayer(socket, {
+      // send only to this player, not the whole room
+      type: "game:started",
+      players: match.players,
+      currentPlayerIndex: match.currentPlayerIndex,
+      phase: match.phase,
+      currentRound: match.currentRound,
+      totalRounds: match.category.rounds,
+    });
   }
 
   const room = games.get(matchId); // get a list of connected players
+
+  // Search the room for an existing connection from this same user (handles React Strict Mode)
+  const existingIndex = room.findIndex((player) => player.userId === userId);
+  if (existingIndex !== -1) {
+    room.splice(existingIndex, 1); // removes the old entry connection
+  }
   room.push({ socket, userId }); // adds this players socket into this room
 
   console.log(
@@ -71,7 +93,7 @@ export const handleRoll = async (socket, matchId, userId) => {
   const player = match.players[playerIndex]; // get players data from the match
 
   if (player.rollsUsed >= 3) {
-    handleEndTurn(socket, matchId, userId); // auto end turn when player have rolled 3 times
+    return handleEndTurn(socket, matchId, userId); // auto end turn when player have rolled 3 times
   }
 
   player.dice = rollDice(player.dice, player.held); //roll the dices, and hold the held dices
@@ -102,7 +124,7 @@ export const handleHold = async (socket, matchId, userId, held) => {
     return sendError(socket, "Not in rolling phase"); // check if game phase is in rolling
 
   const playerIndex = match.players.findIndex(
-    (player) => player.userId.toString === userId, // finds whick index the player is
+    (player) => player.userId.toString() === userId, // finds whick index the player is
   );
 
   if (playerIndex !== match.currentPlayerIndex)
@@ -126,7 +148,7 @@ export const handleHold = async (socket, matchId, userId, held) => {
   });
 };
 
-export const handleEndTurn = async (socket,matchId, userId) => {
+export const handleEndTurn = async (socket, matchId, userId) => {
   const match = await Match.findById(matchId); // finds the match
   if (!match) return sendError(socket, "Game not found");
 
@@ -135,7 +157,7 @@ export const handleEndTurn = async (socket,matchId, userId) => {
 
   const playerIndex = match.players.findIndex(
     // finds which index the user is
-    (player) => player.userId.toString === userId,
+    (player) => player.userId.toString() === userId,
   );
 
   if (playerIndex !== match.currentPlayerIndex)

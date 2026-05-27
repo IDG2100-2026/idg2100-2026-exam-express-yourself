@@ -243,10 +243,13 @@ export async function joinMatch(matchId, userId) {
   if (match.players.length >= match.maxPlayers) {
     match.status = "in-progress";
     match.startedAt = new Date();
+    match.currentRound = 1;
+    match.phase = "rolling"
   }
-
+  
   const savedMatch = await match.save();
-  return savedMatch;
+  const populatedMatch = await savedMatch.populate("players.userId", "username"); // populate player usernames so the frontend can display them
+  return populatedMatch;
 }
 
 
