@@ -29,7 +29,7 @@ export default function Login() {
     const verifyUserEmail = async () => {
       try {
         const data = await verifyEmail(code); // runs the verify-email endpoint
-        setSuccess("Email verified! You can not log in!")
+        setSuccess(data.message)
       } catch (err) {
         setError(err.message); // error msg
       }
@@ -50,7 +50,7 @@ export default function Login() {
     try {
       const result = await loginUser(formData);
       login(result.user, result.accessToken);
-      setSuccess("Login successful! You will be redirected to the homepage");
+      setSuccess(`Login successful ${result.user?.username}! You will be redirected to the homepage`);
       setTimeout(() => {
         navigate("/"); // navigate to homepage after 3 sec
       }, 3000);

@@ -36,11 +36,6 @@ export async function getUser(userId, requestingUserId, filters = {}) {
   // Convert to plain object so we can remove fields before sending
   const userObj = user.toObject();
 
-  // Email is only visible to the user themselves, not to other users
-  if (!requestingUserId || requestingUserId !== user._id.toString()) {
-    delete userObj.email;
-  }
-
   // Count all completed matches this user has played
   const totalGames = await Match.countDocuments({
     "players.userId": user._id,
