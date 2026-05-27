@@ -88,6 +88,7 @@
     min-height: 200px;
     border-radius: $radius;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: $color-text-muted;
@@ -161,6 +162,7 @@
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
+    max-height: 80px;
     font-size: 0.9rem;
     padding: 0.6rem;
     resize: vertical;
