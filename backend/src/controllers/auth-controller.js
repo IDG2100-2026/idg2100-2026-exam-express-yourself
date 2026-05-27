@@ -49,8 +49,7 @@ export const verifyEmailController = async (req, res, next) => {
 
     const token = await TokenVerification.findOne({ token: code }); // finds the token in db
 
-    if (!token)
-      throw new BusinessLogicError("Invalid or expired verification code", 400);
+    if (!token) return;
 
     await User.findByIdAndUpdate(token.userId, { isVerified: true }); // marking the user as verified
 
