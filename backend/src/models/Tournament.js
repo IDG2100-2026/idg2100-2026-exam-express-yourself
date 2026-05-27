@@ -67,6 +67,7 @@ const tournamentSchema = new mongoose.Schema(
     category: {
       rounds: {
         type: Number,
+        required: [true, "Category rounds is required. [schema]"],
         enum: {
           values: VALID_ROUNDS,
           message: `Rounds must be one of: ${VALID_ROUNDS.join(", ")}. [schema]`,
@@ -75,6 +76,7 @@ const tournamentSchema = new mongoose.Schema(
       straightsAllowed: { type: Boolean, default: true },
       timeControl: {
         type: Number,
+        required: [true, "Category time control is required. [schema]"],
         enum: {
           values: VALID_TIME_CONTROLS,
           message: `Time control must be one of: ${VALID_TIME_CONTROLS.join(", ")}. [schema]`,
