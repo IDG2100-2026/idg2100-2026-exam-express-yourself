@@ -71,7 +71,7 @@ export const handleRoll = async (socket, matchId, userId) => {
   const player = match.players[playerIndex]; // get players data from the match
 
   if (player.rollsUsed >= 3) {
-    handleEndTurn(socket, matchId, userId); // auto end turn when player have rolled 3 times
+    return handleEndTurn(socket, matchId, userId); // auto end turn when player have rolled 3 times
   }
 
   player.dice = rollDice(player.dice, player.held); //roll the dices, and hold the held dices
@@ -102,7 +102,7 @@ export const handleHold = async (socket, matchId, userId, held) => {
     return sendError(socket, "Not in rolling phase"); // check if game phase is in rolling
 
   const playerIndex = match.players.findIndex(
-    (player) => player.userId.toString === userId, // finds whick index the player is
+    (player) => player.userId.toString() === userId, // finds whick index the player is
   );
 
   if (playerIndex !== match.currentPlayerIndex)
@@ -135,7 +135,7 @@ export const handleEndTurn = async (socket,matchId, userId) => {
 
   const playerIndex = match.players.findIndex(
     // finds which index the user is
-    (player) => player.userId.toString === userId,
+    (player) => player.userId.toString() === userId,
   );
 
   if (playerIndex !== match.currentPlayerIndex)
