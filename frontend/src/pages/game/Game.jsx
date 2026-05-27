@@ -5,14 +5,13 @@ import { useComments } from "../../hooks/useComments.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { createComment } from "../../services/comments-service.js";
-import GameBoard from "../../components/game-board/GameBoard.jsx";
 import Avatar from "../../components/avatar/Avatar.jsx";
 
 export default function Game() {
   const { id } = useParams();
   const { user } = useAuth();
   const { appearance } = useAppearance();
-  const { match, isLoading, error, refetch: refetchMatch } = useMatch(id);
+  const { match, isLoading, error } = useMatch(id);
   const { comments, refetch: refetch } = useComments("Match", id);
 
   const [commentText, setCommentText] = useState("");
@@ -51,43 +50,37 @@ export default function Game() {
           <div className="game__players">
             <div className="game__player">
               <Avatar imageUrl={p1?.profileImageUrl} size={56} />
-<<<<<<< HEAD
               <span className="game__player-name">
                 {p1?.username || "Unknown"}
               </span>
               <span className="game__player-elo">
-                Elo: {p1?.eloRating || "—"}
+                Elo:{" "}
+                {p1?.eloRating?.[`tc${match.category?.timeControl || 10}`] ||
+                  "—"}
               </span>
-=======
-              <span className="game__player-name">{p1?.username || "Unknown"}</span>
-              <span className="game__player-elo">Elo: {p1?.eloRating?.[`tc${match.category?.timeControl || 10}`] || "—"}</span>
->>>>>>> master
             </div>
             <span className="game__vs">vs</span>
             <div className="game__player">
               <Avatar imageUrl={p2?.profileImageUrl} size={56} />
-<<<<<<< HEAD
               <span className="game__player-name">
                 {p2?.username || "Waiting..."}
               </span>
               <span className="game__player-elo">
-                {p2 ? `Elo: ${p2.eloRating}` : ""}
+                {p2
+                  ? `Elo: ${p2.eloRating?.[`tc${match.category?.timeControl || 10}`] || "—"}`
+                  : ""}
               </span>
-=======
-              <span className="game__player-name">{p2?.username || "Waiting..."}</span>
-              <span className="game__player-elo">{p2 ? `Elo: ${p2.eloRating?.[`tc${match.category?.timeControl || 10}`] || "—"}` : ""}</span>
->>>>>>> master
             </div>
           </div>
           <div
             className="game__dice-area"
             style={{ backgroundColor: appearance.boardColor }}
           >
-            <GameBoard
-              matchId={id}
-              userId={user?._id}
-              onGameStarted={refetchMatch}
-            />
+            <p>
+              Board — Best of {match.category?.rounds} —{" "}
+              {match.category?.straightsAllowed ? "Straights" : "No straights"}{" "}
+              — {match.category?.timeControl}s
+            </p>
           </div>
         </div>
 

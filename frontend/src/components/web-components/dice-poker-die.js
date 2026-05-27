@@ -3,7 +3,7 @@ class DicePokerDie extends HTMLElement {
   #held;
   #disabled;
   #rolling; // for animation shake
-  #faceMap = { 7: "7", 8: "8", 9: "J", 10: "Q", 11: "K", 12: "A" }
+  #faceMap = { 0: "?", 7: "7", 8: "8", 9: "J", 10: "Q", 11: "K", 12: "A" }
   constructor() {
     super(); // calls the parent HTTPElement
     this.attachShadow({ mode: "open" }); // creates a shadow DOM

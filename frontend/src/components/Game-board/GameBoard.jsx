@@ -25,7 +25,6 @@ export const GameBoard = ({ matchId, userId, onGameStarted }) => {
     const board = boardRef.current; // get the board web component
 
     if (gameState.type === "game:started") {
-      if(onGameStarted) onGameStarted();
       const currentUserIndex = gameState.players.findIndex(
         (player) => player.userId === userId, // finds the player id to the user on their device
       );

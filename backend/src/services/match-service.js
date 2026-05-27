@@ -246,9 +246,10 @@ export async function joinMatch(matchId, userId) {
     match.currentRound = 1;
     match.phase = "rolling"
   }
-
+  
   const savedMatch = await match.save();
-  return savedMatch;
+  const populatedMatch = await savedMatch.populate("players.userId", "username"); // populate player usernames so the frontend can display them
+  return populatedMatch;
 }
 
 

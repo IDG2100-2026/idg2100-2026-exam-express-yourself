@@ -55,7 +55,7 @@ class DicePokerBoard extends HTMLElement {
       return `
         <div class="panelBoard ${isActive ? "active" : ""}"}>
           <div class="player-name">
-            ${player.username}
+            ${player.userId?.username}
             ${myTurn ? "(your panel)" : ""}
             ${player.hasFolded ? "(folded)" : ""}
           </div>

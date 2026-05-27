@@ -66,12 +66,6 @@ export default function Home() {
     return () => { stale = true; };
   }, []);
 
-<<<<<<< HEAD
-async function handleJoinGame(match) {
-  const p1Id = getPlayer(match, 0)?._id;
-  const userId = user?._id || user?.userId;
-  if (p1Id === userId) {
-=======
   async function handleJoinGame(match) {
     if (!user) { navigate("/login"); return; }
     const p1Id = getPlayer(match, 0)?._id;
@@ -81,17 +75,8 @@ async function handleJoinGame(match) {
       return;
     }
     try { await joinMatch(match._id); } catch (err) { /* proceed anyway */ }
->>>>>>> master
     navigate(`/game/${match._id}`);
-    return;
   }
-  try { 
-    await joinMatch(match._id); // wait for the REST call to finish and status to change
-  } catch (err) { 
-    /* proceed anyway */ 
-  }
-  navigate(`/game/${match._id}`); // now navigate, so handleJoin will see "in-progress"
-}
 
   return (
     <div className="home">
