@@ -6,7 +6,7 @@ function Footer() {
       <div className="footer__inner">
         <div className="footer__brand">
           <span className="footer__name">🎲 PokerDados</span>
-          <span className="footer__copy">© 2020–2026</span>
+          <span className="footer__copy">© 2020-2026</span>
         </div>
         <nav className="footer__links">
           <Link to="/about-us" className="footer__link">About Us</Link>
