@@ -27,17 +27,42 @@ export async function getAllTournaments(filters) {
   if (filters.sort === "date") {
     sortObj = { startDate: -1 };
   }
-  // Sorting by participant count needs a special MongoDB aggregation query, so "players" falls back to date sort
 
-  const tournaments = await Tournament.find(filter)
-    .populate("createdBy", "username")
-    .populate("participants", "username")
-    .populate("winnerId", "username")
-    .sort(sortObj)
-    .skip(skip)
-    .limit(limit);
+  let tournaments;
+  let total;
 
-  const total = await Tournament.countDocuments(filter);
+  if (filters.sort === "players") {
+    // Sorting by participant count requires aggregation since .sort() cannot operate on array length
+    const aggregated = await Tournament.aggregate([
+      { $match: filter },
+      { $addFields: { participantCount: { $size: "$participants" } } },
+      { $sort: { participantCount: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+    ]);
+
+    tournaments = await Tournament.populate(aggregated, [
+      { path: "createdBy", select: "username" },
+      { path: "participants", select: "username" },
+      { path: "winnerId", select: "username" },
+    ]);
+
+    const countResult = await Tournament.aggregate([
+      { $match: filter },
+      { $count: "total" },
+    ]);
+    total = countResult.length > 0 ? countResult[0].total : 0;
+  } else {
+    tournaments = await Tournament.find(filter)
+      .populate("createdBy", "username")
+      .populate("participants", "username")
+      .populate("winnerId", "username")
+      .sort(sortObj)
+      .skip(skip)
+      .limit(limit);
+
+    total = await Tournament.countDocuments(filter);
+  }
 
   return { page, limit, total, results: tournaments };
 }
@@ -214,13 +239,19 @@ export async function startTournament(tournamentId) {
     const player1 = shuffled[i];
     const player2 = shuffled[i + 1];
 
+    // Deduct the match buy-in from each player's profile so it becomes their starting stack
+    const matchBuyIn = tournament.category.buyIn;
+    await User.findByIdAndUpdate(player1._id, { $inc: { points: -matchBuyIn } });
+    await User.findByIdAndUpdate(player2._id, { $inc: { points: -matchBuyIn } });
+
     const newMatch = new Match({
       players: [
-        { userId: player1._id },
-        { userId: player2._id },
+        { userId: player1._id, stack: matchBuyIn },
+        { userId: player2._id, stack: matchBuyIn },
       ],
       maxPlayers: 2,
       category: tournament.category,
+      buyIn: matchBuyIn,
       status: "waiting",
       tournamentId: tournament._id,
       round: 1,
@@ -309,13 +340,21 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
       const nextBracketMatches = [];
 
       for (let i = 0; i + 1 < shuffled.length; i += 2) {
+        const player1Id = shuffled[i];
+        const player2Id = shuffled[i + 1];
+
+        const matchBuyIn = tournament.category.buyIn;
+        await User.findByIdAndUpdate(player1Id, { $inc: { points: -matchBuyIn } });
+        await User.findByIdAndUpdate(player2Id, { $inc: { points: -matchBuyIn } });
+
         const newMatch = new Match({
           players: [
-            { userId: shuffled[i] },
-            { userId: shuffled[i + 1] },
+            { userId: player1Id, stack: matchBuyIn },
+            { userId: player2Id, stack: matchBuyIn },
           ],
           maxPlayers: 2,
           category: tournament.category,
+          buyIn: matchBuyIn,
           status: "waiting",
           tournamentId: tournament._id,
           round: nextRoundNumber,
@@ -324,7 +363,7 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
 
         nextBracketMatches.push({
           gameId: savedMatch._id,
-          players: [shuffled[i], shuffled[i + 1]],
+          players: [player1Id, player2Id],
           winner: null,
         });
       }
@@ -490,6 +529,9 @@ export async function updateTournament(tournamentId, updateData) {
     }
     if (updateData.category.straightsAllowed !== undefined) {
       tournament.category.straightsAllowed = updateData.category.straightsAllowed;
+    }
+    if (updateData.category.buyIn !== undefined) {
+      tournament.category.buyIn = updateData.category.buyIn;
     }
   }
 

@@ -31,7 +31,7 @@ export const evaluateHand = (dice, straightAllowed) => {
   } else if (diceValues[0] === 4) {
     rank = 7; // four of a kind
   } else if (diceValues[0] === 3 && diceValues[1] === 2) {
-    rank = 6; // full hoguse
+    rank = 6; // full house
   } else if (isStraight) {
     rank = 5; // straight
   } else if (diceValues[0] === 3) {
