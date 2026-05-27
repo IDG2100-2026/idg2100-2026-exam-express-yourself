@@ -32,6 +32,7 @@ export default function Profile() {
   useEffect(() => {
     if (user?.recentMatches) {
       setGames(user.recentMatches);
+      setGamesTotal(user.recentMatchesTotal || 0);
       setGamesPage(1);
     }
   }, [user]);
@@ -90,8 +91,8 @@ export default function Profile() {
       };
 
       await updateUser(id, updates);
-      setSaveSuccess("Profile updated!");
       refetch();
+      setEditing(false);
     } catch (err) {
       setSaveError(err.message);
     }

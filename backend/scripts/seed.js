@@ -20,7 +20,7 @@ await Comment.deleteMany({});
 await Session.deleteMany({});
 console.log("Cleared all collections");
 
-// Shared hashed password — all seed users use "password123"
+// Shared hashed password, all seed users use "Password123!"
 const hashPassword = (password) => {
   const hash = password + process.env.PASSWORD_SALT;
   return crypto.createHash("sha256").update(hash).digest("hex").toString();

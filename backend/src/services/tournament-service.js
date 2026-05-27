@@ -299,7 +299,7 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
 
   if (allMatchesDone) {
     if (tournament.currentRound < tournament.numberOfRounds) {
-      // More rounds left — re-pair ALL participants randomly for the next round
+      // More rounds left, re-pair all participants randomly for the next round
       const nextRoundNumber = tournament.currentRound + 1;
 
       const shuffled = tournament.participants.slice().sort(function () {
@@ -335,7 +335,7 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
       });
       tournament.currentRound = nextRoundNumber;
     } else {
-      // All rounds done — count wins per participant across every round to find the winner
+      // All rounds done, count wins per participant across every round to find the winner
       const winCounts = {};
 
       for (const round of tournament.bracket) {
