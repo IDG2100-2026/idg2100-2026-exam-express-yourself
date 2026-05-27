@@ -32,7 +32,7 @@ export function AppearanceProvider({ children }) {
       try {
         await updateUser(userId, { appearance: updated });
       } catch (err) {
-        // Silently fail — appearance sync is non-critical
+        // Silently fail, appearance sync is non-critical
       }
     }
   }

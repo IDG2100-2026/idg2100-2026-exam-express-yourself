@@ -145,7 +145,7 @@ export default function Tournament() {
         </span>
       </div>
 
-      {/* Countdown — only for upcoming tournaments that haven't started */}
+      {/* Countdown, only for upcoming tournaments that haven't started */}
       {tournament.status === "upcoming" && countdown && (
         <div className="tournament__countdown">
           <span className="tournament__countdown-label">Starts in</span>
@@ -178,8 +178,8 @@ export default function Tournament() {
         <div className="tournament__info-item">
           <span className="tournament__info-label">Format</span>
           <span>
-            Best of {tournament.category?.rounds} —{" "}
-            {tournament.category?.straightsAllowed ? "Straights" : "No straights"} —{" "}
+            Best of {tournament.category?.rounds},{" "}
+            {tournament.category?.straightsAllowed ? "Straights" : "No straights"},{" "}
             {tournament.category?.timeControl}s
           </span>
         </div>
@@ -285,7 +285,7 @@ export default function Tournament() {
         </div>
       )}
 
-      {/* Standings — shown when in-progress or completed */}
+      {/* Standings, shown when in-progress or completed */}
       {standings && standings.standings?.length > 0 && (
         <div className="tournament__standings">
           <h2 className="tournament__section-title">Standings</h2>
@@ -329,7 +329,7 @@ export default function Tournament() {
                 </Link>
                 {p.eloRating && (
                   <span className="tournament__participant-elo">
-                    {p.eloRating[`tc${tournament.category?.timeControl || 10}`] ?? p.eloRating.tc10 ?? "—"} Elo
+                    {p.eloRating[`tc${tournament.category?.timeControl || 10}`] ?? p.eloRating.tc10 ?? "?"} Elo
                   </span>
                 )}
               </li>

@@ -51,17 +51,17 @@ export default function Game() {
             <div className="game__player">
               <Avatar imageUrl={p1?.profileImageUrl} size={56} />
               <span className="game__player-name">{p1?.username || "Unknown"}</span>
-              <span className="game__player-elo">Elo: {p1?.eloRating?.[`tc${match.category?.timeControl || 10}`] || "—"}</span>
+              <span className="game__player-elo">Elo: {p1?.eloRating?.[`tc${match.category?.timeControl || 10}`] || "?"}</span>
             </div>
             <span className="game__vs">vs</span>
             <div className="game__player">
               <Avatar imageUrl={p2?.profileImageUrl} size={56} />
               <span className="game__player-name">{p2?.username || "Waiting..."}</span>
-              <span className="game__player-elo">{p2 ? `Elo: ${p2.eloRating?.[`tc${match.category?.timeControl || 10}`] || "—"}` : ""}</span>
+              <span className="game__player-elo">{p2 ? `Elo: ${p2.eloRating?.[`tc${match.category?.timeControl || 10}`] || "?"}` : ""}</span>
             </div>
           </div>
           <div className="game__dice-area" style={{ backgroundColor: appearance.boardColor }}>
-            <p>Board — Best of {match.category?.rounds} — {match.category?.straightsAllowed ? "Straights" : "No straights"} — {match.category?.timeControl}s</p>
+            <p>Board: Best of {match.category?.rounds}, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.category?.timeControl}s</p>
           </div>
         </div>
 
