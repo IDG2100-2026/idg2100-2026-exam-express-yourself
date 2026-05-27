@@ -12,8 +12,8 @@ export default function Game() {
   const { id } = useParams();
   const { user } = useAuth();
   const { appearance } = useAppearance();
-  const { match, isLoading, error } = useMatch(id);
-  const { comments, refetch } = useComments("Match", id);
+  const { match, isLoading, error, refetch: refetchMatch } = useMatch(id);
+  const { comments, refetch: refetch } = useComments("Match", id);
 
   const [commentText, setCommentText] = useState("");
   const [commentError, setCommentError] = useState(null);
@@ -73,7 +73,11 @@ export default function Game() {
             className="game__dice-area"
             style={{ backgroundColor: appearance.boardColor }}
           >
-            <GameBoard matchId={id} userId={user?._id} />
+            <GameBoard
+              matchId={id}
+              userId={user?._id}
+              onGameStarted={refetchMatch}
+            />
           </div>
         </div>
 

@@ -39,12 +39,15 @@ export const useGameWebSocket = (matchId, userId) => {
     };
 
     return () => {
-      socket.close(); // close the connection when players leaves
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.close(); // close the connection when players leaves
+      }
     };
   }, [matchId, userId]); // re-run this useEffect if match or player changes
 
   const sendRoll = useCallback(() => {
     // useCallback to remember the function, and prevent re-renders on every re-render
+    if (socketRef.current?.readyState !== WebSocket.OPEN) return;
     socketRef.current?.send(
       JSON.stringify({
         // sends a msg trough socket connection
@@ -57,6 +60,7 @@ export const useGameWebSocket = (matchId, userId) => {
 
   const sendBet = useCallback(
     (amount) => {
+      if (socketRef.current?.readyState !== WebSocket.OPEN) return;
       // fires when a user bets, and has an amount parameter for how much the bet was
       socketRef.current?.send(
         JSON.stringify({
@@ -73,6 +77,7 @@ export const useGameWebSocket = (matchId, userId) => {
 
   const sendHold = useCallback(
     (held) => {
+      if (socketRef.current?.readyState !== WebSocket.OPEN) return;
       socketRef.current?.send(
         JSON.stringify({
           type: "hold", // tells backend this is a hold case actions
@@ -82,10 +87,11 @@ export const useGameWebSocket = (matchId, userId) => {
         }),
       );
     },
-    [matchId, userId],// recreate function only on matchId and userId change!
+    [matchId, userId], // recreate function only on matchId and userId change!
   );
 
   const sendEndTurn = useCallback(() => {
+    if (socketRef.current?.readyState !== WebSocket.OPEN) return;
     socketRef.current?.send(
       JSON.stringify({
         type: "endTurn", // tells backend this is a endTurn case actions
@@ -97,12 +103,13 @@ export const useGameWebSocket = (matchId, userId) => {
 
   const sendRaise = useCallback(
     (amount) => {
+      if (socketRef.current?.readyState !== WebSocket.OPEN) return;
       socketRef.current?.send(
         JSON.stringify({
           type: "raise", // tells backend this is a raise case actions
           matchId, // which game
           userId, // who are raising a bet
-          amount, // amount the user raised with 
+          amount, // amount the user raised with
         }),
       );
     },
@@ -110,6 +117,7 @@ export const useGameWebSocket = (matchId, userId) => {
   );
 
   const sendMatch = useCallback(() => {
+    if (socketRef.current?.readyState !== WebSocket.OPEN) return;
     socketRef.current?.send(
       JSON.stringify({
         type: "match", // tells backend this is a match case actions
@@ -120,6 +128,7 @@ export const useGameWebSocket = (matchId, userId) => {
   }, [matchId, userId]); // recreate function only on matchId and userId change!
 
   const sendFold = useCallback(() => {
+    if (socketRef.current?.readyState !== WebSocket.OPEN) return;
     socketRef.current?.send(
       JSON.stringify({
         type: "fold", // tells backend this is a fold case actions

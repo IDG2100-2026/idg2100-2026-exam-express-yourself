@@ -25,7 +25,7 @@ const hashPassword = (password) => {
   const hash = password + process.env.PASSWORD_SALT;
   return crypto.createHash("sha256").update(hash).digest("hex").toString();
 };
-const hashedPassword = hashPassword("password123");
+const hashedPassword = hashPassword("Password123!");
 const verified = { isVerified: true };
 
 // ─── Users ────────────────────────────────────────────────────────────

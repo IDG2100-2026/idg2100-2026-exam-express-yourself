@@ -3,8 +3,9 @@ import { useGameWebSocket } from "../../hooks/useWebSockets.js";
 import "../web-components/dice-poker-die.js";
 import "../web-components/dice-poker-board.js";
 
-export const GameBoard = ({ matchId, userId }) => {
+export const GameBoard = ({ matchId, userId, onGameStarted }) => {
   const boardRef = useRef(null); // reference to dice-poker-board component. Bridge between
+  const hasHeldChanged = useRef(false); // tracks if a user actually clicked a dice
   const [held, setHeld] = useState([false, false, false, false, false]); // tracks which dices are held
   const {
     gameState,
@@ -22,6 +23,21 @@ export const GameBoard = ({ matchId, userId }) => {
     // watches for web socket messages, and passes the data to the board component
     if (!gameState || !boardRef.current) return; // skip if no data or no board
     const board = boardRef.current; // get the board web component
+
+    if (gameState.type === "game:started") {
+      if(onGameStarted) onGameStarted();
+      const currentUserIndex = gameState.players.findIndex(
+        (player) => player.userId === userId, // finds the player id to the user on their device
+      );
+
+      board.updateState({
+        players: gameState.players, // all player data
+        currentPlayerIndex: gameState.currentPlayerIndex, // who rolls first
+        phase: gameState.phase, // "rolling"
+        currentRound: gameState.currentRound, // round 1
+        totalRounds: gameState.totalRounds, // whatever the creator of the game chose! e.g, 3, 5 or 7
+      });
+    }
 
     if (gameState.type === "dice:rolled") {
       board.updateState({
@@ -73,6 +89,7 @@ export const GameBoard = ({ matchId, userId }) => {
 
     const onHold = (event) => {
       const { dieId, held: dieHeld } = event.detail; // which die, and its new state
+      hasHeldChanged.current = true; // user clicked a dice
       setHeld((prev) => {
         const updated = [...prev]; // copy the current held array
         updated[Number(dieId)] = dieHeld; // update the specific die that was hold
@@ -100,6 +117,7 @@ export const GameBoard = ({ matchId, userId }) => {
   }, [sendRoll, sendEndTurn, sendBet, sendRaise, sendMatch, sendFold]); // re-render if any of these functions changes
 
   useEffect(() => {
+    if(!hasHeldChanged.current) return;
     sendHold(held); // sends the new array to the backend
   }, [held, sendHold]); // re-render every time a user clicks on a dice
   return (

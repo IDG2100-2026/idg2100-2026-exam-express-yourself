@@ -6,11 +6,13 @@ import {
   leaveMatch as leaveMatchService,
   recordResult as recordResultService,
 } from "../services/match-service.js";
+import { sendToRoom } from "../websockets/helpers.js";
 
 // GET /api/matches
 export async function getAllMatches(req, res, next) {
   try {
     const data = await getAllMatchesService(req.validated);
+
     res.json(data);
   } catch (err) {
     next(err);
@@ -41,6 +43,21 @@ export async function createMatch(req, res, next) {
 export async function joinMatch(req, res, next) {
   try {
     const match = await joinMatchService(req.params.id, req.userId);
+
+    if (match.status === "in-progress") {
+      console.log("Game started! Sending game:started to room");
+
+      // Notify the WebSocket room that the game has started
+      sendToRoom(req.params.id, {
+        type: "game:started",
+        players: match.players,
+        currentPlayerIndex: match.currentPlayerIndex,
+        phase: match.phase,
+        currentRound: match.currentRound,
+        totalRounds: match.category.rounds,
+      });
+    }
+
     res.json({ message: "Joined match", match });
   } catch (err) {
     next(err);

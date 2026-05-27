@@ -99,7 +99,7 @@ const matchSchema = new mongoose.Schema(
     },
     currentRound: {
       type: Number,
-      default: 0
+      default: 1 // starts at round one
     },
     currentPlayerIndex: {
       type: Number,

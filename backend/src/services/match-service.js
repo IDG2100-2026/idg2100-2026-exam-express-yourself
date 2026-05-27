@@ -243,6 +243,8 @@ export async function joinMatch(matchId, userId) {
   if (match.players.length >= match.maxPlayers) {
     match.status = "in-progress";
     match.startedAt = new Date();
+    match.currentRound = 1;
+    match.phase = "rolling"
   }
 
   const savedMatch = await match.save();
