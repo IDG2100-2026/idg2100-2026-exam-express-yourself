@@ -56,7 +56,7 @@ export default function Login() {
       }, 3000);
 
       // Load user appearance preferences
-      loadAppearance(result.appearance);
+      loadAppearance(result.user?.appearance);
     } catch (err) {
       setError(err.message);
     } finally {
