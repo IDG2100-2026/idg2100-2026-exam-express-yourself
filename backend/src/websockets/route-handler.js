@@ -52,7 +52,7 @@ export const endRound = async (match, matchId) => {
 
   match.pot = 0; // resets the pot
   match.highestBet = 0;
-  match.currentRound += 1;// resets the highest bet, and increment the round with one
+  match.currentRound += 1; // resets the highest bet, and increment the round with one
 
   if (match.currentRound > match.category.rounds) {
     return endGame(match, matchId); // end the game if current round is bigger than the round we set at the start
@@ -107,7 +107,7 @@ export const endGame = async (match, matchId) => {
     userId: player.userId,
     finalPoints: player.stack,
   }));
-  await updateEloMultiplayer(playerResult, match.category.timeControl);
+  await updateEloMultiplayer(playerResult, match.category?.timeControl || 10);
 
   await match.save(); // save changes to DB
 

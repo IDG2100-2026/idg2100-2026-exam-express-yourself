@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getMatches, joinMatch } from "../../services/matches-service.js";
 import { getTournaments } from "../../services/tournaments-service.js";
-import { getActivity } from "../../services/activity-service.js";
+import { getPlatformActivity } from "../../services/platform-activity-service.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { useAuth } from "../../hooks/useAuth.js";
 
@@ -10,9 +10,14 @@ function getPlayer(match, index) {
   return match.players?.[index]?.userId || null;
 }
 
+function getPlayerElo(player, tc) {
+  return player?.eloRating?.[`tc${tc || 10}`] || player?.eloRating?.tc10 || 0;
+}
+
 function avgElo(match) {
-  const p1 = getPlayer(match, 0)?.eloRating || 0;
-  const p2 = getPlayer(match, 1)?.eloRating || 0;
+  const tc = match.category?.timeControl;
+  const p1 = getPlayerElo(getPlayer(match, 0), tc);
+  const p2 = getPlayerElo(getPlayer(match, 1), tc);
   return p2 ? Math.round((p1 + p2) / 2) : p1;
 }
 
@@ -34,7 +39,7 @@ export default function Home() {
           getMatches("in-progress"),
           getMatches("completed"),
           getTournaments(),
-          getActivity(),
+          getPlatformActivity(),
         ]);
 
         if (stale) return;
@@ -61,10 +66,22 @@ export default function Home() {
     return () => { stale = true; };
   }, []);
 
+<<<<<<< HEAD
 async function handleJoinGame(match) {
   const p1Id = getPlayer(match, 0)?._id;
   const userId = user?._id || user?.userId;
   if (p1Id === userId) {
+=======
+  async function handleJoinGame(match) {
+    if (!user) { navigate("/login"); return; }
+    const p1Id = getPlayer(match, 0)?._id;
+    const userId = user?._id || user?.userId;
+    if (p1Id === userId) {
+      navigate(`/game/${match._id}`);
+      return;
+    }
+    try { await joinMatch(match._id); } catch (err) { /* proceed anyway */ }
+>>>>>>> master
     navigate(`/game/${match._id}`);
     return;
   }
@@ -116,7 +133,7 @@ async function handleJoinGame(match) {
                     <button key={match._id} className="home__card home__card--btn" onClick={() => handleJoinGame(match)}>
                       <div className="home__card-player">{p1?.username || "Unknown"}</div>
                       <div className="home__card-variant">Best of {match.category?.rounds} — {match.category?.timeControl}s</div>
-                      <div className="home__card-elo">Elo: {p1?.eloRating || "—"}</div>
+                      <div className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "—"}</div>
                       <div className="home__card-waiting">Click to join</div>
                     </button>
                   );

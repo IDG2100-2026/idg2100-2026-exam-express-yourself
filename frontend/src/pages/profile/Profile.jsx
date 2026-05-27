@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useUser } from "../../hooks/useUser.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { updateUser, uploadAvatar } from "../../services/users-service.js";
+import { getPlayerMatches } from "../../services/matches-service.js";
 
 export default function Profile() {
   const { id } = useParams();
@@ -22,6 +23,30 @@ export default function Profile() {
   const [avatarFile, setAvatarFile] = useState(null);
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(null);
+
+  const [games, setGames] = useState([]);
+  const [gamesPage, setGamesPage] = useState(1);
+  const [gamesTotal, setGamesTotal] = useState(0);
+  const [isLoadingGames, setIsLoadingGames] = useState(false);
+
+  useEffect(() => {
+    if (user?.recentMatches) {
+      setGames(user.recentMatches);
+      setGamesPage(1);
+    }
+  }, [user]);
+
+  function loadMoreGames() {
+    const nextPage = gamesPage + 1;
+    setIsLoadingGames(true);
+    getPlayerMatches(id, nextPage, 10)
+      .then((data) => {
+        setGames((prev) => [...prev, ...(data.results || [])]);
+        setGamesTotal(data.total || 0);
+        setGamesPage(nextPage);
+      })
+      .finally(() => setIsLoadingGames(false));
+  }
 
   function startEditing() {
     setFormData({
@@ -189,14 +214,20 @@ export default function Profile() {
 
       <div className="profile__stats">
         <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating}</span>
-          <span className="profile__stat-label">Overall Elo</span>
+          <span className="profile__stat-value">{user.eloRating?.tc10 ?? 1000}</span>
+          <span className="profile__stat-label">Elo (10s)</span>
         </div>
         <div className="profile__stat">
-          <span className="profile__stat-value">
-            {user.recentMatches?.length || 0}
-          </span>
-          <span className="profile__stat-label">Games Played</span>
+          <span className="profile__stat-value">{user.eloRating?.tc30 ?? 1000}</span>
+          <span className="profile__stat-label">Elo (30s)</span>
+        </div>
+        <div className="profile__stat">
+          <span className="profile__stat-value">{user.eloRating?.tc90 ?? 1000}</span>
+          <span className="profile__stat-label">Elo (90s)</span>
+        </div>
+        <div className="profile__stat">
+          <span className="profile__stat-value">{user.points ?? 0}</span>
+          <span className="profile__stat-label">Points</span>
         </div>
         <div className="profile__stat">
           <span className="profile__stat-value">{stats.wins}</span>
@@ -233,20 +264,14 @@ export default function Profile() {
       )}
 
       <div className="profile__games">
-        <div className="profile__games-header">
-          <h2 className="profile__section-title">Last 10 Games</h2>
-          <Link to={`/profile/${id}/games`} className="profile__all-games">
-            View all games →
-          </Link>
-        </div>
-        {!user.recentMatches || user.recentMatches.length === 0 ? (
+        <h2 className="profile__section-title">Game History</h2>
+        {games.length === 0 ? (
           <p className="profile__status">No games played yet.</p>
         ) : (
           <div className="profile__game-list">
-            {user.recentMatches.map((match) => {
+            {games.map((match) => {
               const won = match.winnerId?._id === id || match.winnerId === id;
-              const players = match.players || [];
-              const opponent = players.find((p) => {
+              const opponent = (match.players || []).find((p) => {
                 const pId = p.userId?._id || p.userId;
                 return pId !== id;
               })?.userId;
@@ -256,16 +281,14 @@ export default function Profile() {
                   key={match._id}
                   className="profile__game"
                 >
-                  <span
-                    className={`profile__result profile__result--${won ? "win" : "loss"}`}
-                  >
+                  <span className={`profile__result profile__result--${won ? "win" : "loss"}`}>
                     {won ? "Win" : "Loss"}
                   </span>
                   <span className="profile__opponent">
                     vs {opponent?.username || "Unknown"}
                   </span>
                   <span className="profile__game-variant">
-                    {match.category?.timeControl}s
+                    {match.category?.timeControl}s · BO{match.category?.rounds}
                   </span>
                   <span className="profile__game-date">
                     {new Date(match.updatedAt).toLocaleDateString()}
@@ -274,6 +297,15 @@ export default function Profile() {
               );
             })}
           </div>
+        )}
+        {(games.length === 10 || gamesTotal > games.length) && (
+          <button
+            className="profile__load-more"
+            onClick={loadMoreGames}
+            disabled={isLoadingGames}
+          >
+            {isLoadingGames ? "Loading..." : "Load more games"}
+          </button>
         )}
       </div>
     </div>

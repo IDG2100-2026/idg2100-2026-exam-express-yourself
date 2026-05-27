@@ -4,8 +4,11 @@ const securityIncidentSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ["rate-limit", "ip-change"],
-      required: true,
+      required: [true, "Incident type is required. [schema]"],
+      enum: {
+        values: ["rate-limit", "ip-change"],
+        message: "Type must be one of: rate-limit, ip-change. [schema]",
+      },
     },
     ip: { type: String, default: "unknown" },
     userAgent: { type: String, default: "unknown" },
@@ -14,5 +17,5 @@ const securityIncidentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const SecurityIncident = mongoose.model("SecurityIncident", securityIncidentSchema);
+const SecurityIncident = mongoose.model("SecurityIncident", securityIncidentSchema, "security_incidents");
 export default SecurityIncident;

@@ -10,7 +10,9 @@ import {
   recordResult,
 } from "../controllers/match-controller.js";
 import { authenticate, authorize } from "../middlewares/auth-middleware.js";
+
 const matchRouter = express.Router();
+
 
 // Public routes
 matchRouter.get("/", validateGetMatches(), validate, getAllMatches); // get all matches (lobby)
@@ -24,6 +26,7 @@ matchRouter.use(authenticate);
 matchRouter.post("/", authorize("user"), validateCreateMatch(), validate, createMatch); // create a match
 matchRouter.post("/:id/join", authorize("user"), joinMatch); // join a match
 matchRouter.post("/:id/leave", authorize("user"), leaveMatch); // leave a match
-matchRouter.patch("/:id/result", authorize("user", "admin"), validateRecordResult(), validate, recordResult); // record result
+matchRouter.patch("/:id/result", authorize("user", "admin"), validateRecordResult(), validate, recordResult); // record the match result
+
 
 export default matchRouter;

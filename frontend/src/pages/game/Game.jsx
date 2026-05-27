@@ -51,22 +51,32 @@ export default function Game() {
           <div className="game__players">
             <div className="game__player">
               <Avatar imageUrl={p1?.profileImageUrl} size={56} />
+<<<<<<< HEAD
               <span className="game__player-name">
                 {p1?.username || "Unknown"}
               </span>
               <span className="game__player-elo">
                 Elo: {p1?.eloRating || "—"}
               </span>
+=======
+              <span className="game__player-name">{p1?.username || "Unknown"}</span>
+              <span className="game__player-elo">Elo: {p1?.eloRating?.[`tc${match.category?.timeControl || 10}`] || "—"}</span>
+>>>>>>> master
             </div>
             <span className="game__vs">vs</span>
             <div className="game__player">
               <Avatar imageUrl={p2?.profileImageUrl} size={56} />
+<<<<<<< HEAD
               <span className="game__player-name">
                 {p2?.username || "Waiting..."}
               </span>
               <span className="game__player-elo">
                 {p2 ? `Elo: ${p2.eloRating}` : ""}
               </span>
+=======
+              <span className="game__player-name">{p2?.username || "Waiting..."}</span>
+              <span className="game__player-elo">{p2 ? `Elo: ${p2.eloRating?.[`tc${match.category?.timeControl || 10}`] || "—"}` : ""}</span>
+>>>>>>> master
             </div>
           </div>
           <div

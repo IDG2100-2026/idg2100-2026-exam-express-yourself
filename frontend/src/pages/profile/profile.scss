@@ -291,4 +291,24 @@
     color: $color-text-muted;
     font-size: 0.85rem;
   }
+
+  &__game-variant {
+    color: $color-text-muted;
+    font-size: 0.85rem;
+  }
+
+  &__load-more {
+    background-color: $color-bg-card;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text-muted;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 0.75rem;
+    padding: 0.5rem 1.5rem;
+    width: 100%;
+
+    &:hover:not(:disabled) { border-color: $color-accent; color: $color-text; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
 }

@@ -4,6 +4,8 @@ import {
   DEFAULT_USER_POINTS,
   DEFAULT_USER_BOARD_COLOR,
   DEFAULT_USER_LOBBY_SIZE,
+  USER_ROLES,
+  USER_THEMES,
   MIN_USERNAME_LENGTH,
   MAX_USERNAME_LENGTH,
   MIN_PASSWORD_LENGTH,
@@ -84,8 +86,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "user",
       enum: {
-        values: ["user", "admin"],
-        message: "Role must be either user or admin. [schema]",
+        values: USER_ROLES,
+        message: `Role must be one of: ${USER_ROLES.join(", ")}. [schema]`,
       },
     },
     isVerified: {
@@ -93,12 +95,21 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     eloRating: {
-      type: Number,
-      default: DEFAULT_USER_ELO_RATING,
-      min: [
-        MIN_USER_ELO_RATING,
-        `Elo rating cannot be lower than ${MIN_USER_ELO_RATING}. [schema]`,
-      ],
+      tc10: {
+        type: Number,
+        default: DEFAULT_USER_ELO_RATING,
+        min: [MIN_USER_ELO_RATING, `Elo rating cannot be lower than ${MIN_USER_ELO_RATING}. [schema]`],
+      },
+      tc30: {
+        type: Number,
+        default: DEFAULT_USER_ELO_RATING,
+        min: [MIN_USER_ELO_RATING, `Elo rating cannot be lower than ${MIN_USER_ELO_RATING}. [schema]`],
+      },
+      tc90: {
+        type: Number,
+        default: DEFAULT_USER_ELO_RATING,
+        min: [MIN_USER_ELO_RATING, `Elo rating cannot be lower than ${MIN_USER_ELO_RATING}. [schema]`],
+      },
     },
     points: {
       type: Number,
@@ -131,8 +142,8 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: "dark",
         enum: {
-          values: ["light", "dark"],
-          message: "Theme must be either light or dark. [schema]",
+          values: USER_THEMES,
+          message: `Theme must be one of: ${USER_THEMES.join(", ")}. [schema]`,
         },
       },
       boardColor: { type: String, default: DEFAULT_USER_BOARD_COLOR },

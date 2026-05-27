@@ -7,7 +7,9 @@ import {
   MATCH_STATUSES,
 } from "../config/constants.js";
 
-export function validateGetMatches() { // Validates optional query params for filtering the match lobby (GET /api/matches)
+
+// Validates optional query params for filtering the match lobby (GET /api/matches)
+export function validateGetMatches() {
   return [
     query("page")
       .optional()
@@ -47,7 +49,9 @@ export function validateGetMatches() { // Validates optional query params for fi
   ];
 }
 
-export function validateCreateMatch() { // Validates required and optional body fields when creating a new match (POST /api/matches)
+
+// Validates required and optional body fields when creating a new match (POST /api/matches)
+export function validateCreateMatch() {
   return [
     body("rounds")
       .notEmpty()
@@ -83,7 +87,9 @@ export function validateCreateMatch() { // Validates required and optional body 
   ];
 }
 
-export function validateRecordResult() { // Validates winnerId and score when recording a match result (PATCH /api/matches/:id/result)
+
+// Validates winnerId and score when recording a match result (PATCH /api/matches/:id/result)
+export function validateRecordResult() {
   return [
     body("winnerId")
       .notEmpty()

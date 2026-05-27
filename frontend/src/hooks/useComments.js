@@ -10,7 +10,7 @@ export function useComments(targetType, targetId) {
     setIsLoading(true);
     try {
       const data = await getComments(targetType, targetId);
-      if (!staleObj.stale) setComments(data);
+      if (!staleObj.stale) setComments(data.results || []); // comments are in data.results, not the whole data object
     } catch (err) {
       if (!staleObj.stale) setError(err.message);
     } finally {

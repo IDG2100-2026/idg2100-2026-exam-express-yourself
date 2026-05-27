@@ -1,12 +1,14 @@
 import User from "../models/User.js";
+import { ELO_FIELD_BY_TIME_CONTROL } from "../config/constants.js";
 
-// Standard ELO expected score formula
-// Source: https://www.geeksforgeeks.org/dsa/elo-rating-algorithm/
+
+// Calculate the expected score for a player given two ratings (source: https://www.geeksforgeeks.org/dsa/elo-rating-algorithm/)
 export function expectedScore(ratingA, ratingB) {
   return 1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
 }
 
-// Calculate new ELO ratings for a pair
+
+// Calculate the new ratings for both players after a match outcome
 export function calcEloPair(ratingA, ratingB, K, outcome) {
   const expectedA = expectedScore(ratingA, ratingB);
   const expectedB = expectedScore(ratingB, ratingA);
@@ -17,8 +19,9 @@ export function calcEloPair(ratingA, ratingB, K, outcome) {
   return { newRatingA, newRatingB };
 }
 
-// Update ELO ratings for two players after a match
-export async function updateEloRating(winnerId, loserId, isDraw = false) {
+
+// Update ELO ratings for two players after a match, using the rating for that time control
+export async function updateEloRating(winnerId, loserId, timeControl, isDraw = false) {
   const winner = await User.findById(winnerId);
   const loser = await User.findById(loserId);
 
@@ -26,39 +29,45 @@ export async function updateEloRating(winnerId, loserId, isDraw = false) {
     throw new Error("One or more players not found for ELO update");
   }
 
-  const outcome = isDraw ? 0.5 : 1;
+  let eloField = ELO_FIELD_BY_TIME_CONTROL[timeControl];
+  if (eloField === undefined) {
+    eloField = "tc30";
+  }
+
+  let outcome = 1;
+  if (isDraw) {
+    outcome = 0.5;
+  }
+
   const K = 32;
 
   const { newRatingA, newRatingB } = calcEloPair(
-    winner.eloRating,
-    loser.eloRating,
+    winner.eloRating[eloField],
+    loser.eloRating[eloField],
     K,
-    outcome
+    outcome,
   );
 
-  winner.eloRating = newRatingA;
-  loser.eloRating = newRatingB;
-
-  await winner.save();
-  await loser.save();
+  await User.findByIdAndUpdate(winnerId, { $set: { [`eloRating.${eloField}`]: newRatingA } });
+  await User.findByIdAndUpdate(loserId, { $set: { [`eloRating.${eloField}`]: newRatingB } });
 
   return { winnerElo: newRatingA, loserElo: newRatingB };
 }
 
-// Multi-player ELO update: run pairwise comparisons
-// Players who ended with more points "win" against those with fewer
-export async function updateEloMultiplayer(playerResults) {
-  // playerResults = [{ userId, finalPoints }, ...]
-  // Sort by points descending
-  const sorted = [...playerResults].sort((a, b) => b.finalPoints - a.finalPoints);
+
+// Update ELO for games with more than 2 players, comparing each player against every other
+export async function updateEloMultiplayer(playerResults, timeControl) {
+  const sorted = playerResults.slice().sort(function (a, b) {
+    return b.finalPoints - a.finalPoints;
+  });
 
   for (let i = 0; i < sorted.length; i++) {
     for (let j = i + 1; j < sorted.length; j++) {
       const isDraw = sorted[i].finalPoints === sorted[j].finalPoints;
       if (isDraw) {
-        await updateEloRating(sorted[i].userId, sorted[j].userId, true);
+        await updateEloRating(sorted[i].userId, sorted[j].userId, timeControl, true);
       } else {
-        await updateEloRating(sorted[i].userId, sorted[j].userId, false);
+        await updateEloRating(sorted[i].userId, sorted[j].userId, timeControl, false);
       }
     }
   }

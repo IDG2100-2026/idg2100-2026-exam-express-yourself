@@ -9,19 +9,16 @@ import "./lobby.scss";
 const TIME_CONTROLS = [10, 30, 90];
 const ROUNDS_OPTIONS = [3, 5, 7];
 
-function sortMatches(matches, sort) {
+function getHostElo(match, tc) {
+  const elo = match.players?.[0]?.userId?.eloRating;
+  return elo?.[`tc${tc || 10}`] || elo?.tc10 || 0;
+}
+
+function sortMatches(matches, sort, tc) {
   if (sort === "elo_desc")
-    return [...matches].sort(
-      (a, b) =>
-        (b.players?.[0]?.userId?.eloRating || 0) -
-        (a.players?.[0]?.userId?.eloRating || 0),
-    );
+    return [...matches].sort((a, b) => getHostElo(b, tc) - getHostElo(a, tc));
   if (sort === "elo_asc")
-    return [...matches].sort(
-      (a, b) =>
-        (a.players?.[0]?.userId?.eloRating || 0) -
-        (b.players?.[0]?.userId?.eloRating || 0),
-    );
+    return [...matches].sort((a, b) => getHostElo(a, tc) - getHostElo(b, tc));
   return matches;
 }
 
@@ -35,6 +32,7 @@ export default function Lobby() {
 
   const [timeControl, setTimeControl] = useState(null);
   const [rounds, setRounds] = useState(null);
+  const [straights, setStraights] = useState(null);
   const [sort, setSort] = useState("newest");
 
   const { user } = useAuth();
@@ -56,7 +54,7 @@ export default function Lobby() {
     let stale = false;
     setIsLoading(true);
     setPage(1);
-    getMatches({ status: "waiting", timeControl, rounds, page: 1, limit })
+    getMatches({ status: "waiting", timeControl, rounds, straightsAllowed: straights, page: 1, limit })
       .then((data) => {
         if (stale) return;
         setMatches(excludeOwn(data.results));
@@ -67,12 +65,12 @@ export default function Lobby() {
         if (!stale) { setError(err.message); setIsLoading(false); }
       });
     return () => { stale = true; };
-  }, [timeControl, rounds, limit, userId]);
+  }, [timeControl, rounds, straights, limit, userId]);
 
   function loadMore() {
     const nextPage = page + 1;
     setIsLoadingMore(true);
-    getMatches({ status: "waiting", timeControl, rounds, page: nextPage, limit })
+    getMatches({ status: "waiting", timeControl, rounds, straightsAllowed: straights, page: nextPage, limit })
       .then((data) => {
         setMatches((prev) => [...prev, ...excludeOwn(data.results)]);
         setTotal(data.total || 0);
@@ -83,11 +81,12 @@ export default function Lobby() {
   }
 
   async function handleJoin(match) {
+    if (!user) { navigate("/login"); return; }
     try { await joinMatch(match._id); } catch { /* proceed to game */ }
     navigate(`/game/${match._id}`);
   }
 
-  const displayed = sortMatches(matches, sort);
+  const displayed = sortMatches(matches, sort, timeControl);
   const hasMore = matches.length < total;
 
   return (
@@ -133,6 +132,24 @@ export default function Lobby() {
         </div>
 
         <div className="lobby__filter-group">
+          <span className="lobby__filter-label">Straights</span>
+          <div className="lobby__filter-btns">
+            <button
+              className={`lobby__filter-btn${straights === null ? " lobby__filter-btn--active" : ""}`}
+              onClick={() => setStraights(null)}
+            >All</button>
+            <button
+              className={`lobby__filter-btn${straights === true ? " lobby__filter-btn--active" : ""}`}
+              onClick={() => setStraights(true)}
+            >Allowed</button>
+            <button
+              className={`lobby__filter-btn${straights === false ? " lobby__filter-btn--active" : ""}`}
+              onClick={() => setStraights(false)}
+            >No straights</button>
+          </div>
+        </div>
+
+        <div className="lobby__filter-group">
           <span className="lobby__filter-label">Sort</span>
           <select
             className="lobby__sort"
@@ -161,7 +178,7 @@ export default function Lobby() {
                 <Avatar imageUrl={p1?.profileImageUrl} size={40} />
                 <div>
                   <div>{p1?.username || "Unknown"}</div>
-                  <div className="lobby__card-elo">Elo {p1?.eloRating || "?"}</div>
+                  <div className="lobby__card-elo">Elo {p1?.eloRating?.[`tc${match.category?.timeControl || 10}`] || "?"}</div>
                 </div>
               </div>
               <div className="lobby__card-variant">

@@ -28,28 +28,28 @@ const hashPassword = (password) => {
 const hashedPassword = hashPassword("Password123!");
 const verified = { isVerified: true };
 
-// ─── Users ────────────────────────────────────────────────────────────
+// ---- Users ----
 await User.collection.insertMany([
-  { username: "admin", email: "admin@test.com", password: hashedPassword, ...verified, age: 29, role: "admin", eloRating: 1200, points: 500 },
-  { username: "emil", email: "emil@test.com", password: hashedPassword, ...verified, age: 20, eloRating: 2867, points: 300 },
-  { username: "nicolai", email: "nicolai@test.com", password: hashedPassword, ...verified, age: 22, eloRating: 1100, points: 200 },
-  { username: "adrian", email: "adrian@test.com", password: hashedPassword, ...verified, age: 23, eloRating: 1450, points: 150 },
-  { username: "sara", email: "sara@test.com", password: hashedPassword, ...verified, age: 22, eloRating: 3700, points: 400 },
-  { username: "tobias", email: "tobias@test.com", password: hashedPassword, ...verified, age: 23, eloRating: 860, points: 50 },
-  { username: "lena", email: "lena@test.com", password: hashedPassword, ...verified, age: 27, eloRating: 1490, points: 200 },
-  { username: "jonas", email: "jonas@test.com", password: hashedPassword, ...verified, age: 24, eloRating: 1498, points: 180 },
-  { username: "mira", email: "mira@test.com", password: hashedPassword, ...verified, age: 30, eloRating: 2999, points: 350 },
-  { username: "hanna", email: "hanna@test.com", password: hashedPassword, ...verified, age: 21, eloRating: 1400, points: 100 },
-  { username: "max", email: "max@test.com", password: hashedPassword, ...verified, age: 25, eloRating: 3000, points: 500 },
-  { username: "kristian", email: "kristian@test.com", password: hashedPassword, ...verified, age: 26, eloRating: 1300, points: 100 },
-  { username: "ingrid", email: "ingrid@test.com", password: hashedPassword, ...verified, age: 29, eloRating: 2465, points: 250 },
-  { username: "fredrik", email: "fredrik@test.com", password: hashedPassword, ...verified, age: 31, eloRating: 1100, points: 100 },
-  { username: "camilla", email: "camilla@test.com", password: hashedPassword, ...verified, age: 19, eloRating: 1244, points: 100 },
-  { username: "petter", email: "petter@test.com", password: hashedPassword, ...verified, age: 34, eloRating: 1460, points: 150 },
-  { username: "silje", email: "silje@test.com", password: hashedPassword, ...verified, age: 22, eloRating: 1085, points: 80 },
-  { username: "anders", email: "anders@test.com", password: hashedPassword, ...verified, age: 27, eloRating: 1290, points: 100 },
-  { username: "stian", email: "stian@test.com", password: hashedPassword, ...verified, age: 20, eloRating: 3800, points: 500 },
-  { username: "thea", email: "thea@test.com", password: hashedPassword, ...verified, age: 23, eloRating: 2000, points: 200 },
+  { username: "admin", email: "admin@test.com", password: hashedPassword, ...verified, age: 29, role: "admin", eloRating: { tc10: 1200, tc30: 1150, tc90: 1100 }, points: 500 },
+  { username: "emil", email: "emil@test.com", password: hashedPassword, ...verified, age: 20, eloRating: { tc10: 2867, tc30: 2700, tc90: 2500 }, points: 300 },
+  { username: "nicolai", email: "nicolai@test.com", password: hashedPassword, ...verified, age: 22, eloRating: { tc10: 1100, tc30: 1050, tc90: 1000 }, points: 200 },
+  { username: "adrian", email: "adrian@test.com", password: hashedPassword, ...verified, age: 23, eloRating: { tc10: 1450, tc30: 1400, tc90: 1350 }, points: 150 },
+  { username: "sara", email: "sara@test.com", password: hashedPassword, ...verified, age: 22, eloRating: { tc10: 3700, tc30: 3500, tc90: 3200 }, points: 400 },
+  { username: "tobias", email: "tobias@test.com", password: hashedPassword, ...verified, age: 23, eloRating: { tc10: 860, tc30: 900, tc90: 950 }, points: 50 },
+  { username: "lena", email: "lena@test.com", password: hashedPassword, ...verified, age: 27, eloRating: { tc10: 1490, tc30: 1450, tc90: 1400 }, points: 200 },
+  { username: "jonas", email: "jonas@test.com", password: hashedPassword, ...verified, age: 24, eloRating: { tc10: 1498, tc30: 1460, tc90: 1420 }, points: 180 },
+  { username: "mira", email: "mira@test.com", password: hashedPassword, ...verified, age: 30, eloRating: { tc10: 2999, tc30: 2800, tc90: 2600 }, points: 350 },
+  { username: "hanna", email: "hanna@test.com", password: hashedPassword, ...verified, age: 21, eloRating: { tc10: 1400, tc30: 1350, tc90: 1300 }, points: 100 },
+  { username: "max", email: "max@test.com", password: hashedPassword, ...verified, age: 25, eloRating: { tc10: 3000, tc30: 2900, tc90: 2750 }, points: 500 },
+  { username: "kristian", email: "kristian@test.com", password: hashedPassword, ...verified, age: 26, eloRating: { tc10: 1300, tc30: 1280, tc90: 1250 }, points: 100 },
+  { username: "ingrid", email: "ingrid@test.com", password: hashedPassword, ...verified, age: 29, eloRating: { tc10: 2465, tc30: 2300, tc90: 2100 }, points: 250 },
+  { username: "fredrik", email: "fredrik@test.com", password: hashedPassword, ...verified, age: 31, eloRating: { tc10: 1100, tc30: 1080, tc90: 1050 }, points: 100 },
+  { username: "camilla", email: "camilla@test.com", password: hashedPassword, ...verified, age: 19, eloRating: { tc10: 1244, tc30: 1200, tc90: 1180 }, points: 100 },
+  { username: "petter", email: "petter@test.com", password: hashedPassword, ...verified, age: 34, eloRating: { tc10: 1460, tc30: 1420, tc90: 1380 }, points: 150 },
+  { username: "silje", email: "silje@test.com", password: hashedPassword, ...verified, age: 22, eloRating: { tc10: 1085, tc30: 1060, tc90: 1030 }, points: 80 },
+  { username: "anders", email: "anders@test.com", password: hashedPassword, ...verified, age: 27, eloRating: { tc10: 1290, tc30: 1260, tc90: 1230 }, points: 100 },
+  { username: "stian", email: "stian@test.com", password: hashedPassword, ...verified, age: 20, eloRating: { tc10: 3800, tc30: 3600, tc90: 3300 }, points: 500 },
+  { username: "thea", email: "thea@test.com", password: hashedPassword, ...verified, age: 23, eloRating: { tc10: 2000, tc30: 1900, tc90: 1800 }, points: 200 },
 ]);
 const users = await User.find({});
 console.log(`Created ${users.length} users`);
@@ -57,7 +57,7 @@ console.log(`Created ${users.length} users`);
 // Helper to find user by username
 const u = (name) => users.find((u) => u.username === name);
 
-// ─── Completed matches ────────────────────────────────────────────────
+// ---- Completed matches ----
 const completedMatches = await Match.insertMany([
   {
     players: [{ userId: u("thea")._id }, { userId: u("silje")._id }],
@@ -98,7 +98,7 @@ const completedMatches = await Match.insertMany([
 ]);
 console.log(`Created ${completedMatches.length} completed matches`);
 
-// ─── Ongoing matches ──────────────────────────────────────────────────
+// ---- Ongoing matches ----
 const ongoingMatches = await Match.insertMany([
   {
     players: [{ userId: u("ingrid")._id }, { userId: u("fredrik")._id }],
@@ -131,7 +131,7 @@ const ongoingMatches = await Match.insertMany([
 ]);
 console.log(`Created ${ongoingMatches.length} ongoing matches`);
 
-// ─── Waiting matches (lobby) ──────────────────────────────────────────
+// ---- Waiting matches ----
 const waitingMatches = await Match.insertMany([
   {
     players: [{ userId: u("jonas")._id }],
@@ -171,7 +171,7 @@ const waitingMatches = await Match.insertMany([
 ]);
 console.log(`Created ${waitingMatches.length} waiting matches`);
 
-// ─── Tournaments ──────────────────────────────────────────────────────
+// ---- Tournaments ----
 const tournament1 = await Tournament.create({
   title: "Spring Championship 2026",
   description: "The first major tournament of the year. Battle it out for the Spring Trophy!",
@@ -244,12 +244,12 @@ const tournament5 = await Tournament.create({
 
 console.log("Created 5 tournaments");
 
-// ─── Comments ─────────────────────────────────────────────────────────
+// ---- Comments ----
 await Comment.insertMany([
   { authorId: u("nicolai")._id, text: "Great match! Really intense finish.", targetType: "Match", targetId: completedMatches[0]._id },
   { authorId: u("adrian")._id, text: "That was so close, well played both!", targetType: "Match", targetId: completedMatches[0]._id },
   { authorId: u("emil")._id, text: "Sara is just too good at this game.", targetType: "Match", targetId: completedMatches[2]._id },
-  { authorId: u("sara")._id, text: "GG! Better luck next time 😄", targetType: "Match", targetId: completedMatches[2]._id },
+  { authorId: u("sara")._id, text: "GG! Better luck next time!", targetType: "Match", targetId: completedMatches[2]._id },
   { authorId: u("hanna")._id, text: "Can't wait for the Spring Championship!", targetType: "Tournament", targetId: tournament1._id },
   { authorId: u("max")._id, text: "I'm coming for that trophy!", targetType: "Tournament", targetId: tournament1._id },
   { authorId: u("tobias")._id, text: "Beginner friendly is perfect for me", targetType: "Tournament", targetId: tournament3._id },
@@ -258,7 +258,7 @@ await Comment.insertMany([
 ]);
 console.log("Created comments");
 
-// ─── Award trophy to past tournament winner ──────────────────────────
+// ---- Award trophy to last year's winner ----
 await User.findByIdAndUpdate(u("sara")._id, {
   $push: {
     trophies: {
@@ -269,7 +269,7 @@ await User.findByIdAndUpdate(u("sara")._id, {
 });
 console.log("Awarded trophy to sara");
 
-console.log("\n✅ Seed complete!");
+console.log("\nSeed complete!");
 console.log(`   ${users.length} users (login with any email + 'password123')`);
 console.log(`   Admin: admin@test.com / password123`);
 console.log(`   ${completedMatches.length + ongoingMatches.length + waitingMatches.length} matches`);

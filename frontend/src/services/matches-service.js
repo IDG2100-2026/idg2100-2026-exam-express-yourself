@@ -1,10 +1,11 @@
 import { apiFetch } from "../api.js";
 
-export async function getMatches({ status, timeControl, rounds, page = 1, limit = 9 } = {}) {
+export async function getMatches({ status, timeControl, rounds, straightsAllowed, page = 1, limit = 9 } = {}) {
   const params = new URLSearchParams({ page, limit });
   if (status) params.set("status", status);
   if (timeControl) params.set("timeControl", timeControl);
   if (rounds) params.set("rounds", rounds);
+  if (straightsAllowed !== null && straightsAllowed !== undefined) params.set("straightsAllowed", straightsAllowed);
   return await apiFetch(`/matches?${params}`, { method: "GET" });
 }
 

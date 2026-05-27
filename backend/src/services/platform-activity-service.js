@@ -1,10 +1,10 @@
 import Match from "../models/Match.js";
 import User from "../models/User.js";
+import { MSEC_PER_DAY } from "../config/constants.js";
 
 // Platform activity for homepage and admin dashboard
 export async function getPlatformActivity() {
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const oneWeekAgo = new Date(Date.now() - 7 * MSEC_PER_DAY);
 
   // Currently ongoing matches
   const ongoingMatches = await Match.countDocuments({ status: "in-progress" });
@@ -22,11 +22,13 @@ export async function getPlatformActivity() {
   const activePlayersResult = await Match.aggregate([
     { $match: { updatedAt: { $gte: oneWeekAgo } } },
     { $unwind: "$players" },
-    { $match: { "players.userId": { $ne: null } } },
     { $group: { _id: "$players.userId" } },
     { $count: "count" },
   ]);
-  const activePlayers = activePlayersResult[0]?.count || 0;
+  let activePlayers = 0;
+  if (activePlayersResult.length > 0) {
+    activePlayers = activePlayersResult[0].count;
+  }
 
   // New profiles this week (for admin dashboard)
   const newProfiles = await User.countDocuments({
@@ -36,7 +38,6 @@ export async function getPlatformActivity() {
   // 10 most recent finished games
   const recentGames = await Match.find({
     status: "completed",
-    isAnonymous: false,
   })
     .populate("players.userId", "username")
     .populate("winnerId", "username")
