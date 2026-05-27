@@ -28,9 +28,9 @@ import AdminTournamentCreate from "./pages/admin/tournament-create/AdminTourname
 
 function App() {
   return (
-    <AppearanceProvider>
-      <BrowserRouter>
-        <AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <AppearanceProvider>
           <Routes>
             <Route element={<MainLayout />}>
               <Route path="/" element={<Home />} />
@@ -63,9 +63,9 @@ function App() {
               </Route>
             </Route>
           </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </AppearanceProvider>
+        </AppearanceProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
