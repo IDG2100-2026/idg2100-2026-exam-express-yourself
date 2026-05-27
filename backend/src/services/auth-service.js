@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import { chechPassword, hashPassword } from "../utils/password-hash.js";
+import { checkPassword, hashPassword } from "../utils/password-hash.js";
 import { Session } from "../models/Session.js";
 import { BusinessLogicError } from "../utils/errors.js";
 import { ResetPassword } from "../models/passwordReset.js";
@@ -46,7 +46,7 @@ export const registerUser = async (userData) => {
 export const authenticateUser = async (email, password) => {
   const user = await User.findOne({ email }).select("+password"); // checks if it finds a user with that email
   if (!user) throw new BusinessLogicError("Invalid credentials", 401); // If not, throws a global error that is picked up in next()
-  if (!chechPassword(password, user.password))
+  if (!checkPassword(password, user.password))
     throw new BusinessLogicError("Invalid credentials", 401); // global error handler
 
   if (user.isBanned) throw new BusinessLogicError("Account is banned", 403); // global error handler

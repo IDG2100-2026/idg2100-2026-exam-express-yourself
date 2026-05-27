@@ -12,6 +12,7 @@ const EMPTY_FORM = {
   rounds: 3,
   timeControl: 10,
   straightsAllowed: true,
+  categoryBuyIn: 1,
   buyIn: 0,
   eloMin: 0,
   eloMax: 9999,
@@ -41,6 +42,7 @@ export default function AdminTournamentCreate() {
           rounds: t.category?.rounds || 3,
           timeControl: t.category?.timeControl || 10,
           straightsAllowed: t.category?.straightsAllowed ?? true,
+          categoryBuyIn: t.category?.buyIn || 1,
           buyIn: t.buyIn || 0,
           eloMin: t.eloRange?.min || 0,
           eloMax: t.eloRange?.max || 9999,
@@ -86,6 +88,7 @@ export default function AdminTournamentCreate() {
         formData.append("category[rounds]", form.rounds);
         formData.append("category[timeControl]", form.timeControl);
         formData.append("category[straightsAllowed]", form.straightsAllowed);
+        formData.append("category[buyIn]", form.categoryBuyIn);
         formData.append("buyIn", form.buyIn);
         formData.append("eloRange[min]", form.eloMin);
         formData.append("eloRange[max]", form.eloMax);
@@ -163,7 +166,15 @@ export default function AdminTournamentCreate() {
 
             <div className="admin-tc__row">
               <div className="admin-tc__field">
-                <label htmlFor="buyIn">Buy-in (points)</label>
+                <label htmlFor="categoryBuyIn">Match Buy-in (points per game)</label>
+                <select id="categoryBuyIn" name="categoryBuyIn" value={form.categoryBuyIn} onChange={handleChange}>
+                  <option value={1}>1 point</option>
+                  <option value={10}>10 points</option>
+                  <option value={50}>50 points</option>
+                </select>
+              </div>
+              <div className="admin-tc__field">
+                <label htmlFor="buyIn">Tournament Entry Fee (points)</label>
                 <select id="buyIn" name="buyIn" value={form.buyIn} onChange={handleChange}>
                   <option value={0}>Free</option>
                   <option value={1}>1 point</option>

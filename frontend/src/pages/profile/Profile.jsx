@@ -299,7 +299,7 @@ export default function Profile() {
             })}
           </div>
         )}
-        {(games.length === 10 || gamesTotal > games.length) && (
+        {gamesTotal > games.length && (
           <button
             className="profile__load-more"
             onClick={loadMoreGames}

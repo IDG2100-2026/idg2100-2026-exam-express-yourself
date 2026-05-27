@@ -9,7 +9,7 @@ export default function AdminComments() {
 
   useEffect(() => {
     getAllComments()
-      .then(setComments)
+      .then((data) => setComments(data.results))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);

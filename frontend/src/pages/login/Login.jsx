@@ -5,7 +5,6 @@ import {
   requestResetPassword,
   verifyEmail,
 } from "../../services/auth-service.js";
-import { getUser } from "../../services/users-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 
@@ -27,11 +26,14 @@ export default function Login() {
     const code = searchParams.get("code");
     if (!code) return;
     const verifyUserEmail = async () => {
+      setIsLoading(true);
       try {
         const data = await verifyEmail(code); // runs the verify-email endpoint
-        setSuccess(data.message)
+        setSuccess(data.message);
       } catch (err) {
         setError(err.message); // error msg
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -56,7 +58,7 @@ export default function Login() {
       }, 3000);
 
       // Load user appearance preferences
-      loadAppearance(result.appearance);
+      loadAppearance(result.user?.appearance);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -77,6 +79,8 @@ export default function Login() {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) return <div className="login"><div className="login__card"><p className="login__status">Verifying your email...</p></div></div>;
 
   return (
     <div className="login">
