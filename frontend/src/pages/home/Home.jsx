@@ -117,8 +117,8 @@ export default function Home() {
                   return (
                     <button key={match._id} className="home__card home__card--btn" onClick={() => handleJoinGame(match)}>
                       <div className="home__card-player">{p1?.username || "Unknown"}</div>
-                      <div className="home__card-variant">Best of {match.category?.rounds} — {match.category?.timeControl}s</div>
-                      <div className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "—"}</div>
+                      <div className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s</div>
+                      <div className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "?"}</div>
                       <div className="home__card-waiting">Click to join</div>
                     </button>
                   );
@@ -136,7 +136,7 @@ export default function Home() {
                 {data.top.map((match) => (
                   <Link to={`/game/${match._id}`} key={match._id} className="home__card">
                     <div className="home__card-player">{getPlayer(match, 0)?.username || "?"} vs {getPlayer(match, 1)?.username || "waiting"}</div>
-                    <div className="home__card-variant">Best of {match.category?.rounds} — {match.category?.timeControl}s</div>
+                    <div className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s</div>
                     <div className="home__card-elo">Avg Elo: {avgElo(match)}</div>
                     <div className={`home__card-status home__card-status--${match.status}`}>{match.status}</div>
                   </Link>

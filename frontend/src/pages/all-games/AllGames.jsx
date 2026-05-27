@@ -46,7 +46,7 @@ export default function AllGames() {
                 {match.status === "completed" ? (won ? "Win" : "Loss") : match.status}
               </span>
               <span className="allgames__opponent">vs {opponent?.username || "Unknown"}</span>
-              <span className="allgames__variant">Best of {match.category?.rounds} — {match.category?.timeControl}s</span>
+              <span className="allgames__variant">Best of {match.category?.rounds}, {match.category?.timeControl}s</span>
               <span className="allgames__date">{new Date(match.updatedAt).toLocaleDateString()}</span>
             </Link>
           );

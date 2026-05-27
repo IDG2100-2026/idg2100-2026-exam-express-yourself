@@ -63,7 +63,7 @@ httpServer.on("listening", () => {
   console.log("Server is listening on port:", httpServer.address().port);
 });
 
-// Graceful shutdown — closes DB connection before stopping
+// Graceful shutdown, closes DB connection before stopping
 async function gracefulShutdown() {
   console.log("\nServer is shutting down...");
   await disconnectDB();
