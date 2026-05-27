@@ -32,6 +32,7 @@ export default function Profile() {
   useEffect(() => {
     if (user?.recentMatches) {
       setGames(user.recentMatches);
+      setGamesTotal(user.recentMatchesTotal || 0);
       setGamesPage(1);
     }
   }, [user]);

@@ -9,8 +9,14 @@ export function useUser(id) {
   const fetchUser = useCallback(async (staleObj = { stale: false }) => {
     setIsLoading(true);
     try {
-      const data = await getUser(id);
-      if (!staleObj.stale) setUser(data);
+      const raw = await getUser(id);
+      // API returns { user, stats, recentMatches: { results, total } }
+      const normalized = {
+        ...(raw.user ?? raw),
+        recentMatches: raw.recentMatches?.results ?? (Array.isArray(raw.recentMatches) ? raw.recentMatches : []),
+        recentMatchesTotal: raw.recentMatches?.total ?? 0,
+      };
+      if (!staleObj.stale) setUser(normalized);
     } catch (err) {
       if (!staleObj.stale) setError(err.message);
     } finally {
