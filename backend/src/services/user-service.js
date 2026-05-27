@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import Match from "../models/Match.js";
-import { chechPassword } from "../utils/password-hash.js";
+import { checkPassword } from "../utils/password-hash.js";
 import { BusinessLogicError } from "../utils/errors.js";
 import { MSEC_PER_DAY } from "../config/constants.js";
 
@@ -134,7 +134,7 @@ export async function updateUser(userId, updateData, requestingUserId) {
     if (updateData.oldPassword === undefined) {
       throw new BusinessLogicError("Old password is required to change password", 400);
     }
-    const passwordMatch = chechPassword(updateData.oldPassword, user.password);
+    const passwordMatch = checkPassword(updateData.oldPassword, user.password);
     if (!passwordMatch) {
       throw new BusinessLogicError("Old password is incorrect", 401);
     }
