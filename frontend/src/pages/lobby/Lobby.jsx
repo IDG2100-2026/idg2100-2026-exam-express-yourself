@@ -81,6 +81,7 @@ export default function Lobby() {
   }
 
   async function handleJoin(match) {
+    if (!user) { navigate("/login"); return; }
     try { await joinMatch(match._id); } catch { /* proceed to game */ }
     navigate(`/game/${match._id}`);
   }

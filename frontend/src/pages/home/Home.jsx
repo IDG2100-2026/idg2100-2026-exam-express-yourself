@@ -67,6 +67,7 @@ export default function Home() {
   }, []);
 
   async function handleJoinGame(match) {
+    if (!user) { navigate("/login"); return; }
     const p1Id = getPlayer(match, 0)?._id;
     const userId = user?._id || user?.userId;
     if (p1Id === userId) {
