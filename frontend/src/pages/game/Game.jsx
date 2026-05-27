@@ -68,7 +68,7 @@ export default function Game() {
               <span className="game__player-elo">
                 Elo:{" "}
                 {p1?.eloRating?.[`tc${match.category?.timeControl || 10}`] ||
-                  "—"}
+                  "-"}
               </span>
             </div>
             <span className="game__vs">vs</span>
@@ -79,7 +79,7 @@ export default function Game() {
               </span>
               <span className="game__player-elo">
                 {p2
-                  ? `Elo: ${p2.eloRating?.[`tc${match.category?.timeControl || 10}`] || "—"}`
+                  ? `Elo: ${p2.eloRating?.[`tc${match.category?.timeControl || 10}`] || "-"}`
                   : ""}
               </span>
             </div>
@@ -89,9 +89,9 @@ export default function Game() {
             style={{ backgroundColor: appearance.boardColor }}
           >
             <p>
-              Board — Best of {match.category?.rounds} —{" "}
+              Board - Best of {match.category?.rounds} -{" "}
               {match.category?.straightsAllowed ? "Straights" : "No straights"}{" "}
-              — {match.category?.timeControl}s
+              - {match.category?.timeControl}s
             </p>
           </div>
         </div>

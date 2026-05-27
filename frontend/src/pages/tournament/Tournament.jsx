@@ -196,7 +196,7 @@ export default function Tournament() {
         {tournament.eloRange && (tournament.eloRange.min > 0 || tournament.eloRange.max < 9999) && (
           <div className="tournament__info-item">
             <span className="tournament__info-label">Elo range</span>
-            <span>{tournament.eloRange.min} – {tournament.eloRange.max}</span>
+            <span>{tournament.eloRange.min} - {tournament.eloRange.max}</span>
           </div>
         )}
         {tournament.createdBy && (
