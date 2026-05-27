@@ -9,6 +9,7 @@ import {
   TOURNAMENT_STATUSES,
   VALID_ROUNDS,
   VALID_TIME_CONTROLS,
+  VALID_BUY_INS,
 } from "../config/constants.js";
 
 
@@ -96,6 +97,11 @@ export function validateCreateTournament() {
       .isBoolean()
       .withMessage("Straights allowed must be true or false.")
       .toBoolean(),
+    body("category.buyIn")
+      .optional()
+      .toInt()
+      .isIn(VALID_BUY_INS)
+      .withMessage(`Category buy-in must be one of: ${VALID_BUY_INS.join(", ")}.`),
     body("buyIn")
       .optional()
       .isInt({ min: MIN_TOURNAMENT_BUY_IN })
@@ -175,6 +181,11 @@ export function validateUpdateTournament() {
       .isBoolean()
       .withMessage("Straights allowed must be true or false.")
       .toBoolean(),
+    body("category.buyIn")
+      .optional()
+      .toInt()
+      .isIn(VALID_BUY_INS)
+      .withMessage(`Category buy-in must be one of: ${VALID_BUY_INS.join(", ")}.`),
     body("buyIn")
       .optional()
       .isInt({ min: MIN_TOURNAMENT_BUY_IN })

@@ -4,7 +4,7 @@ const salt = process.env.PASSWORD_SALT; // get the password salt from .env
 
 export const hashPassword = (password) => {
     const hash = password + salt; // attach the raw password and salt together 
-    return crypto.createHash('sha256').update(hash).digest('hex').toString(); // create a md5 hash
+    return crypto.createHash('sha256').update(hash).digest('hex').toString(); // create a sha256 hash
 }
 
 export const chechPassword = (password, existingHash) => {
