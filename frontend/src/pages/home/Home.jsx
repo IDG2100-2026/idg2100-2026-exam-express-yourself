@@ -84,7 +84,7 @@ export default function Home() {
         <h1 className="home__title">Spanish Poker Dice</h1>
         <p className="home__description">
           Challenge players from around the world in the classic Spanish dice game.
-          Bluff, roll, and outsmart your opponents to climb the leaderboard.
+          Bluff, roll, and outsmart your opponents to win tournaments and earn trophies.
         </p>
         <Link to="/create-game" className="home__cta">Create a Game</Link>
       </section>
