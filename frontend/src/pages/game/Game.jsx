@@ -102,7 +102,7 @@ export default function Game() {
               <span className="game__player-elo">
                 Elo:{" "}
                 {p1?.eloRating?.[`tc${match.category?.timeControl || 10}`] ||
-                  "—"}
+                  "-"}
               </span>
             </div>
             <span className="game__vs">vs</span>
@@ -113,7 +113,7 @@ export default function Game() {
               </span>
               <span className="game__player-elo">
                 {p2
-                  ? `Elo: ${p2.eloRating?.[`tc${match.category?.timeControl || 10}`] || "—"}`
+                  ? `Elo: ${p2.eloRating?.[`tc${match.category?.timeControl || 10}`] || "-"}`
                   : ""}
               </span>
             </div>

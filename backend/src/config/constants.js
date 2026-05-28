@@ -52,3 +52,7 @@ export const LEADERBOARD_SORT_OPTIONS = ["wins", "winPercentage", "matches"];
 // Utilities
 export const MSEC_PER_DAY = 1000 * 60 * 60 * 24; // 24 hours
 export const MAX_LENGTH_AGENT_STRING = 1024;
+
+// File uploads
+export const ALLOWED_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+export const MAX_IMAGE_FILE_SIZE = 2 * 1024 * 1024; // 2mb

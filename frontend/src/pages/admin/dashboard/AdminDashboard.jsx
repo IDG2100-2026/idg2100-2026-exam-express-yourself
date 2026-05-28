@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getActivity } from "../../../services/activity-service.js";
+import { getPlatformActivity } from "../../../services/platform-activity-service.js";
 import { getSecurityIncidents } from "../../../services/security-incidents-service.js";
 import "./admin-dashboard.scss";
 
@@ -10,7 +10,7 @@ export default function AdminDashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getActivity()
+    getPlatformActivity()
       .then(setActivity)
       .catch((err) => setError(err.message));
 

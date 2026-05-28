@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { AppearanceContext } from "../contexts/appearance-context.js";
 import { updateUser } from "../services/users-service.js";
+import { useAuth } from "../hooks/useAuth.js";
 
 const defaultAppearance = {
   theme: "dark",
@@ -15,6 +16,7 @@ function loadFromLocalStorage() {
 }
 
 export function AppearanceProvider({ children }) {
+  const { user } = useAuth();
   const [appearance, setAppearance] = useState(loadFromLocalStorage);
 
   // Apply theme to body whenever it changes
@@ -27,10 +29,9 @@ export function AppearanceProvider({ children }) {
     localStorage.setItem("appearance", JSON.stringify(updated));
 
     // Sync to backend for logged-in users
-    const userId = localStorage.getItem("userId");
-    if (userId) {
+    if (user?._id) {
       try {
-        await updateUser(userId, { appearance: updated });
+        await updateUser(user._id, { appearance: updated });
       } catch (err) {
         // Silently fail, appearance sync is non-critical
       }
