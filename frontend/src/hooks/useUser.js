@@ -13,6 +13,9 @@ export function useUser(id) {
       // API returns { user, stats, recentMatches: { results, total } }
       const normalized = {
         ...(raw.user ?? raw),
+        totalGames: raw.stats?.totalGames ?? 0,
+        winsLastMonth: raw.stats?.winsLastMonth ?? 0,
+        lossesLastMonth: raw.stats?.lossesLastMonth ?? 0,
         recentMatches: raw.recentMatches?.results ?? (Array.isArray(raw.recentMatches) ? raw.recentMatches : []),
         recentMatchesTotal: raw.recentMatches?.total ?? 0,
       };

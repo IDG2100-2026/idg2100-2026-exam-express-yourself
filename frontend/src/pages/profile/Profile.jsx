@@ -98,32 +98,9 @@ export default function Profile() {
     }
   }
 
-  function calcStats(matches) {
-    if (!matches || matches.length === 0)
-      return { wins: 0, losses: 0, monthWins: 0, monthLosses: 0 };
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-    let wins = 0,
-      losses = 0,
-      monthWins = 0,
-      monthLosses = 0;
-    matches.forEach((m) => {
-      const won = m.winnerId?._id === id || m.winnerId === id;
-      if (won) wins++;
-      else losses++;
-      if (new Date(m.updatedAt) >= oneMonthAgo) {
-        if (won) monthWins++;
-        else monthLosses++;
-      }
-    });
-    return { wins, losses, monthWins, monthLosses };
-  }
-
   if (isLoading) return <p className="profile__status">Loading profile...</p>;
   if (error) return <p className="profile__error">{error}</p>;
   if (!user) return null;
-
-  const stats = calcStats(user.recentMatches);
 
   return (
     <div className="profile">
@@ -231,19 +208,15 @@ export default function Profile() {
           <span className="profile__stat-label">Points</span>
         </div>
         <div className="profile__stat">
-          <span className="profile__stat-value">{stats.wins}</span>
-          <span className="profile__stat-label">Total Wins</span>
+          <span className="profile__stat-value">{user.totalGames}</span>
+          <span className="profile__stat-label">Total Games</span>
         </div>
         <div className="profile__stat">
-          <span className="profile__stat-value">{stats.losses}</span>
-          <span className="profile__stat-label">Total Losses</span>
-        </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{stats.monthWins}</span>
+          <span className="profile__stat-value">{user.winsLastMonth}</span>
           <span className="profile__stat-label">Wins (month)</span>
         </div>
         <div className="profile__stat">
-          <span className="profile__stat-value">{stats.monthLosses}</span>
+          <span className="profile__stat-value">{user.lossesLastMonth}</span>
           <span className="profile__stat-label">Losses (month)</span>
         </div>
       </div>

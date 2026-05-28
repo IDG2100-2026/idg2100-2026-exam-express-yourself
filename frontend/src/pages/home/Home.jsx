@@ -115,9 +115,9 @@ export default function Home() {
                 {data.waiting.slice(0, appearance.lobbySize).map((match) => {
                   const p1 = getPlayer(match, 0);
                   return (
-                    <button key={match._id} className="home__card home__card--btn" onClick={() => handleJoinGame(match)}>
+                    <button key={match._id} className="home__card home__card--btn home__card--waiting" onClick={() => handleJoinGame(match)}>
                       <div className="home__card-player">{p1?.username || "Unknown"}</div>
-                      <div className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s</div>
+                      <div className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}</div>
                       <div className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "?"}</div>
                       <div className="home__card-waiting">Click to join</div>
                     </button>
@@ -134,9 +134,9 @@ export default function Home() {
             ) : (
               <div className="home__grid">
                 {data.top.map((match) => (
-                  <Link to={`/game/${match._id}`} key={match._id} className="home__card">
+                  <Link to={`/game/${match._id}`} key={match._id} className={`home__card home__card--${match.status}`}>
                     <div className="home__card-player">{getPlayer(match, 0)?.username || "?"} vs {getPlayer(match, 1)?.username || "waiting"}</div>
-                    <div className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s</div>
+                    <div className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}</div>
                     <div className="home__card-elo">Avg Elo: {avgElo(match)}</div>
                     <div className={`home__card-status home__card-status--${match.status}`}>{match.status}</div>
                   </Link>
@@ -154,11 +154,23 @@ export default function Home() {
               <p className="home__empty">No upcoming tournaments.</p>
             ) : (
               <div className="home__grid">
-                {data.tournaments.map((t) => (
-                  <Link to={`/tournament/${t._id}`} key={t._id} className="home__card">
-                    <div className="home__card-player">{t.title}</div>
-                    <div className="home__card-variant">{new Date(t.startDate).toLocaleDateString()}</div>
-                    <div className="home__card-waiting">{t.participants?.length || 0} players signed up</div>
+                {data.tournaments.map((tournament) => (
+                  <Link to={`/tournament/${tournament._id}`} key={tournament._id} className={`home__card home__card--${tournament.status}`}>
+                    <div className="home__card-player">{tournament.title}</div>
+                    <div className="home__card-variant">
+                      {new Date(tournament.startDate).toLocaleDateString(undefined, {
+                        year: "numeric", month: "short", day: "numeric",
+                      })}
+                    </div>
+                    {tournament.category && (
+                      <div className="home__card-variant">
+                        Best of {tournament.category.rounds}, {tournament.category.timeControl}s{tournament.category.straightsAllowed ? ", Straights" : ", No Straights"}
+                      </div>
+                    )}
+                    {tournament.numberOfRounds && (
+                      <div className="home__card-variant">{tournament.numberOfRounds} tournament rounds</div>
+                    )}
+                    <div className="home__card-waiting">{tournament.participants?.length || 0} players signed up</div>
                   </Link>
                 ))}
               </div>

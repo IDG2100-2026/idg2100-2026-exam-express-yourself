@@ -12,14 +12,14 @@ import {
   banUser,
   makeAdmin,
 } from "../controllers/user-controller.js";
-import { authenticate, authorize } from "../middlewares/auth-middleware.js";
+import { authenticate, authorize, optionalAuthenticate } from "../middlewares/auth-middleware.js";
 import upload from "../middlewares/upload.js";
 
 const userRouter = express.Router();
 
 
 // Public routes
-userRouter.get("/:id", getUser); // get a user profile
+userRouter.get("/:id", optionalAuthenticate, getUser); // get a user profile
 
 
 userRouter.use(authenticate);

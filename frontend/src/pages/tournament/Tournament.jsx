@@ -13,6 +13,7 @@ import { useAuth } from "../../hooks/useAuth.js";
 import "./tournament.scss";
 import Avatar from "../../components/avatar/Avatar.jsx";
 
+
 function getTimeLeft(targetDate) {
   const diff = new Date(targetDate) - Date.now();
   if (diff <= 0) return null;
@@ -22,6 +23,7 @@ function getTimeLeft(targetDate) {
   const seconds = Math.floor((diff % 60000) / 1000);
   return { days, hours, minutes, seconds };
 }
+
 
 function useCountdown(targetDate) {
   const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(targetDate));
@@ -34,10 +36,12 @@ function useCountdown(targetDate) {
   return timeLeft;
 }
 
+
 export default function Tournament() {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const userId = user?._id || user?.userId;
 
   const [tournament, setTournament] = useState(null);
   const [standings, setStandings] = useState(null);
@@ -82,6 +86,28 @@ export default function Tournament() {
         .catch(() => {});
     }
   }, [tournament, id]);
+
+  // Auto-redirect participant to their active match when the tournament is in-progress
+  useEffect(() => {
+    if (!tournament || tournament.status !== "in-progress" || !userId) return;
+    const isParticipant = tournament.participants?.some(
+      (participant) => participant._id === userId || participant._id?.toString() === userId
+    );
+    if (!isParticipant) return;
+    const currentRoundData = tournament.bracket?.find(
+      (round) => round.round === tournament.currentRound
+    );
+    if (!currentRoundData) return;
+    const myMatch = currentRoundData.matches.find((match) => {
+      if (match.winner) return false;
+      return match.players.some(
+        (player) => (player._id?.toString() || player.toString()) === userId
+      );
+    });
+    if (myMatch?.gameId) {
+      navigate(`/game/${myMatch.gameId}`);
+    }
+  }, [tournament, userId, navigate]);
 
   async function handleJoin() {
     setActionMsg("");
@@ -186,7 +212,6 @@ export default function Tournament() {
   if (error) return <p className="tournament__error">{error}</p>;
   if (!tournament) return null;
 
-  const userId = user?._id || user?.userId;
   const isAdmin = user?.role === "admin";
   const alreadyJoined = tournament.participants?.some(
     (p) => p._id === userId || p === userId,
@@ -239,19 +264,31 @@ export default function Tournament() {
       )}
 
       <div className="tournament__info">
+        {tournament.createdBy && (
+          <div className="tournament__info-item">
+            <span className="tournament__info-label">Organiser</span>
+            <span>{tournament.createdBy.username}</span>
+          </div>
+        )}
         <div className="tournament__info-item">
           <span className="tournament__info-label">Date</span>
-          <span>{new Date(tournament.startDate).toLocaleString()}</span>
+          <span>
+            {new Date(tournament.startDate).toLocaleString(undefined, {
+              year: "numeric", month: "short", day: "numeric",
+              hour: "2-digit", minute: "2-digit",
+            })}
+          </span>
         </div>
         <div className="tournament__info-item">
           <span className="tournament__info-label">Format</span>
           <span>
             Best of {tournament.category?.rounds},{" "}
-            {tournament.category?.straightsAllowed
-              ? "Straights"
-              : "No straights"}
-            , {tournament.category?.timeControl}s
+            {tournament.category?.timeControl}s{tournament.category?.straightsAllowed ? ", Straights" : ", No Straights"}
           </span>
+        </div>
+        <div className="tournament__info-item">
+          <span className="tournament__info-label">Rounds</span>
+          <span>{tournament.numberOfRounds} tournament rounds</span>
         </div>
         <div className="tournament__info-item">
           <span className="tournament__info-label">Players</span>
@@ -263,19 +300,10 @@ export default function Tournament() {
             <span>{tournament.buyIn} points</span>
           </div>
         )}
-        {tournament.eloRange &&
-          (tournament.eloRange.min > 0 || tournament.eloRange.max < 9999) && (
-            <div className="tournament__info-item">
-              <span className="tournament__info-label">Elo range</span>
-              <span>
-                {tournament.eloRange.min} - {tournament.eloRange.max}
-              </span>
-            </div>
-          )}
-        {tournament.createdBy && (
+        {tournament.eloRange && (tournament.eloRange.min > 0 || tournament.eloRange.max < 9999) && (
           <div className="tournament__info-item">
-            <span className="tournament__info-label">Organiser</span>
-            <span>{tournament.createdBy.username}</span>
+            <span className="tournament__info-label">Elo range</span>
+            <span>{tournament.eloRange.min} - {tournament.eloRange.max}</span>
           </div>
         )}
       </div>
@@ -353,6 +381,29 @@ export default function Tournament() {
 
       {actionMsg && <p className="tournament__action-msg">{actionMsg}</p>}
       {actionError && <p className="tournament__error">{actionError}</p>}
+
+      {/* Live matches, spectators click in, participants are auto-redirected */}
+      {tournament.status === "in-progress" && tournament.bracket?.length > 0 && (
+        <div className="tournament__live-matches">
+          <h2 className="tournament__section-title">
+            Round {tournament.currentRound}: Live Matches
+          </h2>
+          <div className="tournament__live-match-list">
+            {tournament.bracket
+              .find((round) => round.round === tournament.currentRound)
+              ?.matches.map((match, index) => (
+                <Link key={index} to={`/game/${match.gameId}`} className="tournament__live-match">
+                  <span>{match.players[0]?.username || "TBD"}</span>
+                  <span className="tournament__match-vs">vs</span>
+                  <span>{match.players[1]?.username || "TBD"}</span>
+                  {match.winner && (
+                    <span className="tournament__match-result">{match.winner.username}</span>
+                  )}
+                </Link>
+              ))}
+          </div>
+        </div>
+      )}
 
       {/* Trophy */}
       {tournament.trophy && (

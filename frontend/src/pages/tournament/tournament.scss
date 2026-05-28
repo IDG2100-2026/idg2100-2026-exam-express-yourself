@@ -183,6 +183,29 @@
     strong { color: $color-accent; }
   }
 
+  /* Live matches */
+  &__live-match-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  &__live-match {
+    background: $color-bg-card;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: $color-text;
+    text-decoration: none;
+    transition: border-color 0.15s;
+
+    &:hover { border-color: $color-accent; text-decoration: none; }
+  }
+
   /* Standings */
   &__round {
     margin-bottom: 1.25rem;

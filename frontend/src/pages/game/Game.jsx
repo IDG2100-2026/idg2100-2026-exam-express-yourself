@@ -234,7 +234,7 @@ export default function Game() {
               <Avatar imageUrl={p1?.profileImageUrl} size={56} />
               <span className="game__player-name">{p1?.username || "Unknown"}</span>
               <span className="game__player-elo">
-                Elo: {p1?.eloRating?.[`tc${tc}`] || "—"}
+                Elo: {p1?.eloRating?.[`tc${tc}`] || "?"}
               </span>
             </div>
             <span className="game__vs">vs</span>
@@ -242,7 +242,7 @@ export default function Game() {
               <Avatar imageUrl={p2?.profileImageUrl} size={56} />
               <span className="game__player-name">{p2?.username || "Waiting..."}</span>
               <span className="game__player-elo">
-                {p2 ? `Elo: ${p2?.eloRating?.[`tc${tc}`] || "—"}` : ""}
+                {p2 ? `Elo: ${p2?.eloRating?.[`tc${tc}`] || "?"}` : ""}
               </span>
             </div>
           </div>
@@ -264,11 +264,11 @@ export default function Game() {
                 }}
               />
 
-              {/* Betting controls — only shown to players during betting phase */}
+              {/* Betting controls, only shown to players during betting phase */}
               {phase === "betting" && isPlayer && (
                 <div className="game__betting">
                   <p className="game__pot">
-                    Pot: {pot} pts — Highest bet: {highestBet} pts
+                    Pot: {pot} pts, Highest bet: {highestBet} pts
                   </p>
                   <div className="game__bet-controls">
                     <input
