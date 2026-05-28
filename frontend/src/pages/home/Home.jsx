@@ -154,11 +154,29 @@ export default function Home() {
               <p className="home__empty">No upcoming tournaments.</p>
             ) : (
               <div className="home__grid">
-                {data.tournaments.map((t) => (
-                  <Link to={`/tournament/${t._id}`} key={t._id} className="home__card">
-                    <div className="home__card-player">{t.title}</div>
-                    <div className="home__card-variant">{new Date(t.startDate).toLocaleDateString()}</div>
-                    <div className="home__card-waiting">{t.participants?.length || 0} players signed up</div>
+                {data.tournaments.map((tournament) => (
+                  <Link to={`/tournament/${tournament._id}`} key={tournament._id} className="home__card">
+                    <div className="home__card-player">{tournament.title}</div>
+                    {tournament.createdBy?.username && (
+                      <div className="home__card-variant">by {tournament.createdBy.username}</div>
+                    )}
+                    <div className="home__card-variant">
+                      {new Date(tournament.startDate).toLocaleDateString(undefined, {
+                        year: "numeric", month: "short", day: "numeric",
+                      })}
+                    </div>
+                    {tournament.category && (
+                      <div className="home__card-variant">
+                        Best of {tournament.category.rounds}, {tournament.category.timeControl}s{tournament.category.straightsAllowed && ", Straights"}
+                      </div>
+                    )}
+                    {tournament.numberOfRounds && (
+                      <div className="home__card-variant">{tournament.numberOfRounds} tournament rounds</div>
+                    )}
+                    <div className="home__card-waiting">{tournament.participants?.length || 0} players signed up</div>
+                    {tournament.trophy?.title && (
+                      <div className="home__card-variant">{tournament.trophy.title}</div>
+                    )}
                   </Link>
                 ))}
               </div>

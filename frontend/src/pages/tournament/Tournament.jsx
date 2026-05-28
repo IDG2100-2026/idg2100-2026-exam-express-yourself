@@ -14,6 +14,7 @@ import { useAuth } from "../../hooks/useAuth.js";
 import { createComment } from "../../services/comments-service.js";
 import "./tournament.scss";
 
+
 function getTimeLeft(targetDate) {
   const diff = new Date(targetDate) - Date.now();
   if (diff <= 0) return null;
@@ -23,6 +24,7 @@ function getTimeLeft(targetDate) {
   const seconds = Math.floor((diff % 60000) / 1000);
   return { days, hours, minutes, seconds };
 }
+
 
 function useCountdown(targetDate) {
   const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(targetDate));
@@ -34,6 +36,7 @@ function useCountdown(targetDate) {
   }, [targetDate]);
   return timeLeft;
 }
+
 
 export default function Tournament() {
   const { id } = useParams();
@@ -193,16 +196,26 @@ export default function Tournament() {
       )}
 
       <div className="tournament__info">
+        {tournament.createdBy && (
+          <div className="tournament__info-item">
+            <span className="tournament__info-label">Organiser</span>
+            <span>{tournament.createdBy.username}</span>
+          </div>
+        )}
         <div className="tournament__info-item">
           <span className="tournament__info-label">Date</span>
-          <span>{new Date(tournament.startDate).toLocaleString()}</span>
+          <span>
+            {new Date(tournament.startDate).toLocaleString(undefined, {
+              year: "numeric", month: "short", day: "numeric",
+              hour: "2-digit", minute: "2-digit",
+            })}
+          </span>
         </div>
         <div className="tournament__info-item">
           <span className="tournament__info-label">Format</span>
           <span>
             Best of {tournament.category?.rounds},{" "}
-            {tournament.category?.straightsAllowed ? "Straights" : "No straights"},{" "}
-            {tournament.category?.timeControl}s
+            {tournament.category?.timeControl}s{tournament.category?.straightsAllowed && ", Straights"}
           </span>
         </div>
         <div className="tournament__info-item">
@@ -219,12 +232,6 @@ export default function Tournament() {
           <div className="tournament__info-item">
             <span className="tournament__info-label">Elo range</span>
             <span>{tournament.eloRange.min} - {tournament.eloRange.max}</span>
-          </div>
-        )}
-        {tournament.createdBy && (
-          <div className="tournament__info-item">
-            <span className="tournament__info-label">Organiser</span>
-            <span>{tournament.createdBy.username}</span>
           </div>
         )}
       </div>

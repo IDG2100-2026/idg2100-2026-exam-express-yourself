@@ -194,6 +194,9 @@ function TournamentCard({ tournament: t }) {
         {t.status.replace("-", " ")}
       </span>
       <h2 className="tournaments__card-title">{t.title}</h2>
+      {t.createdBy?.username && (
+        <p className="tournaments__card-author">by {t.createdBy.username}</p>
+      )}
       <p className="tournaments__card-date">
         {new Date(t.startDate).toLocaleDateString(undefined, {
           year: "numeric", month: "short", day: "numeric",
@@ -201,16 +204,12 @@ function TournamentCard({ tournament: t }) {
       </p>
       {t.category && (
         <p className="tournaments__card-variant">
-          BO{t.category.rounds} &middot; {t.category.timeControl}s
-          {t.category.straightsAllowed ? " · Straights" : ""}
+          Best of {t.category.rounds}, {t.category.timeControl}s{t.category.straightsAllowed && ", Straights"}
         </p>
       )}
       <p className="tournaments__card-players">
         {t.participants?.length || 0} players signed up
       </p>
-      {t.createdBy?.username && (
-        <p className="tournaments__card-author">by {t.createdBy.username}</p>
-      )}
       {t.trophy?.title && (
         <div className="tournaments__card-trophy">
           {t.trophy.imageUrl && (
