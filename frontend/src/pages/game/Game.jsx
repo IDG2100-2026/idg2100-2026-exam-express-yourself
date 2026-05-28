@@ -19,6 +19,9 @@ export default function Game() {
   const { match, isLoading, error } = useMatch(id);
   const navigate = useNavigate();
 
+  const targetType = "Match"; // hardcoded since this is the game page
+  const targetId = id; // the specific game's MongoDB _id
+
   async function handleLeave() {
     try {
       await leaveMatch(id);
@@ -29,40 +32,38 @@ export default function Game() {
   }
 
   useEffect(() => {
-    const newSocket = new WebSocket("ws://localhost:3000");
+    // Connect with targetType and targetId from your route params
+    const newSocket = new WebSocket(
+      `ws://localhost:3000?targetType=${targetType}&targetId=${targetId}`,
+    );
     socketRef.current = newSocket;
 
-    newSocket.onopen = () => {
-      console.log("Websocket connection successful");
-    };
-
     newSocket.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        setMessages((prevMessages) => [...prevMessages, message]);
+      const data = JSON.parse(event.data);
+
+      if (data.type === "history") {
+        setMessages(data.messages); // load persisted comments from DB
+      } else if (data.type === "new_message") {
+        setMessages((prev) => [...prev, data.message]); // append live comment
+      } else if (data.type === "error") {
+        console.error("Server error:", data.message); // handle errors
+      }
     };
 
-    newSocket.onclose = () => {
-      console.log("Websocket connection closed");
-    };
+    newSocket.onopen = () => console.log("Websocket connected");
+    newSocket.onclose = () => console.log("Websocket closed");
 
-    newSocket.onerror = (error) => {
-      console.error("Websocket error", error);
-    };
-
-    return () => {
-      newSocket.close();
-    };
-  }, []);
+    return () => newSocket.close(); // clean up on unmount
+  }, [targetType, targetId]);
 
   const sendMessage = () => {
     if (input.trim() && socketRef.current?.readyState === WebSocket.OPEN) {
       const payload = JSON.stringify({
-        username: user?.username,
-        profileImageUrl: user?.profileImageUrl,
-        text: input,
+        authorId: user?._id, // send the user's ObjectId
+        text: input, // send the comment text
       });
-      socketRef.current.send(payload);
-      setInput("");
+      socketRef.current.send(payload); // send over WebSocket
+      setInput(""); // clear the input field
     }
   };
 
@@ -121,13 +122,11 @@ export default function Game() {
             className="game__dice-area"
             style={{ backgroundColor: appearance.boardColor }}
           >
-            {/* <p>
-              Board — Best of {match.category?.rounds} —{" "}
-              {match.category?.straightsAllowed ? "Straights" : "No straights"}{" "}
-              — {match.category?.timeControl}s
-            </p> */}
             <p>Best of {match.category?.rounds}</p>
-            <p>Straights allowed: {match.category?.straightsAllowed ? "Yes" : "No"}</p>
+            <p>
+              Straights allowed:{" "}
+              {match.category?.straightsAllowed ? "Yes" : "No"}
+            </p>
             <p>Time Control: {match.category?.timeControl}s</p>
           </div>
         </div>
@@ -142,26 +141,30 @@ export default function Game() {
               <div key={index} className="game__comment">
                 <Avatar imageUrl={message.profileImageUrl} size={32} />
                 <div className="game__comment-body">
-                  <span className="game__comment-author">{message.username || "Unknown"}</span>
+                  <span className="game__comment-author">
+                    {message.username || "Unknown"}
+                  </span>
                   <p className="game__comment-text">{message.text}</p>
                 </div>
               </div>
             ))}
           </div>
           {user ? (
-              <form
-                className="game__comment-form"
+            <form className="game__comment-form">
+              <textarea
+                className="game__comment-input"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Leave a comment..."
+              />
+              <button
+                onClick={sendMessage}
+                type="button"
+                className="game__comment-submit"
               >
-                <textarea
-                  className="game__comment-input"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Leave a comment..."
-                />
-                <button onClick={sendMessage} type="button" className="game__comment-submit">
-                  Post Comment
-                </button>
-              </form>
+                Post Comment
+              </button>
+            </form>
           ) : (
             <p className="game__no-comments">Log in to leave a comment.</p>
           )}

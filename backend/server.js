@@ -10,7 +10,7 @@ import authRouter from "./src/routes/auth-routes.js";
 import helmet from "helmet";
 import { connectDB, disconnectDB } from "./src/config/db.js";
 import platformActivityRouter from "./src/routes/platform-activity-routes.js";
-import { setupWebSocket } from "./src/websockets/index.js";
+import { setupWebSocket } from "./src/websockets/websocket.js";
 import { apiRateLimiter } from "./src/middlewares/rate-limiter.js";
 import securityIncidentsRouter from "./src/routes/security-incidents-routes.js";
 import { scheduleWeeklyTopup } from "./src/utils/weekly-topup.js";
