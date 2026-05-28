@@ -219,6 +219,10 @@ export default function Tournament() {
           </span>
         </div>
         <div className="tournament__info-item">
+          <span className="tournament__info-label">Rounds</span>
+          <span>{tournament.numberOfRounds} tournament rounds</span>
+        </div>
+        <div className="tournament__info-item">
           <span className="tournament__info-label">Players</span>
           <span>{tournament.participants?.length || 0} signed up</span>
         </div>

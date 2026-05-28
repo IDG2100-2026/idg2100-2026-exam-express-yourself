@@ -157,9 +157,6 @@ export default function Home() {
                 {data.tournaments.map((tournament) => (
                   <Link to={`/tournament/${tournament._id}`} key={tournament._id} className="home__card">
                     <div className="home__card-player">{tournament.title}</div>
-                    {tournament.createdBy?.username && (
-                      <div className="home__card-variant">by {tournament.createdBy.username}</div>
-                    )}
                     <div className="home__card-variant">
                       {new Date(tournament.startDate).toLocaleDateString(undefined, {
                         year: "numeric", month: "short", day: "numeric",
@@ -174,9 +171,6 @@ export default function Home() {
                       <div className="home__card-variant">{tournament.numberOfRounds} tournament rounds</div>
                     )}
                     <div className="home__card-waiting">{tournament.participants?.length || 0} players signed up</div>
-                    {tournament.trophy?.title && (
-                      <div className="home__card-variant">{tournament.trophy.title}</div>
-                    )}
                   </Link>
                 ))}
               </div>
