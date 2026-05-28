@@ -42,13 +42,6 @@ export default function Lobby() {
 
   const userId = user?._id || user?.userId;
 
-  function excludeOwn(results) {
-    return (results || []).filter((m) => {
-      const p1Id = m.players?.[0]?.userId?._id || m.players?.[0]?.userId;
-      return p1Id !== userId;
-    });
-  }
-
   // Reset and reload whenever filters or page size changes
   useEffect(() => {
     let stale = false;
@@ -57,7 +50,7 @@ export default function Lobby() {
     getMatches({ status: "waiting", timeControl, rounds, straightsAllowed: straights, page: 1, limit })
       .then((data) => {
         if (stale) return;
-        setMatches(excludeOwn(data.results));
+        setMatches(data.results || []);
         setTotal(data.total || 0);
         setIsLoading(false);
       })
@@ -72,7 +65,7 @@ export default function Lobby() {
     setIsLoadingMore(true);
     getMatches({ status: "waiting", timeControl, rounds, straightsAllowed: straights, page: nextPage, limit })
       .then((data) => {
-        setMatches((prev) => [...prev, ...excludeOwn(data.results)]);
+        setMatches((prev) => [...prev, ...(data.results || [])]);
         setTotal(data.total || 0);
         setPage(nextPage);
         setIsLoadingMore(false);
@@ -82,12 +75,17 @@ export default function Lobby() {
 
   async function handleJoin(match) {
     if (!user) { navigate("/login"); return; }
+    const p1Id = match.players?.[0]?.userId?._id || match.players?.[0]?.userId;
+    if (p1Id === userId) {
+      navigate(`/game/${match._id}`);
+      return;
+    }
     try { await joinMatch(match._id); } catch { /* proceed to game */ }
     navigate(`/game/${match._id}`);
   }
 
   const displayed = sortMatches(matches, sort, timeControl);
-  const hasMore = matches.length < total;
+  const hasMore = page * limit < total;
 
   return (
     <div className="lobby">
@@ -172,6 +170,7 @@ export default function Lobby() {
       <div className="lobby__grid">
         {displayed.map((match) => {
           const p1 = match.players?.[0]?.userId;
+          const isOwn = userId && (p1?._id || p1) === userId;
           return (
             <button key={match._id} className={`lobby__card lobby__card--${match.status}`} onClick={() => handleJoin(match)}>
               <div className="lobby__card-player">
@@ -182,9 +181,10 @@ export default function Lobby() {
                 </div>
               </div>
               <div className="lobby__card-variant">
-                Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}
+                Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}, {match.category?.buyIn || 1}pt buy-in
               </div>
-              <div className="lobby__card-waiting">Click to join</div>
+              <div className="lobby__card-variant">{match.players?.length || 1}/{match.maxPlayers || 2} players</div>
+              <div className="lobby__card-waiting">{isOwn ? "Your game - waiting for players" : "Click to join"}</div>
             </button>
           );
         })}
