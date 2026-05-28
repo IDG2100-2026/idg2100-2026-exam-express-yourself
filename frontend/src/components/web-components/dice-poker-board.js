@@ -195,8 +195,8 @@ class DicePokerBoard extends HTMLElement {
       const diceRow = this.shadowRoot.querySelector(
         `[data-dice="player-${playerIndex}"]`,
       );
-      if (!diceRow) return;
 
+      if (!diceRow) return;
       player.dice.forEach((dieValue, dieIndex) => {
         // loops trough the players 5 dices
         const die = document.createElement("dice-poker-die"); // cerates dice-poker-die element
