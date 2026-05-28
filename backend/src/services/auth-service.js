@@ -41,6 +41,7 @@ export const registerUser = async (userData) => {
     userId: newUser._id,
   });
   await sendVerificationMail(newUser.email, verificationToken.token); // this is the to and token in sendVerificationMail in service.
+  return newUser;
 };
 
 export const authenticateUser = async (email, password) => {

@@ -36,6 +36,10 @@ export const AuthProvider = ({ children }) => {
     setAccessToken(accessToken); // stores the access token in memory for future api calls
   }, []);
 
+  const updateUser = useCallback((updates) => {
+    setUser((prev) => (prev ? { ...prev, ...updates } : prev));
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await logoutUser(); // logs out the user, and deletes the session from db
@@ -64,7 +68,7 @@ export const AuthProvider = ({ children }) => {
 
   if(loading) return <p>Loading...</p>; // show a loading txt
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

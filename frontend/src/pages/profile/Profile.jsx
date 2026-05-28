@@ -7,7 +7,7 @@ import { getPlayerMatches } from "../../services/matches-service.js";
 
 export default function Profile() {
   const { id } = useParams();
-  const { user: authUser } = useAuth();
+  const { user: authUser, updateUser: updateAuthUser } = useAuth();
   const { user, isLoading, error, refetch } = useUser(id);
 
   const userId = authUser?._id || authUser?.userId;
@@ -78,7 +78,8 @@ export default function Profile() {
 
     try {
       if (avatarFile) {
-        await uploadAvatar(id, avatarFile);
+        const { profileImageUrl } = await uploadAvatar(id, avatarFile);
+        if (isOwnProfile) updateAuthUser({ profileImageUrl });
       }
 
       const updates = {

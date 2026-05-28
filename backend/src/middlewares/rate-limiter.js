@@ -12,6 +12,21 @@ export const commentRateLimiter = rateLimit({
   },
 });
 
+// Strict limiter for forgot-password to prevent email bombing
+export const forgotPasswordRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  handler: async (req, res) => {
+    logIncident({
+      type: "rate-limit",
+      ip: req.ip,
+      userAgent: req.headers["user-agent"] || "unknown",
+    }).catch(() => {});
+
+    res.status(429).json({ error: "Too many password reset attempts. Please try again in 15 minutes." });
+  },
+});
+
 // General API rate limiter. logs incidents to DB
 export const apiRateLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
