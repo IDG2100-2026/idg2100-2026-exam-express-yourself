@@ -92,10 +92,10 @@ export default function Home() {
 
       {data.activity && (
         <section className="home__activity">
-          <div className="home__activity-item"><strong>{data.activity.ongoingMatches}</strong> games in progress</div>
           <div className="home__activity-item"><strong>{data.activity.availableGames}</strong> open games</div>
-          <div className="home__activity-item"><strong>{data.activity.activePlayers}</strong> active this week</div>
-          <div className="home__activity-item"><strong>{data.activity.gamesThisWeek}</strong> games this week</div>
+          <div className="home__activity-item"><strong>{data.activity.ongoingMatches}</strong> games in progress</div>
+          <div className="home__activity-item"><strong>{data.activity.activePlayers}</strong> players active this week</div>
+          <div className="home__activity-item"><strong>{data.activity.gamesThisWeek}</strong> games played this week</div>
         </section>
       )}
 
