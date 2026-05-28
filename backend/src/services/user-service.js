@@ -74,6 +74,17 @@ export async function getUser(userId, requestingUserId, filters = {}) {
     .skip(skip)
     .limit(matchLimit);
 
+  // Remove email if the requester is neither the owner nor an admin
+  if (requestingUserId !== userId) {
+    let requestingUser = null;
+    if (requestingUserId) {
+      requestingUser = await User.findById(requestingUserId);
+    }
+    if (!requestingUser || requestingUser.role !== "admin") {
+      delete userObj.email;
+    }
+  }
+
   return {
     user: userObj,
     stats: {

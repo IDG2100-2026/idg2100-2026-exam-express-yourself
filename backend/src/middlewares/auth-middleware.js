@@ -32,6 +32,22 @@ export const authenticate = (req, res, next) => {
 };
 
 
+// Sets req.userId and req.role if a valid token is present, but never blocks the request
+export const optionalAuthenticate = (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (token) {
+      const decoded = verifyAccessToken(token);
+      req.userId = decoded.userId;
+      req.role = decoded.role;
+    }
+  } catch {
+    // invalid or missing token on a public route, just continue
+  }
+  next();
+};
+
+
 export const authorize = (...allowedRoles) => {
   return (req, res, next) => {
     if (!allowedRoles.includes(req.role))
