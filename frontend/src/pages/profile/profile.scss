@@ -1,4 +1,4 @@
-@use '../../styles/variables' as *;
+@use "../../styles/variables" as *;
 
 .profile {
   max-width: 700px;
@@ -105,12 +105,13 @@
         font-weight: 400;
       }
     }
-    textarea{
+    textarea {
       min-height: 100px;
       max-height: 200px;
     }
 
-    input, textarea {
+    input,
+    textarea {
       background-color: $color-bg-secondary;
       border: 1px solid $color-border;
       border-radius: $radius;
@@ -129,19 +130,21 @@
       resize: vertical;
     }
   }
-
-  &__save-btn {
-    background-color: $color-accent;
-    border: none;
-    border-radius: $radius;
-    color: #1a1200;
-    cursor: pointer;
-    font-weight: 700;
-    padding: 0.6rem 1.5rem;
-    align-self: flex-start;
-
-    &:hover {
-      background-color: $color-accent-hover;
+  &__save {
+    display: flex;
+    gap: 10px;
+    &-btn {
+      background-color: $color-accent;
+      border: none;
+      border-radius: $radius;
+      color: #1a1200;
+      cursor: pointer;
+      font-weight: 700;
+      padding: 0.6rem 1.5rem;
+      align-self: flex-start;
+      &:hover {
+        background-color: $color-accent-hover;
+      }
     }
   }
 
@@ -308,7 +311,13 @@
     padding: 0.5rem 1.5rem;
     width: 100%;
 
-    &:hover:not(:disabled) { border-color: $color-accent; color: $color-text; }
-    &:disabled { opacity: 0.5; cursor: not-allowed; }
+    &:hover:not(:disabled) {
+      border-color: $color-accent;
+      color: $color-text;
+    }
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 }

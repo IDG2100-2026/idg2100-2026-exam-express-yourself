@@ -8,7 +8,7 @@ import { getPlayerMatches } from "../../services/matches-service.js";
 export default function Profile() {
   const { id } = useParams();
   const { user: authUser, updateUser: updateAuthUser } = useAuth();
-  const { user, isLoading, error, refetch } = useUser(id);
+  const { user, setUser, isLoading, error, refetch } = useUser(id);
 
   const userId = authUser?._id || authUser?.userId;
   const isOwnProfile = userId === id;
@@ -20,6 +20,7 @@ export default function Profile() {
     password: "",
     newPassword: "",
   });
+
   const [avatarFile, setAvatarFile] = useState(null);
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(null);
@@ -56,10 +57,10 @@ export default function Profile() {
       password: "",
       newPassword: "",
     });
-    setAvatarFile(null);
+    // setAvatarFile(null); // TODO: needed?
     setEditing(true);
     setSaveError(null);
-    setSaveSuccess(null);
+    // setSaveSuccess(null); // TODO: needed?
   }
 
   function handleChange(e) {
@@ -78,7 +79,7 @@ export default function Profile() {
 
     try {
       if (avatarFile) {
-        const { profileImageUrl } = await uploadAvatar(id, avatarFile);
+        var { profileImageUrl } = await uploadAvatar(id, avatarFile);
         if (isOwnProfile) updateAuthUser({ profileImageUrl });
       }
 
@@ -92,12 +93,31 @@ export default function Profile() {
       };
 
       await updateUser(id, updates);
-      refetch();
-      setEditing(false);
+      if (formData.email && formData.email !== user.email) {
+        setSaveSuccess("Email updated successfully");
+      }
+      if (formData.newPassword) {
+        setSaveSuccess("Password changed successfully");
+        setFormData({
+          password: "",
+          newPassword: "",
+        });
+      }
+
+      setUser((prev) => ({
+        ...prev,
+        email: formData.email || prev.email,
+        bio: formData.bio || prev.bio,
+        ...(profileImageUrl && { profileImageUrl }),
+      }));
+      setEditing(true);
     } catch (err) {
       setSaveError(err.message);
     }
   }
+  const handleCloseEditField = () => {
+    setEditing(false);
+  };
 
   if (isLoading) return <p className="profile__status">Loading profile...</p>;
   if (error) return <p className="profile__error">{error}</p>;
@@ -185,23 +205,38 @@ export default function Profile() {
           </div>
           {saveError && <p className="profile__error">{saveError}</p>}
           {saveSuccess && <p className="profile__success">{saveSuccess}</p>}
-          <button type="submit" className="profile__save-btn">
-            Save Changes
-          </button>
+          <div className="profile__save">
+            <button type="submit" className="profile__save-btn">
+              Save Changes
+            </button>
+            <button
+              onClick={handleCloseEditField}
+              type="submit"
+              className="profile__save-btn"
+            >
+              Close edit field
+            </button>
+          </div>
         </form>
       )}
 
       <div className="profile__stats">
         <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating?.tc10 ?? 1000}</span>
+          <span className="profile__stat-value">
+            {user.eloRating?.tc10 ?? 1000}
+          </span>
           <span className="profile__stat-label">Elo (10s)</span>
         </div>
         <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating?.tc30 ?? 1000}</span>
+          <span className="profile__stat-value">
+            {user.eloRating?.tc30 ?? 1000}
+          </span>
           <span className="profile__stat-label">Elo (30s)</span>
         </div>
         <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating?.tc90 ?? 1000}</span>
+          <span className="profile__stat-value">
+            {user.eloRating?.tc90 ?? 1000}
+          </span>
           <span className="profile__stat-label">Elo (90s)</span>
         </div>
         <div className="profile__stat">
@@ -256,7 +291,9 @@ export default function Profile() {
                   key={match._id}
                   className="profile__game"
                 >
-                  <span className={`profile__result profile__result--${won ? "win" : "loss"}`}>
+                  <span
+                    className={`profile__result profile__result--${won ? "win" : "loss"}`}
+                  >
                     {won ? "Win" : "Loss"}
                   </span>
                   <span className="profile__opponent">

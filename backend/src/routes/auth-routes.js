@@ -42,6 +42,7 @@ authRouter.post(
 
 authRouter.get(
   "/verify-email",
+  apiRateLimiter,
   verifyEmailController,
 );
 
