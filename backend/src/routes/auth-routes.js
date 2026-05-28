@@ -18,6 +18,7 @@ import {
 } from "../validators/passwordResetValidator.js";
 import { validate } from "../validators/validate.js";
 import { authenticate, authorize } from "../middlewares/auth-middleware.js";
+import { apiRateLimiter, forgotPasswordRateLimiter } from "../middlewares/rate-limiter.js";
 import cookieParser from "cookie-parser";
 
 const authRouter = express.Router();
@@ -25,12 +26,13 @@ authRouter.use(cookieParser(process.env.COOKIE_SECRET));
 
 authRouter.post(
   "/register",
+  apiRateLimiter,
   validateRegister(),
   validate,
   registerUserController,
 ); // Create a new user
 
-authRouter.post("/forgot-password", validateForgotPassword(), validate, forgotPasswordController); // sends the email with reset link
+authRouter.post("/forgot-password", forgotPasswordRateLimiter, validateForgotPassword(), validate, forgotPasswordController); // sends the email with reset link
 authRouter.post(
   "/reset-password",
   validatePasswordReset(),
@@ -43,7 +45,7 @@ authRouter.get(
   verifyEmailController,
 );
 
-authRouter.post("/login", validateLogin(), validate, loginUserController); // Login an existing user
+authRouter.post("/login", apiRateLimiter, validateLogin(), validate, loginUserController); // Login an existing user
 
 authRouter.post("/sessions/token", createAccessToken); // to get a new access token after expire
 authRouter.delete("/sessions/current", logoutUser); // on user logout

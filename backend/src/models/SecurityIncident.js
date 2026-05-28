@@ -12,10 +12,14 @@ const securityIncidentSchema = new mongoose.Schema(
     },
     ip: { type: String, default: "unknown" },
     userAgent: { type: String, default: "unknown" },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-const SecurityIncident = mongoose.model("SecurityIncident", securityIncidentSchema, "security_incidents");
+const SecurityIncident = mongoose.model("SecurityIncident", securityIncidentSchema);
 export default SecurityIncident;
