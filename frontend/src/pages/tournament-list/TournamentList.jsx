@@ -9,6 +9,12 @@ export default function TournamentList() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("date");
 
+  // Only send search to API when empty or at least 3 characters, backend rejects shorter strings
+  let effectiveSearch = "";
+  if (search.length === 0 || search.length >= 3) {
+    effectiveSearch = search;
+  }
+
   // Active section: upcoming + in-progress
   const [active, setActive] = useState([]);
   const [activePage, setActivePage] = useState(1);
@@ -27,7 +33,7 @@ export default function TournamentList() {
   const [pastIsLoadingMore, setPastIsLoadingMore] = useState(false);
   const [pastError, setPastError] = useState(null);
 
-  // Fetch page 1 of both sections whenever search or sort changes
+  // Fetch page 1 of both sections whenever effective search or sort changes
   useEffect(() => {
     let stale = false;
     setActiveIsLoading(true);
@@ -36,8 +42,8 @@ export default function TournamentList() {
     setPastError(null);
 
     Promise.all([
-      getTournaments({ page: 1, limit: LIMIT, search, status: "upcoming", sort }),
-      getTournaments({ page: 1, limit: LIMIT, search, status: "in-progress", sort }),
+      getTournaments({ page: 1, limit: LIMIT, search: effectiveSearch, status: "upcoming", sort }),
+      getTournaments({ page: 1, limit: LIMIT, search: effectiveSearch, status: "in-progress", sort }),
     ])
       .then(([upcomingData, inProgressData]) => {
         if (!stale) {
@@ -51,8 +57,8 @@ export default function TournamentList() {
       .finally(() => { if (!stale) setActiveIsLoading(false); });
 
     Promise.all([
-      getTournaments({ page: 1, limit: LIMIT, search, status: "completed", sort }),
-      getTournaments({ page: 1, limit: LIMIT, search, status: "cancelled", sort }),
+      getTournaments({ page: 1, limit: LIMIT, search: effectiveSearch, status: "completed", sort }),
+      getTournaments({ page: 1, limit: LIMIT, search: effectiveSearch, status: "cancelled", sort }),
     ])
       .then(([completedData, cancelledData]) => {
         if (!stale) {
@@ -66,15 +72,15 @@ export default function TournamentList() {
       .finally(() => { if (!stale) setPastIsLoading(false); });
 
     return () => { stale = true; };
-  }, [search, sort]);
+  }, [effectiveSearch, sort]);
 
   // Load next page for both active statuses and append results
   function loadMoreActive() {
     const nextPage = activePage + 1;
     setActiveIsLoadingMore(true);
     Promise.all([
-      getTournaments({ page: nextPage, limit: LIMIT, search, status: "upcoming", sort }),
-      getTournaments({ page: nextPage, limit: LIMIT, search, status: "in-progress", sort }),
+      getTournaments({ page: nextPage, limit: LIMIT, search: effectiveSearch, status: "upcoming", sort }),
+      getTournaments({ page: nextPage, limit: LIMIT, search: effectiveSearch, status: "in-progress", sort }),
     ])
       .then(([upcomingData, inProgressData]) => {
         setActive((prev) => {
@@ -91,8 +97,8 @@ export default function TournamentList() {
     const nextPage = pastPage + 1;
     setPastIsLoadingMore(true);
     Promise.all([
-      getTournaments({ page: nextPage, limit: LIMIT, search, status: "completed", sort }),
-      getTournaments({ page: nextPage, limit: LIMIT, search, status: "cancelled", sort }),
+      getTournaments({ page: nextPage, limit: LIMIT, search: effectiveSearch, status: "completed", sort }),
+      getTournaments({ page: nextPage, limit: LIMIT, search: effectiveSearch, status: "cancelled", sort }),
     ])
       .then(([completedData, cancelledData]) => {
         setPast((prev) => {
