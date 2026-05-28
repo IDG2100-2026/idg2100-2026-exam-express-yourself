@@ -87,7 +87,7 @@ export default function Lobby() {
   }
 
   const displayed = sortMatches(matches, sort, timeControl);
-  const hasMore = matches.length < total;
+  const hasMore = page * limit < total;
 
   return (
     <div className="lobby">
