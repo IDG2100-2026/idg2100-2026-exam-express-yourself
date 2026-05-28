@@ -1,5 +1,6 @@
 import { WebSocketServer } from "ws"; // import the WebSocket server class
 import { getAllComments, createComment } from "../services/comment-service.js";
+import { handleGameMessage } from "./game-handler.js";
 
 let wss;
 
@@ -38,39 +39,44 @@ export const setupWebSocket = (httpServer) => {
     }
 
     // Listen for incoming messages
-    socket.on("message", async (raw) => {
-      const data = JSON.parse(raw); // parse the comment the user made to a json object
+    socket.on("message", async (message) => {
+      const data = JSON.parse(message); // parse the message the user sent to a json object
 
-      try {
-        const comment = await createComment(data.authorId, {
-          text: data.text, // the comment text from the frontend e.g, what the user typed
-          targetType: socket.targetType, // scoped to this page's target type
-          targetId: socket.targetId, // scoped to this page's target ID
-        });
+      if (targetType && targetId) {
+        // Handle as a comment message
+        try {
+          const comment = await createComment(data.authorId, {
+            text: data.text, // the comment text from the frontend e.g, what the user typed
+            targetType: socket.targetType, // scoped to this page's target type
+            targetId: socket.targetId, // scoped to this page's target ID
+          });
 
-        const outgoing = JSON.stringify({
-          type: "new_message", // tells the frontend this is a single new comment
-          message: comment, // the saved and populated comment
-        });
+          const outgoing = JSON.stringify({
+            type: "new_message", // tells the frontend this is a single new comment
+            message: comment, // the saved and populated comment
+          });
 
-        
-        wss.clients.forEach((client) => { // Broadcast to every connected client viewing the same page
-          if (
-            client.readyState === socket.OPEN && // only send to open connections
-            client.targetType === socket.targetType && // same target type
-            client.targetId === socket.targetId // same specific page
-          ) {
-            client.send(outgoing); // send the new comment to this client
-          }
-        });
-      } catch (err) {
-        console.error("Error saving comment:", err); // log the full error server-side, for debugging
-        socket.send(
-          JSON.stringify({
-            type: "error", // notify the sender that saving failed
-            message: err.message, 
-          }),
-        );
+          wss.clients.forEach((client) => { // Broadcast to every connected client viewing the same page
+            if (
+              client.readyState === socket.OPEN && // only send to open connections
+              client.targetType === socket.targetType && // same target type
+              client.targetId === socket.targetId // same specific page
+            ) {
+              client.send(outgoing); // send the new comment to this client
+            }
+          });
+        } catch (err) {
+          console.error("Error saving comment:", err); // log the full error server-side, for debugging
+          socket.send(
+            JSON.stringify({
+              type: "error", // notify the sender that saving failed
+              message: err.message,
+            }),
+          );
+        }
+      } else {
+        // Handle as a game message
+        await handleGameMessage(socket, data);
       }
     });
 
@@ -79,9 +85,5 @@ export const setupWebSocket = (httpServer) => {
     });
   });
 
-  return wss; // return the wss instance in case it's needed elsewhere
 };
 
-export const getWss = () => {
-  return wss; // getter so other parts of the app can access the WebSocket server
-};

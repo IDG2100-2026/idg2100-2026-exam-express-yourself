@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useMatch } from "../../hooks/useMatch.js";
-import { useComments } from "../../hooks/useComments.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
-import { createComment } from "../../services/comments-service.js";
 import { leaveMatch } from "../../services/matches-service.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
 import "./game.scss";
@@ -20,10 +18,7 @@ export default function Game() {
   const { user } = useAuth();
   const { appearance } = useAppearance();
   const { match, isLoading, error } = useMatch(id);
-  const { comments, refetch: refetchComments } = useComments("Match", id);
-
-  const [commentText, setCommentText] = useState("");
-  const [commentError, setCommentError] = useState(null);
+  // Game state
   const [phase, setPhase] = useState("rolling");
   const [pot, setPot] = useState(0);
   const [highestBet, setHighestBet] = useState(0);
@@ -35,21 +30,25 @@ export default function Game() {
 
   const userId = user?._id || user?.userId;
 
-  // Which player slot am I? (0 = player1, 1 = player2)
   const myIndex = match?.players?.findIndex(
     (p) => (p.userId?._id || p.userId) === userId
   ) ?? -1;
   const isPlayer = myIndex !== -1;
   const myKey = myIndex === 0 ? "player1" : "player2";
 
-  // Send a message through the WebSocket
+  // Comment WebSocket state
+  const targetType = "Match";
+  const targetId = id;
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const socketRef = useRef(null);
+
   function send(msg) {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(msg));
     }
   }
 
-  // Connect to WebSocket when the game is in-progress
   useEffect(() => {
     if (!match || match.status !== "in-progress" || !userId) return;
 
@@ -78,7 +77,6 @@ export default function Game() {
     };
   }, [match?.status, id, userId]);
 
-  // Handle incoming WebSocket messages
   function handleMsg(msg) {
     const board = boardRef.current;
 
@@ -88,7 +86,6 @@ export default function Game() {
         setPhase(msg.phase || "rolling");
         if (board) {
           board.setTurn(turnKey, 3);
-          // Auto-roll on my browser when it becomes my turn
           if (msg.phase === "rolling" && turnKey === myKey) {
             board.autoRoll();
           }
@@ -121,20 +118,16 @@ export default function Game() {
     }
   }
 
-  // Listen to board events and forward them to the server
   useEffect(() => {
     const board = boardRef.current;
     if (!board) return;
 
-    // Player rolled — only forward MY rolls to the server
-    // (board also auto-rolls the opponent locally for visual purposes)
     const onRoll = (e) => {
       if (!isPlayer) return;
       if (e.detail?.player !== myKey) return;
       send({ type: "roll", matchId: id, userId });
     };
 
-    // A die was held/unheld — send the full held array to the server
     const onHeld = () => {
       if (!isPlayer) return;
       const myDice = myKey === "player1" ? board._diceP1 : board._diceP2;
@@ -142,7 +135,6 @@ export default function Game() {
       send({ type: "hold", matchId: id, userId, held });
     };
 
-    // End-turn button clicked — tell the server
     const onEndTurn = () => {
       if (!isPlayer) return;
       send({ type: "endTurn", matchId: id, userId });
@@ -170,18 +162,45 @@ export default function Game() {
     navigate("/lobby");
   }
 
-  async function handleComment(e) {
-    e.preventDefault();
-    if (!commentText.trim()) return;
-    setCommentError(null);
-    try {
-      await createComment(commentText, "Match", id);
-      setCommentText("");
-      refetchComments();
-    } catch (err) {
-      setCommentError(err.message);
+  useEffect(() => {
+    // Connect with targetType and targetId from your route params
+    const newSocket = new WebSocket(
+      `${import.meta.env.VITE_WS_URL}?targetType=${targetType}&targetId=${targetId}`,
+    );
+    socketRef.current = newSocket;
+
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data); // parses raw string into json object
+
+      if (data.type === "history") {
+        setMessages(data.messages); // load previous comments from DB
+      } else if (data.type === "new_message") {
+        setMessages((prev) => [...prev, data.message]); // append new comments into the message array
+      } else if (data.type === "error") {
+        console.error("Server error:", data.message); // handle errors
+      }
+    };
+
+    newSocket.onopen = () => {
+      console.log("Websocket connected"); // gives a msg to the clients browser that they are connected
+    };
+    newSocket.onclose = () => {
+      console.log("Websocket disconnected"); // gives a msg to the clients browser that they are disconnected
+    };
+
+    return () => newSocket.close(); // clean up on unmount. if not done, the connection would still be live after moving away from the page
+  }, [targetType, targetId]); // re-render if any of these change!
+
+  const sendMessage = () => {
+    if (input.trim() && socketRef.current?.readyState === WebSocket.OPEN) {
+      const payload = JSON.stringify({
+        authorId: user?._id, // send the user's ObjectId
+        text: input, // send the comment text
+      });
+      socketRef.current.send(payload); // send over WebSocket
+      setInput(""); // clear the input field
     }
-  }
+  };
 
   if (isLoading) return <p className="game__status">Loading game...</p>;
   if (error) return <p className="game__error">Error: {error}</p>;
@@ -316,32 +335,40 @@ export default function Game() {
         <aside className="game__sidebar">
           <h2 className="game__sidebar-title">Comments</h2>
           <div className="game__comments">
-            {comments.length === 0 && (
+            {messages.length === 0 && (
               <p className="game__no-comments">No comments yet.</p>
             )}
-            {comments.map((c) => (
-              <div key={c._id} className="game__comment">
-                <span className="game__comment-author">
-                  {c.authorId?.username || "Unknown"}
-                </span>
-                <span className="game__comment-date">
-                  {new Date(c.createdAt).toLocaleDateString()}
-                </span>
-                <p className="game__comment-text">{c.text}</p>
+            {messages.map((message, index) => (
+              <div key={index} className="game__comment">
+                <Avatar
+                  imageUrl={message.authorId?.profileImageUrl}
+                  size={32}
+                />
+
+                <div className="game__comment-body">
+                  <span className="game__comment-author">
+                    {message.authorId?.username || "Unknown"}
+                  </span>
+                  <span className="game__comment-date">
+                    {new Date(message.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <p className="game__comment-text">{message.text}</p>
               </div>
             ))}
           </div>
           {user ? (
-            <form className="game__comment-form" onSubmit={handleComment}>
+            <form
+              className="game__comment-form"
+            >
               <textarea
                 className="game__comment-input"
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
                 placeholder="Leave a comment..."
                 rows={3}
               />
-              {commentError && <p className="game__error">{commentError}</p>}
-              <button type="submit" className="game__comment-submit">
+              <button onClick={sendMessage} type="button" className="game__comment-submit">
                 Post Comment
               </button>
             </form>

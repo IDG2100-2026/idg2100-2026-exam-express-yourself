@@ -29,17 +29,16 @@ app.use(
 await connectDB();
 scheduleWeeklyTopup();
 
-// Apply rate limiter to all API routes
-app.use("/api", apiRateLimiter);
-
 // Parse JSON bodies
 app.use(express.json());
 
 // Serve uploaded files (trophy images etc.)
 app.use("/uploads", express.static("uploads"));
 
-
 app.use("/api/auth", authRouter);
+
+
+app.use("/api", apiRateLimiter); // Apply rate limiter to all other API routes
 app.use("/api/users", userRouter);
 app.use("/api/matches", matchRouter);
 app.use("/api/tournaments", tournamentRouter);

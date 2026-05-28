@@ -6,8 +6,8 @@ AUTH
   [X] IP-change incident logging in authMiddleware.js
 
 BACKEND — GAME LOGIC
-  [*] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s) — model + constants done, match-service filters by variant
-  [*] Betting logic (pot, fold, raise, match)
+  [ ] Expand game variants (2/3/5 players, buy-in 1/10/50, time 10/30/90s) — model + constants done, match-service filters by variant
+  [ ] Betting logic (pot, fold, raise, match)
   [X] Multi-player Elo re-estimation (pair-wise) — updateEloMultiplayer() wired in match-service
   [X] Weekly 100-point top-up for users — scheduleWeeklyTopup() in server.js, stores lastWeeklyTopUp in SystemSettings
   [X] Tournament round logic (random pairing, standings, winner bonus) — league format in tournament-service.js, TOURNAMENT_WIN_POINTS awarded
@@ -16,13 +16,13 @@ BACKEND — GAME LOGIC
   [X] DB seeding script
 
 WEBSOCKETS
-  [*] Integrate WS server into Express
-  [*] Game channel (rolls on backend, holds from frontend, time enforcement)
-  [*] Broadcast other players' holds in real-time
-  [ ] Real-time comments on game + tournament pages
+  [X] Integrate WS server into Express
+  [ ] Game channel (rolls on backend, holds from frontend, time enforcement)
+  [ ] Broadcast other players' holds in real-time
+  [X] Real-time comments on game + tournament pages
 
 WEB COMPONENTS
-  [*] Finish dice-poker-board, dice-poker-die, dice-poker-monitor — components exist but not integrated in Game.jsx
+  [ ] Finish dice-poker-board, dice-poker-die, dice-poker-monitor — components exist but not integrated in Game.jsx
   [ ] Wrap game board in React component
   [ ] Restore game state on reload
   [ ] Sound effects (gated by user sound setting)
@@ -30,7 +30,7 @@ WEB COMPONENTS
 FRONTEND PAGES
   [X] HomePage — activity stats, open games, top games, upcoming tournaments
   [X] LobbyPage — sort/filter by elo/time control/pagination + load-more
-  [*] GamePage — shows game info + comments, missing dice board, betting UI, spectator view (leave button added)
+  [ ] GamePage — shows game info + comments, missing dice board, betting UI, spectator view (leave button added)
   [X] TournamentsPage — search, sort, status tabs, load-more pagination
   [X] TournamentPage — countdown, standings, join/leave, admin controls (start/cancel/delete/edit)
   [X] ProfilePage — points balance added, game history with load-more pagination
