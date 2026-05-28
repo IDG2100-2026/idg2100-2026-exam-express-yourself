@@ -139,10 +139,10 @@ export default function Game() {
             )}
             {messages.map((message, index) => (
               <div key={index} className="game__comment">
-                <Avatar imageUrl={message.profileImageUrl} size={32} />
+                <Avatar imageUrl={message.authorId?.profileImageUrl} size={32} />
                 <div className="game__comment-body">
                   <span className="game__comment-author">
-                    {message.username || "Unknown"}
+                    {message.authorId?.username || "Unknown"}
                   </span>
                   <p className="game__comment-text">{message.text}</p>
                 </div>
