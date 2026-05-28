@@ -43,120 +43,121 @@ export default function Game() {
   const [input, setInput] = useState("");
   const socketRef = useRef(null);
 
-  function send(msg) {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(msg));
-    }
-  }
+  // function send(msg) {
+  //   if (wsRef.current?.readyState === WebSocket.OPEN) {
+  //     wsRef.current.send(JSON.stringify(msg));
+  //   }
+  // }
 
-  useEffect(() => {
-    if (!match || match.status !== "in-progress" || !userId) return;
+  // useEffect(() => {
+  //   if (!match || match.status !== "in-progress" || !userId) return;
 
-    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const ws = new WebSocket(`${proto}//${window.location.hostname}:3000`);
-    wsRef.current = ws;
+  //   const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
+  //   const ws = new WebSocket(`${proto}//${window.location.hostname}:3000`);
+  //   wsRef.current = ws;
 
-    ws.onopen = () => {
-      console.log("[WS] connected, userId:", userId, "myKey:", myKey);
-      ws.send(JSON.stringify({ type: "join", matchId: id, userId }));
-    };
+  //   ws.onopen = () => {
+  //     console.log("[WS] connected, userId:", userId, "myKey:", myKey);
+  //     ws.send(JSON.stringify({ type: "join", matchId: id, userId }));
+  //   };
 
-    ws.onmessage = (e) => {
-      try {
-        const msg = JSON.parse(e.data);
-        console.log("[WS] received:", msg);
-        handleMsg(msg);
-      } catch { /* ignore malformed messages */ }
-    };
+  //   ws.onmessage = (e) => {
+  //     try {
+  //       const msg = JSON.parse(e.data);
+  //       console.log("[WS] received:", msg);
+  //       handleMsg(msg);
+  //     } catch { /* ignore malformed messages */ }
+  //   };
 
-    ws.onerror = (e) => console.error("[WS] error", e);
+  //   ws.onerror = (e) => console.error("[WS] error", e);
 
-    return () => {
-      ws.close();
-      wsRef.current = null;
-    };
-  }, [match?.status, id, userId]);
+  //   return () => {
+  //     ws.close();
+  //     wsRef.current = null;
+  //   };
+  // }, [match?.status, id, userId]);
 
-  function handleMsg(msg) {
-    const board = boardRef.current;
+  // function handleMsg(msg) {
+  //   const board = boardRef.current;
 
-    switch (msg.type) {
-      case "turn:changed": {
-        const turnKey = msg.currentPlayerIndex === 0 ? "player1" : "player2";
-        setPhase(msg.phase || "rolling");
-        if (board) {
-          board.setTurn(turnKey, 3);
-          if (msg.phase === "rolling" && turnKey === myKey) {
-            board.autoRoll();
-          }
-        }
-        break;
-      }
+  //   switch (msg.type) {
+  //     case "turn:changed": {
+  //       const turnKey = msg.currentPlayerIndex === 0 ? "player1" : "player2";
+  //       setPhase(msg.phase || "rolling");
+  //       if (board) {
+  //         board.setTurn(turnKey, 3);
+  //         if (msg.phase === "rolling" && turnKey === myKey) {
+  //           board.autoRoll();
+  //         }
+  //       }
+  //       break;
+  //     }
 
-      case "round:started":
-        setPhase("rolling");
-        setPot(0);
-        setHighestBet(0);
-        break;
+  //     case "round:started":
+  //       setPhase("rolling");
+  //       setPot(0);
+  //       setHighestBet(0);
+  //       break;
 
-      case "bet:placed":
-        setPot(msg.pot);
-        setHighestBet(msg.highestBet);
-        break;
+  //     case "bet:placed":
+  //       setPot(msg.pot);
+  //       setHighestBet(msg.highestBet);
+  //       break;
 
-      case "bet:matched":
-        setPot(msg.pot);
-        break;
+  //     case "bet:matched":
+  //       setPot(msg.pot);
+  //       break;
 
-      case "game:ended":
-        setGameEnded({ winnerId: msg.winnerId, players: msg.players });
-        break;
+  //     case "game:ended":
+  //       setGameEnded({ winnerId: msg.winnerId, players: msg.players });
+  //       break;
 
-      case "error":
-        console.error("WebSocket error:", msg.message);
-        break;
-    }
-  }
+  //     case "error":
+  //       console.error("WebSocket error:", msg.message);
+  //       break;
+  //   }
+  // }
 
-  useEffect(() => {
-    const board = boardRef.current;
-    if (!board) return;
+  // useEffect(() => {
+  //   const board = boardRef.current;
+  //   if (!board) return;
 
-    const onRoll = (e) => {
-      if (!isPlayer) return;
-      if (e.detail?.player !== myKey) return;
-      send({ type: "roll", matchId: id, userId });
-    };
+  //   const onRoll = (e) => {
+  //     if (!isPlayer) return;
+  //     if (e.detail?.player !== myKey) return;
+  //     send({ type: "roll", matchId: id, userId });
+  //   };
 
-    const onHeld = () => {
-      if (!isPlayer) return;
-      const myDice = myKey === "player1" ? board._diceP1 : board._diceP2;
-      const held = myDice.map((d) => d.getAttribute("held") === "true");
-      send({ type: "hold", matchId: id, userId, held });
-    };
+  //   const onHeld = () => {
+  //     if (!isPlayer) return;
+  //     const myDice = myKey === "player1" ? board._diceP1 : board._diceP2;
+  //     const held = myDice.map((d) => d.getAttribute("held") === "true");
+  //     send({ type: "hold", matchId: id, userId, held });
+  //   };
 
-    const onEndTurn = () => {
-      if (!isPlayer) return;
-      send({ type: "endTurn", matchId: id, userId });
-    };
+  //   const onEndTurn = () => {
+  //     if (!isPlayer) return;
+  //     send({ type: "endTurn", matchId: id, userId });
+  //   };
 
-    const onMatchOver = () => {
-      navigate("/lobby");
-    };
+  //   const onMatchOver = () => {
+  //     navigate("/lobby");
+  //   };
 
-    board.addEventListener("dp:roll-executed", onRoll);
-    board.addEventListener("dp:die-held-changed", onHeld);
-    board.addEventListener("board:endTurn", onEndTurn);
-    board.addEventListener("board:matchOver", onMatchOver);
+  //   board.addEventListener("dp:roll-executed", onRoll);
+  //   board.addEventListener("dp:die-held-changed", onHeld);
+  //   board.addEventListener("board:endTurn", onEndTurn);
+  //   board.addEventListener("board:matchOver", onMatchOver);
 
-    return () => {
-      board.removeEventListener("dp:roll-executed", onRoll);
-      board.removeEventListener("dp:die-held-changed", onHeld);
-      board.removeEventListener("board:endTurn", onEndTurn);
-      board.removeEventListener("board:matchOver", onMatchOver);
-    };
-  }, [match?.status, isPlayer, myKey, id, userId]);
+  //   return () => {
+  //     board.removeEventListener("dp:roll-executed", onRoll);
+  //     board.removeEventListener("dp:die-held-changed", onHeld);
+  //     board.removeEventListener("board:endTurn", onEndTurn);
+  //     board.removeEventListener("board:matchOver", onMatchOver);
+  //   };
+  // }, [match?.status, isPlayer, myKey, id, userId]);
 
+  //TODO: Noe vits å ha disse 100 linjene med kode når de ikke gjør noe? 
   async function handleLeave() {
     try { await leaveMatch(id); } catch { /* ignore */ }
     navigate("/lobby");

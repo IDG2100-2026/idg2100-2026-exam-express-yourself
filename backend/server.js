@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import errorHandler from "./src/middlewares/error-middleware.js";
 import cors from "cors";
 import userRouter from "./src/routes/user-routes.js";
@@ -32,8 +33,8 @@ scheduleWeeklyTopup();
 // Parse JSON bodies
 app.use(express.json());
 
-// Serve uploaded files (trophy images etc.)
-app.use("/uploads", express.static("uploads"));
+// Serve uploaded files, trophy images and avatar images
+app.use("/uploads", express.static(path.join(import.meta.dirname, "uploads")));
 
 app.use("/api/auth", authRouter);
 

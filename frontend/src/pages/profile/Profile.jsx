@@ -8,7 +8,7 @@ import { getPlayerMatches } from "../../services/matches-service.js";
 export default function Profile() {
   const { id } = useParams();
   const { user: authUser, updateUser: updateAuthUser } = useAuth();
-  const { user, isLoading, error, refetch } = useUser(id);
+  const { user, setUser, isLoading, error, refetch } = useUser(id);
 
   const userId = authUser?._id || authUser?.userId;
   const isOwnProfile = userId === id;
@@ -20,6 +20,7 @@ export default function Profile() {
     password: "",
     newPassword: "",
   });
+
   const [avatarFile, setAvatarFile] = useState(null);
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(null);
@@ -28,6 +29,7 @@ export default function Profile() {
   const [gamesPage, setGamesPage] = useState(1);
   const [gamesTotal, setGamesTotal] = useState(0);
   const [isLoadingGames, setIsLoadingGames] = useState(false);
+  const [gamesError, setGamesError] = useState(null);
 
   useEffect(() => {
     if (user?.recentMatches) {
@@ -40,12 +42,14 @@ export default function Profile() {
   function loadMoreGames() {
     const nextPage = gamesPage + 1;
     setIsLoadingGames(true);
+    setGamesError(null);
     getPlayerMatches(id, nextPage, 10)
       .then((data) => {
         setGames((prev) => [...prev, ...(data.results || [])]);
         setGamesTotal(data.total || 0);
         setGamesPage(nextPage);
       })
+      .catch((err) => setGamesError(err.message))
       .finally(() => setIsLoadingGames(false));
   }
 
@@ -56,10 +60,10 @@ export default function Profile() {
       password: "",
       newPassword: "",
     });
-    setAvatarFile(null);
+    // setAvatarFile(null); // TODO: needed?
     setEditing(true);
     setSaveError(null);
-    setSaveSuccess(null);
+    // setSaveSuccess(null); // TODO: needed?
   }
 
   function handleChange(e) {
@@ -73,12 +77,13 @@ export default function Profile() {
     setSaveSuccess(null);
 
     if (formData.newPassword && formData.password === formData.newPassword) {
-      return setSaveError("New password must differ from old password.");
+      return setSaveError("New password must differ from old password."); // of the old and new password are identical, we show this
     }
 
     try {
+      let profileImageUrl;
       if (avatarFile) {
-        const { profileImageUrl } = await uploadAvatar(id, avatarFile);
+        ({ profileImageUrl } = await uploadAvatar(id, avatarFile));
         if (isOwnProfile) updateAuthUser({ profileImageUrl });
       }
 
@@ -92,12 +97,30 @@ export default function Profile() {
       };
 
       await updateUser(id, updates);
-      refetch();
-      setEditing(false);
+      if (formData.email && formData.email !== user.email) {
+        setSaveSuccess("Email updated successfully");
+      }
+      if (formData.newPassword) {
+        setSaveSuccess("Password changed successfully");
+        setFormData({
+          password: "",
+          newPassword: "",
+        });
+      }
+
+      setUser((prev) => ({
+        ...prev,
+        email: formData.email || prev.email,
+        bio: formData.bio || prev.bio,
+        ...(profileImageUrl && { profileImageUrl }),
+      }));
     } catch (err) {
       setSaveError(err.message);
     }
   }
+  const handleCloseEditField = () => {
+    setEditing(false);
+  };
 
   if (isLoading) return <p className="profile__status">Loading profile...</p>;
   if (error) return <p className="profile__error">{error}</p>;
@@ -185,23 +208,38 @@ export default function Profile() {
           </div>
           {saveError && <p className="profile__error">{saveError}</p>}
           {saveSuccess && <p className="profile__success">{saveSuccess}</p>}
-          <button type="submit" className="profile__save-btn">
-            Save Changes
-          </button>
+          <div className="profile__save">
+            <button type="submit" className="profile__save-btn">
+              Save Changes
+            </button>
+            <button
+              onClick={handleCloseEditField}
+              type="button"
+              className="profile__save-btn"
+            >
+              Close edit field
+            </button>
+          </div>
         </form>
       )}
 
       <div className="profile__stats">
         <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating?.tc10 ?? 1000}</span>
+          <span className="profile__stat-value">
+            {user.eloRating?.tc10 ?? 1000}
+          </span>
           <span className="profile__stat-label">Elo (10s)</span>
         </div>
         <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating?.tc30 ?? 1000}</span>
+          <span className="profile__stat-value">
+            {user.eloRating?.tc30 ?? 1000}
+          </span>
           <span className="profile__stat-label">Elo (30s)</span>
         </div>
         <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating?.tc90 ?? 1000}</span>
+          <span className="profile__stat-value">
+            {user.eloRating?.tc90 ?? 1000}
+          </span>
           <span className="profile__stat-label">Elo (90s)</span>
         </div>
         <div className="profile__stat">
@@ -226,8 +264,8 @@ export default function Profile() {
         <div className="profile__trophies">
           <h2 className="profile__section-title">Trophies</h2>
           <div className="profile__trophy-list">
-            {user.trophies.map((trophy, i) => (
-              <div key={i} className="profile__trophy">
+            {user.trophies.map((trophy) => (
+              <div key={trophy._id} className="profile__trophy">
                 {trophy.imageUrl && (
                   <img src={trophy.imageUrl} alt={trophy.title} />
                 )}
@@ -245,10 +283,10 @@ export default function Profile() {
         ) : (
           <div className="profile__game-list">
             {games.map((match) => {
-              const won = match.winnerId?._id === id || match.winnerId === id;
-              const opponent = (match.players || []).find((p) => {
-                const pId = p.userId?._id || p.userId;
-                return pId !== id;
+              const won = match.winnerId?._id === id;
+              const opponent = match.players.find((player) => {
+                const playerId = player.userId?._id;
+                return playerId !== id;
               })?.userId;
               return (
                 <Link
@@ -256,11 +294,13 @@ export default function Profile() {
                   key={match._id}
                   className="profile__game"
                 >
-                  <span className={`profile__result profile__result--${won ? "win" : "loss"}`}>
+                  <span
+                    className={`profile__result profile__result--${won ? "win" : "loss"}`}
+                  >
                     {won ? "Win" : "Loss"}
                   </span>
                   <span className="profile__opponent">
-                    vs {opponent?.username || "Unknown"}
+                    vs {opponent?.username}
                   </span>
                   <span className="profile__game-variant">
                     {match.category?.timeControl}s · BO{match.category?.rounds}
@@ -273,6 +313,7 @@ export default function Profile() {
             })}
           </div>
         )}
+        {gamesError && <p className="profile__error">{gamesError}</p>}
         {gamesTotal > games.length && (
           <button
             className="profile__load-more"

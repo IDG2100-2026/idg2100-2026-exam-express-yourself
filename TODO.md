@@ -56,3 +56,4 @@ MATCHMAKING
   [ ] Room-based matchmaking (replace queue)
   [ ] Auto-start when required players joined
   [*] Anonymous users — spectate only, redirect to login on join (redirect done, spectate not implemented)
+  

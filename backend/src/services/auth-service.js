@@ -9,7 +9,7 @@ import {
 } from "./email-service.js";
 import { TokenVerification } from "../models/TokenVerification.js";
 import { normalizeIp } from "../utils/normalize-ip.js";
-import { getAccessToken } from "../controllers/auth-controller.js";
+import { getAccessToken } from "../utils/jwt.js";
 
 export const createSession = async (user, ip, agent) => {
   const session = await new Session({

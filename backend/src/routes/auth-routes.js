@@ -17,7 +17,6 @@ import {
   validateForgotPassword,
 } from "../validators/passwordResetValidator.js";
 import { validate } from "../validators/validate.js";
-import { authenticate, authorize } from "../middlewares/auth-middleware.js";
 import { apiRateLimiter, forgotPasswordRateLimiter } from "../middlewares/rate-limiter.js";
 import cookieParser from "cookie-parser";
 
@@ -35,6 +34,7 @@ authRouter.post(
 authRouter.post("/forgot-password", forgotPasswordRateLimiter, validateForgotPassword(), validate, forgotPasswordController); // sends the email with reset link
 authRouter.post(
   "/reset-password",
+  apiRateLimiter,
   validatePasswordReset(),
   validate,
   resetPasswordController,
@@ -42,6 +42,7 @@ authRouter.post(
 
 authRouter.get(
   "/verify-email",
+  apiRateLimiter,
   verifyEmailController,
 );
 

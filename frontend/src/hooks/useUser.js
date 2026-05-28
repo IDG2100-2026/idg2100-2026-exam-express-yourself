@@ -33,5 +33,5 @@ export function useUser(id) {
     return () => { staleObj.stale = true; };
   }, [fetchUser]);
 
-  return { user, isLoading, error, refetch: fetchUser };
+  return { user, setUser, isLoading, error, refetch: fetchUser };
 }

@@ -147,7 +147,7 @@ export async function updateUser(userId, updateData, requestingUserId) {
     }
     const passwordMatch = checkPassword(updateData.oldPassword, user.password);
     if (!passwordMatch) {
-      throw new BusinessLogicError("Old password is incorrect", 401);
+      throw new BusinessLogicError("Old password is incorrect", 400);
     }
     user.password = updateData.password;
   }

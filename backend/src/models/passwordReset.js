@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { randomUUID } from "crypto";
-import { ref } from "process";
 import { VERIFICATION_TOKEN_TTL } from "../config/auth-config.js";
 const resetPasswordSchema = new mongoose.Schema({
   token: {
