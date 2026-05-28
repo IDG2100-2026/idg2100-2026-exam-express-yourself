@@ -54,7 +54,8 @@ class DicePokerMonitor extends HTMLElement {
 
   _render() {
     const playerLabel = this._activePlayer === "player1" ? "Player 1" : "Player 2";
-     this.shadowRoot.innerHTML = `
+     
+    this.shadowRoot.innerHTML = `
     <style>
       :host {
         display: block;
@@ -79,9 +80,6 @@ class DicePokerMonitor extends HTMLElement {
         opacity: 0.85;
       }
 
-      .active-player {
-        color: ${playerColor};
-      }
     </style>
 
     <div class="monitor">
