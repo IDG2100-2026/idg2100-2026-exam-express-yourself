@@ -210,7 +210,7 @@ function TournamentCard({ tournament: t }) {
       </p>
       {t.category && (
         <p className="tournaments__card-variant">
-          Best of {t.category.rounds}, {t.category.timeControl}s{t.category.straightsAllowed ? ", Straights" : ", No Straights"}
+          Best of {t.category.rounds}, {t.category.timeControl}s{t.category.straightsAllowed ? ", Straights" : ", No Straights"}, {t.category.buyIn || 1}pt buy-in
         </p>
       )}
       {t.numberOfRounds && (
