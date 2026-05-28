@@ -1,73 +1,51 @@
 import Match from "../models/Match.js";
-import { rollDice } from "../services/match-service.js";
-import { sendError, games, sendToPlayer, sendToRoom } from "./helpers.js";
-import {
-  handleBet,
-  handleMatchedBet,
-  handleFolding,
-} from "./betting-handler.js";
+import { rollDice} from "../services/match-service.js";
+import { sendError, games, sendToPlayer, sendToRoom } from './helpers.js';
+import { handleBet, handleMatchedBet, handleFolding } from './betting-handler.js';
 
-export const handleGameMessage = async (socket, message) => {
+export const handleGameMessage = (socket, message) => {
   const { type, matchId, userId } = message; // extract what kind of action, game and user
 
   switch (
     type // check the action type and call the right handler
   ) {
     case "join": // player wants to join a game room
-      await handleJoin(socket, matchId, userId);
+      handleJoin(socket, matchId, userId);
       break;
     case "roll": // player want to roll their dices
-      await handleRoll(socket, matchId, userId);
+      handleRoll(socket, matchId, userId);
       break;
     case "hold": // player want to hold a dice
-      await handleHold(socket, matchId, userId, message.held);
+      handleHold(socket, matchId, userId, message.held);
       break;
     case "endTurn":
-      await handleEndTurn(socket, matchId, userId);
+      handleEndTurn(socket, matchId, userId);
       break;
     case "bet":
-      await handleBet(socket, matchId, userId, message.amount);
+      handleBet(socket, matchId, userId, message.amount);
       break;
     case "raise":
-      await handleBet(socket, matchId, userId, message.amount, true);
+      handleBet(socket, matchId, userId, message.amount, true);
       break;
     case "match":
-      await handleMatchedBet(socket, matchId, userId);
+      handleMatchedBet(socket, matchId, userId);
       break;
     case "fold":
-      await handleFolding(socket, matchId, userId);
+      handleFolding(socket, matchId, userId);
       break;
     default:
       console.log("Unknown message type", type);
   }
 };
 
-export const handleJoin = async (socket, matchId, userId) => {
+export const handleJoin = (socket, matchId, userId) => {
   // adds a players socket to the game room
   if (!games.has(matchId)) {
-    // create a game room if its the first time a player enters e.g, newly created game
+    // create a game room if its the first time a player enters e.g, newly cerated game
     games.set(matchId, []);
-  }
-  const match = await Match.findById(matchId).populate("players.userId", "username");
-  if (match && match.status === "in-progress") {
-    sendToPlayer(socket, {
-      // send only to this player, not the whole room
-      type: "game:started",
-      players: match.players,
-      currentPlayerIndex: match.currentPlayerIndex,
-      phase: match.phase,
-      currentRound: match.currentRound,
-      totalRounds: match.category.rounds,
-    });
   }
 
   const room = games.get(matchId); // get a list of connected players
-
-  // Search the room for an existing connection from this same user (handles React Strict Mode)
-  const existingIndex = room.findIndex((player) => player.userId === userId);
-  if (existingIndex !== -1) {
-    room.splice(existingIndex, 1); // removes the old entry connection
-  }
   room.push({ socket, userId }); // adds this players socket into this room
 
   console.log(
@@ -124,7 +102,7 @@ export const handleHold = async (socket, matchId, userId, held) => {
     return sendError(socket, "Not in rolling phase"); // check if game phase is in rolling
 
   const playerIndex = match.players.findIndex(
-    (player) => player.userId.toString() === userId, // finds whick index the player is
+    (player) => player.userId.toString() === userId, // finds which index the player is
   );
 
   if (playerIndex !== match.currentPlayerIndex)
@@ -148,7 +126,7 @@ export const handleHold = async (socket, matchId, userId, held) => {
   });
 };
 
-export const handleEndTurn = async (socket, matchId, userId) => {
+export const handleEndTurn = async (socket,matchId, userId) => {
   const match = await Match.findById(matchId); // finds the match
   if (!match) return sendError(socket, "Game not found");
 

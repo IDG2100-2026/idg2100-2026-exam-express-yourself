@@ -173,7 +173,7 @@ export default function Lobby() {
         {displayed.map((match) => {
           const p1 = match.players?.[0]?.userId;
           return (
-            <button key={match._id} className="lobby__card" onClick={() => handleJoin(match)}>
+            <button key={match._id} className={`lobby__card lobby__card--${match.status}`} onClick={() => handleJoin(match)}>
               <div className="lobby__card-player">
                 <Avatar imageUrl={p1?.profileImageUrl} size={40} />
                 <div>
@@ -182,11 +182,9 @@ export default function Lobby() {
                 </div>
               </div>
               <div className="lobby__card-variant">
-                <span>Best of {match.category?.rounds}</span>
-                <span>{match.category?.straightsAllowed ? "Straights" : "No straights"}</span>
-                <span>{match.category?.timeControl}s</span>
+                Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}
               </div>
-              <div className="lobby__card-waiting">Join game →</div>
+              <div className="lobby__card-waiting">Click to join</div>
             </button>
           );
         })}

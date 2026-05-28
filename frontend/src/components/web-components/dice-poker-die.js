@@ -1,68 +1,104 @@
 class DicePokerDie extends HTMLElement {
-  #face;
-  #held;
-  #disabled;
-  #rolling; // for animation shake
-  #faceMap = { 0: "?", 7: "7", 8: "8", 9: "J", 10: "Q", 11: "K", 12: "A" }
   constructor() {
-    super(); // calls the parent HTTPElement
-    this.attachShadow({ mode: "open" }); // creates a shadow DOM
-    this.#face = this.getAttribute("face") || "?"; // get face from attribute. ? on game start
-    this.#held = this.getAttribute("held") === "true"; // check if held attribute is set to true
-    this.#disabled = this.getAttribute("disabled") === "true"; // prevent clicking when it is not that players turn.
-    this.#rolling = false;
+    super();
+    this.attachShadow({ mode: "open" });
+    this._face = this.getAttribute("face") || "A";
+    this._held = this.getAttribute("held") === "true";
+    this._rolling = false;
+    this._rollTimer = null;
+    this._rollVersion = 0;
   }
 
   static get observedAttributes() {
-    return ["face", "held", "disabled"]; // re-render when any of these attributes change
+    return ["face", "held"];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (oldValue === newValue) return; // SKip if nothing has changed
-    if (name === "face") this.#face = this.#faceMap[newValue] || newValue // converts number to display labels connected to that number
-    if (name === "held") this.#held = newValue === "true"; // update held state
-    if (name === "disabled") this.#disabled = newValue === "true";
-    if (this.isConnected) this.#render();
+    if (oldValue === newValue) return;
+    if (name === "face") {
+      this._face = newValue;
+      if (this._rolling) {
+        this._rolling = false;
+        this._rollVersion += 1;
+        if (this._rollTimer) { clearTimeout(this._rollTimer); this._rollTimer = null; }
+      }
+    }
+    if (name === "held") this._held = newValue === "true";
+    if (this.isConnected) this._render();
   }
 
   connectedCallback() {
-    this.#render(); // inital render when component is added to page
+    this._render();
     this.shadowRoot.addEventListener("click", () => {
-      // listens for click events on the die
-      if (this.#disabled) return; // can't hold dices when it is not your turn
-      this.#held = !this.#held; // toggle hold and un-hold
-      this.setAttribute("held", this.#held ? "true" : "false"); // updates the hold attribute
-      this.#render(); // re-render with new hold state
-      this.#emitHeldChanged(); // tells the parent component that the hold changed! e.g, fires the dp:die-held-changed event
+      if (this._rolling) return;
+      this._held = !this._held;
+      this.setAttribute("held", this._held ? "true" : "false");
+      this._render();
+      this._emitHeldChanged();
     });
   }
 
-  animateRoll() {
-    this.#rolling = true; // starts the shake animation
-    this.#render(); // re-render to show the animation
-    setTimeout(() => {
-      // after 250ms, stop the animation
-      this.#rolling = false;
-      this.#render(); // re-render without animation
+  reset() {
+    this._rollVersion += 1;
+    if (this._rollTimer) {
+      clearTimeout(this._rollTimer);
+      this._rollTimer = null;
+    }
+    this._rolling = false;
+    this.setAttribute("held", "false");
+    this.setAttribute("face", "A");
+    this._render();
+  }
+
+  roll() {
+    if (this._held) return;
+    const faces = ["A", "K", "Q", "J", "8", "7"];
+    const newFace = faces[Math.floor(Math.random() * faces.length)];
+    this._rolling = true;
+    this._render();
+    if (this._rollTimer) clearTimeout(this._rollTimer);
+    const myVersion = this._rollVersion;
+    this._rollTimer = setTimeout(() => {
+      if (myVersion !== this._rollVersion) return;
+      this.setAttribute("face", newFace);
+      this._rolling = false;
+      this._rollTimer = null;
+      this._render();
+      this._emitDieRolled();
     }, 250);
   }
 
-  #emitHeldChanged() {
+  _emitDieRolled() {
     this.dispatchEvent(
-      new CustomEvent("dp:die-held-changed", {
-        bubbles: true, // event bubbles up trough the DOM
-        composed: true, // event crosses shadow dom boudary
+      new CustomEvent("dp:die-rolled", {
+        bubbles: true,
+        composed: true,
         detail: {
-          dieId: this.getAttribute("die-id"), // which die was toggled
-          held: this.#held, // is held or not
+          dieId: this.getAttribute("die-id"),
+          face: this._face,
+          owner: this.getAttribute("owner"),
         },
-      }),
+      })
     );
   }
 
-  #render() {
+  _emitHeldChanged() {
+    this.dispatchEvent(
+      new CustomEvent("dp:die-held-changed", {
+        bubbles: true,
+        composed: true,
+        detail: {
+          dieId: this.getAttribute("die-id"),
+          held: this._held,
+          owner: this.getAttribute("owner"),
+        },
+      })
+    );
+  }
+
+  _render() {
     const colorClass =
-      this.#face === "A" || this.#face === "K" || this.#face === "8"
+      this._face === "A" || this._face === "K" || this._face === "8"
         ? "red"
         : "black";
 
@@ -88,11 +124,6 @@ class DicePokerDie extends HTMLElement {
         outline: 4px solid var(--die-held-color, #fbbf24);
         outline-offset: 2px;
       }
-        
-      .die.disabled {
-        cursor: not-allowed;
-        opacity: 0.6;
-      }
 
       .die.rolling {
         cursor: not-allowed;
@@ -111,8 +142,8 @@ class DicePokerDie extends HTMLElement {
       .face.black { color: var(--die-face-color-black, #000000); }
     </style>
 
-    <div class="die ${this.#held ? "held" : ""} ${this.#disabled ? "disabled" : ""} ${this.#rolling ? "rolling" : ""}">
-      <span class="face ${colorClass}">${this.#face}</span>
+    <div class="die ${this._held ? "held" : ""} ${this._rolling ? "rolling" : ""}">
+      <span class="face ${colorClass}">${this._face}</span>
     </div>
   `;
   }

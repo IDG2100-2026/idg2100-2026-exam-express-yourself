@@ -107,6 +107,9 @@ export const createAccessToken = async (req, res, next) => {
       username: user.username,
       email: user.email,
       role: user.role,
+      eloRating: user.eloRating,
+      profileImageUrl: user.profileImageUrl,
+      appearance: user.appearance,
     },
   });
 };

@@ -325,6 +325,8 @@
     border-radius: $radius;
     color: $color-text;
     font-size: 0.9rem;
+    min-height: 150px;
+    max-height: 200px;
     padding: 0.6rem;
     resize: vertical;
 
