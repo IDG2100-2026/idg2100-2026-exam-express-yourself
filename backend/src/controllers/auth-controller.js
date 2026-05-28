@@ -13,8 +13,6 @@ import { getAccessToken } from "../utils/jwt.js";
 import { REFRESH_TOKEN_TTL } from "../config/auth-config.js";
 import { normalizeIp } from "../utils/normalize-ip.js";
 import { BusinessLogicError } from "../utils/errors.js";
-import { TokenVerification } from "../models/TokenVerification.js";
-import { sendVerificationMail } from "../services/email-service.js";
 
 // POST /api/users/register
 export const registerUserController = async (req, res, next) => {

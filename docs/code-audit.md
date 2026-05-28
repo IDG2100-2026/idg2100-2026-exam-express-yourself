@@ -1,6 +1,6 @@
 # Code Audit — Full Project Review
 
-> Generated 2026-05-28. Last verified 2026-05-28. Excludes `old-obligs/`. Covers backend and frontend.
+> Generated 2026-05-28. Last verified 2026-05-28. Excludes `old-obligs/` and WebSocket game handlers (`betting-handler`, `game-handler`, `helpers`, `route-handler`). Covers backend and frontend.
 
 ---
 
@@ -8,263 +8,191 @@
 - ✅ **FIXED**
 - ⚠️ **PARTIALLY FIXED**
 - ❌ **STILL OPEN**
+- 🆕 **NEW FINDING**
 
 ---
 
-## 🔴 Critical / Breaking
+## 🔴 Critical / Security
 
 ### 1. Password hashing is not secure ❌
 **File:** `backend/src/utils/password-hash.js`
 
-SHA-256 with a single static app-wide salt is used. This is a fast hash — trivially brute-forced with GPU hardware, and every user with the same password produces the same hash. Must be replaced with bcrypt/Argon2id with per-user salts.
-
-> **Note from team:** We are still using crypto — this is not yet fixed.
+SHA-256 with a single static env-var salt. Every user with the same password produces the same hash. GPU-trivially brute-forceable. Must be replaced with bcrypt/Argon2id with per-user salts.
 
 ---
 
-### 2. WebSocket `userId` is never authenticated ❌
-**File:** `backend/src/websockets/game-handler.js`
+### 2. Auth endpoints have no rate limiting ⚠️
+**Files:** `backend/src/routes/auth-routes.js`, `backend/server.js`
 
-Every message handler reads `userId` directly from the client payload (`message.userId`). Any connected client can impersonate any player by sending `{ type: "roll", matchId: "...", userId: "<victim>" }`. JWT verification must be added.
+`/register`, `/login`, `/forgot-password`, `/reset-password`, `/verify-email` all have per-route rate limiters. However `/sessions/token` (refresh → access token exchange) and `/sessions/current` (logout) have none.
 
-> **Note from team:** Game is not fully implemented, so this handler is not yet in active use.
-
----
-
-### 3. `sendToRoom` broadcasts never actually send ❌
-**File:** `backend/src/websockets/helpers.js` line 23
-
-`client.readyState === socket.OPEN` — `socket.OPEN` is `undefined` on a `ws` socket instance; `OPEN` is a static class property (`WebSocket.OPEN === 1`). The condition is always false, so **no message is ever broadcast to room members**.
-
-> **Note from team:** Game is not fully implemented, so this is not yet in active use.
+**Structural issue:** The global `apiRateLimiter` applied at `server.js:42` does **not** cover `/api/auth/*` routes — `authRouter` is mounted at line 39, before the global limiter, so auth routes are exempt from it. The per-route limiters in `auth-routes.js` are the only protection.
 
 ---
 
-### 4. `registerUser` always returns `undefined` in the response ✅
+### 3. Refresh token cookie missing `secure` and `sameSite` ❌
+**File:** `backend/src/controllers/auth-controller.js:63`
+
+Cookie is set without `secure: true` (transmits over plain HTTP) and without `sameSite` (CSRF-vulnerable). The `clearCookie` in `logoutUser` is also inconsistent — both should be updated together.
+
+---
+
+### 4. Password reset does not invalidate existing sessions 🆕
 **File:** `backend/src/services/auth-service.js`
 
-~~The service has no `return newUser` statement. The controller sends `{ message: "...", newUser }` but `newUser` is always `undefined`.~~
-
-> **Fixed:** `return newUser` added at line 44 of `auth-service.js`.
+`resetPassword` updates the password and deletes the reset token but never calls `Session.deleteMany({ userId })`. An attacker who triggered the reset (or holds a stolen session) retains their session after the password is changed.
 
 ---
 
-### 5. Auth endpoints have no rate limiting ⚠️
-**File:** `backend/server.js` lines 38–41
+### 5. `verifyEmailService` silently returns success on invalid/expired tokens 🆕
+**File:** `backend/src/services/auth-service.js`
 
-`authRouter` is mounted before `apiRateLimiter` is applied. The structural order still exists, but `auth-routes.js` now applies `apiRateLimiter` inline on `/login` and `/register`, and `forgotPasswordRateLimiter` (5 req / 15 min) on `/forgot-password`.
-
-> **fixed:** /verify/email /login /register and /passowrd-reset has rate-limit
+When the verification token is not found or expired, the service does `if (!token) return;` — no error thrown. The controller then responds `200 OK` with `"Email verified successfully!"`. The user's email is not actually verified, but they receive a success response. Should throw a `BusinessLogicError`.
 
 ---
 
-### 6. `getNextBettingPlayer` can return `-1` ❌
-**File:** `backend/src/websockets/helpers.js` line 40
+### 6. `getAllUsers` leaks email addresses via search filter 🆕
+**File:** `backend/src/services/user-service.js`
 
-The fallback returns `-1` when no eligible player is found, and this value is assigned directly to `match.currentPlayerIndex`. This corrupts game state — `match.players[-1]` is always `undefined`.
+The search filter includes `{ email: { $regex: filters.search } }` and the response includes full user documents without stripping `email`. Any caller can enumerate all email addresses one character at a time. The single-user endpoint correctly strips email for non-owners; `getAllUsers` does not apply the same projection.
 
-
----
-
-### 7. `passwordReset.js` has a broken import ❌
-**File:** `backend/src/models/passwordReset.js` line 3
-
-`import { ref } from "process"` — `ref` does not exist as a named export from Node's `process` module. This is a copy-paste error from a React `useRef` import and will fail at runtime.
-> **Fixed**
-
----
-
-### 8. Circular dependency: auth-controller ↔ auth-service ❌
-**Files:** `backend/src/services/auth-service.js` line 12 / `backend/src/controllers/auth-controller.js`
-
-`auth-service.js` imports `getAccessToken` from `auth-controller.js`, which imports from `auth-service.js`. In ESM this can cause one module to see a partially-initialized binding of the other. `getAccessToken` should be moved to a utility module.
-> FIXED
----
-
-### 9. `authorize("user")` locks admins out of all gameplay ⚠️
-**Files:** `backend/src/routes/tournament-routes.js` lines 38–39, `backend/src/routes/match-routes.js` lines 26–28
-
-`authorize` does a strict `includes(req.role)` check. `recordResult` and tournament admin actions now include `"admin"`. However, `joinTournament` and `leaveTournament` still use `authorize("user")` only — admins cannot participate as players.
-> Joining and leaving should be users. Admin user is not for playing?
----
-
-### 10. `recordResult` has no ownership check ⚠️
-**File:** `backend/src/routes/match-routes.js` line 29
-
-`PATCH /api/matches/:id/result` now requires `authorize("user", "admin")`. However there is still no check that the caller is actually a participant in the match — any authenticated user can still set results for any match.
-
-> this is not something users can change, it is a api route for the game to be able to update?
 ---
 
 ## 🟠 Serious / Functional Bugs
 
+### 7. `send()` called in Game.jsx but never defined 🆕 ❌
+**File:** `frontend/src/pages/game/Game.jsx`
+
+The betting controls (Bet, Raise, Match, Fold buttons) call `send(...)` on click. The `send` function existed only inside a commented-out WebSocket block. When `phase === "betting" && isPlayer`, clicking any betting button throws `ReferenceError: send is not defined`.
+
+---
+
+### 8. `AppearanceProvider` crashes on corrupted localStorage ❌
+**File:** `frontend/src/providers/AppearanceProvider.jsx:15`
+
+`JSON.parse(saved)` has no try/catch. It runs as the `useState` initializer — if localStorage contains malformed JSON, the entire app crashes on load. Wrap in try/catch and fall back to `defaultAppearance`.
+
+---
+
+### 9. `authorize("user")` locks admins out of gameplay ⚠️
+**Files:** `backend/src/routes/tournament-routes.js`, `backend/src/routes/match-routes.js`
+
+`joinTournament` and `leaveTournament` still use `authorize("user")` only — admins cannot participate as players. `recordResult` correctly includes `"admin"`.
+
+---
+
+### 10. `recordResult` has no ownership check ⚠️
+**File:** `backend/src/routes/match-routes.js`
+
+`PATCH /api/matches/:id/result` requires authentication but does not verify the caller is a participant in the match. Any authenticated user can set results for any match.
+
+---
+
 ### 11. Tournament result reporting never updates the Match document ⚠️
-**File:** `backend/src/services/tournament-service.js` line 380
+**File:** `backend/src/services/tournament-service.js`
 
-`reportMatchResult` now saves the bracket sub-document result via `await tournament.save()`. However the underlying `Match` document's `status` and `winnerId` are still never updated — the real Match and the tournament bracket remain out of sync.
-> We dont have any games, so we dont need ? 
+`reportMatchResult` saves the bracket sub-document result via `tournament.save()` but never updates the underlying `Match` document's `status` or `winnerId`. The real Match and tournament bracket remain out of sync.
 
 ---
 
-### 12. Folded players are not skipped when advancing turn ❌
-**File:** `backend/src/websockets/game-handler.js` line 129
+### 12. `leaveTournament` has no status guard 🆕
+**File:** `backend/src/services/tournament-service.js`
 
-`handleEndTurn` does `nextPlayerIndex = currentPlayerIndex + 1` with no skip for folded players. The game gets stuck if the next player has `hasFolded: true`.
-> We dont have any games, so we dont need ? 
+A player can leave a tournament with status `in-progress` or `completed`, potentially removing a player who already has ongoing matches in the bracket and corrupting bracket state.
+
 ---
 
-### 13. `handleJoin` has no auth check and no reconnect deduplication ❌
-**File:** `backend/src/websockets/game-handler.js` line 41
+### 13. Tournament shuffle is biased 🆕
+**File:** `backend/src/services/tournament-service.js`
 
-Any client can join any `matchId` with any `userId`. There is no DB lookup to confirm the user is a participant, and reconnecting adds a second entry for the same `userId` alongside the stale closed socket.
+`participants.sort(() => 0.5 - Math.random())` is a well-known anti-pattern producing a non-uniform distribution. With real buy-ins, biased pairings are a fairness/integrity concern. Replace with Fisher-Yates.
 
-> We dont have any games, so we dont need ? 
 ---
 
-### 14. Race condition on concurrent rolls ❌
-**File:** `backend/src/websockets/game-handler.js` line 56
-
-`handleRoll` does `findById → mutate → save` with no atomic locking. Two simultaneous roll requests read the same `rollsUsed`, both compute `rollsUsed + 1`, and both save — producing incorrect roll counts.
-
-> We dont have any games, so we dont need ? 
----
-
-### 15. Tournament next-round pairing uses full participant list, not winners ❌
-**File:** `backend/src/services/tournament-service.js` line 342
-
-`shuffleAndPair` reshuffles `tournament.participants` (the original full list) every round. Eliminated players continue to be paired. The tournament winner is then whoever accumulated the most wins — but ties are broken silently by array order.
-
-> We dont have any games, so we dont need ? 
----
-
-### 16. Buy-in deducted in tournament rounds without a balance check ❌
-**File:** `backend/src/services/tournament-service.js` line 344
+### 14. Buy-in deducted in tournament rounds without a balance check ❌
+**File:** `backend/src/services/tournament-service.js`
 
 `$inc: { points: -matchBuyIn }` is applied unconditionally. If a player's points would go negative, the `User` schema's `min: 0` constraint fires a Mongoose validation error that crashes round advancement mid-tournament.
-> We dont have any games, so we dont need ? 
----
-
-### 17. `sendToRoom` throws and aborts on closed sockets ❌
-**File:** `backend/src/websockets/helpers.js` line 23
-
-`.send()` on a closed socket throws synchronously. This aborts the entire broadcast loop — players after the disconnected socket in the room array never receive the message.
-> We dont have any games, so we dont need ? 
----
-
-### 18. `endGame` never cleans up the `games` Map ❌
-**File:** `backend/src/websockets/route-handler.js` line 84
-
-After a game ends, the room entry in the `games` Map is never deleted. This is a memory leak, and late messages on completed-game sockets continue to be processed.
-> We dont have any games, so we dont need ? 
----
-
-### 19. Email exposed in public profile endpoint ✅
-**File:** `backend/src/services/user-service.js`
-
-~~`GET /api/users/:id` is a public route but the response includes the user's email address.~~
-
-> **Fixed:** `user-service.js` now checks if the requester is the owner or admin before including the email in the response.
 
 ---
 
-### 20. `express.static("uploads")` uses a relative path ❌
-**File:** `backend/server.js` line 36
+### 15. `AdminTournamentCreate` edit mode silently discards most fields ❌
+**File:** `frontend/src/pages/admin/tournament-create/AdminTournamentCreate.jsx`
 
-If the server starts from a directory other than the project root, uploads become inaccessible. Should use `path.join(import.meta.dirname, "uploads")`.
-> FIXED
+In edit mode only `title`, `description`, `rules`, and `startDate` are submitted. `rounds`, `timeControl`, `buyIn`, `eloMin/Max`, and `trophyTitle/Image` are hidden from the form and silently discarded on save.
+
 ---
 
-### 21. Multer file type check is spoofable ❌
+### 16. Multer file type check is spoofable ❌
 **File:** `backend/src/middlewares/upload.js`
 
-Only `file.mimetype` (a client-supplied header) is checked. An attacker can upload any file with `Content-Type: image/png` and it passes. Should check magic bytes with a library like `file-type`.
-> Is it relevant for this? 
+Only `file.mimetype` (a client-supplied header) is checked. An attacker can upload any file with `Content-Type: image/png`. Should validate magic bytes with a library like `file-type`.
+
 ---
 
-### 22. Uploaded files have no extension ❌
+### 17. Uploaded files have no extension ❌
 **File:** `backend/src/middlewares/upload.js`
 
-Multer's `dest: "uploads/"` stores files without extensions. Browsers can't infer MIME type from the filename, so images don't display correctly in some clients.
-> on hold.....
----
-
-### 23. Leaderboard `straightsAllowed` filter is inverted ✅
-**File:** `backend/src/services/leaderboard-service.js`
-
-~~The no-filter branch condition includes `!straightsAllowed`. When `straightsAllowed === false`, `!false === true`, so the filter is silently ignored.~~
-
-> **Fixed:** Logic corrected — filter now works as intended.
+Multer's `dest: "uploads/"` stores files without extensions. Browsers cannot infer MIME type from the filename, so images may not display correctly.
 
 ---
 
-### 24. Profile page — success message never shows ❌
-**File:** `frontend/src/pages/profile/Profile.jsx` line 25
+### 18. Seed script log message uses wrong password ⚠️
+**File:** `backend/scripts/seed.js`
 
-`setSaveSuccess` is called with `null` twice (in `startEditing` and `handleSave`) but is never called with an actual success string. The user sees no feedback after saving changes.
-
----
-
-### 25. `AdminTournamentCreate` edit mode silently discards most fields ❌
-**File:** `frontend/src/pages/admin/tournament-create/AdminTournamentCreate.jsx` line 74
-
-When editing, only `title`, `description`, `rules`, and `startDate` are submitted. All game settings (rounds, timeControl, buy-in, elo range, trophy) are rendered in the form but never sent.
+The hashing algorithm matches production — seeded users **can** log in. However `seed.js:273` logs `"login with any email + 'password123'"` when the actual seeded password is `Password123!` (capital P, exclamation mark).
 
 ---
 
-### 26. `AppearanceProvider` crashes on corrupted localStorage ❌
-**File:** `frontend/src/providers/AppearanceProvider.jsx` line 15
+## ✅ Confirmed Fixed
 
-`JSON.parse(saved)` has no try/catch. Corrupted or manually edited localStorage crashes the entire app on load.
-
----
-
-### 27. `loadMoreGames` has no error handling ⚠️
-**File:** `frontend/src/pages/profile/Profile.jsx` line 40
-
-`.finally()` is now present so `isLoadingGames` is always cleaned up. However there is still no `.catch()` — on network failure the error is silently swallowed and the user sees no feedback.
-
----
-
-### 28. Seed users cannot log in ❌
-**File:** `backend/scripts/seed.js` line 24
-
-The seed script hashes passwords with `crypto.createHash("sha256")` directly, bypassing the Mongoose pre-save hook. The production auth service uses a different algorithm, so all seeded passwords produce non-matching hashes.
+| Issue | Evidence |
+|-------|----------|
+| `registerUser` always returned `undefined` | `return newUser` added in `auth-service.js` |
+| `passwordReset.js` broken `import { ref } from "process"` | Removed; now imports from `crypto` and `auth-config` |
+| Circular dependency: `auth-controller` ↔ `auth-service` | `getAccessToken` moved to `utils/jwt.js`; both import from there |
+| Email exposed in public profile endpoint | Owner/admin check added in `user-service.js` |
+| `express.static` uses relative path | `path.join(import.meta.dirname, "uploads")` in `server.js` |
+| Leaderboard `straightsAllowed` filter inverted | Logic corrected in `leaderboard-service.js` |
+| Profile page success message never shows | `setSaveSuccess("Email updated successfully")` and `"Password changed successfully"` added; rendered in JSX |
+| `loadMoreGames` has no error handling | `.catch((err) => setGamesError(err.message))` and `.finally()` added |
+| `match-controller.js` debug `console.log` left in production | Removed |
+| Dead imports in `auth-controller.js` (`TokenVerification`, `sendVerificationMail`) | Removed |
+| Dead imports in `auth-routes.js` (`authenticate`, `authorize`) | Removed |
+| `ResetPassword.jsx` imported from `"react-router"` instead of `"react-router-dom"` | Fixed |
+| `Game.jsx` WebSocket hardcoded port `3000` | Now uses `VITE_WS_URL` env variable |
 
 ---
 
 ## 🟡 Dead Code
 
-| File | Status | What's dead |
-|------|--------|-------------|
-| `frontend/src/services/activity-service.js` | ❌ | Entire file — `getActivity()` is never imported or called anywhere. |
-| `frontend/src/components/Game-board/GameBoard.jsx` | ❌ | Entire component — never imported by any page. |
-| `frontend/src/hooks/useWebSockets.js` | ❌ | Only consumed by the dead `GameBoard.jsx`. |
-| `frontend/src/services/comments-service.js` — `getComments` | ❌ | Exported but never called anywhere. |
-| `backend/src/controllers/auth-controller.js` lines 16–17 | ❌ | `TokenVerification` and `sendVerificationMail` imported but unused. |
-| `backend/src/routes/auth-routes.js` line 20 | ❌ | `authenticate` and `authorize` imported but no route uses them. |
-| `frontend/src/providers/AuthProvider.jsx` line 11 | ❌ | `const [error, setError]` — never called, never exposed in context. |
-| `frontend/src/components/web-components/dice-poker-board.js` — `_startNewMatch` | ❌ | Method defined but never called. |
-| `frontend/src/pages/all-games/AllGames.jsx` | ❌ | Route registered in App.jsx but no link points to it — unreachable. |
-| `frontend/src/pages/login/Login.jsx` line 23 | ❌ | `setSearchParams` destructured but never called. |
-| `frontend/src/pages/ResetPassword/ResetPassword.jsx` line 9 | ❌ | `setSearchParams` destructured but never called. |
+| File | What's dead |
+|------|-------------|
+| `frontend/src/services/activity-service.js` | `getActivity()` — exported but never imported anywhere |
+| `frontend/src/components/Game-board/GameBoard.jsx` | Entire component — never imported by any page |
+| `frontend/src/hooks/useWebSockets.js` | `useGameWebSocket` — only consumed by the dead `GameBoard.jsx` |
+| `frontend/src/services/comments-service.js` | `createComment` — exported but no caller found anywhere (`getAllComments` and `deleteComment` are live) |
+| `frontend/src/providers/AuthProvider.jsx` | `const [error, setError]` — never set, never exposed in context |
+| `frontend/src/components/web-components/dice-poker-board.js` | `_startNewMatch()` — defined but never called internally or externally |
+| `frontend/src/pages/all-games/AllGames.jsx` | Route registered in `App.jsx` but no navigation link points to it |
+| `frontend/src/pages/login/Login.jsx` | `setSearchParams` destructured but never called |
+| `frontend/src/pages/ResetPassword/ResetPassword.jsx` | `setSearchParams` destructured but never called |
+| `frontend/src/main.jsx` | `StrictMode` imported but app is not wrapped in it |
 
 ---
 
 ## 🔵 Minor / Polish
 
-- **`backend/src/controllers/match-controller.js` line 41** ❌ — `console.log("Game started! Sending game:started...")` left in production code.
-- **`frontend/src/pages/game/Game.jsx`** ❌ — 7 `console.log`/`console.error` calls at lines 60, 67, 72, 116, 180, 185, 188.
-- **`frontend/src/pages/tournament/Tournament.jsx`** ❌ — `console.log`/`console.error` at lines 159, 164, 167.
-- **`backend/src/controllers/auth-controller.js` line 55** ❌ — `resetPasswordController` returns `201` (Created) instead of `200`.
-- **`backend/src/controllers/auth-controller.js` line 74** ❌ — Refresh token cookie missing `secure: true` and `sameSite`.
-- **`frontend/src/main.jsx` line 1** ❌ — `StrictMode` imported but the app is not wrapped in it.
-- **`frontend/src/layouts/admin-layout/AdminLayout.jsx` lines 1–2** ❌ — Two separate `import` lines from `"react-router-dom"` — should be merged.
-- **`frontend/src/pages/ResetPassword/ResetPassword.jsx` line 2** ❌ — Imports from `"react-router"` while every other file uses `"react-router-dom"`.
-- **`frontend/src/pages/ResetPassword/ResetPassword.jsx` line 78** ❌ — Both named and default export for same component — named export is redundant.
-- **`frontend/src/pages/about-game/AboutGame.jsx`** ❌ — Says dice show "9, 10, Jack, Queen, King, Ace" but the code uses `7, 8, J, Q, K, A`.
-- **`frontend/src/pages/game/Game.jsx` line 56** ❌ — Game WebSocket hardcodes port `3000` while comments WebSocket uses `VITE_WS_URL`.
-- **`backend/src/websockets/betting-handler.js` line 10** ❌ — `// TODO: not yet done` comment on `endRound` import never resolved.
-- **`backend/src/config/db.js` line 12** ❌ — `console.log(..., MONGODB_URI)` could log credentials.
-- **`backend/src/config/auth-config.js`** ❌ — TTL constants mix milliseconds and seconds with no naming convention.
-- **`backend/src/services/elo-service.js` line 42** ❌ — K-factor `32` is a magic number, should be a named constant.
-- **`backend/src/websockets/route-handler.js`** ❌ — `endRound` emits inconsistent shapes: fold path uses `winnerIndex`, showdown path uses `winnerIndexes`.
+- **`backend/src/controllers/auth-controller.js:44`** ❌ — `resetPasswordController` returns `201 Created` instead of `200 OK`. Also a typo: `"Password has been changes successfully"` → `"changed"`.
+- **`backend/src/config/db.js:12`** ❌ — `console.log("Connecting to MongoDB...", MONGODB_URI)` could log credentials if the URI ever includes a username/password.
+- **`backend/scripts/seed.js:13`** ❌ — Same issue: logs the full `MONGODB_URI` to console.
+- **`backend/src/config/auth-config.js`** ❌ — `REFRESH_TOKEN_TTL` is in milliseconds; `ACCESS_TOKEN_TTL` and `VERIFICATION_TOKEN_TTL` are in seconds. No units in the names — easy to misuse one in the wrong context.
+- **`backend/src/models/passwordReset.js`** ❌ — Reuses `VERIFICATION_TOKEN_TTL` for the password reset TTL. These should be separate constants so a change to one does not silently affect the other.
+- **`backend/src/services/elo-service.js:42`** ❌ — K-factor `32` is a bare magic number. Should be a named constant with a comment explaining the choice.
+- **`frontend/src/pages/game/Game.jsx`** ❌ — 3 active `console.log`/`console.error` calls at lines ~181, 186, 189.
+- **`frontend/src/pages/tournament/Tournament.jsx`** ❌ — 3 active `console.log`/`console.error` calls at lines ~185, 190, 193.
+- **`frontend/src/layouts/admin-layout/AdminLayout.jsx`** ❌ — Two separate `import` lines from `"react-router-dom"` on consecutive lines — should be merged into one.
+- **`frontend/src/pages/about-game/AboutGame.jsx`** ❌ — Describes dice as `"9, 10, Jack, Queen, King and Ace"` — verify this matches the actual game implementation.
+- **`frontend/src/pages/ResetPassword/ResetPassword.jsx`** ❌ — A blank `<p></p>` is always rendered before any submission attempt (error starts as `null` but the paragraph element is unconditionally present).
+- **`frontend/src/pages/login/Login.jsx`** ❌ — `useEffect` reads `searchParams` but it is missing from the dependency array (`[]`).
+- **`frontend/src/pages/profile/Profile.jsx`** ❌ — Bio-only saves have no success feedback. `setSaveSuccess` is only called on email or password changes — a user who only updates their bio sees no confirmation.

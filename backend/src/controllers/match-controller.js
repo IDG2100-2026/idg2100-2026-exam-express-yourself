@@ -38,7 +38,6 @@ export async function joinMatch(req, res, next) {
   const match = await joinMatchService(req.params.id, req.userId);
 
   if (match.status === "in-progress") {
-    console.log("Game started! Sending game:started to room");
 
     // Notify the WebSocket room that the game has started
     sendToRoom(req.params.id, {

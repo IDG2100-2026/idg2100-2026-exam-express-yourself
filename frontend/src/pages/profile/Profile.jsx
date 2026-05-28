@@ -29,6 +29,7 @@ export default function Profile() {
   const [gamesPage, setGamesPage] = useState(1);
   const [gamesTotal, setGamesTotal] = useState(0);
   const [isLoadingGames, setIsLoadingGames] = useState(false);
+  const [gamesError, setGamesError] = useState(null);
 
   useEffect(() => {
     if (user?.recentMatches) {
@@ -41,12 +42,14 @@ export default function Profile() {
   function loadMoreGames() {
     const nextPage = gamesPage + 1;
     setIsLoadingGames(true);
+    setGamesError(null);
     getPlayerMatches(id, nextPage, 10)
       .then((data) => {
         setGames((prev) => [...prev, ...(data.results || [])]);
         setGamesTotal(data.total || 0);
         setGamesPage(nextPage);
       })
+      .catch((err) => setGamesError(err.message))
       .finally(() => setIsLoadingGames(false));
   }
 
@@ -74,12 +77,13 @@ export default function Profile() {
     setSaveSuccess(null);
 
     if (formData.newPassword && formData.password === formData.newPassword) {
-      return setSaveError("New password must differ from old password.");
+      return setSaveError("New password must differ from old password."); // of the old and new password are identical, we show this
     }
 
     try {
+      let profileImageUrl;
       if (avatarFile) {
-        var { profileImageUrl } = await uploadAvatar(id, avatarFile);
+        ({ profileImageUrl } = await uploadAvatar(id, avatarFile));
         if (isOwnProfile) updateAuthUser({ profileImageUrl });
       }
 
@@ -110,7 +114,6 @@ export default function Profile() {
         bio: formData.bio || prev.bio,
         ...(profileImageUrl && { profileImageUrl }),
       }));
-      setEditing(true);
     } catch (err) {
       setSaveError(err.message);
     }
@@ -211,7 +214,7 @@ export default function Profile() {
             </button>
             <button
               onClick={handleCloseEditField}
-              type="submit"
+              type="button"
               className="profile__save-btn"
             >
               Close edit field
@@ -261,8 +264,8 @@ export default function Profile() {
         <div className="profile__trophies">
           <h2 className="profile__section-title">Trophies</h2>
           <div className="profile__trophy-list">
-            {user.trophies.map((trophy, i) => (
-              <div key={i} className="profile__trophy">
+            {user.trophies.map((trophy) => (
+              <div key={trophy._id} className="profile__trophy">
                 {trophy.imageUrl && (
                   <img src={trophy.imageUrl} alt={trophy.title} />
                 )}
@@ -280,10 +283,10 @@ export default function Profile() {
         ) : (
           <div className="profile__game-list">
             {games.map((match) => {
-              const won = match.winnerId?._id === id || match.winnerId === id;
-              const opponent = (match.players || []).find((p) => {
-                const pId = p.userId?._id || p.userId;
-                return pId !== id;
+              const won = match.winnerId?._id === id;
+              const opponent = match.players.find((player) => {
+                const playerId = player.userId?._id;
+                return playerId !== id;
               })?.userId;
               return (
                 <Link
@@ -297,7 +300,7 @@ export default function Profile() {
                     {won ? "Win" : "Loss"}
                   </span>
                   <span className="profile__opponent">
-                    vs {opponent?.username || "Unknown"}
+                    vs {opponent?.username}
                   </span>
                   <span className="profile__game-variant">
                     {match.category?.timeControl}s · BO{match.category?.rounds}
@@ -310,6 +313,7 @@ export default function Profile() {
             })}
           </div>
         )}
+        {gamesError && <p className="profile__error">{gamesError}</p>}
         {gamesTotal > games.length && (
           <button
             className="profile__load-more"
