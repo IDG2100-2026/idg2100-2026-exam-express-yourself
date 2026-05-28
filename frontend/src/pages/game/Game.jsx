@@ -9,18 +9,18 @@ import { leaveMatch } from "../../services/matches-service.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
 
 export default function Game() {
-  const [messages, setMessages] = useState([]); // array to store messages
-  const [input, setInput] = useState("");
-  const socketRef = useRef(null);
-
   const { id } = useParams();
   const { user } = useAuth();
   const { appearance } = useAppearance();
   const { match, isLoading, error } = useMatch(id);
   const navigate = useNavigate();
 
-  const targetType = "Match"; // hardcoded since this is the game page
+  const targetType = "Match"; // hardcoded since this is the match page
   const targetId = id; // the specific game's MongoDB _id
+  const [messages, setMessages] = useState([]); // array to store messages
+  const [input, setInput] = useState("");
+  const socketRef = useRef(null); // websocket connection! useRef to not trigger re-render when entering the match
+  const [isConnected, setIsConnected] = useState(false);
 
   async function handleLeave() {
     try {
@@ -39,22 +39,26 @@ export default function Game() {
     socketRef.current = newSocket;
 
     newSocket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+      const data = JSON.parse(event.data); // parses raw string into json object
 
       if (data.type === "history") {
-        setMessages(data.messages); // load persisted comments from DB
+        setMessages(data.messages); // load previous comments from DB
       } else if (data.type === "new_message") {
-        setMessages((prev) => [...prev, data.message]); // append live comment
+        setMessages((prev) => [...prev, data.message]); // append new comments into the message array
       } else if (data.type === "error") {
         console.error("Server error:", data.message); // handle errors
       }
     };
 
-    newSocket.onopen = () => console.log("Websocket connected");
-    newSocket.onclose = () => console.log("Websocket closed");
+    newSocket.onopen = () => {
+      console.log("Websocket connected"); // gives a msg to the clients browser that they are connected
+    };
+    newSocket.onclose = () => {
+      console.log("Websocket disconnected"); // gives a msg to the clients browser that they are disconnected
+    };
 
-    return () => newSocket.close(); // clean up on unmount
-  }, [targetType, targetId]);
+    return () => newSocket.close(); // clean up on unmount. if not done, the connection would still be live after moving away from the page
+  }, [targetType, targetId]); // re-render if any of these change!
 
   const sendMessage = () => {
     if (input.trim() && socketRef.current?.readyState === WebSocket.OPEN) {
@@ -139,7 +143,11 @@ export default function Game() {
             )}
             {messages.map((message, index) => (
               <div key={index} className="game__comment">
-                <Avatar imageUrl={message.authorId?.profileImageUrl} size={32} />
+                  <Avatar
+                    imageUrl={message.authorId?.profileImageUrl}
+                    size={32}
+                    />
+
                 <div className="game__comment-body">
                   <span className="game__comment-author">
                     {message.authorId?.username || "Unknown"}

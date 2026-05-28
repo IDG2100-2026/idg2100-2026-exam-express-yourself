@@ -38,9 +38,8 @@ export const setupWebSocket = (httpServer) => {
     }
 
     // Listen for incoming messages
-    socket.on("message", async (raw) => {
-      const data = JSON.parse(raw); // parse the comment the user made to a json object
-
+    socket.on("message", async (message) => {
+      const data = JSON.parse(message); // parse the comment the user made to a json object
       try {
         const comment = await createComment(data.authorId, {
           text: data.text, // the comment text from the frontend e.g, what the user typed
@@ -53,7 +52,6 @@ export const setupWebSocket = (httpServer) => {
           message: comment, // the saved and populated comment
         });
 
-        
         wss.clients.forEach((client) => { // Broadcast to every connected client viewing the same page
           if (
             client.readyState === socket.OPEN && // only send to open connections
@@ -79,9 +77,5 @@ export const setupWebSocket = (httpServer) => {
     });
   });
 
-  return wss; // return the wss instance in case it's needed elsewhere
 };
 
-export const getWss = () => {
-  return wss; // getter so other parts of the app can access the WebSocket server
-};
