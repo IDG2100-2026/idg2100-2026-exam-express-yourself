@@ -39,6 +39,7 @@ export default function Tournament() {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const userId = user?._id || user?.userId;
 
   const [tournament, setTournament] = useState(null);
   const [standings, setStandings] = useState(null);
@@ -69,6 +70,28 @@ export default function Tournament() {
       getStandings(id).then(setStandings).catch(() => {});
     }
   }, [tournament, id]);
+
+  // Auto-redirect participant to their active match when the tournament is in-progress
+  useEffect(() => {
+    if (!tournament || tournament.status !== "in-progress" || !userId) return;
+    const isParticipant = tournament.participants?.some(
+      (participant) => participant._id === userId || participant._id?.toString() === userId
+    );
+    if (!isParticipant) return;
+    const currentRoundData = tournament.bracket?.find(
+      (round) => round.round === tournament.currentRound
+    );
+    if (!currentRoundData) return;
+    const myMatch = currentRoundData.matches.find((match) => {
+      if (match.winner) return false;
+      return match.players.some(
+        (player) => (player._id?.toString() || player.toString()) === userId
+      );
+    });
+    if (myMatch?.gameId) {
+      navigate(`/game/${myMatch.gameId}`);
+    }
+  }, [tournament, userId, navigate]);
 
   async function handleJoin() {
     setActionMsg(""); setActionError("");
@@ -130,7 +153,6 @@ export default function Tournament() {
   if (error) return <p className="tournament__error">{error}</p>;
   if (!tournament) return null;
 
-  const userId = user?._id || user?.userId;
   const isAdmin = user?.role === "admin";
   const alreadyJoined = tournament.participants?.some((p) => p._id === userId || p === userId);
   const canJoin = user && tournament.status === "upcoming" && !alreadyJoined;
@@ -262,6 +284,29 @@ export default function Tournament() {
 
       {actionMsg && <p className="tournament__action-msg">{actionMsg}</p>}
       {actionError && <p className="tournament__error">{actionError}</p>}
+
+      {/* Live matches, spectators click in, participants are auto-redirected */}
+      {tournament.status === "in-progress" && tournament.bracket?.length > 0 && (
+        <div className="tournament__live-matches">
+          <h2 className="tournament__section-title">
+            Round {tournament.currentRound}: Live Matches
+          </h2>
+          <div className="tournament__live-match-list">
+            {tournament.bracket
+              .find((round) => round.round === tournament.currentRound)
+              ?.matches.map((match, index) => (
+                <Link key={index} to={`/game/${match.gameId}`} className="tournament__live-match">
+                  <span>{match.players[0]?.username || "TBD"}</span>
+                  <span className="tournament__match-vs">vs</span>
+                  <span>{match.players[1]?.username || "TBD"}</span>
+                  {match.winner && (
+                    <span className="tournament__match-result">{match.winner.username}</span>
+                  )}
+                </Link>
+              ))}
+          </div>
+        </div>
+      )}
 
       {/* Trophy */}
       {tournament.trophy && (
