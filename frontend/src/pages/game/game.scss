@@ -39,22 +39,6 @@
     }
   }
 
-  &__leave-btn {
-    background: none;
-    border: 1px solid $color-danger;
-    border-radius: $radius;
-    color: $color-danger;
-    cursor: pointer;
-    font-size: 0.85rem;
-    margin-top: 1rem;
-    padding: 0.4rem 1rem;
-
-    &:hover {
-      background-color: $color-danger;
-      color: #fff;
-    }
-  }
-
   &__players {
     display: flex;
     align-items: center;
@@ -88,7 +72,6 @@
     min-height: 200px;
     border-radius: $radius;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: $color-text-muted;
@@ -166,7 +149,6 @@
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
-    max-height: 80px;
     font-size: 0.9rem;
     padding: 0.6rem;
     resize: vertical;
@@ -188,6 +170,115 @@
 
     &:hover {
       background-color: $color-accent-hover;
+    }
+  }
+
+  &__leave-btn {
+    margin-top: 1rem;
+    background: transparent;
+    border: 1px solid $color-danger;
+    border-radius: $radius;
+    color: $color-danger;
+    cursor: pointer;
+    font-size: 0.875rem;
+    padding: 0.4rem 0.8rem;
+
+    &:hover {
+      background-color: $color-danger;
+      color: white;
+    }
+  }
+
+  &__active {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__betting {
+    background-color: $color-bg-card;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__pot {
+    color: $color-text-muted;
+    font-size: 0.875rem;
+  }
+
+  &__bet-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__bet-input {
+    background-color: $color-bg-secondary;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+    width: 80px;
+  }
+
+  &__bet-btn {
+    background-color: $color-accent;
+    border: none;
+    border-radius: $radius;
+    color: #1a1200;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+
+    &:hover {
+      background-color: $color-accent-hover;
+    }
+
+    &--fold {
+      background-color: $color-danger;
+      color: white;
+
+      &:hover {
+        opacity: 0.85;
+      }
+    }
+  }
+
+  &__ended {
+    background-color: $color-bg-card;
+    border: 2px solid $color-accent;
+    border-radius: $radius-lg;
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    h2 {
+      font-size: 1.5rem;
+      color: $color-accent;
+    }
+
+    button {
+      background-color: $color-accent;
+      border: none;
+      border-radius: $radius;
+      color: #1a1200;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 0.5rem 1.5rem;
+
+      &:hover {
+        background-color: $color-accent-hover;
+      }
     }
   }
 }
