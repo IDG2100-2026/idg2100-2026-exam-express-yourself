@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useMatch } from "../../hooks/useMatch.js";
-import { useComments } from "../../hooks/useComments.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
-import { createComment } from "../../services/comments-service.js";
 import { leaveMatch } from "../../services/matches-service.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
 
@@ -34,7 +32,7 @@ export default function Game() {
   useEffect(() => {
     // Connect with targetType and targetId from your route params
     const newSocket = new WebSocket(
-      `ws://localhost:3000?targetType=${targetType}&targetId=${targetId}`,
+      `${import.meta.env.VITE_WS_URL}?targetType=${targetType}&targetId=${targetId}`,
     );
     socketRef.current = newSocket;
 
@@ -143,17 +141,20 @@ export default function Game() {
             )}
             {messages.map((message, index) => (
               <div key={index} className="game__comment">
-                  <Avatar
-                    imageUrl={message.authorId?.profileImageUrl}
-                    size={32}
-                    />
+                <Avatar
+                  imageUrl={message.authorId?.profileImageUrl}
+                  size={32}
+                />
 
                 <div className="game__comment-body">
                   <span className="game__comment-author">
                     {message.authorId?.username || "Unknown"}
                   </span>
-                  <p className="game__comment-text">{message.text}</p>
+                  <span className="game__comment-date">
+                    {new Date(message.createdAt).toLocaleDateString()}
+                  </span>
                 </div>
+                <p className="game__comment-text">{message.text}</p>
               </div>
             ))}
           </div>

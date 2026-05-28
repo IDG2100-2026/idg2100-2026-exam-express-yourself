@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   getTournament,
@@ -9,10 +9,9 @@ import {
   cancelTournament,
   deleteTournament,
 } from "../../services/tournaments-service.js";
-import { useComments } from "../../hooks/useComments.js";
 import { useAuth } from "../../hooks/useAuth.js";
-import { createComment } from "../../services/comments-service.js";
 import "./tournament.scss";
+import Avatar from "../../components/avatar/Avatar.jsx";
 
 function getTimeLeft(targetDate) {
   const diff = new Date(targetDate) - Date.now();
@@ -46,10 +45,11 @@ export default function Tournament() {
   const [error, setError] = useState(null);
   const [actionMsg, setActionMsg] = useState("");
   const [actionError, setActionError] = useState("");
-
-  const { comments, refetch: refetchComments } = useComments("Tournament", id);
-  const [commentText, setCommentText] = useState("");
-  const [commentError, setCommentError] = useState(null);
+  const targetType = "Tournament";
+  const targetId = id;
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const socketRef = useRef(null);
 
   const countdown = useCountdown(tournament?.startDate);
 
@@ -57,82 +57,140 @@ export default function Tournament() {
     let stale = false;
     setIsLoading(true);
     getTournament(id)
-      .then((data) => { if (!stale) setTournament(data); })
-      .catch((err) => { if (!stale) setError(err.message); })
-      .finally(() => { if (!stale) setIsLoading(false); });
-    return () => { stale = true; };
+      .then((data) => {
+        if (!stale) setTournament(data);
+      })
+      .catch((err) => {
+        if (!stale) setError(err.message);
+      })
+      .finally(() => {
+        if (!stale) setIsLoading(false);
+      });
+    return () => {
+      stale = true;
+    };
   }, [id]);
 
   useEffect(() => {
     if (!tournament) return;
-    if (tournament.status === "in-progress" || tournament.status === "completed") {
-      getStandings(id).then(setStandings).catch(() => {});
+    if (
+      tournament.status === "in-progress" ||
+      tournament.status === "completed"
+    ) {
+      getStandings(id)
+        .then(setStandings)
+        .catch(() => {});
     }
   }, [tournament, id]);
 
   async function handleJoin() {
-    setActionMsg(""); setActionError("");
+    setActionMsg("");
+    setActionError("");
     try {
       await joinTournament(id);
       setActionMsg("You have joined the tournament!");
       setTournament(await getTournament(id));
-    } catch (err) { setActionError(err.message); }
+    } catch (err) {
+      setActionError(err.message);
+    }
   }
 
   async function handleLeave() {
-    setActionMsg(""); setActionError("");
+    setActionMsg("");
+    setActionError("");
     try {
       await leaveTournament(id);
       setActionMsg("You have left the tournament.");
       setTournament(await getTournament(id));
-    } catch (err) { setActionError(err.message); }
+    } catch (err) {
+      setActionError(err.message);
+    }
   }
 
   async function handleStart() {
-    setActionMsg(""); setActionError("");
+    setActionMsg("");
+    setActionError("");
     try {
       await startTournament(id);
       setActionMsg("Tournament started!");
       setTournament(await getTournament(id));
-    } catch (err) { setActionError(err.message); }
+    } catch (err) {
+      setActionError(err.message);
+    }
   }
 
   async function handleCancel() {
     if (!confirm("Cancel this tournament?")) return;
-    setActionMsg(""); setActionError("");
+    setActionMsg("");
+    setActionError("");
     try {
       await cancelTournament(id);
       setActionMsg("Tournament cancelled.");
       setTournament(await getTournament(id));
-    } catch (err) { setActionError(err.message); }
+    } catch (err) {
+      setActionError(err.message);
+    }
   }
 
   async function handleDelete() {
-    if (!confirm("Permanently delete this tournament? This cannot be undone.")) return;
+    if (!confirm("Permanently delete this tournament? This cannot be undone."))
+      return;
     try {
       await deleteTournament(id);
       navigate("/tournaments");
-    } catch (err) { setActionError(err.message); }
+    } catch (err) {
+      setActionError(err.message);
+    }
   }
 
-  async function handleCommentSubmit(e) {
-    e.preventDefault();
-    if (!commentText.trim()) return;
-    setCommentError(null);
-    try {
-      await createComment(commentText, "Tournament", id);
-      setCommentText("");
-      refetchComments();
-    } catch (err) { setCommentError(err.message); }
-  }
+  useEffect(() => {
+    const newSocket = new WebSocket(
+      `${import.meta.env.VITE_WS_URL}?targetType=${targetType}&targetId=${targetId}`,
+    );
+    socketRef.current = newSocket;
 
-  if (isLoading) return <p className="tournament__status">Loading tournament...</p>;
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "history") {
+        setMessages(data.messages);
+      } else if (data.type === "new_message") {
+        setMessages((prevMsg) => [...prevMsg, data.message]);
+      } else if (data.type === "error") {
+        console.error("Server error:", data.message);
+      }
+    };
+
+    newSocket.onopen = () => {
+      console.log("Websocket connected");
+    };
+    newSocket.onclose = () => {
+      console.log("Websocket disconnected");
+    };
+
+    return () => newSocket.close();
+  }, [targetId, targetType]);
+
+  const sendMessage = () => {
+    if (input.trim() && socketRef.current?.readyState === WebSocket.OPEN) {
+      const payload = JSON.stringify({
+        authorId: user?._id,
+        text: input,
+      });
+      socketRef.current.send(payload);
+      setInput("");
+    }
+  };
+
+  if (isLoading)
+    return <p className="tournament__status">Loading tournament...</p>;
   if (error) return <p className="tournament__error">{error}</p>;
   if (!tournament) return null;
 
   const userId = user?._id || user?.userId;
   const isAdmin = user?.role === "admin";
-  const alreadyJoined = tournament.participants?.some((p) => p._id === userId || p === userId);
+  const alreadyJoined = tournament.participants?.some(
+    (p) => p._id === userId || p === userId,
+  );
   const canJoin = user && tournament.status === "upcoming" && !alreadyJoined;
   const canLeave = user && alreadyJoined;
 
@@ -140,7 +198,9 @@ export default function Tournament() {
     <div className="tournament">
       <div className="tournament__header">
         <h1 className="tournament__title">{tournament.title}</h1>
-        <span className={`tournament__status-badge tournament__status-badge--${tournament.status}`}>
+        <span
+          className={`tournament__status-badge tournament__status-badge--${tournament.status}`}
+        >
           {tournament.status.replace("-", " ")}
         </span>
       </div>
@@ -151,19 +211,27 @@ export default function Tournament() {
           <span className="tournament__countdown-label">Starts in</span>
           <div className="tournament__countdown-units">
             <div className="tournament__countdown-unit">
-              <span className="tournament__countdown-value">{countdown.days}</span>
+              <span className="tournament__countdown-value">
+                {countdown.days}
+              </span>
               <span className="tournament__countdown-text">days</span>
             </div>
             <div className="tournament__countdown-unit">
-              <span className="tournament__countdown-value">{String(countdown.hours).padStart(2, "0")}</span>
+              <span className="tournament__countdown-value">
+                {String(countdown.hours).padStart(2, "0")}
+              </span>
               <span className="tournament__countdown-text">hrs</span>
             </div>
             <div className="tournament__countdown-unit">
-              <span className="tournament__countdown-value">{String(countdown.minutes).padStart(2, "0")}</span>
+              <span className="tournament__countdown-value">
+                {String(countdown.minutes).padStart(2, "0")}
+              </span>
               <span className="tournament__countdown-text">min</span>
             </div>
             <div className="tournament__countdown-unit">
-              <span className="tournament__countdown-value">{String(countdown.seconds).padStart(2, "0")}</span>
+              <span className="tournament__countdown-value">
+                {String(countdown.seconds).padStart(2, "0")}
+              </span>
               <span className="tournament__countdown-text">sec</span>
             </div>
           </div>
@@ -179,8 +247,10 @@ export default function Tournament() {
           <span className="tournament__info-label">Format</span>
           <span>
             Best of {tournament.category?.rounds},{" "}
-            {tournament.category?.straightsAllowed ? "Straights" : "No straights"},{" "}
-            {tournament.category?.timeControl}s
+            {tournament.category?.straightsAllowed
+              ? "Straights"
+              : "No straights"}
+            , {tournament.category?.timeControl}s
           </span>
         </div>
         <div className="tournament__info-item">
@@ -193,12 +263,15 @@ export default function Tournament() {
             <span>{tournament.buyIn} points</span>
           </div>
         )}
-        {tournament.eloRange && (tournament.eloRange.min > 0 || tournament.eloRange.max < 9999) && (
-          <div className="tournament__info-item">
-            <span className="tournament__info-label">Elo range</span>
-            <span>{tournament.eloRange.min} - {tournament.eloRange.max}</span>
-          </div>
-        )}
+        {tournament.eloRange &&
+          (tournament.eloRange.min > 0 || tournament.eloRange.max < 9999) && (
+            <div className="tournament__info-item">
+              <span className="tournament__info-label">Elo range</span>
+              <span>
+                {tournament.eloRange.min} - {tournament.eloRange.max}
+              </span>
+            </div>
+          )}
         {tournament.createdBy && (
           <div className="tournament__info-item">
             <span className="tournament__info-label">Organiser</span>
@@ -221,17 +294,25 @@ export default function Tournament() {
       {/* Join / Leave */}
       <div className="tournament__actions">
         {canJoin && (
-          <button className="tournament__btn tournament__btn--primary" onClick={handleJoin}>
+          <button
+            className="tournament__btn tournament__btn--primary"
+            onClick={handleJoin}
+          >
             Join Tournament
           </button>
         )}
         {canLeave && (
-          <button className="tournament__btn tournament__btn--danger" onClick={handleLeave}>
+          <button
+            className="tournament__btn tournament__btn--danger"
+            onClick={handleLeave}
+          >
             Leave Tournament
           </button>
         )}
         {alreadyJoined && tournament.status !== "upcoming" && (
-          <p className="tournament__joined">You are registered for this tournament</p>
+          <p className="tournament__joined">
+            You are registered for this tournament
+          </p>
         )}
 
         {/* Admin controls */}
@@ -244,16 +325,26 @@ export default function Tournament() {
               Edit
             </Link>
             {tournament.status === "upcoming" && (
-              <button className="tournament__btn tournament__btn--primary" onClick={handleStart}>
+              <button
+                className="tournament__btn tournament__btn--primary"
+                onClick={handleStart}
+              >
                 Start Tournament
               </button>
             )}
-            {(tournament.status === "upcoming" || tournament.status === "in-progress") && (
-              <button className="tournament__btn tournament__btn--warning" onClick={handleCancel}>
+            {(tournament.status === "upcoming" ||
+              tournament.status === "in-progress") && (
+              <button
+                className="tournament__btn tournament__btn--warning"
+                onClick={handleCancel}
+              >
                 Cancel
               </button>
             )}
-            <button className="tournament__btn tournament__btn--danger" onClick={handleDelete}>
+            <button
+              className="tournament__btn tournament__btn--danger"
+              onClick={handleDelete}
+            >
               Delete
             </button>
           </div>
@@ -275,7 +366,9 @@ export default function Tournament() {
                 className="tournament__trophy-img"
               />
             )}
-            <span className="tournament__trophy-title">{tournament.trophy.title}</span>
+            <span className="tournament__trophy-title">
+              {tournament.trophy.title}
+            </span>
           </div>
           {tournament.winnerId && (
             <p className="tournament__winner">
@@ -295,15 +388,29 @@ export default function Tournament() {
               <div className="tournament__round-matches">
                 {round.matches.map((m, i) => (
                   <div key={i} className="tournament__match">
-                    <span className={m.winner === m.player1 ? "tournament__match-player--winner" : ""}>
+                    <span
+                      className={
+                        m.winner === m.player1
+                          ? "tournament__match-player--winner"
+                          : ""
+                      }
+                    >
                       {m.player1 || "TBD"}
                     </span>
                     <span className="tournament__match-vs">vs</span>
-                    <span className={m.winner === m.player2 ? "tournament__match-player--winner" : ""}>
+                    <span
+                      className={
+                        m.winner === m.player2
+                          ? "tournament__match-player--winner"
+                          : ""
+                      }
+                    >
                       {m.player2 || "TBD"}
                     </span>
                     {m.winner && (
-                      <span className="tournament__match-result">→ {m.winner}</span>
+                      <span className="tournament__match-result">
+                        → {m.winner}
+                      </span>
                     )}
                   </div>
                 ))}
@@ -324,12 +431,20 @@ export default function Tournament() {
           <ul className="tournament__participant-list">
             {tournament.participants.map((p) => (
               <li key={p._id} className="tournament__participant">
-                <Link to={`/profile/${p._id}`} className="tournament__participant-link">
+                <Link
+                  to={`/profile/${p._id}`}
+                  className="tournament__participant-link"
+                >
                   {p.username}
                 </Link>
                 {p.eloRating && (
                   <span className="tournament__participant-elo">
-                    {p.eloRating[`tc${tournament.category?.timeControl || 10}`] ?? p.eloRating.tc10 ?? "?"} Elo
+                    {p.eloRating[
+                      `tc${tournament.category?.timeControl || 10}`
+                    ] ??
+                      p.eloRating.tc10 ??
+                      "?"}{" "}
+                    Elo
                   </span>
                 )}
               </li>
@@ -342,32 +457,36 @@ export default function Tournament() {
       <div className="tournament__comments-section">
         <h2 className="tournament__section-title">Comments</h2>
         <div className="tournament__comments">
-          {comments.length === 0 && (
+          {messages.length === 0 && (
             <p className="tournament__status">No comments yet.</p>
           )}
-          {comments.map((c) => (
-            <div key={c._id} className="tournament__comment">
+          {messages.map((message) => (
+            <div key={message._id} className="tournament__comment">
+              <Avatar imageUrl={message.authorId?.profileImageUrl} size={32} />
               <span className="tournament__comment-author">
-                {c.authorId?.username || "Unknown"}
+                {message.authorId?.username}
               </span>
               <span className="tournament__comment-date">
-                {new Date(c.createdAt).toLocaleDateString()}
+                {new Date(message.createdAt).toLocaleDateString()}
               </span>
-              <p className="tournament__comment-text">{c.text}</p>
+              <p className="tournament__comment-text">{message.text}</p>
             </div>
           ))}
         </div>
         {user ? (
-          <form className="tournament__comment-form" onSubmit={handleCommentSubmit}>
+          <form className="tournament__comment-form">
             <textarea
               className="tournament__comment-input"
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
               placeholder="Leave a comment..."
               rows={3}
             />
-            {commentError && <p className="tournament__error">{commentError}</p>}
-            <button type="submit" className="tournament__comment-submit">
+            <button
+              onClick={sendMessage}
+              type="button"
+              className="tournament__comment-submit"
+            >
               Post Comment
             </button>
           </form>
