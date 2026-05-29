@@ -12,12 +12,14 @@ export default function Login() {
   const navigate = useNavigate();
   const { user, login } = useAuth();
   const { loadAppearance } = useAppearance();
-  const [searchParam, setSearchParam] = useSearchParams();
+  const [searchParam] = useSearchParams();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const code = searchParam.get("code"); // get the code from the url
     if (!code) return;
     const verifyUserEmail = async () => {
+      setLoading(true);
       try {
         const data = await verifyEmail(code); // call the function that fetches the verify email route
         setSuccess(data.message); // show success msg

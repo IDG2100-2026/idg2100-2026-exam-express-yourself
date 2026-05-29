@@ -66,7 +66,7 @@ export default function AdminDashboard() {
                 <span className="admin-dashboard__incident-type">{incident.type}</span>
                 <span className="admin-dashboard__incident-ip">IP: {incident.ip}</span>
                 <span className="admin-dashboard__incident-agent">{incident.userAgent}</span>
-                {incident.userId && <span className="admin-dashboard__incident-user">User: {incident.userId.username || inc.userId}</span>}
+                {incident.userId && <span className="admin-dashboard__incident-user">User: {incident.userId.username || incident.userId}</span>}
                 <span className="admin-dashboard__incident-time">{new Date(incident.createdAt).toLocaleString()}</span>
               </div>
             ))}

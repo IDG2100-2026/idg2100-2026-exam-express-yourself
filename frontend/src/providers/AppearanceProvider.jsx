@@ -12,7 +12,12 @@ const defaultAppearance = {
 
 function loadFromLocalStorage() {
   const saved = localStorage.getItem("appearance");
-  return saved ? JSON.parse(saved) : defaultAppearance;
+  if (!saved) return defaultAppearance;
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return defaultAppearance;
+  }
 }
 
 export function AppearanceProvider({ children }) {
