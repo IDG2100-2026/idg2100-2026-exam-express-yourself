@@ -6,9 +6,9 @@
   gap: 2rem;
   max-width: 700px;
 
-  &__status  { color: $color-text-muted; }
-  &__error   { color: $color-red; }
-  &__success { color: $color-green; }
+  &__status  { color: var(--color-text-dim); }
+  &__error   { color: var(--color-red); }
+  &__success { color: var(--color-green); }
 
   &__header {
     display: flex;
@@ -25,7 +25,7 @@
     height: 80px;
     border-radius: 50%;
     color: #1a1200;
-    background-color: $color-accent;
+    background-color: var(--color-accent);
   }
 
   &__avatar-img {
@@ -41,19 +41,19 @@
     gap: 0.35rem;
   }
 
-  &__email { color: $color-text-muted; }
-  &__bio   { color: $color-text-muted; }
+  &__email { color: var(--color-text-dim); }
+  &__bio   { color: var(--color-text-dim); }
 
   &__edit-btn {
     align-self: flex-start;
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    color: $color-text-muted;
+    color: var(--color-text-dim);
     background: none;
 
     &:hover {
-      border-color: $color-accent;
-      color: $color-accent;
+      border-color: var(--color-accent);
+      color: var(--color-accent);
     }
   }
 
@@ -61,9 +61,9 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    background-color: $color-bg-card;
+    background-color: var(--color-card);
   }
 
   &__field {
@@ -72,22 +72,22 @@
     gap: 0.4rem;
 
     label {
-      color: $color-text-muted;
+      color: var(--color-text-dim);
 
-      span { color: $color-text-muted; }
+      span { color: var(--color-text-dim); }
     }
 
     input,
     textarea {
-      border: 1px solid $color-border;
+      border: 1px solid var(--color-border);
       border-radius: $radius;
       font-family: inherit;
-      color: $color-text;
-      background-color: $color-bg-secondary;
+      color: var(--color-text);
+      background-color: var(--color-frame);
 
       &:focus {
         outline: none;
-        border-color: $color-accent;
+        border-color: var(--color-accent);
       }
     }
 
@@ -107,9 +107,9 @@
       border: none;
       border-radius: $radius;
       color: #1a1200;
-      background-color: $color-accent;
+      background-color: var(--color-accent);
 
-      &:hover { background-color: $color-accent-hover; }
+      &:hover { background-color: var(--color-accent-light); }
     }
   }
 
@@ -123,19 +123,19 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
     text-align: center;
-    background-color: $color-bg-card;
+    background-color: var(--color-card);
   }
 
   &__stat-value {
-    color: $color-accent;
+    color: var(--color-accent);
   }
 
   &__stat-label {
     text-transform: uppercase;
-    color: $color-text-muted;
+    color: var(--color-text-dim);
   }
 
   &__games-header {
@@ -154,24 +154,24 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    background-color: $color-bg-card;
+    background-color: var(--color-card);
 
-    &:hover { border-color: $color-accent; }
+    &:hover { border-color: var(--color-accent); }
   }
 
   &__result {
     border-radius: $radius;
 
-    &--win  { background-color: $color-green; color: #fff; }
-    &--loss { background-color: $color-red;  color: #fff; }
+    &--win  { background-color: var(--color-green); color: #fff; }
+    &--loss { background-color: var(--color-red);  color: #fff; }
   }
 
   &__opponent { flex: 1; }
 
-  &__game-date    { color: $color-text-muted; }
-  &__game-variant { color: $color-text-muted; }
+  &__game-date    { color: var(--color-text-dim); }
+  &__game-variant { color: var(--color-text-dim); }
 
   &__trophies {
     display: flex;
@@ -190,7 +190,7 @@
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
-    color: $color-accent;
+    color: var(--color-accent);
 
     img {
       width: 48px;
@@ -201,14 +201,14 @@
 
   &__load-more {
     width: 100%;
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    color: $color-text-muted;
-    background-color: $color-bg-card;
+    color: var(--color-text-dim);
+    background-color: var(--color-card);
 
     &:hover:not(:disabled) {
-      border-color: $color-accent;
-      color: $color-text;
+      border-color: var(--color-accent);
+      color: var(--color-text);
     }
 
     &:disabled {

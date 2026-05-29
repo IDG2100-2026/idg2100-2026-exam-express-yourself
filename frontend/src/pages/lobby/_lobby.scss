@@ -14,24 +14,24 @@
   &__create {
     border-radius: $radius;
     color: #1a1200;
-    background-color: $color-accent;
+    background-color: var(--color-accent);
 
     &:hover {
-      background-color: $color-accent-hover;
+      background-color: var(--color-accent-light);
     }
   }
 
-  &__status { color: $color-text-muted; }
-  &__error  { color: $color-red; }
+  &__status { color: var(--color-text-dim); }
+  &__error  { color: var(--color-red); }
 
   &__filters {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    background-color: $color-bg-card;
+    background-color: var(--color-card);
   }
 
   &__filter-group {
@@ -42,7 +42,7 @@
 
   &__filter-label {
     white-space: nowrap;
-    color: $color-text-muted;
+    color: var(--color-text-dim);
   }
 
   &__filter-btns {
@@ -51,31 +51,31 @@
   }
 
   &__filter-btn {
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    color: $color-text-muted;
-    background-color: $color-bg-secondary;
+    color: var(--color-text-dim);
+    background-color: var(--color-frame);
 
     &:hover {
-      color: $color-text;
-      border-color: $color-accent;
+      color: var(--color-text);
+      border-color: var(--color-accent);
     }
 
     &--active {
-      color: $color-accent;
-      border-color: $color-accent;
+      color: var(--color-accent);
+      border-color: var(--color-accent);
     }
   }
 
   &__sort {
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    color: $color-text;
-    background-color: $color-bg-secondary;
+    color: var(--color-text);
+    background-color: var(--color-frame);
 
     &:focus {
       outline: none;
-      border-color: $color-accent;
+      border-color: var(--color-accent);
     }
   }
 
@@ -85,14 +85,14 @@
   }
 
   &__load-more-btn {
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    color: $color-text-muted;
-    background-color: $color-bg-card;
+    color: var(--color-text-dim);
+    background-color: var(--color-card);
 
     &:hover:not(:disabled) {
-      color: $color-text;
-      border-color: $color-accent;
+      color: var(--color-text);
+      border-color: var(--color-accent);
     }
 
     &:disabled {
@@ -112,18 +112,18 @@
     flex-direction: column;
     gap: 0.75rem;
     width: 100%;
-    border: 1px solid $color-border;
-    border-left: 3px solid $color-border;
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-border);
     border-radius: $radius;
     text-align: left;
-    background-color: $color-bg-card;
+    background-color: var(--color-card);
 
-    &:hover { border-color: $color-accent; }
+    &:hover { border-color: var(--color-accent); }
   }
 
-  &__card--waiting     { border-left-color: $color-accent; }
+  &__card--waiting     { border-left-color: var(--color-accent); }
   &__card--in-progress { border-left-color: #58a6ff; }
-  &__card--completed   { border-left-color: $color-green; }
+  &__card--completed   { border-left-color: var(--color-green); }
 
   &__card-player {
     display: flex;
@@ -131,9 +131,9 @@
     gap: 0.75rem;
   }
 
-  &__card-elo     { color: $color-text-muted; }
-  &__card-variant { color: $color-text-muted; }
-  &__card-waiting { color: $color-accent; }
+  &__card-elo     { color: var(--color-text-dim); }
+  &__card-variant { color: var(--color-text-dim); }
+  &__card-waiting { color: var(--color-accent); }
 
   &__avatar {
     display: flex;
@@ -145,7 +145,7 @@
     height: 40px;
     border-radius: 50%;
     color: #1a1200;
-    background-color: $color-accent;
+    background-color: var(--color-accent);
 
     img {
       width: 100%;

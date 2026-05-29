@@ -1,8 +1,8 @@
 @use '../../styles/variables.scss' as *;
 
 .game {
-  &__status { color: $color-text-muted; }
-  &__error  { color: $color-red; }
+  &__status { color: var(--color-text-dim); }
+  &__error  { color: var(--color-red); }
 
   &__layout {
     display: grid;
@@ -16,14 +16,14 @@
     align-items: center;
     gap: 2rem;
     min-height: 400px;
-    border: 1px solid $color-border;
-    border-radius: $radius-lg;
-    background-color: $color-bg-card;
+    border: 1px solid var(--color-border);
+    border-radius: $radius-large;
+    background-color: var(--color-card);
   }
 
   &__waiting {
     text-align: center;
-    color: $color-text-muted;
+    color: var(--color-text-dim);
 
     small { display: block; margin-top: 0.5rem; }
   }
@@ -42,8 +42,8 @@
   }
 
   &__player-name { font-weight: bold; }
-  &__player-elo  { color: $color-text-muted; }
-  &__vs          { color: $color-text-muted; }
+  &__player-elo  { color: var(--color-text-dim); }
+  &__vs          { color: var(--color-text-dim); }
 
   &__active {
     display: flex;
@@ -56,12 +56,12 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    background-color: $color-bg-card;
+    background-color: var(--color-card);
   }
 
-  &__pot { color: $color-text-muted; }
+  &__pot { color: var(--color-text-dim); }
 
   &__bet-controls {
     display: flex;
@@ -72,22 +72,22 @@
 
   &__bet-input {
     width: 80px;
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    color: $color-text;
-    background-color: $color-bg-secondary;
+    color: var(--color-text);
+    background-color: var(--color-frame);
   }
 
   &__bet-btn {
     border: none;
     border-radius: $radius;
     color: #1a1200;
-    background-color: $color-accent;
+    background-color: var(--color-accent);
 
-    &:hover { background-color: $color-accent-hover; }
+    &:hover { background-color: var(--color-accent-light); }
 
     &--fold {
-      background-color: $color-red;
+      background-color: var(--color-red);
       color: #fff;
 
       &:hover { opacity: 0.85; }
@@ -99,18 +99,18 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-    border: 2px solid $color-accent;
-    border-radius: $radius-lg;
+    border: 2px solid var(--color-accent);
+    border-radius: $radius-large;
     text-align: center;
-    background-color: $color-bg-card;
+    background-color: var(--color-card);
 
     button {
       border: none;
       border-radius: $radius;
       color: #1a1200;
-      background-color: $color-accent;
+      background-color: var(--color-accent);
 
-      &:hover { background-color: $color-accent-hover; }
+      &:hover { background-color: var(--color-accent-light); }
     }
   }
 
@@ -118,9 +118,9 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    background-color: $color-bg-card;
+    background-color: var(--color-card);
   }
 
   &__comments {
@@ -135,7 +135,7 @@
     flex-direction: column;
     gap: 0.25rem;
     border-radius: $radius;
-    background-color: $color-bg-secondary;
+    background-color: var(--color-frame);
   }
 
   &__comment-body {
@@ -144,12 +144,12 @@
   }
 
   &__comment-author {
-    color: $color-accent;
+    color: var(--color-accent);
   }
 
-  &__comment-date   { color: $color-text-muted; }
+  &__comment-date   { color: var(--color-text-dim); }
   &__comment-text   { margin-top: 0.25rem; }
-  &__no-comments    { color: $color-text-muted; }
+  &__no-comments    { color: var(--color-text-dim); }
 
   &__comment-form {
     display: flex;
@@ -158,15 +158,15 @@
   }
 
   &__comment-input {
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    color: $color-text;
-    background-color: $color-bg-secondary;
+    color: var(--color-text);
+    background-color: var(--color-frame);
     resize: vertical;
 
     &:focus {
       outline: none;
-      border-color: $color-accent;
+      border-color: var(--color-accent);
     }
   }
 
@@ -174,19 +174,19 @@
     border: none;
     border-radius: $radius;
     color: #1a1200;
-    background-color: $color-accent;
+    background-color: var(--color-accent);
 
-    &:hover { background-color: $color-accent-hover; }
+    &:hover { background-color: var(--color-accent-light); }
   }
 
   &__leave-btn {
-    border: 1px solid $color-red;
+    border: 1px solid var(--color-red);
     border-radius: $radius;
-    color: $color-red;
+    color: var(--color-red);
     background: transparent;
 
     &:hover {
-      background-color: $color-red;
+      background-color: var(--color-red);
       color: #fff;
     }
   }

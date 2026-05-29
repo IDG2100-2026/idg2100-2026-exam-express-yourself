@@ -4,10 +4,10 @@
   text-align: center;
 
   &__text {
-    color: $color-text-muted;
+    color: var(--color-text-dim);
   }
 
   &__link {
-    color: $color-accent;
+    color: var(--color-accent);
   }
 }

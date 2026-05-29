@@ -13,7 +13,7 @@
 
     p {
       line-height: 1.8;
-      color: $color-text-muted;
+      color: var(--color-text-dim);
     }
   }
 
@@ -30,7 +30,7 @@
     gap: 0.4rem;
     text-align: center;
 
-    span { color: $color-text-muted; }
+    span { color: var(--color-text-dim); }
   }
 
   &__member-avatar {
@@ -40,7 +40,7 @@
     width: 56px;
     height: 56px;
     color: #1a1200;
-    background-color: $color-accent;
+    background-color: var(--color-accent);
     border-radius: 50%;
   }
 }

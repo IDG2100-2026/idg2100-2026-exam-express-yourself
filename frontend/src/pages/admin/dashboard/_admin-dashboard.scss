@@ -11,17 +11,17 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    background: $color-bg-card;
+    background: var(--color-card);
   }
 
   &__stat-value {
-    color: $color-accent;
+    color: var(--color-accent);
   }
 
   &__stat-label {
-    color: $color-text-muted;
+    color: var(--color-text-dim);
   }
 
   &__links {
@@ -31,15 +31,15 @@
   }
 
   &__card {
-    border: 1px solid $color-border;
+    border: 1px solid var(--color-border);
     border-radius: $radius;
-    color: $color-text;
-    background: $color-bg-card;
+    color: var(--color-text);
+    background: var(--color-card);
     transition: border-color 0.15s;
 
-    &:hover { border-color: $color-accent; }
+    &:hover { border-color: var(--color-accent); }
 
-    p { color: $color-text-muted; }
+    p { color: var(--color-text-dim); }
   }
 
   &__incidents {
@@ -53,29 +53,29 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 0.75rem;
-    border: 1px solid $color-border;
-    border-left: 3px solid $color-red;
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-red);
     border-radius: $radius;
-    background: $color-bg-card;
+    background: var(--color-card);
 
-    &--ip-change   { border-left-color: $color-red; }
-    &--rate-limit  { border-left-color: $color-accent; }
+    &--ip-change   { border-left-color: var(--color-red); }
+    &--rate-limit  { border-left-color: var(--color-accent); }
   }
 
   &__incident-type {
     border-radius: 4px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: $color-red;
-    background: rgba($color-red, 0.15);
+    color: var(--color-red);
+    background: rgba(var(--color-red), 0.15);
   }
 
   &__incident-ip    { font-family: monospace; }
-  &__incident-agent { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: $color-text-muted; }
-  &__incident-user  { color: $color-accent; }
-  &__incident-time  { margin-left: auto; white-space: nowrap; color: $color-text-muted; }
+  &__incident-agent { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--color-text-dim); }
+  &__incident-user  { color: var(--color-accent); }
+  &__incident-time  { margin-left: auto; white-space: nowrap; color: var(--color-text-dim); }
 
   &__loading,
-  &__muted  { color: $color-text-muted; }
-  &__error  { margin-bottom: 1rem; color: $color-red; }
+  &__muted  { color: var(--color-text-dim); }
+  &__error  { margin-bottom: 1rem; color: var(--color-red); }
 }

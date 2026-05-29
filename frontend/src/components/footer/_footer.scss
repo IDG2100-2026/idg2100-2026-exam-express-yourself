@@ -1,8 +1,8 @@
 @use '../../styles/variables.scss' as *;
 
 .footer {
-  border-block-start: 1px solid $color-border;
-  background-color: $color-bg-secondary;
+  border-block-start: 1px solid var(--color-border);
+  background-color: var(--color-frame);
 
   &__inner {
     display: flex;
@@ -21,11 +21,11 @@
 
   &__name {
     font-weight: bold;
-    color: $color-accent;
+    color: var(--color-accent);
   }
 
   &__copy {
-    color: $color-text-muted;
+    color: var(--color-text-dim);
   }
 
   &__links {
@@ -36,17 +36,17 @@
   &__link {
     padding: $space-s;
     border-radius: $radius;
-    color: $color-text-muted;
+    color: var(--color-text-dim);
     transition: background 0.15s, color 0.15s;
 
     &:hover {
-      color: $color-text;
-      background-color: $color-bg-card;
+      color: var(--color-text);
+      background-color: var(--color-card);
     }
 
     &.active {
-      color: $color-accent;
-      background-color: $color-bg-card;
+      color: var(--color-accent);
+      background-color: var(--color-card);
     }
   }
 }
