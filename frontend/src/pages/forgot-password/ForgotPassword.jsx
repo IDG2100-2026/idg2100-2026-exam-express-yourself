@@ -7,28 +7,10 @@ const ForgotPassword = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [resetMessage, setResetMessage] = useState("");
-  const [searchParam, setSearchParam] = useSearchParams();
   const [sendMail, setSendMail] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const code = searchParam.get("code"); // get the code from the url
-    if (!code) return;
-    const verifyUserEmail = async () => {
-      setLoading(true);
-      try {
-        const data = await verifyEmail(code); // call the function that fetches the verify email route
-        setSuccess(data.message); // show success msg
-      } catch (err) {
-        setError(err.message); // show error msg
-      } finally {
-        setLoading(false); // cleanup to be sure that we don't load anymore
-      }
-    };
-
-    verifyUserEmail();
-  }, []); // only run on mount
 
   const sendEmailCode = async (e) => {
     e.preventDefault();

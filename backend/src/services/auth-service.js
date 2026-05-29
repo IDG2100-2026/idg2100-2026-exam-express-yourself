@@ -7,7 +7,7 @@ import {
   sendPasswordResetMail,
   sendVerificationMail,
 } from "./email-service.js";
-import { TokenVerification } from "../models/TokenVerification.js";
+import { UserVerification } from "../models/UserVerification.js";
 import { normalizeIp } from "../utils/normalize-ip.js";
 import { getAccessToken } from "../utils/jwt.js";
 
@@ -36,7 +36,7 @@ export const registerUser = async (userData) => {
 
   await newUser.save(); // Saves to db. This triggers the password to be hashed
 
-  const verificationToken = await TokenVerification.create({
+  const verificationToken = await UserVerification.create({
     // generates  verification token linked to the user
     userId: newUser._id,
   });
@@ -58,7 +58,7 @@ export const authenticateUser = async (email, password) => {
 
 export const verifyEmailService = async (code) => {
   if (!code) throw new BusinessLogicError("Verification code is required", 400);
-  const token = await TokenVerification.findOne({ token: code }); // finds the token in db
+  const token = await UserVerification.findOne({ token: code }); // finds the token in db
   if (!token) return;
 
   await User.findByIdAndUpdate(token.userId, { isVerified: true }); // marking the user as verified
