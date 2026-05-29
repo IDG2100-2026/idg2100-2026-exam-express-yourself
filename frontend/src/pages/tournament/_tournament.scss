@@ -14,31 +14,31 @@
   }
 
   &__status-badge {
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    background-color: var(--color-card);
+    background-color: $color-inner;
 
-    &--upcoming    { border-color: var(--color-accent);  color: var(--color-accent); }
+    &--upcoming    { border-color: $color-yellow;  color: $color-yellow; }
     &--in-progress { border-color: #58a6ff;        color: #58a6ff; }
-    &--completed   { border-color: var(--color-green); color: var(--color-green); }
-    &--cancelled   { border-color: var(--color-red);  color: var(--color-red); }
+    &--completed   { border-color: $color-green; color: $color-green; }
+    &--cancelled   { border-color: $color-red;  color: $color-red; }
   }
 
   &__countdown {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    background: var(--color-card);
+    background: $color-inner;
   }
 
   &__countdown-label {
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--color-text-dim);
+    color: $color-text-dim;
   }
 
   &__countdown-units {
@@ -57,21 +57,21 @@
     min-width: 2.5ch;
     font-variant-numeric: tabular-nums;
     text-align: center;
-    color: var(--color-accent);
+    color: $color-yellow;
   }
 
   &__countdown-text {
     text-transform: uppercase;
-    color: var(--color-text-dim);
+    color: $color-text-dim;
   }
 
   &__info {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    background-color: var(--color-card);
+    background-color: $color-inner;
   }
 
   &__info-item {
@@ -81,13 +81,12 @@
 
   &__info-label {
     min-width: 80px;
-    color: var(--color-text-dim);
+    color: $color-text-dim;
   }
 
   &__description,
   &__rules-text {
     line-height: 1.7;
-    color: var(--color-text-dim);
   }
 
   &__actions {
@@ -106,21 +105,21 @@
 
     &:hover { opacity: 0.85; }
 
-    &--primary   { background: var(--color-accent);    color: #1a1200; }
-    &--secondary { border: 1px solid var(--color-border); background: var(--color-card); color: var(--color-text); }
+    &--primary   { background: $color-yellow;    color: #1a1200; }
+    &--secondary { border: 1px solid $color-border; background: $color-inner; color: $color-text; }
     &--warning   { background: #e09000;           color: #1a1200; }
-    &--danger    { background: var(--color-red);     color: #fff; }
+    &--danger    { background: $color-red;     color: #fff; }
   }
 
   &__admin-controls {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    border-left: 1px solid var(--color-border);
+    border-left: 1px solid $color-border;
   }
 
-  &__joined     { color: var(--color-green); }
-  &__action-msg { color: var(--color-green); }
+  &__joined     { color: $color-green; }
+  &__action-msg { color: $color-green; }
 
   &__trophy-item {
     display: flex;
@@ -136,13 +135,13 @@
   }
 
   &__trophy-title {
-    color: var(--color-accent);
+    color: $color-yellow;
   }
 
   &__winner {
-    color: var(--color-text-dim);
+    color: $color-text-dim;
 
-    strong { color: var(--color-accent); }
+    strong { color: $color-yellow; }
   }
 
   &__live-match-list {
@@ -155,14 +154,14 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    color: var(--color-text);
-    background: var(--color-card);
+    color: $color-text;
+    background: $color-inner;
     transition: border-color 0.15s;
 
     &:hover {
-      border-color: var(--color-accent);
+      border-color: $color-yellow;
     }
   }
 
@@ -178,16 +177,16 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    background: var(--color-card);
+    background: $color-inner;
   }
 
-  &__match-vs     { color: var(--color-text-dim); }
-  &__match-result { margin-left: auto; color: var(--color-green); }
+  &__match-vs     { color: $color-text-dim; }
+  &__match-result { margin-left: auto; color: $color-green; }
 
   &__match-player--winner {
-    color: var(--color-green);
+    color: $color-green;
   }
 
   &__participant-list {
@@ -204,12 +203,12 @@
   }
 
   &__participant-link {
-    color: var(--color-text);
+    color: $color-text;
 
-    &:hover { color: var(--color-accent); }
+    &:hover { color: $color-yellow; }
   }
 
-  &__participant-elo { color: var(--color-text-dim); }
+  &__participant-elo { color: $color-text-dim; }
 
   &__comments {
     display: flex;
@@ -221,16 +220,16 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    background-color: var(--color-card);
+    background-color: $color-inner;
   }
 
   &__comment-author {
-    color: var(--color-accent);
+    color: $color-yellow;
   }
 
-  &__comment-date  { color: var(--color-text-dim); }
+  &__comment-date  { color: $color-text-dim; }
   &__comment-text  { margin-top: 0.25rem; }
 
   &__comment-form {
@@ -242,15 +241,15 @@
   &__comment-input {
     min-height: 150px;
     max-height: 200px;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    color: var(--color-text);
-    background-color: var(--color-frame);
+    color: $color-text;
+    background-color: $color-frame;
     resize: vertical;
 
     &:focus {
       outline: none;
-      border-color: var(--color-accent);
+      border-color: $color-yellow;
     }
   }
 
@@ -259,11 +258,11 @@
     border: none;
     border-radius: $radius;
     color: #1a1200;
-    background-color: var(--color-accent);
+    background-color: $color-yellow;
 
-    &:hover { background-color: var(--color-accent-light); }
+    &:hover { background-color: $color-yellow-hover; }
   }
 
-  &__status { color: var(--color-text-dim); }
-  &__error  { color: var(--color-red); }
+  &__status { color: $color-text-dim; }
+  &__error  { color: $color-red; }
 }

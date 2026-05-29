@@ -6,25 +6,24 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius-large;
     text-align: center;
-    background-color: var(--color-card);
+    background-color: $color-inner;
   }
 
   &__description {
     max-width: 500px;
     line-height: 1.7;
-    color: var(--color-text-dim);
   }
 
   &__cta {
     display: inline-block;
     border-radius: $radius;
     color: #1a1200;
-    background-color: var(--color-accent);
+    background-color: $color-yellow;
 
-    &:hover { background-color: var(--color-accent-light); }
+    &:hover { background-color: $color-yellow-hover; }
   }
 
   &__activity-list {
@@ -32,22 +31,21 @@
     flex-wrap: wrap;
     gap: 1rem 2rem;
     list-style: none;
-    color: var(--color-text-dim);
   }
 
   &__see-all {
     display: block;
-    color: var(--color-text-dim);
+    color: $color-text-dim;
 
-    &:hover { color: var(--color-accent); }
+    &:hover { color: $color-yellow; }
   }
 
-  &__status { color: var(--color-text-dim); }
-  &__error  { color: var(--color-red); }
+  &__status { color: $color-text-dim; }
+  &__error  { color: $color-red; }
 
   &__empty {
     font-style: italic;
-    color: var(--color-text-dim);
+    color: $color-text-dim;
   }
 
   &__grid {
@@ -60,28 +58,28 @@
   &__card {
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--color-border);
-    border-inline-start: 3px solid var(--color-border);
+    border: 1px solid $color-border;
+    border-inline-start: 3px solid $color-border;
     border-radius: $radius;
-    background-color: var(--color-card);
+    background-color: $color-inner;
 
-    &:hover { border-color: var(--color-accent); }
+    &:hover { border-color: $color-yellow; }
   }
 
   &__card-player { font-weight: bold; }
-  &__card-variant { color: var(--color-text-dim); }
-  &__card-elo     { color: var(--color-text-dim); }
-  &__card-waiting { color: var(--color-accent); }
+  &__card-variant { color: $color-text-dim; }
+  &__card-elo     { color: $color-text-dim; }
+  &__card-waiting { color: $color-yellow; }
 
-  &__card--upcoming    { border-inline-start-color: var(--color-accent); }
-  &__card--waiting     { border-inline-start-color: var(--color-accent); }
+  &__card--upcoming    { border-inline-start-color: $color-yellow; }
+  &__card--waiting     { border-inline-start-color: $color-yellow; }
   &__card--in-progress { border-inline-start-color: #58a6ff; }
-  &__card--completed   { border-inline-start-color: var(--color-green); }
-  &__card--cancelled   { border-inline-start-color: var(--color-red); }
+  &__card--completed   { border-inline-start-color: $color-green; }
+  &__card--cancelled   { border-inline-start-color: $color-red; }
 
   &__card-status {
-    &--in-progress { color: var(--color-green); }
-    &--completed   { color: var(--color-text-dim); }
-    &--waiting     { color: var(--color-accent); }
+    &--in-progress { color: $color-green; }
+    &--completed   { color: $color-text-dim; }
+    &--waiting     { color: $color-yellow; }
   }
 }

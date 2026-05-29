@@ -4,10 +4,9 @@
   text-align: center;
 
   &__text {
-    color: var(--color-text-dim);
   }
 
   &__link {
-    color: var(--color-accent);
+    color: $color-yellow;
   }
 }

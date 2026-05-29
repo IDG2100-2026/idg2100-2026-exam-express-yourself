@@ -111,6 +111,19 @@ export function validateLogin() {
 // Validates optional body fields when updating a user profile (PATCH /api/users/:id)
 export function validateUpdateUser() {
   return [
+    body("username")
+      .optional()
+      .trim()
+      .escape()
+      .isLength({ min: MIN_USERNAME_LENGTH, max: MAX_USERNAME_LENGTH })
+      .withMessage(`Username must be between ${MIN_USERNAME_LENGTH} and ${MAX_USERNAME_LENGTH} characters.`)
+      .matches(ALLOWED_USERNAME_FORMAT)
+      .withMessage("Username can only contain letters and numbers.")
+      .bail()
+      .custom(async (username, { req }) => {
+        const exists = await User.findOne({ username, _id: { $ne: req.params.id } });
+        if (exists) throw new Error("Username already taken.");
+      }),
     body("email")
       .optional()
       .trim()

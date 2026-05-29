@@ -8,12 +8,12 @@
 // Card general styling for all cards
 .card {
   padding: $space-m;
-  border: 1px solid var(--color-border);
+  border: 1px solid $color-border;
   border-radius: $radius;
-  background-color: var(--color-card);
+  background-color: $color-inner;
 
   &:is(a, button):hover {
-    border-color: var(--color-accent);
+    border-color: $color-yellow;
   }
 }
 
@@ -30,45 +30,45 @@
 }
 
 .btn--primary {
-  border-color: var(--color-accent);
+  border-color: $color-yellow;
   color: #1a1200;
-  background-color: var(--color-accent);
+  background-color: $color-yellow;
 
   &:hover {
-    border-color: var(--color-accent-light);
-    background-color: var(--color-accent-light);
+    border-color: $color-yellow-hover;
+    background-color: $color-yellow-hover;
   }
 }
 
 .btn--secondary {
-  border-color: var(--color-border);
-  color: var(--color-text-dim);
+  border-color: $color-border;
+  color: $color-text-dim;
   background-color: transparent;
 
   &:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
+    border-color: $color-yellow;
+    color: $color-yellow;
   }
 }
 
 .btn--red {
-  border-color: var(--color-border);
-  color: var(--color-text-dim);
+  border-color: $color-border;
+  color: $color-text-dim;
   background-color: transparent;
 
   &:hover {
-    border-color: var(--color-red);
-    color: var(--color-red);
+    border-color: $color-red;
+    color: $color-red;
   }
 }
 
 .btn--green {
-  border-color: var(--color-border);
-  color: var(--color-text-dim);
+  border-color: $color-border;
+  color: $color-text-dim;
   background-color: transparent;
 
   &:hover {
-    border-color: var(--color-green);
-    color: var(--color-green);
+    border-color: $color-green;
+    color: $color-green;
   }
 }

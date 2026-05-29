@@ -14,28 +14,28 @@
   &__search {
     flex: 1;
     min-width: 200px;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    color: var(--color-text);
-    background: var(--color-frame);
+    color: $color-text;
+    background: $color-frame;
 
     &:focus {
       outline: none;
-      border-color: var(--color-accent);
+      border-color: $color-yellow;
     }
 
-    &::placeholder { color: var(--color-text-dim); }
+    &::placeholder { color: $color-text-dim; }
   }
 
   &__sort {
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    color: var(--color-text);
-    background: var(--color-frame);
+    color: $color-text;
+    background: $color-frame;
 
     &:focus {
       outline: none;
-      border-color: var(--color-accent);
+      border-color: $color-yellow;
     }
   }
 
@@ -45,8 +45,8 @@
     gap: 1rem;
   }
 
-  &__status { color: var(--color-text-dim); }
-  &__error  { color: var(--color-red); }
+  &__status { color: $color-text-dim; }
+  &__error  { color: $color-red; }
 
   &__grid {
     display: grid;
@@ -58,36 +58,36 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    border: 1px solid var(--color-border);
-    border-left: 3px solid var(--color-border);
+    border: 1px solid $color-border;
+    border-left: 3px solid $color-border;
     border-radius: $radius;
-    background-color: var(--color-card);
+    background-color: $color-inner;
     transition: border-color 0.15s;
 
     &:hover {
-      border-color: var(--color-accent);
+      border-color: $color-yellow;
     }
 
-    &--upcoming    { border-left-color: var(--color-accent); }
+    &--upcoming    { border-left-color: $color-yellow; }
     &--in-progress { border-left-color: #58a6ff; }
-    &--completed   { border-left-color: var(--color-green); }
-    &--cancelled   { border-left-color: var(--color-red); }
+    &--completed   { border-left-color: $color-green; }
+    &--cancelled   { border-left-color: $color-red; }
   }
 
   &__card-status {
     text-transform: uppercase;
     letter-spacing: 0.05em;
 
-    &--upcoming    { color: var(--color-accent); }
+    &--upcoming    { color: $color-yellow; }
     &--in-progress { color: #58a6ff; }
-    &--completed   { color: var(--color-green); }
-    &--cancelled   { color: var(--color-red); }
+    &--completed   { color: $color-green; }
+    &--cancelled   { color: $color-red; }
   }
 
-  &__card-date    { color: var(--color-text-dim); }
-  &__card-variant { color: var(--color-text-dim); }
-  &__card-players { color: var(--color-accent); }
-  &__card-author  { color: var(--color-text-dim); }
+  &__card-date    { color: $color-text-dim; }
+  &__card-variant { color: $color-text-dim; }
+  &__card-players { color: $color-yellow; }
+  &__card-author  { color: $color-text-dim; }
 
   &__card-trophy {
     display: flex;
@@ -103,7 +103,7 @@
     object-fit: cover;
   }
 
-  &__card-trophy-title { color: var(--color-text-dim); }
+  &__card-trophy-title { color: $color-text-dim; }
 
   &__load-more {
     display: flex;
@@ -111,15 +111,15 @@
   }
 
   &__load-more-btn {
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    color: var(--color-text);
-    background: var(--color-card);
+    color: $color-text;
+    background: $color-inner;
     transition: border-color 0.15s;
 
     &:hover:not(:disabled) {
-      border-color: var(--color-accent);
-      color: var(--color-accent);
+      border-color: $color-yellow;
+      color: $color-yellow;
     }
 
     &:disabled {

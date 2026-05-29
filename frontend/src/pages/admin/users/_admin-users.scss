@@ -7,18 +7,18 @@
   &__search {
     width: 100%;
     max-width: 400px;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
     outline: none;
-    color: var(--color-text);
-    background: var(--color-card);
+    color: $color-text;
+    background: $color-inner;
 
-    &:focus { border-color: var(--color-accent); }
+    &:focus { border-color: $color-yellow; }
   }
 
   &__table-wrap {
     overflow-x: auto;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
   }
 
@@ -27,35 +27,35 @@
     border-collapse: collapse;
 
     th {
-      border-bottom: 1px solid var(--color-border);
+      border-bottom: 1px solid $color-border;
       text-align: left;
-      color: var(--color-text-dim);
-      background: var(--color-frame);
+      color: $color-text-dim;
+      background: $color-frame;
     }
 
     td {
-      border-bottom: 1px solid var(--color-border);
+      border-bottom: 1px solid $color-border;
     }
 
     tr:last-child td { border-bottom: none; }
-    tr:hover td      { background: var(--color-frame); }
+    tr:hover td      { background: $color-frame; }
   }
 
   &__row--banned td { opacity: 0.5; }
 
   &__cell--center {
     text-align: center;
-    color: var(--color-text-dim);
+    color: $color-text-dim;
   }
 
   &__badge {
     display: inline-block;
     border-radius: 4px;
 
-    &--admin  { color: var(--color-accent);  background: rgba(var(--color-accent), 0.15); }
-    &--user   { color: var(--color-text-dim); background: var(--color-bg); }
-    &--active { color: var(--color-green); background: rgba(var(--color-green), 0.15); }
-    &--banned { color: var(--color-red);  background: rgba(var(--color-red), 0.15); }
+    &--admin  { color: $color-yellow;  background: rgba($color-yellow, 0.15); }
+    &--user   { color: $color-text-dim; background: $color-bg; }
+    &--active { color: $color-green; background: rgba($color-green, 0.15); }
+    &--banned { color: $color-red;  background: rgba($color-red, 0.15); }
   }
 
   &__actions {
@@ -64,9 +64,9 @@
   }
 
   &__btn {
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    color: var(--color-text);
+    color: $color-text;
     background: transparent;
     transition: background 0.15s, border-color 0.15s;
 
@@ -76,17 +76,17 @@
     }
 
     &--danger {
-      border-color: var(--color-red);
-      color: var(--color-red);
+      border-color: $color-red;
+      color: $color-red;
 
-      &:hover { background: rgba(var(--color-red), 0.1); }
+      &:hover { background: rgba($color-red, 0.1); }
     }
 
     &--promote {
-      border-color: var(--color-accent);
-      color: var(--color-accent);
+      border-color: $color-yellow;
+      color: $color-yellow;
 
-      &:hover { background: rgba(var(--color-accent), 0.1); }
+      &:hover { background: rgba($color-yellow, 0.1); }
     }
   }
 
@@ -96,6 +96,6 @@
     gap: 1rem;
   }
 
-  &__page  { color: var(--color-text-dim); }
-  &__error { margin-bottom: 1rem; color: var(--color-red); }
+  &__page  { color: $color-text-dim; }
+  &__error { margin-bottom: 1rem; color: $color-red; }
 }

@@ -117,6 +117,9 @@ export async function updateUser(userId, updateData, requestingUserId) {
     throw new BusinessLogicError("User not found", 404);
   }
 
+  if (updateData.username !== undefined) {
+    user.username = updateData.username;
+  }
   if (updateData.email !== undefined) {
     user.email = updateData.email;
   }

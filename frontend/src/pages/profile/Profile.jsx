@@ -15,6 +15,7 @@ export default function Profile() {
 
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
+    username: "",
     email: "",
     bio: "",
     password: "",
@@ -55,6 +56,7 @@ export default function Profile() {
 
   function startEditing() {
     setFormData({
+      username: user?.username || "",
       email: user?.email || "",
       bio: user?.bio || "",
       password: "",
@@ -63,7 +65,7 @@ export default function Profile() {
     // setAvatarFile(null); // TODO: needed?
     setEditing(true);
     setSaveError(null);
-    // setSaveSuccess(null); // TODO: needed?
+    setSaveSuccess(null);
   }
 
   function handleChange(e) {
@@ -88,6 +90,7 @@ export default function Profile() {
       }
 
       const updates = {
+        ...(formData.username && { username: formData.username }),
         ...(formData.email && { email: formData.email }),
         bio: formData.bio,
         ...(formData.newPassword && {
@@ -97,6 +100,10 @@ export default function Profile() {
       };
 
       await updateUser(id, updates);
+      if (formData.username && formData.username !== user.username) {
+        setSaveSuccess("Username updated successfully");
+        if (isOwnProfile) updateAuthUser({ username: formData.username });
+      }
       if (formData.email && formData.email !== user.email) {
         setSaveSuccess("Email updated successfully");
       }
@@ -110,6 +117,7 @@ export default function Profile() {
 
       setUser((prev) => ({
         ...prev,
+        username: formData.username || prev.username,
         email: formData.email || prev.email,
         bio: formData.bio || prev.bio,
         ...(profileImageUrl && { profileImageUrl }),
@@ -127,7 +135,7 @@ export default function Profile() {
   if (!user) return null;
 
   return (
-    <div className="profile">
+    <div className="profile stack-l">
       <div className="profile__header">
         <div className="profile__avatar">
           {user.profileImageUrl ? (
@@ -140,24 +148,33 @@ export default function Profile() {
             <span>{user.username.charAt(0).toUpperCase()}</span>
           )}
         </div>
-        <div className="profile__info">
+        <div className="profile__info stack-s">
           <h1>{user.username}</h1>
           {isOwnProfile && <p className="profile__email">{user.email}</p>}
           <p className="profile__bio">{user.bio || "No bio yet."}</p>
-          {isOwnProfile && (
+          {isOwnProfile && !editing && (
             <button
-              className="profile__edit-btn"
-              onClick={editing ? () => setEditing(false) : startEditing}
+              className="btn btn--secondary"
+              onClick={startEditing}
             >
-              {editing ? "Cancel" : "Edit Profile"}
+              Edit Profile
             </button>
           )}
         </div>
       </div>
 
       {editing && (
-        <form className="profile__form" onSubmit={handleSave}>
+        <form className="profile__form stack-m" onSubmit={handleSave}>
           <h2>Edit Profile</h2>
+          <div className="profile__field">
+            <label>Username</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+            />
+          </div>
           <div className="profile__field">
             <label>Email</label>
             <input
@@ -215,9 +232,9 @@ export default function Profile() {
             <button
               onClick={handleCloseEditField}
               type="button"
-              className="btn btn--primary"
+              className="btn btn--red"
             >
-              Close edit field
+              Close edit form
             </button>
           </div>
         </form>
@@ -261,27 +278,27 @@ export default function Profile() {
       </div>
 
       {user.trophies?.length > 0 && (
-        <div className="profile__trophies">
+        <section className="profile__trophies stack-m">
           <h2>Trophies</h2>
-          <div className="profile__trophy-list">
+          <ul className="profile__trophy-list">
             {user.trophies.map((trophy) => (
-              <div key={trophy._id} className="profile__trophy">
+              <li key={trophy._id} className="profile__trophy">
                 {trophy.imageUrl && (
                   <img src={trophy.imageUrl} alt={trophy.title} />
                 )}
                 <span>{trophy.title}</span>
-              </div>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
       )}
 
-      <div className="profile__games">
+      <section className="profile__games stack-m">
         <h2>Game History</h2>
         {games.length === 0 ? (
           <p className="profile__status">No games played yet.</p>
         ) : (
-          <div className="profile__game-list">
+          <ul className="profile__game-list">
             {games.map((match) => {
               const won = match.winnerId?._id === id;
               const opponent = match.players.find((player) => {
@@ -289,29 +306,30 @@ export default function Profile() {
                 return playerId !== id;
               })?.userId;
               return (
-                <Link
-                  to={`/game/${match._id}`}
-                  key={match._id}
-                  className="profile__game"
-                >
-                  <span
-                    className={`profile__result profile__result--${won ? "win" : "loss"}`}
+                <li key={match._id}>
+                  <Link
+                    to={`/game/${match._id}`}
+                    className="profile__game"
                   >
-                    {won ? "Win" : "Loss"}
-                  </span>
-                  <span className="profile__opponent">
-                    vs {opponent?.username}
-                  </span>
-                  <span className="profile__game-variant">
-                    {match.category?.timeControl}s · BO{match.category?.rounds}
-                  </span>
-                  <span className="profile__game-date">
-                    {new Date(match.updatedAt).toLocaleDateString()}
-                  </span>
-                </Link>
+                    <span
+                      className={`profile__result profile__result--${won ? "win" : "loss"}`}
+                    >
+                      {won ? "Win" : "Loss"}
+                    </span>
+                    <span className="profile__opponent">
+                      vs {opponent?.username}
+                    </span>
+                    <span className="profile__game-variant">
+                      {match.category?.timeControl}s · BO{match.category?.rounds}
+                    </span>
+                    <span className="profile__game-date">
+                      {new Date(match.updatedAt).toLocaleDateString()}
+                    </span>
+                  </Link>
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
         {gamesError && <p className="profile__error">{gamesError}</p>}
         {gamesTotal > games.length && (
@@ -323,7 +341,7 @@ export default function Profile() {
             {isLoadingGames ? "Loading..." : "Load more games"}
           </button>
         )}
-      </div>
+      </section>
     </div>
   );
 }

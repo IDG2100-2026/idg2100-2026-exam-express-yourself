@@ -7,13 +7,13 @@
   &__card {
     width: 100%;
     max-width: 420px;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    background-color: var(--color-card);
+    background-color: $color-inner;
   }
 
   &__subtitle {
-    color: var(--color-text-dim);
+    color: $color-text-dim;
   }
 
   &__form {
@@ -27,17 +27,17 @@
     flex-direction: column;
     gap: 0.4rem;
 
-    label { color: var(--color-text-dim); }
+    label { color: $color-text-dim; }
 
     input {
-      border: 1px solid var(--color-border);
+      border: 1px solid $color-border;
       border-radius: $radius;
-      color: var(--color-text);
-      background-color: var(--color-frame);
+      color: $color-text;
+      background-color: $color-frame;
 
       &:focus {
         outline: none;
-        border-color: var(--color-accent);
+        border-color: $color-yellow;
       }
     }
   }
@@ -45,27 +45,27 @@
   &__forgot {
     border: none;
     text-align: right;
-    color: var(--color-text-dim);
+    color: $color-text-dim;
     background: none;
 
-    &:hover { color: var(--color-accent); }
+    &:hover { color: $color-yellow; }
   }
 
   &__submit {
     border: none;
     border-radius: $radius;
     color: #1a1200;
-    background-color: var(--color-accent);
+    background-color: $color-yellow;
 
-    &:hover { background-color: var(--color-accent-light); }
+    &:hover { background-color: $color-yellow-hover; }
   }
 
   &__error {
-    color: var(--color-red);
+    color: $color-red;
   }
 
   &__register {
     text-align: center;
-    color: var(--color-text-dim);
+    color: $color-text-dim;
   }
 }

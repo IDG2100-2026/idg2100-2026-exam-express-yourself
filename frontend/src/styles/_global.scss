@@ -9,33 +9,34 @@
 body {
   min-block-size: 100vh;
   font-family: $font-body;
-  color: var(--color-text);
-  background-color: var(--color-bg);
+  color: $color-text;
+  background-color: $color-bg;
 }
 
 h1 {
-  color: var(--color-h1);
+  color: $color-h1;
 }
 
 h2 {
   padding-block-end: 0.5rem;
-  border-block-end: 2px solid var(--color-h2);
-  color: var(--color-h2);
+  border-block-end: 2px solid $color-h2;
+  color: $color-h2;
 }
 
 h3 {
-  color: var(--color-h3);
+  color: $color-h3;
 }
 
 a,
 button {
   text-decoration: none;
-  color: var(--color-yellow);
+  color: $color-yellow;
   cursor: pointer;
 }
 
 button {
   border: none;
+  line-height: inherit;
   font: inherit;
   background: none;
 }

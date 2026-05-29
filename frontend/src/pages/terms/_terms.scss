@@ -7,7 +7,7 @@
   max-width: 700px;
 
   &__updated {
-    color: var(--color-text-dim);
+    color: $color-text-dim;
   }
 
   &__section {
@@ -17,7 +17,6 @@
 
     p {
       line-height: 1.7;
-      color: var(--color-text-dim);
     }
   }
 }

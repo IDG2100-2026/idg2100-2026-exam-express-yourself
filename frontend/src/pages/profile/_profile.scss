@@ -6,9 +6,9 @@
   gap: 2rem;
   max-width: 700px;
 
-  &__status  { color: var(--color-text-dim); }
-  &__error   { color: var(--color-red); }
-  &__success { color: var(--color-green); }
+  &__status  { color: $color-text-dim; }
+  &__error   { color: $color-red; }
+  &__success { color: $color-green; }
 
   &__header {
     display: flex;
@@ -25,7 +25,7 @@
     height: 80px;
     border-radius: 50%;
     color: #1a1200;
-    background-color: var(--color-accent);
+    background-color: $color-yellow;
   }
 
   &__avatar-img {
@@ -36,34 +36,18 @@
   }
 
   &__info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
   }
 
-  &__email { color: var(--color-text-dim); }
-  &__bio   { color: var(--color-text-dim); }
-
-  &__edit-btn {
-    align-self: flex-start;
-    border: 1px solid var(--color-border);
-    border-radius: $radius;
-    color: var(--color-text-dim);
-    background: none;
-
-    &:hover {
-      border-color: var(--color-accent);
-      color: var(--color-accent);
-    }
-  }
+  &__email { color: $color-text-dim; }
+  &__bio   { }
 
   &__form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    background-color: var(--color-card);
+    background-color: $color-inner;
   }
 
   &__field {
@@ -72,22 +56,22 @@
     gap: 0.4rem;
 
     label {
-      color: var(--color-text-dim);
+      color: $color-text-dim;
 
-      span { color: var(--color-text-dim); }
+      span { color: $color-text-dim; }
     }
 
     input,
     textarea {
-      border: 1px solid var(--color-border);
+      border: 1px solid $color-border;
       border-radius: $radius;
       font-family: inherit;
-      color: var(--color-text);
-      background-color: var(--color-frame);
+      color: $color-text;
+      background-color: $color-frame;
 
       &:focus {
         outline: none;
-        border-color: var(--color-accent);
+        border-color: $color-yellow;
       }
     }
 
@@ -107,9 +91,9 @@
       border: none;
       border-radius: $radius;
       color: #1a1200;
-      background-color: var(--color-accent);
+      background-color: $color-yellow;
 
-      &:hover { background-color: var(--color-accent-light); }
+      &:hover { background-color: $color-yellow-hover; }
     }
   }
 
@@ -123,19 +107,19 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
     text-align: center;
-    background-color: var(--color-card);
+    background-color: $color-inner;
   }
 
   &__stat-value {
-    color: var(--color-accent);
+    color: $color-yellow;
   }
 
   &__stat-label {
     text-transform: uppercase;
-    color: var(--color-text-dim);
+    color: $color-text-dim;
   }
 
   &__games-header {
@@ -154,24 +138,24 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    background-color: var(--color-card);
+    background-color: $color-inner;
 
-    &:hover { border-color: var(--color-accent); }
+    &:hover { border-color: $color-yellow; }
   }
 
   &__result {
     border-radius: $radius;
 
-    &--win  { background-color: var(--color-green); color: #fff; }
-    &--loss { background-color: var(--color-red);  color: #fff; }
+    &--win  { background-color: $color-green; color: #fff; }
+    &--loss { background-color: $color-red;  color: #fff; }
   }
 
   &__opponent { flex: 1; }
 
-  &__game-date    { color: var(--color-text-dim); }
-  &__game-variant { color: var(--color-text-dim); }
+  &__game-date    { color: $color-text-dim; }
+  &__game-variant { color: $color-text-dim; }
 
   &__trophies {
     display: flex;
@@ -190,7 +174,7 @@
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
-    color: var(--color-accent);
+    color: $color-yellow;
 
     img {
       width: 48px;
@@ -201,14 +185,14 @@
 
   &__load-more {
     width: 100%;
-    border: 1px solid var(--color-border);
+    border: 1px solid $color-border;
     border-radius: $radius;
-    color: var(--color-text-dim);
-    background-color: var(--color-card);
+    color: $color-text-dim;
+    background-color: $color-inner;
 
     &:hover:not(:disabled) {
-      border-color: var(--color-accent);
-      color: var(--color-text);
+      border-color: $color-yellow;
+      color: $color-text;
     }
 
     &:disabled {
