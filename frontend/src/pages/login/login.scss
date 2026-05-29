@@ -85,6 +85,9 @@
   &__error {
     color: $color-danger;
   }
+  &__success{
+    color: $color-success
+  }
 
   &__register {
     text-align: center;

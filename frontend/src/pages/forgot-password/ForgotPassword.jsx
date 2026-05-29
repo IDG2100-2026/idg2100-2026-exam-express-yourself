@@ -49,7 +49,7 @@ const ForgotPassword = () => {
       <div className="forgotPassword__card">
         <form className="forgotPassword__field" onSubmit={sendEmailCode}>
           <h2 className="forgotPassword__title">Forgot Password</h2>
-          {resetMessage ? <span>{resetMessage}</span> : <span>{error}</span>}
+          {resetMessage ? <span className="forgotPassword__success">{resetMessage}</span> : <span className="forgotPassword__error">{error}</span>}
           <input
             type="email"
             value={sendMail}

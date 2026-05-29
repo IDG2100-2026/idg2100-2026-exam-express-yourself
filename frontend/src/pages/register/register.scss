@@ -21,7 +21,7 @@
 
   &__subtitle {
     color: $color-text-muted;
-    margin-bottom: 1.5rem;
+    margin-block-start: 10px;
   }
 
   &__form {
@@ -66,6 +66,8 @@
   &__error {
     color: $color-danger;
     font-size: 0.875rem;
+    padding-block: 10px;
+    font-size: 1rem;
   }
 
   &__submit {

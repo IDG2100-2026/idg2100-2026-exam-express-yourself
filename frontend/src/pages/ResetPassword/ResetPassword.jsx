@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../services/auth-service.js";
 import "../login/login.scss"
-// import "./ResetPassword.scss";
 
 const ResetPassword = () => {
   const [error, setError] = useState(null);
@@ -47,11 +46,11 @@ const ResetPassword = () => {
           <form className="reset__form" onSubmit={handleSubmit}>
             <h2 className="reset__title">Reset Password</h2>
             {success ? (
-              <p>
+              <p className="forgotPassword__success">
                 {success}
               </p>
             ) : (
-              <p>{error}</p>
+              <p className="forgotPassword__error">{error}</p>
             )}
             <div className="reset__field">
               <label htmlFor="password">Password</label>

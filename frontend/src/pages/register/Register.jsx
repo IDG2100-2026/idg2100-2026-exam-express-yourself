@@ -48,13 +48,13 @@ export default function Register() {
     setIsSubmitting(true);
 
     try {
-      await registerUser({
+      const userData = await registerUser({
         username: formData.username,
         email: formData.email,
         password: formData.password,
         age,
       });
-      setSuccess(true); // for showing confirmation msg
+      setSuccess(userData.message); // for showing confirmation msg
       setTimeout(() => {
         navigate("/"); // navigate to homepage after 3 seconds
       }, 3000);
@@ -70,7 +70,7 @@ export default function Register() {
       <div className="register__card">
         <h1 className="register__title">Create Account</h1>
         <p className="register__subtitle">Join PokerDados today</p>
-        {success && <p>Registration successful! Confirm your account from the email you got to login</p>}
+        {success ? <p>{success}</p> : <p className="register__error">{error}</p>}
         <form className="register__form" onSubmit={handleSubmit}>
           <div className="register__field">
             <label htmlFor="username">Username</label>
@@ -151,9 +151,6 @@ export default function Register() {
               </Link>
             </label>
           </div>
-
-          {error && <p className="register__error">{error}</p>}
-
           <button
             className="register__submit"
             disabled={isSubmitting}

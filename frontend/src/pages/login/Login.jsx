@@ -48,7 +48,7 @@ export default function Login() {
           <h1 className="login__title">Log In</h1>
           <p className="login__subtitle">Welcome back to PokerDados</p>
           {success ? (
-            <span>{success}</span>
+            <span className="login__success">{success}</span>
           ) : (
             <span className="login__error">{error}</span>
           )}

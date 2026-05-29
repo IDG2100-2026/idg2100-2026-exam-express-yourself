@@ -12,7 +12,10 @@ import {
   MAX_USER_BIO_LENGTH,
   USER_THEMES,
 } from "../config/constants.js";
-
+import {
+  checkIfEmailExists,
+  checkIfUsernameIsAvailable,
+} from "../services/user-service.js";
 
 // Validates optional query params when listing all users (GET /api/users)
 export function validateGetUsers() {
@@ -31,7 +34,6 @@ export function validateGetUsers() {
   ];
 }
 
-
 // Validates required body fields when registering a new user (POST /api/auth/register)
 export function validateRegister() {
   return [
@@ -47,10 +49,7 @@ export function validateRegister() {
       .matches(ALLOWED_USERNAME_FORMAT)
       .withMessage("Username can only contain letters and numbers.")
       .bail()
-      .custom(async (username) => {
-        const exists = await User.findOne({ username });
-        if (exists) throw new Error("Username already taken.");
-      }),
+      .custom(checkIfUsernameIsAvailable),
     body("email")
       .trim()
       .notEmpty()
@@ -62,10 +61,7 @@ export function validateRegister() {
       .isEmail()
       .withMessage("Must be a valid email address, e.g. user@mail.com.")
       .bail()
-      .custom(async (email) => {
-        const exists = await User.findOne({ email: email.toLowerCase() });
-        if (exists) throw new Error("Email already in use.");
-      }),
+      .custom(checkIfEmailExists),
     body("password")
       .trim()
       .notEmpty()
@@ -93,7 +89,6 @@ export function validateRegister() {
   ];
 }
 
-
 // Validates required body fields when logging in (POST /api/auth/login)
 export function validateLogin() {
   return [
@@ -106,7 +101,6 @@ export function validateLogin() {
     body("password").trim().notEmpty().withMessage("Password is required."),
   ];
 }
-
 
 // Validates optional body fields when updating a user profile (PATCH /api/users/:id)
 export function validateUpdateUser() {

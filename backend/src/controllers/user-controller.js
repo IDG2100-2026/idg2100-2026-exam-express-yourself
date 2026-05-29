@@ -16,7 +16,6 @@ export async function getUsers(req, res, next) {
   res.json(result);
 }
 
-
 // Get a single user profile with their recent matches (GET /api/users/:id?matchPage=&matchLimit=)
 export async function getUser(req, res, next) {
   const result = await getUserService(req.params.id, req.userId, req.validated);
