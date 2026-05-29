@@ -57,3 +57,6 @@ MATCHMAKING
   [ ] Auto-start when required players joined
   [*] Anonymous users — spectate only, redirect to login on join (redirect done, spectate not implemented)
   
+
+TODO - Emil:
+  Fix suer validator to have email and username checker in services! 

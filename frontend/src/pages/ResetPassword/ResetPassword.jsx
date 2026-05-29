@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../services/auth-service.js";
-import "./ResetPassword.scss";
+import "../login/login.scss"
+// import "./ResetPassword.scss";
 
 const ResetPassword = () => {
   const [error, setError] = useState(null);
@@ -15,7 +16,7 @@ const ResetPassword = () => {
   const code = searchParams.get("code");
 
   useEffect(() => {
-    if (!code) {
+    if (!code) { // if user enters this page without the code we show this msg
       setInvalidReqError("Invalid or missing reset link");
     }
   }, [code]);
@@ -25,8 +26,8 @@ const ResetPassword = () => {
     setError(null);
     setLoading(true);
     try {
-      await resetPassword(code, password);
-      setSuccess(true);
+      const data = await resetPassword(code, password);
+      setSuccess(data.message);
       setTimeout(() => {
         navigate("/login");
       }, 3000);
@@ -47,8 +48,7 @@ const ResetPassword = () => {
             <h2 className="reset__title">Reset Password</h2>
             {success ? (
               <p>
-                Reset password successful. You will be redirected to the login
-                page
+                {success}
               </p>
             ) : (
               <p>{error}</p>
