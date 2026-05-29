@@ -5,19 +5,20 @@
   border-bottom: 1px solid $color-border;
 
   &__inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
   }
 
   &__logo {
-    color: $color-accent;
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-weight: bold;
     text-decoration: none;
+    color: $color-accent;
+
+    &:hover { text-decoration: none; }
   }
 
   &__nav {
@@ -26,13 +27,12 @@
   }
 
   &__nav-link {
-    color: $color-text-muted;
     text-decoration: none;
-    font-size: 0.95rem;
+    color: $color-text-muted;
 
     &:hover {
-      color: $color-accent;
       text-decoration: none;
+      color: $color-accent;
     }
   }
 
@@ -52,27 +52,21 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    color: $color-text-muted;
     text-decoration: none;
-    font-size: 0.9rem;
+    color: $color-text-muted;
 
     &:hover {
-      color: $color-accent;
       text-decoration: none;
+      color: $color-accent;
     }
   }
 
-  &__greeting-icon {
-    font-size: 1.1rem;
-  }
-
   &__logout {
-    background: none;
+    padding: 0.3rem 0.75rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text-muted;
-    font-size: 0.875rem;
-    padding: 0.3rem 0.75rem;
+    background: none;
     cursor: pointer;
 
     &:hover {
@@ -82,17 +76,16 @@
   }
 
   &__register {
-    background-color: $color-accent;
-    border-radius: $radius;
-    color: #1a1200;
-    font-size: 0.875rem;
-    font-weight: 700;
     padding: 0.3rem 0.75rem;
+    border-radius: $radius;
+    font-weight: bold;
     text-decoration: none;
+    color: #1a1200;
+    background-color: $color-accent;
 
     &:hover {
-      background-color: $color-accent-hover;
       text-decoration: none;
+      background-color: $color-accent-hover;
     }
   }
 }

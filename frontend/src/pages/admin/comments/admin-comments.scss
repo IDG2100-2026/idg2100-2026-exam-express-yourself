@@ -2,9 +2,8 @@
 
 .admin-comments {
   &__title {
-    font-size: 1.75rem;
-    font-weight: 700;
     margin-bottom: 1.5rem;
+    font-weight: bold;
   }
 
   &__list {
@@ -14,70 +13,53 @@
   }
 
   &__item {
-    background: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    padding: 1rem 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background: $color-bg-card;
   }
 
   &__meta {
     display: flex;
-    gap: 1rem;
     flex-wrap: wrap;
     align-items: center;
+    gap: 1rem;
   }
 
   &__author {
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: $color-text;
+    font-weight: bold;
   }
 
   &__target {
-    font-size: 0.8rem;
-    color: $color-text-muted;
     font-family: monospace;
+    color: $color-text-muted;
   }
 
   &__date {
-    font-size: 0.8rem;
-    color: $color-text-muted;
     margin-left: auto;
+    color: $color-text-muted;
   }
 
   &__text {
-    font-size: 0.9rem;
-    color: $color-text;
     line-height: 1.5;
   }
 
   &__delete {
     align-self: flex-end;
     padding: 0.35rem 0.75rem;
-    border-radius: $radius;
     border: 1px solid $color-danger;
-    background: transparent;
+    border-radius: $radius;
     color: $color-danger;
-    font-size: 0.8rem;
+    background: transparent;
     cursor: pointer;
     transition: background 0.15s;
 
-    &:hover {
-      background: rgba($color-danger, 0.1);
-    }
+    &:hover { background: rgba($color-danger, 0.1); }
   }
 
-  &__muted {
-    color: $color-text-muted;
-    font-size: 0.9rem;
-  }
-
-  &__error {
-    color: $color-danger;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
+  &__muted { color: $color-text-muted; }
+  &__error { margin-bottom: 1rem; color: $color-danger; }
 }

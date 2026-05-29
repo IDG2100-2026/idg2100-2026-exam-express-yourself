@@ -7,47 +7,38 @@
 
   &__header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
   }
 
-  &__title {
-    font-size: 1.8rem;
-    color: $color-accent;
-  }
+  &__title { color: $color-accent; }
 
   &__create {
-    background-color: $color-accent;
-    border-radius: $radius;
-    color: #1a1200;
-    font-weight: 700;
     padding: 0.5rem 1rem;
+    border-radius: $radius;
+    font-weight: bold;
     text-decoration: none;
+    color: #1a1200;
+    background-color: $color-accent;
 
     &:hover {
-      background-color: $color-accent-hover;
       text-decoration: none;
+      background-color: $color-accent-hover;
     }
   }
 
-  &__status {
-    color: $color-text-muted;
-  }
+  &__status { color: $color-text-muted; }
+  &__error  { color: $color-danger; }
 
-  &__error {
-    color: $color-danger;
-  }
-
-  /* Filter bar */
   &__filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
     align-items: center;
-    background-color: $color-bg-card;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
     border: 1px solid $color-border;
     border-radius: $radius;
-    padding: 0.75rem 1rem;
+    background-color: $color-bg-card;
   }
 
   &__filter-group {
@@ -57,9 +48,8 @@
   }
 
   &__filter-label {
-    font-size: 0.8rem;
-    color: $color-text-muted;
     white-space: nowrap;
+    color: $color-text-muted;
   }
 
   &__filter-btns {
@@ -68,35 +58,38 @@
   }
 
   &__filter-btn {
-    background-color: $color-bg-secondary;
+    padding: 0.25rem 0.6rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text-muted;
+    background-color: $color-bg-secondary;
     cursor: pointer;
-    font-size: 0.8rem;
-    padding: 0.25rem 0.6rem;
 
-    &:hover { border-color: $color-accent; color: $color-text; }
+    &:hover {
+      color: $color-text;
+      border-color: $color-accent;
+    }
 
     &--active {
-      border-color: $color-accent;
       color: $color-accent;
+      border-color: $color-accent;
     }
   }
 
   &__sort {
-    background-color: $color-bg-secondary;
+    padding: 0.25rem 0.5rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
-    font-size: 0.8rem;
-    padding: 0.25rem 0.5rem;
+    background-color: $color-bg-secondary;
     cursor: pointer;
 
-    &:focus { outline: none; border-color: $color-accent; }
+    &:focus {
+      outline: none;
+      border-color: $color-accent;
+    }
   }
 
-  /* Load more */
   &__load-more {
     display: flex;
     justify-content: center;
@@ -104,16 +97,22 @@
   }
 
   &__load-more-btn {
-    background-color: $color-bg-card;
+    padding: 0.5rem 2rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text-muted;
+    background-color: $color-bg-card;
     cursor: pointer;
-    font-size: 0.9rem;
-    padding: 0.5rem 2rem;
 
-    &:hover:not(:disabled) { border-color: $color-accent; color: $color-text; }
-    &:disabled { opacity: 0.5; cursor: not-allowed; }
+    &:hover:not(:disabled) {
+      color: $color-text;
+      border-color: $color-accent;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 
   &__grid {
@@ -123,71 +122,53 @@
   }
 
   &__card {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-left: 3px solid $color-border;
-    border-radius: $radius;
-    padding: 1.25rem;
-    text-align: left;
-    cursor: pointer;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     width: 100%;
+    padding: 1.25rem;
+    border: 1px solid $color-border;
+    border-left: 3px solid $color-border;
+    border-radius: $radius;
+    text-align: left;
+    background-color: $color-bg-card;
+    cursor: pointer;
 
-    &:hover {
-      border-color: $color-accent;
-    }
+    &:hover { border-color: $color-accent; }
   }
 
-  &__card--waiting    { border-left-color: $color-accent; }
+  &__card--waiting     { border-left-color: $color-accent; }
   &__card--in-progress { border-left-color: #58a6ff; }
-  &__card--completed  { border-left-color: $color-success; }
-
-  &__card-elo {
-    color: $color-text-muted;
-    font-weight: 400;
-    font-size: 0.85rem;
-    margin-top: 0.1rem;
-  }
-
-  &__card-variant {
-    color: $color-text-muted;
-    font-size: 0.85rem;
-  }
+  &__card--completed   { border-left-color: $color-success; }
 
   &__card-player {
-    color: $color-text;
-    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    font-weight: bold;
   }
 
+  &__card-elo     { color: $color-text-muted; }
+  &__card-variant { color: $color-text-muted; }
+  &__card-waiting { color: $color-accent; }
+
   &__avatar {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: $color-accent;
+    font-weight: bold;
     color: #1a1200;
-    font-weight: 700;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    overflow: hidden;
+    background-color: $color-accent;
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-  }
-
-  &__card-waiting {
-    color: $color-accent;
-    font-size: 0.8rem;
-    margin-top: 0.25rem;
   }
 }

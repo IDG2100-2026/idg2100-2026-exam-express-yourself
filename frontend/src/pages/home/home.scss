@@ -6,41 +6,40 @@
   gap: 3rem;
 
   &__hero {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius-lg;
-    padding: 3rem 2rem;
-    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    padding: 3rem 2rem;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    text-align: center;
+    background-color: $color-bg-card;
   }
 
   &__title {
-    font-size: 2.5rem;
     color: $color-accent;
   }
 
   &__description {
-    color: $color-text-muted;
     max-width: 500px;
     line-height: 1.7;
+    color: $color-text-muted;
   }
 
   &__cta {
     display: inline-block;
     margin-top: 0.5rem;
     padding: 0.75rem 2rem;
-    background-color: $color-accent;
-    color: #1a1200;
-    font-weight: 700;
     border-radius: $radius;
+    font-weight: bold;
     text-decoration: none;
+    color: #1a1200;
+    background-color: $color-accent;
 
     &:hover {
-      background-color: $color-accent-hover;
       text-decoration: none;
+      background-color: $color-accent-hover;
     }
   }
 
@@ -52,28 +51,18 @@
 
   &__section-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid $color-accent;
-
-    h2 {
-      color: $color-accent;
-      font-size: 1.2rem;
-    }
   }
 
-  &__status {
-    color: $color-text-muted;
-  }
-
-  &__error {
-    color: $color-danger;
-  }
+  &__status { color: $color-text-muted; }
+  &__error  { color: $color-danger; }
 
   &__empty {
-    color: $color-text-muted;
     font-style: italic;
+    color: $color-text-muted;
   }
 
   &__grid {
@@ -83,81 +72,57 @@
   }
 
   &__card {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-left: 3px solid $color-border;
-    border-radius: $radius;
-    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+    padding: 1rem;
+    border: 1px solid $color-border;
+    border-left: 3px solid $color-border;
+    border-radius: $radius;
     text-decoration: none;
+    background-color: $color-bg-card;
 
-    &:hover {
-      border-color: $color-accent;
-      text-decoration: none;
-    }
+    &:hover { border-color: $color-accent; }
   }
 
-  &__card-player {
-    color: $color-text;
-    font-weight: 600;
-  }
+  &__card-player { font-weight: bold; }
 
-  &__card-variant {
-    color: $color-text-muted;
-    font-size: 0.875rem;
-  }
+  &__card-variant { color: $color-text-muted; }
 
   &__card-waiting {
-    color: $color-accent;
-    font-size: 0.8rem;
     margin-top: 0.25rem;
+    color: $color-accent;
   }
 
   &__card--btn {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-left: 3px solid $color-border;
-    border-radius: $radius;
-    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
-    text-align: left;
-    cursor: pointer;
     width: 100%;
+    padding: 1rem;
+    border: 1px solid $color-border;
+    border-left: 3px solid $color-border;
+    border-radius: $radius;
+    text-align: left;
+    background-color: $color-bg-card;
+    cursor: pointer;
 
-    &:hover {
-      border-color: $color-accent;
-    }
+    &:hover { border-color: $color-accent; }
   }
 
-  &__card--upcoming   { border-left-color: $color-accent; }
-  &__card--waiting    { border-left-color: $color-accent; }
+  &__card--upcoming    { border-left-color: $color-accent; }
+  &__card--waiting     { border-left-color: $color-accent; }
   &__card--in-progress { border-left-color: #58a6ff; }
-  &__card--completed  { border-left-color: $color-success; }
-  &__card--cancelled  { border-left-color: $color-danger; }
+  &__card--completed   { border-left-color: $color-success; }
+  &__card--cancelled   { border-left-color: $color-danger; }
 
-  &__card-elo {
-    color: $color-text-muted;
-    font-size: 0.8rem;
-  }
+  &__card-elo { color: $color-text-muted; }
 
   &__card-status {
-    font-size: 0.8rem;
     margin-top: 0.25rem;
 
-    &--in-progress {
-      color: $color-success;
-    }
-
-    &--completed {
-      color: $color-text-muted;
-    }
-
-    &--waiting {
-      color: $color-accent;
-    }
+    &--in-progress { color: $color-success; }
+    &--completed   { color: $color-text-muted; }
+    &--waiting     { color: $color-accent; }
   }
 }

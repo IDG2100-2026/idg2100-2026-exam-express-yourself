@@ -4,14 +4,13 @@
   max-width: 600px;
 
   &__title {
-    font-size: 1.8rem;
-    color: $color-accent;
     margin-bottom: 0.25rem;
+    color: $color-accent;
   }
 
   &__subtitle {
-    color: $color-text-muted;
     margin-bottom: 2rem;
+    color: $color-text-muted;
   }
 
   &__form {
@@ -21,45 +20,41 @@
   }
 
   &__group {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-bg-card;
   }
 
   &__group-label {
+    font-weight: bold;
     color: $color-text-muted;
-    font-size: 0.9rem;
-    font-weight: 600;
   }
 
   &__options {
     display: flex;
-    gap: 0.5rem;
     flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   &__option {
-    background-color: $color-bg-secondary;
+    padding: 0.5rem 1rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
+    background-color: $color-bg-secondary;
     cursor: pointer;
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
 
-    &:hover {
-      border-color: $color-accent;
-    }
+    &:hover { border-color: $color-accent; }
 
     &--selected {
-      background-color: $color-accent;
       border-color: $color-accent;
+      font-weight: bold;
       color: #1a1200;
-      font-weight: 700;
+      background-color: $color-accent;
     }
   }
 
@@ -70,7 +65,6 @@
 
   &__slider-hint {
     color: $color-text-muted;
-    font-size: 0.8rem;
   }
 
   &__checkbox {
@@ -78,28 +72,23 @@
     align-items: center;
     gap: 0.5rem;
     color: $color-text-muted;
-    font-size: 0.9rem;
   }
 
   &__error {
     color: $color-danger;
-    font-size: 0.875rem;
   }
 
   &__submit {
-    background-color: $color-accent;
+    align-self: flex-start;
+    padding: 0.75rem 2rem;
     border: none;
     border-radius: $radius;
+    font-weight: bold;
     color: #1a1200;
+    background-color: $color-accent;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 700;
-    padding: 0.75rem 2rem;
-    align-self: flex-start;
 
-    &:hover {
-      background-color: $color-accent-hover;
-    }
+    &:hover { background-color: $color-accent-hover; }
 
     &:disabled {
       opacity: 0.6;

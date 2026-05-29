@@ -1,20 +1,18 @@
 @use '../../styles/variables' as *;
 
 .privacy {
-  max-width: 700px;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  max-width: 700px;
 
   &__title {
-    font-size: 1.8rem;
     color: $color-accent;
   }
 
   &__updated {
-    color: $color-text-muted;
-    font-size: 0.875rem;
     margin-top: -1rem;
+    color: $color-text-muted;
   }
 
   &__section {
@@ -22,14 +20,9 @@
     flex-direction: column;
     gap: 0.5rem;
 
-    h2 {
-      font-size: 1rem;
-      color: $color-text;
-    }
-
     p {
-      color: $color-text-muted;
       line-height: 1.7;
+      color: $color-text-muted;
     }
   }
 }

@@ -1,17 +1,17 @@
 @use '../../styles/variables' as *;
 
 .footer {
-  background-color: $color-bg-secondary;
-  border-top: 1px solid $color-border;
   margin-top: auto;
+  border-top: 1px solid $color-border;
+  background-color: $color-bg-secondary;
 
   &__inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1.25rem 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.25rem 1rem;
   }
 
   &__brand {
@@ -21,13 +21,12 @@
   }
 
   &__name {
+    font-weight: bold;
     color: $color-accent;
-    font-weight: 700;
   }
 
   &__copy {
     color: $color-text-muted;
-    font-size: 0.8rem;
   }
 
   &__links {
@@ -36,12 +35,9 @@
   }
 
   &__link {
-    color: $color-text-muted;
-    font-size: 0.875rem;
     text-decoration: none;
+    color: $color-text-muted;
 
-    &:hover {
-      color: $color-accent;
-    }
+    &:hover { color: $color-accent; }
   }
 }

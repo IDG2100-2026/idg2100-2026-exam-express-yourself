@@ -1,43 +1,40 @@
 @use "../../styles/variables" as *;
 
 .admin-layout {
-  min-height: 100vh;
-  background: $color-bg;
-  color: $color-text;
-  font-family: $font-main;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  background: $color-bg;
 
   &__main {
     flex: 1;
-    padding: 2rem;
-    max-width: 1200px;
     width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 2rem;
   }
 }
 
 .admin-header {
-  background: $color-bg-secondary;
   border-bottom: 1px solid $color-border;
+  background: $color-bg-secondary;
 
   &__inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    height: 56px;
     display: flex;
     align-items: center;
     gap: 2rem;
+    max-width: 1200px;
+    height: 56px;
+    margin: 0 auto;
+    padding: 0 2rem;
   }
 
   &__logo {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: $color-accent;
-    text-decoration: none;
-    white-space: nowrap;
     margin-right: auto;
+    font-weight: bold;
+    white-space: nowrap;
+    text-decoration: none;
+    color: $color-accent;
   }
 
   &__nav {
@@ -48,30 +45,28 @@
   &__link {
     padding: 0.4rem 0.75rem;
     border-radius: $radius;
-    font-size: 0.875rem;
-    color: $color-text-muted;
     text-decoration: none;
+    color: $color-text-muted;
     transition: background 0.15s, color 0.15s;
 
     &:hover {
-      background: $color-bg-card;
       color: $color-text;
+      background: $color-bg-card;
     }
 
     &.active {
-      background: $color-bg-card;
       color: $color-accent;
+      background: $color-bg-card;
     }
   }
 
   &__logout {
     margin-left: 1rem;
     padding: 0.4rem 0.75rem;
-    border-radius: $radius;
     border: 1px solid $color-border;
-    background: transparent;
+    border-radius: $radius;
     color: $color-text-muted;
-    font-size: 0.875rem;
+    background: transparent;
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s;
 

@@ -1,55 +1,49 @@
 @use '../../styles/variables' as *;
 
 .tournament {
-  max-width: 800px;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  max-width: 800px;
 
   &__header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
-    flex-wrap: wrap;
   }
 
-  &__title {
-    font-size: 1.8rem;
-    color: $color-accent;
-  }
+  &__title { color: $color-accent; }
 
   &__status-badge {
-    background-color: $color-bg-card;
+    padding: 0.2rem 0.6rem;
     border: 1px solid $color-border;
     border-radius: $radius;
-    font-size: 0.8rem;
-    font-weight: 700;
-    padding: 0.2rem 0.6rem;
+    font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    background-color: $color-bg-card;
 
-    &--upcoming    { color: $color-accent; border-color: $color-accent; }
-    &--in-progress { color: #58a6ff; border-color: #58a6ff; }
-    &--completed   { color: $color-success; border-color: $color-success; }
-    &--cancelled   { color: $color-danger; border-color: $color-danger; }
+    &--upcoming    { border-color: $color-accent;  color: $color-accent; }
+    &--in-progress { border-color: #58a6ff;        color: #58a6ff; }
+    &--completed   { border-color: $color-success; color: $color-success; }
+    &--cancelled   { border-color: $color-danger;  color: $color-danger; }
   }
 
-  /* Countdown */
   &__countdown {
-    background: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background: $color-bg-card;
   }
 
   &__countdown-label {
-    color: $color-text-muted;
-    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    color: $color-text-muted;
   }
 
   &__countdown-units {
@@ -65,97 +59,89 @@
   }
 
   &__countdown-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: $color-accent;
-    font-variant-numeric: tabular-nums;
     min-width: 2.5ch;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
     text-align: center;
+    color: $color-accent;
   }
 
   &__countdown-text {
-    font-size: 0.7rem;
-    color: $color-text-muted;
     text-transform: uppercase;
+    color: $color-text-muted;
   }
 
-  /* Info block */
   &__info {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-bg-card;
   }
 
   &__info-item {
     display: flex;
     gap: 1rem;
-    font-size: 0.95rem;
   }
 
   &__info-label {
-    color: $color-text-muted;
     min-width: 80px;
-  }
-
-  &__description, &__rules-text {
     color: $color-text-muted;
-    line-height: 1.7;
   }
 
-  /* Action buttons */
+  &__description,
+  &__rules-text {
+    line-height: 1.7;
+    color: $color-text-muted;
+  }
+
   &__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
     align-items: center;
+    gap: 0.75rem;
   }
 
   &__btn {
-    border: none;
-    border-radius: $radius;
-    cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 700;
-    padding: 0.6rem 1.4rem;
-    text-decoration: none;
     display: inline-flex;
     align-items: center;
+    padding: 0.6rem 1.4rem;
+    border: none;
+    border-radius: $radius;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
     transition: opacity 0.15s;
 
     &:hover { opacity: 0.85; }
 
-    &--primary   { background: $color-accent; color: #1a1200; }
-    &--secondary { background: $color-bg-card; border: 1px solid $color-border; color: $color-text; }
-    &--warning   { background: #e09000; color: #1a1200; }
-    &--danger    { background: $color-danger; color: #fff; }
+    &--primary   { background: $color-accent;    color: #1a1200; }
+    &--secondary { border: 1px solid $color-border; background: $color-bg-card; color: $color-text; }
+    &--warning   { background: #e09000;           color: #1a1200; }
+    &--danger    { background: $color-danger;     color: #fff; }
   }
 
   &__admin-controls {
     display: flex;
-    gap: 0.5rem;
     flex-wrap: wrap;
+    gap: 0.5rem;
     margin-left: auto;
     padding-left: 1rem;
     border-left: 1px solid $color-border;
   }
 
-  &__joined        { color: $color-success; font-size: 0.9rem; }
-  &__action-msg    { color: $color-success; font-size: 0.9rem; }
+  &__joined     { color: $color-success; }
+  &__action-msg { color: $color-success; }
 
-  /* Sections */
   &__section-title {
-    font-size: 1.1rem;
-    color: $color-accent;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid $color-border;
+    color: $color-accent;
   }
 
-  /* Trophy */
   &__trophy-item {
     display: flex;
     align-items: center;
@@ -165,25 +151,22 @@
   &__trophy-img {
     width: 64px;
     height: 64px;
-    object-fit: contain;
     border-radius: $radius;
+    object-fit: contain;
   }
 
   &__trophy-title {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: bold;
     color: $color-accent;
   }
 
   &__winner {
     margin-top: 0.5rem;
     color: $color-text-muted;
-    font-size: 0.9rem;
 
     strong { color: $color-accent; }
   }
 
-  /* Live matches */
   &__live-match-list {
     display: flex;
     flex-direction: column;
@@ -191,32 +174,30 @@
   }
 
   &__live-match {
-    background: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    padding: 0.6rem 1rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 0.9rem;
-    color: $color-text;
+    padding: 0.6rem 1rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
     text-decoration: none;
+    color: $color-text;
+    background: $color-bg-card;
     transition: border-color 0.15s;
 
-    &:hover { border-color: $color-accent; text-decoration: none; }
+    &:hover {
+      border-color: $color-accent;
+      text-decoration: none;
+    }
   }
 
-  /* Standings */
-  &__round {
-    margin-bottom: 1.25rem;
-  }
+  &__round { margin-bottom: 1.25rem; }
 
   &__round-title {
-    font-size: 0.9rem;
-    color: $color-text-muted;
+    margin-bottom: 0.5rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 0.5rem;
+    color: $color-text-muted;
   }
 
   &__round-matches {
@@ -226,59 +207,45 @@
   }
 
   &__match {
-    background: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    padding: 0.6rem 1rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background: $color-bg-card;
   }
 
-  &__match-vs {
-    color: $color-text-muted;
-    font-size: 0.8rem;
-  }
+  &__match-vs     { color: $color-text-muted; }
+  &__match-result { margin-left: auto; color: $color-success; }
 
   &__match-player--winner {
+    font-weight: bold;
     color: $color-success;
-    font-weight: 700;
   }
 
-  &__match-result {
-    margin-left: auto;
-    color: $color-success;
-    font-size: 0.85rem;
-  }
-
-  /* Participants */
   &__participant-list {
-    list-style: none;
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+    list-style: none;
   }
 
   &__participant {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 0.9rem;
   }
 
   &__participant-link {
-    color: $color-text;
     text-decoration: none;
+    color: $color-text;
+
     &:hover { color: $color-accent; }
   }
 
-  &__participant-elo {
-    color: $color-text-muted;
-    font-size: 0.8rem;
-  }
+  &__participant-elo { color: $color-text-muted; }
 
-  /* Comments */
   &__comments {
     display: flex;
     flex-direction: column;
@@ -287,31 +254,22 @@
   }
 
   &__comment {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    padding: 0.75rem;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    padding: 0.75rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-bg-card;
   }
 
   &__comment-author {
+    font-weight: bold;
     color: $color-accent;
-    font-size: 0.875rem;
-    font-weight: 700;
   }
 
-  &__comment-date {
-    color: $color-text-muted;
-    font-size: 0.75rem;
-  }
-
-  &__comment-text {
-    color: $color-text;
-    font-size: 0.9rem;
-    margin-top: 0.25rem;
-  }
+  &__comment-date  { color: $color-text-muted; }
+  &__comment-text  { margin-top: 0.25rem; }
 
   &__comment-form {
     display: flex;
@@ -320,32 +278,34 @@
   }
 
   &__comment-input {
-    background-color: $color-bg-secondary;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    color: $color-text;
-    font-size: 0.9rem;
     min-height: 150px;
     max-height: 200px;
     padding: 0.6rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    background-color: $color-bg-secondary;
     resize: vertical;
 
-    &:focus { outline: none; border-color: $color-accent; }
+    &:focus {
+      outline: none;
+      border-color: $color-accent;
+    }
   }
 
   &__comment-submit {
-    background-color: $color-accent;
+    align-self: flex-start;
+    padding: 0.5rem 1rem;
     border: none;
     border-radius: $radius;
+    font-weight: bold;
     color: #1a1200;
+    background-color: $color-accent;
     cursor: pointer;
-    font-weight: 700;
-    padding: 0.5rem 1rem;
-    align-self: flex-start;
 
     &:hover { background-color: $color-accent-hover; }
   }
 
-  &__status { color: $color-text-muted; font-size: 0.9rem; }
-  &__error  { color: $color-danger; font-size: 0.875rem; }
+  &__status { color: $color-text-muted; }
+  &__error  { color: $color-danger; }
 }

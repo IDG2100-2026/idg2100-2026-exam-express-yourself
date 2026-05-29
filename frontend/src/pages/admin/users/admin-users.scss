@@ -2,9 +2,8 @@
 
 .admin-users {
   &__title {
-    font-size: 1.75rem;
-    font-weight: 700;
     margin-bottom: 1.5rem;
+    font-weight: bold;
   }
 
   &__toolbar {
@@ -15,16 +14,13 @@
     width: 100%;
     max-width: 400px;
     padding: 0.6rem 1rem;
-    background: $color-bg-card;
     border: 1px solid $color-border;
     border-radius: $radius;
-    color: $color-text;
-    font-size: 0.9rem;
     outline: none;
+    color: $color-text;
+    background: $color-bg-card;
 
-    &:focus {
-      border-color: $color-accent;
-    }
+    &:focus { border-color: $color-accent; }
   }
 
   &__table-wrap {
@@ -36,53 +32,43 @@
   &__table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.875rem;
 
     th {
-      background: $color-bg-secondary;
-      color: $color-text-muted;
-      text-align: left;
       padding: 0.75rem 1rem;
-      font-weight: 600;
       border-bottom: 1px solid $color-border;
+      font-weight: bold;
+      text-align: left;
+      color: $color-text-muted;
+      background: $color-bg-secondary;
     }
 
     td {
       padding: 0.75rem 1rem;
       border-bottom: 1px solid $color-border;
-      color: $color-text;
     }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:hover td {
-      background: $color-bg-secondary;
-    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td      { background: $color-bg-secondary; }
   }
 
-  &__row--banned td {
-    opacity: 0.5;
-  }
+  &__row--banned td { opacity: 0.5; }
 
   &__cell--center {
+    padding: 2rem !important;
     text-align: center;
     color: $color-text-muted;
-    padding: 2rem !important;
   }
 
   &__badge {
     display: inline-block;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: bold;
 
-    &--admin { background: rgba($color-accent, 0.15); color: $color-accent; }
-    &--user  { background: $color-bg; color: $color-text-muted; }
-    &--active { background: rgba($color-success, 0.15); color: $color-success; }
-    &--banned { background: rgba($color-danger, 0.15); color: $color-danger; }
+    &--admin  { color: $color-accent;  background: rgba($color-accent, 0.15); }
+    &--user   { color: $color-text-muted; background: $color-bg; }
+    &--active { color: $color-success; background: rgba($color-success, 0.15); }
+    &--banned { color: $color-danger;  background: rgba($color-danger, 0.15); }
   }
 
   &__actions {
@@ -92,11 +78,10 @@
 
   &__btn {
     padding: 0.35rem 0.75rem;
-    border-radius: $radius;
     border: 1px solid $color-border;
-    background: transparent;
+    border-radius: $radius;
     color: $color-text;
-    font-size: 0.8rem;
+    background: transparent;
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s;
 
@@ -108,12 +93,14 @@
     &--danger {
       border-color: $color-danger;
       color: $color-danger;
+
       &:hover { background: rgba($color-danger, 0.1); }
     }
 
     &--promote {
       border-color: $color-accent;
       color: $color-accent;
+
       &:hover { background: rgba($color-accent, 0.1); }
     }
   }
@@ -125,14 +112,6 @@
     margin-top: 1.5rem;
   }
 
-  &__page {
-    font-size: 0.875rem;
-    color: $color-text-muted;
-  }
-
-  &__error {
-    color: $color-danger;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
+  &__page  { color: $color-text-muted; }
+  &__error { margin-bottom: 1rem; color: $color-danger; }
 }

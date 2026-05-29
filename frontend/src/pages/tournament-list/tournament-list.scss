@@ -5,26 +5,22 @@
   flex-direction: column;
   gap: 1.5rem;
 
-  &__title {
-    font-size: 1.8rem;
-    color: $color-accent;
-  }
+  &__title { color: $color-accent; }
 
   &__controls {
     display: flex;
-    gap: 0.75rem;
     flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   &__search {
     flex: 1;
     min-width: 200px;
-    background: $color-bg-secondary;
+    padding: 0.5rem 0.75rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
-    font-size: 0.9rem;
-    padding: 0.5rem 0.75rem;
+    background: $color-bg-secondary;
 
     &:focus {
       outline: none;
@@ -35,15 +31,17 @@
   }
 
   &__sort {
-    background: $color-bg-secondary;
+    padding: 0.5rem 0.75rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
-    font-size: 0.9rem;
-    padding: 0.5rem 0.75rem;
+    background: $color-bg-secondary;
     cursor: pointer;
 
-    &:focus { outline: none; border-color: $color-accent; }
+    &:focus {
+      outline: none;
+      border-color: $color-accent;
+    }
   }
 
   &__section {
@@ -52,15 +50,7 @@
     gap: 1rem;
   }
 
-  &__section-heading {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: $color-text;
-  }
-
-  &__status, &__error {
-    font-size: 0.9rem;
-  }
+  &__section-heading { font-weight: bold; }
 
   &__status { color: $color-text-muted; }
   &__error  { color: $color-danger; }
@@ -72,18 +62,21 @@
   }
 
   &__card {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-left: 3px solid $color-border;
-    border-radius: $radius;
-    padding: 1.25rem;
-    text-decoration: none;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    padding: 1.25rem;
+    border: 1px solid $color-border;
+    border-left: 3px solid $color-border;
+    border-radius: $radius;
+    text-decoration: none;
+    background-color: $color-bg-card;
     transition: border-color 0.15s;
 
-    &:hover { border-color: $color-accent; text-decoration: none; }
+    &:hover {
+      border-color: $color-accent;
+      text-decoration: none;
+    }
 
     &--upcoming    { border-left-color: $color-accent; }
     &--in-progress { border-left-color: #58a6ff; }
@@ -92,8 +85,7 @@
   }
 
   &__card-status {
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 
@@ -103,31 +95,11 @@
     &--cancelled   { color: $color-danger; }
   }
 
-  &__card-title {
-    color: $color-text;
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  &__card-date {
-    color: $color-text-muted;
-    font-size: 0.875rem;
-  }
-
-  &__card-variant {
-    color: $color-text-muted;
-    font-size: 0.8rem;
-  }
-
-  &__card-players {
-    color: $color-accent;
-    font-size: 0.85rem;
-  }
-
-  &__card-author {
-    color: $color-text-muted;
-    font-size: 0.8rem;
-  }
+  &__card-title   { font-weight: bold; }
+  &__card-date    { color: $color-text-muted; }
+  &__card-variant { color: $color-text-muted; }
+  &__card-players { color: $color-accent; }
+  &__card-author  { color: $color-text-muted; }
 
   &__card-trophy {
     display: flex;
@@ -137,17 +109,14 @@
   }
 
   &__card-trophy-img {
+    flex-shrink: 0;
     width: 20px;
     height: 20px;
-    object-fit: cover;
     border-radius: 2px;
-    flex-shrink: 0;
+    object-fit: cover;
   }
 
-  &__card-trophy-title {
-    color: $color-text-muted;
-    font-size: 0.8rem;
-  }
+  &__card-trophy-title { color: $color-text-muted; }
 
   &__load-more {
     display: flex;
@@ -156,16 +125,22 @@
   }
 
   &__load-more-btn {
-    background: $color-bg-card;
+    padding: 0.6rem 2rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
+    background: $color-bg-card;
     cursor: pointer;
-    font-size: 0.9rem;
-    padding: 0.6rem 2rem;
     transition: border-color 0.15s;
 
-    &:hover:not(:disabled) { border-color: $color-accent; color: $color-accent; }
-    &:disabled { opacity: 0.5; cursor: not-allowed; }
+    &:hover:not(:disabled) {
+      border-color: $color-accent;
+      color: $color-accent;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 }

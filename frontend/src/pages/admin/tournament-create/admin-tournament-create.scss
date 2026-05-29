@@ -4,9 +4,8 @@
   max-width: 680px;
 
   &__title {
-    font-size: 1.75rem;
-    font-weight: 700;
     margin-bottom: 1.5rem;
+    font-weight: bold;
   }
 
   &__form {
@@ -21,8 +20,7 @@
     gap: 0.4rem;
 
     label {
-      font-size: 0.875rem;
-      font-weight: 500;
+      font-weight: bold;
       color: $color-text-muted;
     }
 
@@ -32,23 +30,19 @@
     select,
     textarea {
       padding: 0.6rem 0.75rem;
-      background: $color-bg-card;
       border: 1px solid $color-border;
       border-radius: $radius;
-      color: $color-text;
-      font-size: 0.9rem;
-      font-family: $font-main;
       outline: none;
+      font-family: $font-main;
+      color: $color-text;
+      background: $color-bg-card;
       resize: vertical;
 
-      &:focus {
-        border-color: $color-accent;
-      }
+      &:focus { border-color: $color-accent; }
     }
 
     input[type="file"] {
       color: $color-text-muted;
-      font-size: 0.875rem;
     }
 
     &--checkbox {
@@ -56,9 +50,7 @@
       align-items: center;
       gap: 0.6rem;
 
-      label {
-        color: $color-text;
-      }
+      label { color: $color-text; }
     }
   }
 
@@ -74,18 +66,15 @@
 
   &__submit {
     padding: 0.65rem 1.5rem;
-    background: $color-accent;
-    color: #000;
-    font-weight: 700;
     border: none;
     border-radius: $radius;
-    font-size: 0.9rem;
+    font-weight: bold;
+    color: #000;
+    background: $color-accent;
     cursor: pointer;
     transition: background 0.15s;
 
-    &:hover {
-      background: $color-accent-hover;
-    }
+    &:hover { background: $color-accent-hover; }
 
     &:disabled {
       opacity: 0.5;
@@ -94,11 +83,10 @@
   }
 
   &__error {
-    color: $color-danger;
-    font-size: 0.9rem;
     padding: 0.75rem 1rem;
-    background: rgba($color-danger, 0.08);
     border: 1px solid rgba($color-danger, 0.2);
     border-radius: $radius;
+    color: $color-danger;
+    background: rgba($color-danger, 0.08);
   }
 }

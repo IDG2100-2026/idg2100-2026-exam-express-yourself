@@ -1,13 +1,8 @@
 @use '../../styles/variables' as *;
 
 .game {
-  &__status {
-    color: $color-text-muted;
-  }
-
-  &__error {
-    color: $color-danger;
-  }
+  &__status { color: $color-text-muted; }
+  &__error  { color: $color-danger; }
 
   &__layout {
     display: grid;
@@ -16,27 +11,22 @@
   }
 
   &__board {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius-lg;
-    padding: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2rem;
     min-height: 400px;
-    position: relative;
+    padding: 2rem;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    background-color: $color-bg-card;
   }
 
   &__waiting {
     text-align: center;
     color: $color-text-muted;
 
-    small {
-      display: block;
-      margin-top: 0.5rem;
-      font-size: 0.8rem;
-    }
+    small { display: block; margin-top: 0.5rem; }
   }
 
   &__players {
@@ -52,91 +42,133 @@
     gap: 0.25rem;
   }
 
-  &__player-name {
-    font-size: 1.2rem;
-    font-weight: 700;
-  }
+  &__player-name { font-weight: bold; }
+  &__player-elo  { color: $color-text-muted; }
+  &__vs          { color: $color-text-muted; }
 
-  &__player-elo {
-    color: $color-text-muted;
-    font-size: 0.85rem;
-  }
-
-  &__vs {
-    color: $color-text-muted;
-    font-size: 0.9rem;
-  }
-
-  &__dice-area {
-    width: 100%;
-    min-height: 200px;
-    border-radius: $radius;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: $color-text-muted;
-    font-style: italic;
-    font-size: 0.9rem;
-  }
-
-  &__sidebar {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    padding: 1.25rem;
+  &__active {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    width: 100%;
+  }
+
+  &__betting {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-bg-card;
+  }
+
+  &__pot { color: $color-text-muted; }
+
+  &__bet-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__bet-input {
+    width: 80px;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    background-color: $color-bg-secondary;
+  }
+
+  &__bet-btn {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: $radius;
+    font-weight: bold;
+    color: #1a1200;
+    background-color: $color-accent;
+    cursor: pointer;
+
+    &:hover { background-color: $color-accent-hover; }
+
+    &--fold {
+      background-color: $color-danger;
+      color: #fff;
+
+      &:hover { opacity: 0.85; }
+    }
+  }
+
+  &__ended {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    border: 2px solid $color-accent;
+    border-radius: $radius-lg;
+    text-align: center;
+    background-color: $color-bg-card;
+
+    button {
+      padding: 0.5rem 1.5rem;
+      border: none;
+      border-radius: $radius;
+      font-weight: bold;
+      color: #1a1200;
+      background-color: $color-accent;
+      cursor: pointer;
+
+      &:hover { background-color: $color-accent-hover; }
+    }
+  }
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-bg-card;
   }
 
   &__sidebar-title {
-    font-size: 1.1rem;
-    color: $color-accent;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid $color-border;
+    color: $color-accent;
   }
 
   &__comments {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
     flex: 1;
+    gap: 0.75rem;
   }
 
   &__comment {
-    background-color: $color-bg-secondary;
-    border-radius: $radius;
-    padding: 0.75rem;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    padding: 0.75rem;
+    border-radius: $radius;
+    background-color: $color-bg-secondary;
   }
-  &__comment-body{
+
+  &__comment-body {
     display: flex;
     justify-content: space-between;
   }
 
   &__comment-author {
-    font-weight: 700;
-    font-size: 0.875rem;
+    font-weight: bold;
     color: $color-accent;
   }
 
-  &__comment-date {
-    font-size: 0.75rem;
-    color: $color-text-muted;
-  }
-
-  &__comment-text {
-    font-size: 0.9rem;
-    color: $color-text;
-    margin-top: 0.25rem;
-  }
-
-  &__no-comments {
-    color: $color-text-muted;
-    font-size: 0.875rem;
-  }
+  &__comment-date   { color: $color-text-muted; }
+  &__comment-text   { margin-top: 0.25rem; }
+  &__no-comments    { color: $color-text-muted; }
 
   &__comment-form {
     display: flex;
@@ -145,12 +177,11 @@
   }
 
   &__comment-input {
-    background-color: $color-bg-secondary;
+    padding: 0.6rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
-    font-size: 0.9rem;
-    padding: 0.6rem;
+    background-color: $color-bg-secondary;
     resize: vertical;
 
     &:focus {
@@ -160,125 +191,29 @@
   }
 
   &__comment-submit {
-    background-color: $color-accent;
+    padding: 0.5rem;
     border: none;
     border-radius: $radius;
+    font-weight: bold;
     color: #1a1200;
+    background-color: $color-accent;
     cursor: pointer;
-    font-weight: 700;
-    padding: 0.5rem;
 
-    &:hover {
-      background-color: $color-accent-hover;
-    }
+    &:hover { background-color: $color-accent-hover; }
   }
 
   &__leave-btn {
     margin-top: 1rem;
-    background: transparent;
+    padding: 0.4rem 0.8rem;
     border: 1px solid $color-danger;
     border-radius: $radius;
     color: $color-danger;
+    background: transparent;
     cursor: pointer;
-    font-size: 0.875rem;
-    padding: 0.4rem 0.8rem;
 
     &:hover {
       background-color: $color-danger;
-      color: white;
-    }
-  }
-
-  &__active {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  &__betting {
-    background-color: $color-bg-card;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  &__pot {
-    color: $color-text-muted;
-    font-size: 0.875rem;
-  }
-
-  &__bet-controls {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  &__bet-input {
-    background-color: $color-bg-secondary;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    color: $color-text;
-    font-size: 0.9rem;
-    padding: 0.4rem 0.6rem;
-    width: 80px;
-  }
-
-  &__bet-btn {
-    background-color: $color-accent;
-    border: none;
-    border-radius: $radius;
-    color: #1a1200;
-    cursor: pointer;
-    font-weight: 600;
-    padding: 0.4rem 0.8rem;
-
-    &:hover {
-      background-color: $color-accent-hover;
-    }
-
-    &--fold {
-      background-color: $color-danger;
-      color: white;
-
-      &:hover {
-        opacity: 0.85;
-      }
-    }
-  }
-
-  &__ended {
-    background-color: $color-bg-card;
-    border: 2px solid $color-accent;
-    border-radius: $radius-lg;
-    padding: 2rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-
-    h2 {
-      font-size: 1.5rem;
-      color: $color-accent;
-    }
-
-    button {
-      background-color: $color-accent;
-      border: none;
-      border-radius: $radius;
-      color: #1a1200;
-      cursor: pointer;
-      font-weight: 600;
-      padding: 0.5rem 1.5rem;
-
-      &:hover {
-        background-color: $color-accent-hover;
-      }
+      color: #fff;
     }
   }
 }
