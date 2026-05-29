@@ -32,21 +32,21 @@ export default function AdminTournamentCreate() {
   useEffect(() => {
     if (!isEdit) return;
     getTournament(id)
-      .then((t) => {
+      .then((tournament) => {
         setForm({
-          title: t.title || "",
-          description: t.description || "",
-          rules: t.rules || "",
-          startDate: t.startDate ? t.startDate.slice(0, 16) : "",
-          numberOfRounds: t.numberOfRounds || 1,
-          rounds: t.category?.rounds || 3,
-          timeControl: t.category?.timeControl || 10,
-          straightsAllowed: t.category?.straightsAllowed ?? true,
-          categoryBuyIn: t.category?.buyIn || 1,
-          buyIn: t.buyIn || 0,
-          eloMin: t.eloRange?.min || 0,
-          eloMax: t.eloRange?.max || 9999,
-          trophyTitle: t.trophy?.title || "",
+          title: tournament.title || "",
+          description: tournament.description || "",
+          rules: tournament.rules || "",
+          startDate: tournament.startDate ? tournament.startDate.slice(0, 16) : "",
+          numberOfRounds: tournament.numberOfRounds || 1,
+          rounds: tournament.category?.rounds || 3,
+          timeControl: tournament.category?.timeControl || 10,
+          straightsAllowed: tournament.category?.straightsAllowed ?? true,
+          categoryBuyIn: tournament.category?.buyIn || 1,
+          buyIn: tournament.buyIn || 0,
+          eloMin: tournament.eloRange?.min || 0,
+          eloMax: tournament.eloRange?.max || 9999,
+          trophyTitle: tournament.trophy?.title || "",
           trophyImage: null,
         });
       })
