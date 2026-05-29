@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getPlatformActivity } from "../../../services/platform-activity-service.js";
 import { getSecurityIncidents } from "../../../services/security-incidents-service.js";
-import "./admin-dashboard.scss";
 
 export default function AdminDashboard() {
   const [activity, setActivity] = useState(null);

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { getAllUsers, banUser, makeAdmin } from "../../../services/users-service.js";
-import "./admin-users.scss";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);

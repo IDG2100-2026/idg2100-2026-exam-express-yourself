@@ -1,7 +1,6 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
-import "./admin-layout.scss";
 
 export default function AdminLayout() {
   const { logout } = useAuth();

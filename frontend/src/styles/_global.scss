@@ -1,4 +1,4 @@
-@use 'variables' as *;
+@use 'variables.scss' as *;
 
 * {
   box-sizing: border-box;
@@ -7,17 +7,15 @@
 }
 
 body {
-  background-color: $color-bg;
-  color: $color-text;
+  min-block-size: 100vh;
   font-family: $font-main;
-  min-height: 100vh;
+  color: $color-text;
+  background-color: $color-bg;
 }
 
 a {
   color: $color-accent;
   text-decoration: none;
 
-  &:hover {
-    text-decoration: underline;
-  }
+  &:hover { text-decoration: underline; }
 }

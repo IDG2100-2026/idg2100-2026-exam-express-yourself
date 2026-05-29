@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../services/auth-service.js";
-import "./ResetPassword.scss";
 
 const ResetPassword = () => {
   const [error, setError] = useState(null);

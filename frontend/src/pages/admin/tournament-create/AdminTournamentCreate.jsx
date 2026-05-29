@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { createTournament, updateTournament, getTournament } from "../../../services/tournaments-service.js";
-import "./admin-tournament-create.scss";
 
 const EMPTY_FORM = {
   title: "",

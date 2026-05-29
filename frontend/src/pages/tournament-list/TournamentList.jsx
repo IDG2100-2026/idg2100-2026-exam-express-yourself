@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getTournaments } from "../../services/tournaments-service.js";
-import "./tournament-list.scss";
 
 const LIMIT = 9;
 

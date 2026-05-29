@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { getAllComments, deleteComment } from "../../../services/comments-service.js";
-import "./admin-comments.scss";
 
 export default function AdminComments() {
   const [comments, setComments] = useState([]);

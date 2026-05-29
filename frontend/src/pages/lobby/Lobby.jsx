@@ -4,7 +4,6 @@ import { getMatches, joinMatch } from "../../services/matches-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
-import "./lobby.scss";
 
 const TIME_CONTROLS = [10, 30, 90];
 const ROUNDS_OPTIONS = [3, 5, 7];

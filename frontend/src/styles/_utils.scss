@@ -1,0 +1,21 @@
+@use 'variables.scss' as *;
+
+// Stack: vertical rhythm between direct children
+.stack-s > * + * { margin-block-start: 0.5rem; }
+.stack-m > * + * { margin-block-start: 1rem; }
+.stack-l > * + * { margin-block-start: 1.5rem; }
+
+// Card: visual shell, border, radius, background
+// Hover activates only when card is a link or button
+.card {
+  border: 1px solid $color-border;
+  border-radius: $radius;
+  background-color: $color-bg-card;
+
+  &:is(a, button):hover {
+    border-color: $color-accent;
+  }
+}
+
+// Text weight
+.text-bold { font-weight: bold; }

@@ -5,7 +5,6 @@ import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { leaveMatch } from "../../services/matches-service.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
-import "./game.scss";
 
 // Register the custom elements as side effects
 import "../../components/web-components/dice-poker-die.js";

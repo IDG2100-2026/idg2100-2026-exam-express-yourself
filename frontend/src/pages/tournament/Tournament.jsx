@@ -10,7 +10,6 @@ import {
   deleteTournament,
 } from "../../services/tournaments-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
-import "./tournament.scss";
 import Avatar from "../../components/avatar/Avatar.jsx";
 
 

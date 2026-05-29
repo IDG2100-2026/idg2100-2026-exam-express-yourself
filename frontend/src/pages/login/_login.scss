@@ -1,6 +1,6 @@
-@use '../../styles/variables' as *;
+@use '../../styles/variables.scss' as *;
 
-.register {
+.login {
   display: flex;
   justify-content: center;
   padding-top: 3rem;
@@ -50,15 +50,15 @@
     }
   }
 
-  &__checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  &__forgot {
+    padding: 0;
+    border: none;
+    text-align: right;
     color: $color-text-muted;
-  }
+    background: none;
+    cursor: pointer;
 
-  &__error {
-    color: $color-danger;
+    &:hover { color: $color-accent; }
   }
 
   &__submit {
@@ -74,7 +74,11 @@
     &:hover { background-color: $color-accent-hover; }
   }
 
-  &__login {
+  &__error {
+    color: $color-danger;
+  }
+
+  &__register {
     margin-top: 1.25rem;
     text-align: center;
     color: $color-text-muted;

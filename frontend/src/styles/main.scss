@@ -1,5 +1,8 @@
 @use 'global.scss';
 
+// Utils
+@use 'utils.scss';
+
 // Components
 @use '../components/avatar/avatar.scss';
 @use '../components/header/header.scss';
@@ -8,6 +11,7 @@
 
 // Layouts
 @use '../layouts/main-layout/main-layout.scss';
+@use '../layouts/admin-layout/admin-layout.scss';
 
 // Pages
 @use '../pages/home/home.scss';
@@ -24,3 +28,10 @@
 @use '../pages/terms/terms.scss';
 @use '../pages/privacy/privacy.scss';
 @use '../pages/not-found/not-found.scss';
+@use '../pages/ResetPassword/ResetPassword.scss';
+
+// Admin pages
+@use '../pages/admin/dashboard/admin-dashboard.scss';
+@use '../pages/admin/users/admin-users.scss';
+@use '../pages/admin/comments/admin-comments.scss';
+@use '../pages/admin/tournament-create/admin-tournament-create.scss';

@@ -1,6 +1,6 @@
-@use '../../styles/variables' as *;
+@use '../../styles/variables.scss' as *;
 
-.privacy {
+.terms {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
