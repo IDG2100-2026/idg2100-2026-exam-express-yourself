@@ -41,7 +41,26 @@ export const registerUser = async (userData) => {
     userId: newUser._id,
   });
   await sendVerificationMail(newUser.email, verificationToken.token); // this is the to and token in sendVerificationMail in service.
+
   return newUser;
+};
+
+export const resendUserVerification = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) return;
+
+  const findVerificationToken = await UserVerification.findOne({
+    userId: user._id,
+  });
+
+  if (findVerificationToken) {
+    await findVerificationToken.deleteOne();
+  }
+
+  const newToken = await UserVerification.create({
+    userId: user._id,
+  });
+  await sendVerificationMail(user.email, newToken.token);
 };
 
 export const authenticateUser = async (email, password) => {
@@ -79,8 +98,9 @@ export const resetPasswordRequest = async (email) => {
 };
 
 export const resetPassword = async (code, newPassword) => {
-  if (!code || !newPassword) throw new BusinessLogicError("code and password are required", 400);
-  
+  if (!code || !newPassword)
+    throw new BusinessLogicError("code and password are required", 400);
+
   const resetToken = await ResetPassword.findOne({ token: code }); // search up for the reset password token
   if (!resetToken)
     throw new BusinessLogicError("Invalid or expired token", 400); // error if we dont find the reset token

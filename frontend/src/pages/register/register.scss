@@ -84,6 +84,18 @@
     &:hover {
       background-color: $color-accent-hover;
     }
+    &-resend{
+      border: none;
+      background-color: transparent;
+      width: 180px;
+      font-size: 1rem;
+      color: $color-text;
+      text-align: left;
+      &:hover{
+        cursor: pointer;
+        color: $color-accent-hover;
+      }
+    }
   }
 
   &__login {

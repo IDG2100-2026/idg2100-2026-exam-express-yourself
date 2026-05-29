@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { verifyEmail, requestResetPassword } from "../../services/auth-service";
+import { requestResetPassword } from "../../services/auth-service";
 import { Link, useSearchParams } from "react-router-dom";
 import "../login/login.scss";
 

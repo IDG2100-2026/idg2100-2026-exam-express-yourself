@@ -23,7 +23,31 @@ export const forgotPasswordRateLimiter = rateLimit({
       userAgent: req.headers["user-agent"] || "unknown",
     }).catch(() => {});
 
-    res.status(429).json({ error: "Too many password reset attempts. Please try again in 15 minutes." });
+    res
+      .status(429)
+      .json({
+        error:
+          "Too many password reset attempts. Please try again in 15 minutes.",
+      });
+  },
+});
+
+export const resendVerificationEmail = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 3,
+  handler: async (req, res) => {
+    logIncident({
+      type: "rate-limit",
+      ip: req.ip,
+      userAgent: req.headers["user-agent"] || "unknown",
+    }).catch(() => {});
+
+    res
+      .status(429)
+      .json({
+        error:
+          "Too many resend verification email attempts. Please try again in 15 minutes.",
+      });
   },
 });
 

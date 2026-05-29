@@ -33,6 +33,13 @@ export const verifyEmail = async (code) => {
   return await fetchWithoutAccesstoken(`/auth/verify-email?code=${code}`);
 };
 
+export const resendVerifyEmail = async (email) => {
+  return await fetchWithoutAccesstoken("/auth/resend-verify-email", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
 export const requestResetPassword = async (email) => {
   return await fetchWithoutAccesstoken("/auth/forgot-password", {
     method: "POST",

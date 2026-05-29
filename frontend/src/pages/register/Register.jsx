@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../../services/auth-service.js";
+import {
+  registerUser,
+  resendVerifyEmail,
+} from "../../services/auth-service.js";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -15,6 +18,8 @@ export default function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const [resendEmailMsg, setResendEmailMsg] = useState("");
+  const [successfulCreate, setSuccessfulCreate] = useState(false);
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
@@ -55,9 +60,15 @@ export default function Register() {
         age,
       });
       setSuccess(userData.message); // for showing confirmation msg
-      setTimeout(() => {
-        navigate("/"); // navigate to homepage after 3 seconds
-      }, 3000);
+      setFormData({
+        username: "",
+        email: formData.email,
+        password: "",
+        confirmPassword: "",
+        dateOfBirth: "",
+        agreedToTerms: false,
+      });
+      setSuccessfulCreate(true);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -65,12 +76,27 @@ export default function Register() {
     }
   }
 
+  const resendUserVerification = async (code) => {
+    setIsSubmitting(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const resend = await resendVerifyEmail(code);
+      setSuccess(resend.message);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="register">
       <div className="register__card">
         <h1 className="register__title">Create Account</h1>
         <p className="register__subtitle">Join PokerDados today</p>
-        {success ? <p>{success}</p> : <p className="register__error">{error}</p>}
+        {success && <p>{success}</p>}
+        {error && <p className="register__error">{error}</p>}
         <form className="register__form" onSubmit={handleSubmit}>
           <div className="register__field">
             <label htmlFor="username">Username</label>
@@ -151,12 +177,21 @@ export default function Register() {
               </Link>
             </label>
           </div>
-          <button
-            className="register__submit"
-            disabled={isSubmitting}
-          >
+          <button className="register__submit" disabled={isSubmitting}>
             {isSubmitting ? "Creating account..." : "Create Account"}
           </button>
+          {successfulCreate ? (
+            <button
+              className="register__submit-resend"
+              disabled={isSubmitting}
+              type="button"
+              onClick={() => resendUserVerification(formData.email)}
+            >
+              {isSubmitting ? "Sending..." : "Resend verification mail"}
+            </button>
+          ) : (
+            ""
+          )}
         </form>
 
         <p className="register__login">

@@ -62,7 +62,7 @@ export default function AdminDashboard() {
         ) : (
           <div className="admin-dashboard__incidents">
             {incidents.map((incident) => (
-              <div key={incident._id} className={`admin-dashboard__incident admin-dashboard__incident--${inc.type}`}>
+              <div key={incident._id} className={`admin-dashboard__incident admin-dashboard__incident--${incident.type}`}>
                 <span className="admin-dashboard__incident-type">{incident.type}</span>
                 <span className="admin-dashboard__incident-ip">IP: {incident.ip}</span>
                 <span className="admin-dashboard__incident-agent">{incident.userAgent}</span>
