@@ -17,12 +17,9 @@
   }
 
   &__logo {
-    font-weight: bold;
     white-space: nowrap;
-    text-decoration: none;
+    font-weight: bold;
     color: $color-accent;
-
-    &:hover { text-decoration: none; }
   }
 
   &__nav {
@@ -31,14 +28,12 @@
   }
 
   &__link {
-    padding: 0.4rem 0.75rem;
+    padding: $space-s;
     border-radius: $radius;
-    text-decoration: none;
     color: $color-text-muted;
     transition: background 0.15s, color 0.15s;
 
     &:hover {
-      text-decoration: none;
       color: $color-text;
       background-color: $color-bg-card;
     }
@@ -46,20 +41,6 @@
     &.active {
       color: $color-accent;
       background-color: $color-bg-card;
-    }
-  }
-
-  &__logout {
-    padding: 0.4rem 0.75rem;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    color: $color-text-muted;
-    background-color: transparent;
-    transition: border-color 0.15s, color 0.15s;
-
-    &:hover {
-      border-color: $color-danger;
-      color: $color-danger;
     }
   }
 }

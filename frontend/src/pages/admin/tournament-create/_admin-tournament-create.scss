@@ -4,7 +4,6 @@
   max-width: 680px;
 
   &__title {
-    font-weight: bold;
   }
 
   &__form {
@@ -19,7 +18,6 @@
     gap: 0.4rem;
 
     label {
-      font-weight: bold;
       color: $color-text-muted;
     }
 
@@ -64,7 +62,6 @@
   &__submit {
     border: none;
     border-radius: $radius;
-    font-weight: bold;
     color: #000;
     background: $color-accent;
     transition: background 0.15s;
@@ -78,9 +75,9 @@
   }
 
   &__error {
-    border: 1px solid rgba($color-danger, 0.2);
+    border: 1px solid rgba($color-red, 0.2);
     border-radius: $radius;
-    color: $color-danger;
-    background: rgba($color-danger, 0.08);
+    color: $color-red;
+    background: rgba($color-red, 0.08);
   }
 }

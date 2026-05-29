@@ -7,8 +7,8 @@
   max-width: 700px;
 
   &__status  { color: $color-text-muted; }
-  &__error   { color: $color-danger; }
-  &__success { color: $color-success; }
+  &__error   { color: $color-red; }
+  &__success { color: $color-green; }
 
   &__header {
     display: flex;
@@ -24,7 +24,6 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    font-weight: bold;
     color: #1a1200;
     background-color: $color-accent;
   }
@@ -110,7 +109,6 @@
       align-self: flex-start;
       border: none;
       border-radius: $radius;
-      font-weight: bold;
       color: #1a1200;
       background-color: $color-accent;
 
@@ -135,7 +133,6 @@
   }
 
   &__stat-value {
-    font-weight: bold;
     color: $color-accent;
   }
 
@@ -171,7 +168,6 @@
     gap: 1rem;
     border: 1px solid $color-border;
     border-radius: $radius;
-    text-decoration: none;
     background-color: $color-bg-card;
 
     &:hover { border-color: $color-accent; }
@@ -179,10 +175,9 @@
 
   &__result {
     border-radius: $radius;
-    font-weight: bold;
 
-    &--win  { background-color: $color-success; color: #fff; }
-    &--loss { background-color: $color-danger;  color: #fff; }
+    &--win  { background-color: $color-green; color: #fff; }
+    &--loss { background-color: $color-red;  color: #fff; }
   }
 
   &__opponent { flex: 1; }

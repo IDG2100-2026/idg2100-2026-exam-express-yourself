@@ -20,7 +20,7 @@ export default function HeaderAdmin() {
           <NavLink to="/admin/comments" className="admin-header__link">Comments</NavLink>
           <NavLink to="/admin/tournament/create" className="admin-header__link">Create Tournament</NavLink>
         </nav>
-        <button className="admin-header__logout" onClick={handleLogout}>Log out</button>
+        <button className="btn btn--red" onClick={handleLogout}>Log out</button>
       </div>
     </header>
   );

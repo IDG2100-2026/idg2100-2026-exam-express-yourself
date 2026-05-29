@@ -209,13 +209,13 @@ export default function Profile() {
           {saveError && <p className="profile__error">{saveError}</p>}
           {saveSuccess && <p className="profile__success">{saveSuccess}</p>}
           <div className="profile__save">
-            <button type="submit" className="profile__save-btn">
+            <button type="submit" className="btn btn--primary">
               Save Changes
             </button>
             <button
               onClick={handleCloseEditField}
               type="button"
-              className="profile__save-btn"
+              className="btn btn--primary"
             >
               Close edit field
             </button>
@@ -316,7 +316,7 @@ export default function Profile() {
         {gamesError && <p className="profile__error">{gamesError}</p>}
         {gamesTotal > games.length && (
           <button
-            className="profile__load-more"
+            className="btn btn--secondary"
             onClick={loadMoreGames}
             disabled={isLoadingGames}
           >

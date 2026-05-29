@@ -27,7 +27,6 @@
   }
 
   &__group-label {
-    font-weight: bold;
     color: $color-text-muted;
   }
 
@@ -47,7 +46,6 @@
 
     &--selected {
       border-color: $color-accent;
-      font-weight: bold;
       color: #1a1200;
       background-color: $color-accent;
     }
@@ -70,14 +68,13 @@
   }
 
   &__error {
-    color: $color-danger;
+    color: $color-red;
   }
 
   &__submit {
     align-self: flex-start;
     border: none;
     border-radius: $radius;
-    font-weight: bold;
     color: #1a1200;
     background-color: $color-accent;
 

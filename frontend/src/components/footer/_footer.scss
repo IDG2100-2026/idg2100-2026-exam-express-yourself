@@ -1,7 +1,7 @@
 @use '../../styles/variables.scss' as *;
 
 .footer {
-  border-top: 1px solid $color-border;
+  border-block-start: 1px solid $color-border;
   background-color: $color-bg-secondary;
 
   &__inner {
@@ -16,7 +16,7 @@
   &__brand {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: $space-xs;
   }
 
   &__name {
@@ -30,13 +30,23 @@
 
   &__links {
     display: flex;
-    gap: 1.25rem;
+    gap: $space-xs;
   }
 
   &__link {
-    text-decoration: none;
+    padding: $space-s;
+    border-radius: $radius;
     color: $color-text-muted;
+    transition: background 0.15s, color 0.15s;
 
-    &:hover { color: $color-accent; }
+    &:hover {
+      color: $color-text;
+      background-color: $color-bg-card;
+    }
+
+    &.active {
+      color: $color-accent;
+      background-color: $color-bg-card;
+    }
   }
 }

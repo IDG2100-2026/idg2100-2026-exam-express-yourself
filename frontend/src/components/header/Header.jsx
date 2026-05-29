@@ -32,16 +32,16 @@ function Header() {
           <div className="header__auth">
             {user ? (
               <>
-                <Link to={`/profile/${user._id || user.userId}`} className="header__greeting">
-                  <Avatar imageUrl={user.profileImageUrl} size={28} />
-                  <span>Hello, {user.username}</span>
+                <Link to={`/profile/${user._id || user.userId}`} className="header__greeting btn btn--secondary">
+                  <span>Hello,</span>
+                  <Avatar imageUrl={user.profileImageUrl} size="1em" />
                 </Link>
-                <button className="header__logout" onClick={handleLogout}>Log out</button>
+                <button className="btn btn--red" onClick={handleLogout}>Log out</button>
               </>
             ) : (
               <>
                 <NavLink to="/login" className="header__nav-link">Log in</NavLink>
-                <Link to="/register" className="header__register">Register</Link>
+                <Link to="/register" className="btn btn--primary">Register</Link>
               </>
             )}
           </div>

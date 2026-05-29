@@ -75,7 +75,7 @@ export default function Home() {
           Challenge players from around the world in the classic Spanish dice game.
           Bluff, roll, and outsmart your opponents to win tournaments and earn trophies.
         </p>
-        <Link to="/create-game" className="home__cta text-bold">Create a Game</Link>
+        <Link to="/create-game" className="home__cta btn btn--primary">+ Create game</Link>
       </section>
 
       {data.activity && (
@@ -120,7 +120,7 @@ export default function Home() {
                           }
                         }}
                       >
-                        <h3 className="home__card-player text-bold">{p1?.username || "Unknown"}</h3>
+                        <h3 className="home__card-player">{p1?.username || "Unknown"}</h3>
                         <p className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "?"}</p>
                         <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}, {match.category?.buyIn || 1}pt buy-in</p>
                         <p className="home__card-variant">{match.players?.length || 1}/{match.maxPlayers || 2} players</p>
@@ -144,7 +144,7 @@ export default function Home() {
                 {data.top.map((match) => (
                   <li key={match._id}>
                     <Link to={`/game/${match._id}`} className={`home__card home__card--${match.status} card stack-s`}>
-                      <h3 className="home__card-player text-bold">{getPlayer(match, 0)?.username || "?"} vs {getPlayer(match, 1)?.username || "waiting"}</h3>
+                      <h3 className="home__card-player">{getPlayer(match, 0)?.username || "?"} vs {getPlayer(match, 1)?.username || "waiting"}</h3>
                       <p className="home__card-elo">Avg Elo: {avgElo(match)}</p>
                       <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}, {match.category?.buyIn || 1}pt buy-in</p>
                       <p className={`home__card-status home__card-status--${match.status}`}>{match.status}</p>
@@ -167,7 +167,7 @@ export default function Home() {
                 {data.tournaments.map((tournament) => (
                   <li key={tournament._id}>
                     <Link to={`/tournament/${tournament._id}`} className={`home__card home__card--${tournament.status} card stack-s`}>
-                      <h3 className="home__card-player text-bold">{tournament.title}</h3>
+                      <h3 className="home__card-player">{tournament.title}</h3>
                       <p className="home__card-variant">
                         {new Date(tournament.startDate).toLocaleDateString(undefined, {
                           year: "numeric", month: "short", day: "numeric",

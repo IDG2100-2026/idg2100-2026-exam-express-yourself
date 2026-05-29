@@ -90,7 +90,7 @@ export default function Lobby() {
     <div className="lobby">
       <div className="lobby__header">
         <h1 className="lobby__title">Game Lobby</h1>
-        <Link to="/create-game" className="lobby__create">+ New Game</Link>
+        <Link to="/create-game" className="btn btn--primary">+ Create game</Link>
       </div>
 
       <div className="lobby__filters">
@@ -192,7 +192,7 @@ export default function Lobby() {
       {hasMore && (
         <div className="lobby__load-more">
           <button
-            className="lobby__load-more-btn"
+            className="btn btn--secondary"
             onClick={loadMore}
             disabled={isLoadingMore}
           >

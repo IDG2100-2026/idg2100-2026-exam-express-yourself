@@ -50,7 +50,7 @@ export default function AdminComments() {
               </div>
               <p className="admin-comments__text">{c.text}</p>
               <button
-                className="admin-comments__delete"
+                className="btn btn--red"
                 onClick={() => handleDelete(c._id)}
               >
                 Delete

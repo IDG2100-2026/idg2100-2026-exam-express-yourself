@@ -155,7 +155,7 @@ export default function Register() {
           {error && <p className="register__error">{error}</p>}
 
           <button
-            className="register__submit"
+            className="btn btn--primary"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Creating account..." : "Create Account"}

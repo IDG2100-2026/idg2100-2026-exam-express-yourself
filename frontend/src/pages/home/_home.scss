@@ -25,13 +25,10 @@
   &__cta {
     display: inline-block;
     border-radius: $radius;
-    font-weight: bold;
-    text-decoration: none;
     color: #1a1200;
     background-color: $color-accent;
 
     &:hover {
-      text-decoration: none;
       background-color: $color-accent-hover;
     }
   }
@@ -52,7 +49,7 @@
   }
 
   &__status { color: $color-text-muted; }
-  &__error  { color: $color-danger; }
+  &__error  { color: $color-red; }
 
   &__empty {
     font-style: italic;
@@ -72,7 +69,6 @@
     border: 1px solid $color-border;
     border-inline-start: 3px solid $color-border;
     border-radius: $radius;
-    text-decoration: none;
     background-color: $color-bg-card;
 
     &:hover { border-color: $color-accent; }
@@ -102,12 +98,12 @@
   &__card--upcoming    { border-inline-start-color: $color-accent; }
   &__card--waiting     { border-inline-start-color: $color-accent; }
   &__card--in-progress { border-inline-start-color: #58a6ff; }
-  &__card--completed   { border-inline-start-color: $color-success; }
-  &__card--cancelled   { border-inline-start-color: $color-danger; }
+  &__card--completed   { border-inline-start-color: $color-green; }
+  &__card--cancelled   { border-inline-start-color: $color-red; }
 
   &__card-status {
 
-    &--in-progress { color: $color-success; }
+    &--in-progress { color: $color-green; }
     &--completed   { color: $color-text-muted; }
     &--waiting     { color: $color-accent; }
   }

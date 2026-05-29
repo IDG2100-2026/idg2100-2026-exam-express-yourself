@@ -322,7 +322,7 @@ export default function Tournament() {
       <div className="tournament__actions">
         {canJoin && (
           <button
-            className="tournament__btn tournament__btn--primary"
+            className="btn btn--primary"
             onClick={handleJoin}
           >
             Join Tournament
@@ -330,7 +330,7 @@ export default function Tournament() {
         )}
         {canLeave && (
           <button
-            className="tournament__btn tournament__btn--danger"
+            className="btn btn--red"
             onClick={handleLeave}
           >
             Leave Tournament
@@ -347,13 +347,13 @@ export default function Tournament() {
           <div className="tournament__admin-controls">
             <Link
               to={`/admin/tournament/${id}/edit`}
-              className="tournament__btn tournament__btn--secondary"
+              className="btn btn--secondary"
             >
               Edit
             </Link>
             {tournament.status === "upcoming" && (
               <button
-                className="tournament__btn tournament__btn--primary"
+                className="btn btn--primary"
                 onClick={handleStart}
               >
                 Start Tournament
@@ -362,14 +362,14 @@ export default function Tournament() {
             {(tournament.status === "upcoming" ||
               tournament.status === "in-progress") && (
               <button
-                className="tournament__btn tournament__btn--warning"
+                className="btn btn--red"
                 onClick={handleCancel}
               >
                 Cancel
               </button>
             )}
             <button
-              className="tournament__btn tournament__btn--danger"
+              className="btn btn--red"
               onClick={handleDelete}
             >
               Delete
@@ -535,7 +535,7 @@ export default function Tournament() {
             <button
               onClick={sendMessage}
               type="button"
-              className="tournament__comment-submit"
+              className="btn btn--primary"
             >
               Post Comment
             </button>

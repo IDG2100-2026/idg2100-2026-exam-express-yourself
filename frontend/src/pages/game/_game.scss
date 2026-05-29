@@ -2,7 +2,7 @@
 
 .game {
   &__status { color: $color-text-muted; }
-  &__error  { color: $color-danger; }
+  &__error  { color: $color-red; }
 
   &__layout {
     display: grid;
@@ -81,14 +81,13 @@
   &__bet-btn {
     border: none;
     border-radius: $radius;
-    font-weight: bold;
     color: #1a1200;
     background-color: $color-accent;
 
     &:hover { background-color: $color-accent-hover; }
 
     &--fold {
-      background-color: $color-danger;
+      background-color: $color-red;
       color: #fff;
 
       &:hover { opacity: 0.85; }
@@ -108,7 +107,6 @@
     button {
       border: none;
       border-radius: $radius;
-      font-weight: bold;
       color: #1a1200;
       background-color: $color-accent;
 
@@ -151,7 +149,6 @@
   }
 
   &__comment-author {
-    font-weight: bold;
     color: $color-accent;
   }
 
@@ -181,7 +178,6 @@
   &__comment-submit {
     border: none;
     border-radius: $radius;
-    font-weight: bold;
     color: #1a1200;
     background-color: $color-accent;
 
@@ -189,13 +185,13 @@
   }
 
   &__leave-btn {
-    border: 1px solid $color-danger;
+    border: 1px solid $color-red;
     border-radius: $radius;
-    color: $color-danger;
+    color: $color-red;
     background: transparent;
 
     &:hover {
-      background-color: $color-danger;
+      background-color: $color-red;
       color: #fff;
     }
   }

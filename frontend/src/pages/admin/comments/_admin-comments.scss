@@ -2,7 +2,6 @@
 
 .admin-comments {
   &__title {
-    font-weight: bold;
   }
 
   &__list {
@@ -28,7 +27,6 @@
   }
 
   &__author {
-    font-weight: bold;
   }
 
   &__target {
@@ -46,15 +44,15 @@
 
   &__delete {
     align-self: flex-end;
-    border: 1px solid $color-danger;
+    border: 1px solid $color-red;
     border-radius: $radius;
-    color: $color-danger;
+    color: $color-red;
     background: transparent;
     transition: background 0.15s;
 
-    &:hover { background: rgba($color-danger, 0.1); }
+    &:hover { background: rgba($color-red, 0.1); }
   }
 
   &__muted { color: $color-text-muted; }
-  &__error { margin-bottom: 1rem; color: $color-danger; }
+  &__error { margin-bottom: 1rem; color: $color-red; }
 }

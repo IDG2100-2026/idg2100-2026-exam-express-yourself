@@ -1,11 +1,11 @@
 @use 'variables.scss' as *;
 
-// Stack: add vertical spacing between direct children of an element
+// Stack add vertical spacing between direct children of an element
 .stack-s > * + * { margin-block-start: $space-s; }
 .stack-m > * + * { margin-block-start: $space-m; }
 .stack-l > * + * { margin-block-start: $space-l; }
 
-// Card: general styling for all cards
+// Card general styling for all cards
 .card {
   padding: $space-m;
   border: 1px solid $color-border;
@@ -17,19 +17,58 @@
   }
 }
 
-// Text weight
-.text-bold { font-weight: bold; }
+// Button base and variants, apply .btn plus one variant to any button or link styled as a button
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-xs;
+  padding: $space-s;
+  border: 1px solid transparent;
+  border-radius: $radius;
+  font-weight: bold;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
 
-// Margin utils
-.margin-xs { margin: $space-xs; }
-.margin-s  { margin: $space-s; }
-.margin-m  { margin: $space-m; }
-.margin-l  { margin: $space-l; }
-.margin-xl { margin: $space-xl; }
+.btn--primary {
+  border-color: $color-accent;
+  color: #1a1200;
+  background-color: $color-accent;
 
-// Padding utils
-.padding-xs { padding: $space-xs; }
-.padding-s  { padding: $space-s; }
-.padding-m  { padding: $space-m; }
-.padding-l  { padding: $space-l; }
-.padding-xl { padding: $space-xl; }
+  &:hover {
+    border-color: $color-accent-hover;
+    background-color: $color-accent-hover;
+  }
+}
+
+.btn--secondary {
+  border-color: $color-border;
+  color: $color-text-muted;
+  background-color: transparent;
+
+  &:hover {
+    border-color: $color-accent;
+    color: $color-accent;
+  }
+}
+
+.btn--red {
+  border-color: $color-border;
+  color: $color-text-muted;
+  background-color: transparent;
+
+  &:hover {
+    border-color: $color-red;
+    color: $color-red;
+  }
+}
+
+.btn--green {
+  border-color: $color-border;
+  color: $color-text-muted;
+  background-color: transparent;
+
+  &:hover {
+    border-color: $color-green;
+    color: $color-green;
+  }
+}

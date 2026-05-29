@@ -208,7 +208,7 @@ export default function AdminTournamentCreate() {
         )}
 
         <div className="admin-tc__actions">
-          <button type="submit" className="admin-tc__submit" disabled={submitting}>
+          <button type="submit" className="btn btn--primary" disabled={submitting}>
             {submitting ? "Saving..." : isEdit ? "Save Changes" : "Create Tournament"}
           </button>
         </div>

@@ -15,16 +15,13 @@ body {
 
 a,
 button {
+  text-decoration: none;
+  color: $color-accent;
   cursor: pointer;
 }
 
-a {
-  color: $color-accent;
-  text-decoration: none;
-
-  &:hover { text-decoration: underline; }
-}
-
 button {
+  border: none;
   font: inherit;
+  background: none;
 }

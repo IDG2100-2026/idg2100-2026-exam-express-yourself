@@ -18,15 +18,14 @@
   &__status-badge {
     border: 1px solid $color-border;
     border-radius: $radius;
-    font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     background-color: $color-bg-card;
 
     &--upcoming    { border-color: $color-accent;  color: $color-accent; }
     &--in-progress { border-color: #58a6ff;        color: #58a6ff; }
-    &--completed   { border-color: $color-success; color: $color-success; }
-    &--cancelled   { border-color: $color-danger;  color: $color-danger; }
+    &--completed   { border-color: $color-green; color: $color-green; }
+    &--cancelled   { border-color: $color-red;  color: $color-red; }
   }
 
   &__countdown {
@@ -58,7 +57,6 @@
 
   &__countdown-value {
     min-width: 2.5ch;
-    font-weight: bold;
     font-variant-numeric: tabular-nums;
     text-align: center;
     color: $color-accent;
@@ -106,8 +104,6 @@
     align-items: center;
     border: none;
     border-radius: $radius;
-    font-weight: bold;
-    text-decoration: none;
     transition: opacity 0.15s;
 
     &:hover { opacity: 0.85; }
@@ -115,7 +111,7 @@
     &--primary   { background: $color-accent;    color: #1a1200; }
     &--secondary { border: 1px solid $color-border; background: $color-bg-card; color: $color-text; }
     &--warning   { background: #e09000;           color: #1a1200; }
-    &--danger    { background: $color-danger;     color: #fff; }
+    &--danger    { background: $color-red;     color: #fff; }
   }
 
   &__admin-controls {
@@ -125,8 +121,8 @@
     border-left: 1px solid $color-border;
   }
 
-  &__joined     { color: $color-success; }
-  &__action-msg { color: $color-success; }
+  &__joined     { color: $color-green; }
+  &__action-msg { color: $color-green; }
 
   &__section-title {
     border-bottom: 1px solid $color-border;
@@ -147,7 +143,6 @@
   }
 
   &__trophy-title {
-    font-weight: bold;
     color: $color-accent;
   }
 
@@ -169,14 +164,12 @@
     gap: 0.75rem;
     border: 1px solid $color-border;
     border-radius: $radius;
-    text-decoration: none;
     color: $color-text;
     background: $color-bg-card;
     transition: border-color 0.15s;
 
     &:hover {
       border-color: $color-accent;
-      text-decoration: none;
     }
   }
 
@@ -204,11 +197,10 @@
   }
 
   &__match-vs     { color: $color-text-muted; }
-  &__match-result { margin-left: auto; color: $color-success; }
+  &__match-result { margin-left: auto; color: $color-green; }
 
   &__match-player--winner {
-    font-weight: bold;
-    color: $color-success;
+    color: $color-green;
   }
 
   &__participant-list {
@@ -225,7 +217,6 @@
   }
 
   &__participant-link {
-    text-decoration: none;
     color: $color-text;
 
     &:hover { color: $color-accent; }
@@ -249,7 +240,6 @@
   }
 
   &__comment-author {
-    font-weight: bold;
     color: $color-accent;
   }
 
@@ -281,7 +271,6 @@
     align-self: flex-start;
     border: none;
     border-radius: $radius;
-    font-weight: bold;
     color: #1a1200;
     background-color: $color-accent;
 
@@ -289,5 +278,5 @@
   }
 
   &__status { color: $color-text-muted; }
-  &__error  { color: $color-danger; }
+  &__error  { color: $color-red; }
 }

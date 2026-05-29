@@ -129,7 +129,7 @@ export default function Login() {
 
             <button
               type="submit"
-              className="login__submit"
+              className="btn btn--primary"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Logging in..." : "Log In"}
@@ -145,7 +145,7 @@ export default function Login() {
               onChange={(e) => setSendMail(e.target.value)}
               placeholder="Enter your email.."
             />
-            <button className="login__submit">
+            <button className="btn btn--primary">
               {isSubmitting ? "Sending email" : "Send reset link"}
             </button>
             <button

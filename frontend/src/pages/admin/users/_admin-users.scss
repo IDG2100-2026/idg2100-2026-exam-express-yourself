@@ -2,7 +2,6 @@
 
 .admin-users {
   &__title {
-    font-weight: bold;
   }
 
   &__toolbar {
@@ -32,7 +31,6 @@
 
     th {
       border-bottom: 1px solid $color-border;
-      font-weight: bold;
       text-align: left;
       color: $color-text-muted;
       background: $color-bg-secondary;
@@ -56,12 +54,11 @@
   &__badge {
     display: inline-block;
     border-radius: 4px;
-    font-weight: bold;
 
     &--admin  { color: $color-accent;  background: rgba($color-accent, 0.15); }
     &--user   { color: $color-text-muted; background: $color-bg; }
-    &--active { color: $color-success; background: rgba($color-success, 0.15); }
-    &--banned { color: $color-danger;  background: rgba($color-danger, 0.15); }
+    &--active { color: $color-green; background: rgba($color-green, 0.15); }
+    &--banned { color: $color-red;  background: rgba($color-red, 0.15); }
   }
 
   &__actions {
@@ -82,10 +79,10 @@
     }
 
     &--danger {
-      border-color: $color-danger;
-      color: $color-danger;
+      border-color: $color-red;
+      color: $color-red;
 
-      &:hover { background: rgba($color-danger, 0.1); }
+      &:hover { background: rgba($color-red, 0.1); }
     }
 
     &--promote {
@@ -103,5 +100,5 @@
   }
 
   &__page  { color: $color-text-muted; }
-  &__error { margin-bottom: 1rem; color: $color-danger; }
+  &__error { margin-bottom: 1rem; color: $color-red; }
 }

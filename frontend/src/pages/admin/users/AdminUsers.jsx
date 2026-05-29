@@ -106,7 +106,7 @@ export default function AdminUsers() {
                   <td className="admin-users__actions">
                     {!u.isBanned && (
                       <button
-                        className="admin-users__btn admin-users__btn--danger"
+                        className="btn btn--red"
                         onClick={() => handleBan(u._id)}
                       >
                         Ban
@@ -114,7 +114,7 @@ export default function AdminUsers() {
                     )}
                     {u.role !== "admin" && (
                       <button
-                        className="admin-users__btn admin-users__btn--promote"
+                        className="btn btn--primary"
                         onClick={() => handleMakeAdmin(u._id)}
                       >
                         Make Admin
@@ -130,7 +130,7 @@ export default function AdminUsers() {
 
       <div className="admin-users__pagination">
         <button
-          className="admin-users__btn"
+          className="btn btn--secondary"
           disabled={page === 1}
           onClick={() => setPage((p) => p - 1)}
         >
@@ -138,7 +138,7 @@ export default function AdminUsers() {
         </button>
         <span className="admin-users__page">Page {page}</span>
         <button
-          className="admin-users__btn"
+          className="btn btn--secondary"
           disabled={!hasMore}
           onClick={() => setPage((p) => p + 1)}
         >

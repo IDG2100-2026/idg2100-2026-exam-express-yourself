@@ -4,15 +4,9 @@
   position: relative;
 
   &__toggle {
-    border: 1px solid $color-border;
-    border-radius: $radius;
     color: $color-text-muted;
-    background: none;
 
-    &:hover {
-      color: $color-text;
-      border-color: $color-accent;
-    }
+    &:hover { color: $color-accent; }
   }
 
   &__menu {

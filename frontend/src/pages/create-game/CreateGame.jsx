@@ -66,7 +66,7 @@ export default function CreateGame() {
           <OptionGroup label="Buy-in (points)" options={[{ label: "1 point", value: 1 }, { label: "10 points", value: 10 }, { label: "50 points", value: 50 }]} selected={formData.buyIn} onChange={(v) => updateField("buyIn", v)} />
         )}
         {error && <p className="create__error">{error}</p>}
-        <button type="submit" className="create__submit" disabled={isSubmitting}>
+        <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
           {isSubmitting ? "Creating..." : "Create Game"}
         </button>
       </form>

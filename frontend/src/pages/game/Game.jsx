@@ -221,7 +221,7 @@ export default function Game() {
               <p>Waiting for another player to join...</p>
               <small>Refreshes every 15 seconds</small>
               {isPlayer && (
-                <button className="game__leave-btn" onClick={handleLeave}>
+                <button className="btn btn--red" onClick={handleLeave}>
                   Leave game
                 </button>
               )}
@@ -279,7 +279,7 @@ export default function Game() {
                       onChange={(e) => setBetAmount(Number(e.target.value))}
                     />
                     <button
-                      className="game__bet-btn"
+                      className="btn btn--primary"
                       onClick={() =>
                         send({ type: "bet", matchId: id, userId, amount: betAmount })
                       }
@@ -287,7 +287,7 @@ export default function Game() {
                       Bet
                     </button>
                     <button
-                      className="game__bet-btn"
+                      className="btn btn--primary"
                       onClick={() =>
                         send({ type: "raise", matchId: id, userId, amount: betAmount })
                       }
@@ -295,13 +295,13 @@ export default function Game() {
                       Raise
                     </button>
                     <button
-                      className="game__bet-btn"
+                      className="btn btn--primary"
                       onClick={() => send({ type: "match", matchId: id, userId })}
                     >
                       Match
                     </button>
                     <button
-                      className="game__bet-btn game__bet-btn--fold"
+                      className="btn btn--red"
                       onClick={() => send({ type: "fold", matchId: id, userId })}
                     >
                       Fold
@@ -368,7 +368,7 @@ export default function Game() {
                 placeholder="Leave a comment..."
                 rows={3}
               />
-              <button onClick={sendMessage} type="button" className="game__comment-submit">
+              <button onClick={sendMessage} type="button" className="btn btn--primary">
                 Post Comment
               </button>
             </form>

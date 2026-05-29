@@ -53,13 +53,12 @@
   }
 
   &__error {
-    color: $color-danger;
+    color: $color-red;
   }
 
   &__submit {
     border: none;
     border-radius: $radius;
-    font-weight: bold;
     color: #1a1200;
     background-color: $color-accent;
 

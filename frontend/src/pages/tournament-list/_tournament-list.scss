@@ -50,7 +50,7 @@
   &__section-heading { font-weight: bold; }
 
   &__status { color: $color-text-muted; }
-  &__error  { color: $color-danger; }
+  &__error  { color: $color-red; }
 
   &__grid {
     display: grid;
@@ -65,30 +65,27 @@
     border: 1px solid $color-border;
     border-left: 3px solid $color-border;
     border-radius: $radius;
-    text-decoration: none;
     background-color: $color-bg-card;
     transition: border-color 0.15s;
 
     &:hover {
       border-color: $color-accent;
-      text-decoration: none;
     }
 
     &--upcoming    { border-left-color: $color-accent; }
     &--in-progress { border-left-color: #58a6ff; }
-    &--completed   { border-left-color: $color-success; }
-    &--cancelled   { border-left-color: $color-danger; }
+    &--completed   { border-left-color: $color-green; }
+    &--cancelled   { border-left-color: $color-red; }
   }
 
   &__card-status {
-    font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 
     &--upcoming    { color: $color-accent; }
     &--in-progress { color: #58a6ff; }
-    &--completed   { color: $color-success; }
-    &--cancelled   { color: $color-danger; }
+    &--completed   { color: $color-green; }
+    &--cancelled   { color: $color-red; }
   }
 
   &__card-title   { font-weight: bold; }
