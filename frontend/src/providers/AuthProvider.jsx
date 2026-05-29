@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
           setUser(refresh.user);
         }
       } catch (err) {
+        setError(err.message);
         setUser(null); // if session could not be restored, we set user to null
         console.error("Could not restore session");
       }finally{

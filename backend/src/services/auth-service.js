@@ -69,7 +69,7 @@ export const authenticateUser = async (email, password) => {
   if (!checkPassword(password, user.password))
     throw new BusinessLogicError("Invalid credentials", 401); // global error handler
 
-  if (user.isBanned) throw new BusinessLogicError("Account is banned", 403); // global error handler
+  if (user.isBanned) throw new BusinessLogicError("Account is banned, contact pokerdados2026@gmail.com", 403); // global error handler
   if (!user.isVerified)
     throw new BusinessLogicError("Please verify your email before login", 400); // checking if user is verified
   return user; // returns the authenticated user to controller
@@ -78,7 +78,7 @@ export const authenticateUser = async (email, password) => {
 export const verifyEmailService = async (code) => {
   if (!code) throw new BusinessLogicError("Verification code is required", 400);
   const token = await UserVerification.findOne({ token: code }); // finds the token in db
-  if (!token) return;
+  if (!token) throw new BusinessLogicError("Token is required!", 400);
 
   await User.findByIdAndUpdate(token.userId, { isVerified: true }); // marking the user as verified
   await token.deleteOne(); // delete the used or expired token
@@ -111,6 +111,7 @@ export const resetPassword = async (code, newPassword) => {
   user.password = newPassword; // users password is now the new password
   await user.save(); // saves the changes to the user
   await resetToken.deleteOne(); // deletes the reset token after it has been used.
+  await Session.deleteMany({ userId: user._id }); // invalidate all sessions after password reset e.g, log out of devices that has a session for this user
 };
 
 export const createAccessTokenService = async (refreshToken, requestIp) => {

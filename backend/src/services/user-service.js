@@ -34,10 +34,9 @@ export async function getAllUsers(filters) {
   if (filters.search !== undefined) {
     filter.$or = [
       { username: { $regex: filters.search, $options: "i" } },
-      { email: { $regex: filters.search, $options: "i" } },
+      { email: { $regex: filters.search, $options: "i" } }, // $regex is a mongodb query operator
     ];
   }
-
   const users = await User.find(filter).skip(skip).limit(limit);
   const total = await User.countDocuments(filter);
 

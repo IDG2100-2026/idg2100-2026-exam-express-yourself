@@ -6,7 +6,7 @@ import "../login/login.scss"
 const ResetPassword = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
   const [invalidReqError, setInvalidReqError] = useState(null);
