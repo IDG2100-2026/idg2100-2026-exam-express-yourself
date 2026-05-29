@@ -18,7 +18,7 @@
 **File:** `backend/src/utils/password-hash.js`
 
 SHA-256 with a single static env-var salt. Every user with the same password produces the same hash. GPU-trivially brute-forceable. Must be replaced with bcrypt/Argon2id with per-user salts.
-
+> We are not using bcrypt, we are using crypto since this is what we used in lectures
 ---
 
 ### 2. Auth endpoints have no rate limiting ⚠️

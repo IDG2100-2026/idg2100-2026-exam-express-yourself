@@ -61,7 +61,7 @@ export const loginUserController = async (req, res, next) => {
 
   // store refreshToken in a secure cookie
   res.cookie("refreshToken", refreshToken, {
-    signed: true, // signs the cookie so the server knows if it has been tampered with
+    signed: true, // signs the cookie so the server knows if it has been tampered with 
     maxAge: REFRESH_TOKEN_TTL, // cookie expires after this time
     httpOnly: true, // blocks javascript from reading the cookie. XSS secure
     path: req.baseUrl + "/sessions", // only sent to this endpoint

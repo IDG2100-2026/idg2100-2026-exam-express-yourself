@@ -32,6 +32,8 @@ authRouter.post(
 ); // Create a new user
 
 authRouter.post("/forgot-password", forgotPasswordRateLimiter, validateForgotPassword(), validate, forgotPasswordController); // sends the email with reset link
+
+
 authRouter.post(
   "/reset-password",
   apiRateLimiter,
@@ -44,7 +46,7 @@ authRouter.get(
   "/verify-email",
   apiRateLimiter,
   verifyEmailController,
-);
+); // sends email to verify account!
 
 authRouter.post("/login", apiRateLimiter, validateLogin(), validate, loginUserController); // Login an existing user
 
