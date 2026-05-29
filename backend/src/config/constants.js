@@ -38,6 +38,9 @@ export const DEFAULT_TOURNAMENT_ELO_MAX = 9999;
 export const TOURNAMENT_STATUSES = ["upcoming", "cancelled", "in-progress", "completed"];
 export const TOURNAMENT_WIN_POINTS = 50;
 
+// Middleware
+export const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
+
 // Match schema constraints
 export const VALID_ROUNDS = [3, 5, 7];
 export const VALID_TIME_CONTROLS = [10, 30, 90]; // seconds total for all rounds

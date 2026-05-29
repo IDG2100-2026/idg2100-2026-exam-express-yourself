@@ -1,5 +1,6 @@
 import rateLimit from "express-rate-limit";
 import { logIncident } from "../services/security-incidents-service.js";
+import { RATE_LIMIT_WINDOW } from "../config/constants.js";
 
 // Prevent comment spam
 export const commentRateLimiter = rateLimit({
@@ -14,7 +15,7 @@ export const commentRateLimiter = rateLimit({
 
 // Strict limiter for forgot-password to prevent email bombing
 export const forgotPasswordRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: RATE_LIMIT_WINDOW,
   max: 5,
   handler: async (req, res) => {
     logIncident({
@@ -33,7 +34,7 @@ export const forgotPasswordRateLimiter = rateLimit({
 });
 
 export const resendVerificationEmail = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: RATE_LIMIT_WINDOW, // 15 minutes
   max: 3,
   handler: async (req, res) => {
     logIncident({
