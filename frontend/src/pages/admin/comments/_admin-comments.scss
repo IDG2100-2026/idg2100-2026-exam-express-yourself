@@ -2,7 +2,6 @@
 
 .admin-comments {
   &__title {
-    margin-bottom: 1.5rem;
     font-weight: bold;
   }
 
@@ -16,7 +15,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    padding: 1rem 1.25rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     background: $color-bg-card;
@@ -39,7 +37,6 @@
   }
 
   &__date {
-    margin-left: auto;
     color: $color-text-muted;
   }
 
@@ -49,12 +46,10 @@
 
   &__delete {
     align-self: flex-end;
-    padding: 0.35rem 0.75rem;
     border: 1px solid $color-danger;
     border-radius: $radius;
     color: $color-danger;
     background: transparent;
-    cursor: pointer;
     transition: background 0.15s;
 
     &:hover { background: rgba($color-danger, 0.1); }

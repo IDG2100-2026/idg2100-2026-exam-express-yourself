@@ -13,9 +13,18 @@ body {
   background-color: $color-bg;
 }
 
+a,
+button {
+  cursor: pointer;
+}
+
 a {
   color: $color-accent;
   text-decoration: none;
 
   &:hover { text-decoration: underline; }
+}
+
+button {
+  font: inherit;
 }

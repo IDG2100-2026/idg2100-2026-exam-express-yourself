@@ -16,7 +16,6 @@
   &__title { color: $color-accent; }
 
   &__status-badge {
-    padding: 0.2rem 0.6rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     font-weight: bold;
@@ -34,7 +33,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    padding: 1.25rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     background: $color-bg-card;
@@ -75,7 +73,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    padding: 1.25rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     background-color: $color-bg-card;
@@ -107,12 +104,10 @@
   &__btn {
     display: inline-flex;
     align-items: center;
-    padding: 0.6rem 1.4rem;
     border: none;
     border-radius: $radius;
     font-weight: bold;
     text-decoration: none;
-    cursor: pointer;
     transition: opacity 0.15s;
 
     &:hover { opacity: 0.85; }
@@ -127,8 +122,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-left: auto;
-    padding-left: 1rem;
     border-left: 1px solid $color-border;
   }
 
@@ -136,8 +129,6 @@
   &__action-msg { color: $color-success; }
 
   &__section-title {
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
     border-bottom: 1px solid $color-border;
     color: $color-accent;
   }
@@ -161,7 +152,6 @@
   }
 
   &__winner {
-    margin-top: 0.5rem;
     color: $color-text-muted;
 
     strong { color: $color-accent; }
@@ -177,7 +167,6 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.6rem 1rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     text-decoration: none;
@@ -194,7 +183,6 @@
   &__round { margin-bottom: 1.25rem; }
 
   &__round-title {
-    margin-bottom: 0.5rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: $color-text-muted;
@@ -210,7 +198,6 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.6rem 1rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     background: $color-bg-card;
@@ -250,14 +237,12 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    margin-bottom: 1rem;
   }
 
   &__comment {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    padding: 0.75rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     background-color: $color-bg-card;
@@ -280,7 +265,6 @@
   &__comment-input {
     min-height: 150px;
     max-height: 200px;
-    padding: 0.6rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
@@ -295,13 +279,11 @@
 
   &__comment-submit {
     align-self: flex-start;
-    padding: 0.5rem 1rem;
     border: none;
     border-radius: $radius;
     font-weight: bold;
     color: #1a1200;
     background-color: $color-accent;
-    cursor: pointer;
 
     &:hover { background-color: $color-accent-hover; }
   }

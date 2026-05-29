@@ -16,7 +16,6 @@
   &__search {
     flex: 1;
     min-width: 200px;
-    padding: 0.5rem 0.75rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
@@ -31,12 +30,10 @@
   }
 
   &__sort {
-    padding: 0.5rem 0.75rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
     background: $color-bg-secondary;
-    cursor: pointer;
 
     &:focus {
       outline: none;
@@ -65,7 +62,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    padding: 1.25rem;
     border: 1px solid $color-border;
     border-left: 3px solid $color-border;
     border-radius: $radius;
@@ -105,7 +101,6 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    margin-top: 0.25rem;
   }
 
   &__card-trophy-img {
@@ -121,16 +116,13 @@
   &__load-more {
     display: flex;
     justify-content: center;
-    padding-top: 0.5rem;
   }
 
   &__load-more-btn {
-    padding: 0.6rem 2rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
     background: $color-bg-card;
-    cursor: pointer;
     transition: border-color 0.15s;
 
     &:hover:not(:disabled) {

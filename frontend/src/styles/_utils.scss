@@ -1,13 +1,13 @@
 @use 'variables.scss' as *;
 
-// Stack: vertical rhythm between direct children
-.stack-s > * + * { margin-block-start: 0.5rem; }
-.stack-m > * + * { margin-block-start: 1rem; }
-.stack-l > * + * { margin-block-start: 1.5rem; }
+// Stack: add vertical spacing between direct children of an element
+.stack-s > * + * { margin-block-start: $space-s; }
+.stack-m > * + * { margin-block-start: $space-m; }
+.stack-l > * + * { margin-block-start: $space-l; }
 
-// Card: visual shell, border, radius, background
-// Hover activates only when card is a link or button
+// Card: general styling for all cards
 .card {
+  padding: $space-m;
   border: 1px solid $color-border;
   border-radius: $radius;
   background-color: $color-bg-card;
@@ -19,3 +19,17 @@
 
 // Text weight
 .text-bold { font-weight: bold; }
+
+// Margin utils
+.margin-xs { margin: $space-xs; }
+.margin-s  { margin: $space-s; }
+.margin-m  { margin: $space-m; }
+.margin-l  { margin: $space-l; }
+.margin-xl { margin: $space-xl; }
+
+// Padding utils
+.padding-xs { padding: $space-xs; }
+.padding-s  { padding: $space-s; }
+.padding-m  { padding: $space-m; }
+.padding-l  { padding: $space-l; }
+.padding-xl { padding: $space-xl; }

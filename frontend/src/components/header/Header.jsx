@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import AppearanceMenu from "../appearance-menu/AppearanceMenu.jsx";
 import Avatar from "../avatar/Avatar.jsx";
@@ -18,12 +18,12 @@ function Header() {
         <Link to="/" className="header__logo">🎲 PokerDados</Link>
 
         <nav className="header__nav">
-          <Link to="/" className="header__nav-link">Home</Link>
-          <Link to="/lobby" className="header__nav-link">Lobby</Link>
-          <Link to="/tournaments" className="header__nav-link">Tournaments</Link>
-          <Link to="/about-game" className="header__nav-link">About the Game</Link>
+          <NavLink to="/" end className="header__nav-link">Home</NavLink>
+          <NavLink to="/lobby" className="header__nav-link">Lobby</NavLink>
+          <NavLink to="/tournaments" className="header__nav-link">Tournaments</NavLink>
+          <NavLink to="/about-game" className="header__nav-link">About the Game</NavLink>
           {user?.role === "admin" && (
-            <Link to="/admin" className="header__nav-link header__nav-link--admin">Dashboard</Link>
+            <NavLink to="/admin" className="header__nav-link">Dashboard</NavLink>
           )}
         </nav>
 
@@ -40,7 +40,7 @@ function Header() {
               </>
             ) : (
               <>
-                <Link to="/login" className="header__nav-link">Log in</Link>
+                <NavLink to="/login" className="header__nav-link">Log in</NavLink>
                 <Link to="/register" className="header__register">Register</Link>
               </>
             )}

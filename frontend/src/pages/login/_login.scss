@@ -3,23 +3,19 @@
 .login {
   display: flex;
   justify-content: center;
-  padding-top: 3rem;
 
   &__card {
     width: 100%;
     max-width: 420px;
-    padding: 2rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     background-color: $color-bg-card;
   }
 
   &__title {
-    margin-bottom: 0.25rem;
   }
 
   &__subtitle {
-    margin-bottom: 1.5rem;
     color: $color-text-muted;
   }
 
@@ -37,7 +33,6 @@
     label { color: $color-text-muted; }
 
     input {
-      padding: 0.6rem 0.85rem;
       border: 1px solid $color-border;
       border-radius: $radius;
       color: $color-text;
@@ -51,25 +46,20 @@
   }
 
   &__forgot {
-    padding: 0;
     border: none;
     text-align: right;
     color: $color-text-muted;
     background: none;
-    cursor: pointer;
 
     &:hover { color: $color-accent; }
   }
 
   &__submit {
-    margin-top: 0.5rem;
-    padding: 0.75rem;
     border: none;
     border-radius: $radius;
     font-weight: bold;
     color: #1a1200;
     background-color: $color-accent;
-    cursor: pointer;
 
     &:hover { background-color: $color-accent-hover; }
   }
@@ -79,7 +69,6 @@
   }
 
   &__register {
-    margin-top: 1.25rem;
     text-align: center;
     color: $color-text-muted;
   }

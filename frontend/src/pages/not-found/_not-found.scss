@@ -1,16 +1,13 @@
 @use '../../styles/variables.scss' as *;
 
 .not-found {
-  padding: 80px 24px;
   text-align: center;
 
   &__title {
-    margin-bottom: 16px;
     color: $color-accent;
   }
 
   &__text {
-    margin-bottom: 32px;
     color: $color-text-muted;
   }
 

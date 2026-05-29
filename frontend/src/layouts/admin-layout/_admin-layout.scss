@@ -3,76 +3,14 @@
 .admin-layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background: $color-bg;
+  min-block-size: 100vh;
 
   &__main {
     flex: 1;
     width: 100%;
     max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-}
-
-.admin-header {
-  border-bottom: 1px solid $color-border;
-  background: $color-bg-secondary;
-
-  &__inner {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    max-width: 1200px;
-    height: 56px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  &__logo {
-    margin-right: auto;
-    font-weight: bold;
-    white-space: nowrap;
-    text-decoration: none;
-    color: $color-accent;
-  }
-
-  &__nav {
-    display: flex;
-    gap: 0.25rem;
-  }
-
-  &__link {
-    padding: 0.4rem 0.75rem;
-    border-radius: $radius;
-    text-decoration: none;
-    color: $color-text-muted;
-    transition: background 0.15s, color 0.15s;
-
-    &:hover {
-      color: $color-text;
-      background: $color-bg-card;
-    }
-
-    &.active {
-      color: $color-accent;
-      background: $color-bg-card;
-    }
-  }
-
-  &__logout {
-    margin-left: 1rem;
-    padding: 0.4rem 0.75rem;
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    color: $color-text-muted;
-    background: transparent;
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-
-    &:hover {
-      border-color: $color-danger;
-      color: $color-danger;
-    }
+    margin-inline: auto;
+    padding-block: $space-xl;
+    padding-inline: $space-m;
   }
 }

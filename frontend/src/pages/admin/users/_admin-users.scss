@@ -2,18 +2,15 @@
 
 .admin-users {
   &__title {
-    margin-bottom: 1.5rem;
     font-weight: bold;
   }
 
   &__toolbar {
-    margin-bottom: 1.5rem;
   }
 
   &__search {
     width: 100%;
     max-width: 400px;
-    padding: 0.6rem 1rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     outline: none;
@@ -34,7 +31,6 @@
     border-collapse: collapse;
 
     th {
-      padding: 0.75rem 1rem;
       border-bottom: 1px solid $color-border;
       font-weight: bold;
       text-align: left;
@@ -43,7 +39,6 @@
     }
 
     td {
-      padding: 0.75rem 1rem;
       border-bottom: 1px solid $color-border;
     }
 
@@ -54,14 +49,12 @@
   &__row--banned td { opacity: 0.5; }
 
   &__cell--center {
-    padding: 2rem !important;
     text-align: center;
     color: $color-text-muted;
   }
 
   &__badge {
     display: inline-block;
-    padding: 0.2rem 0.5rem;
     border-radius: 4px;
     font-weight: bold;
 
@@ -77,12 +70,10 @@
   }
 
   &__btn {
-    padding: 0.35rem 0.75rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
     background: transparent;
-    cursor: pointer;
     transition: background 0.15s, border-color 0.15s;
 
     &:disabled {
@@ -109,7 +100,6 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-top: 1.5rem;
   }
 
   &__page  { color: $color-text-muted; }

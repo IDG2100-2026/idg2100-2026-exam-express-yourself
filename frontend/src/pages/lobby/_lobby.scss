@@ -14,7 +14,6 @@
   &__title { color: $color-accent; }
 
   &__create {
-    padding: 0.5rem 1rem;
     border-radius: $radius;
     font-weight: bold;
     text-decoration: none;
@@ -35,7 +34,6 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
-    padding: 0.75rem 1rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     background-color: $color-bg-card;
@@ -58,12 +56,10 @@
   }
 
   &__filter-btn {
-    padding: 0.25rem 0.6rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text-muted;
     background-color: $color-bg-secondary;
-    cursor: pointer;
 
     &:hover {
       color: $color-text;
@@ -77,12 +73,10 @@
   }
 
   &__sort {
-    padding: 0.25rem 0.5rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
     background-color: $color-bg-secondary;
-    cursor: pointer;
 
     &:focus {
       outline: none;
@@ -93,16 +87,13 @@
   &__load-more {
     display: flex;
     justify-content: center;
-    margin-top: 0.5rem;
   }
 
   &__load-more-btn {
-    padding: 0.5rem 2rem;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text-muted;
     background-color: $color-bg-card;
-    cursor: pointer;
 
     &:hover:not(:disabled) {
       color: $color-text;
@@ -126,13 +117,11 @@
     flex-direction: column;
     gap: 0.75rem;
     width: 100%;
-    padding: 1.25rem;
     border: 1px solid $color-border;
     border-left: 3px solid $color-border;
     border-radius: $radius;
     text-align: left;
     background-color: $color-bg-card;
-    cursor: pointer;
 
     &:hover { border-color: $color-accent; }
   }
