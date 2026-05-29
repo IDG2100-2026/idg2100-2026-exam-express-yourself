@@ -55,7 +55,7 @@ export default function AdminUsers() {
 
   return (
     <div className="admin-users">
-      <h1 className="admin-users__title">User Administration</h1>
+      <h1>User Administration</h1>
 
       <div className="admin-users__toolbar">
         <input

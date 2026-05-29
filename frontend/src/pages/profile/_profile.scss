@@ -66,9 +66,6 @@
     background-color: $color-bg-card;
   }
 
-  &__form-title {
-  }
-
   &__field {
     display: flex;
     flex-direction: column;
@@ -141,19 +138,10 @@
     color: $color-text-muted;
   }
 
-  &__section-title {
-    border-bottom: 1px solid $color-border;
-    color: $color-accent;
-  }
-
   &__games-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    .profile__section-title {
-      border-bottom: none;
-    }
   }
 
   &__game-list {

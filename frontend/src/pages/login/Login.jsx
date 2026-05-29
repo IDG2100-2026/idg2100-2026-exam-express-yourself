@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import {
   loginUser,
   requestResetPassword,
@@ -87,7 +87,7 @@ export default function Login() {
       <div className="login__card">
         {!showForgotPassword ? (
           <form className="login__form" onSubmit={handleSubmit}>
-            <h1 className="login__title">Log In</h1>
+            <h1>Log In</h1>
             <p className="login__subtitle">Welcome back to PokerDados</p>
             {success && (
               <p>{success}</p>
@@ -137,7 +137,7 @@ export default function Login() {
           </form>
         ) : (
           <form className="login__field" onSubmit={sendForgotPasswordMail}>
-            <h2 className="login__title">Forgot Password</h2>
+            <h2>Forgot Password</h2>
             {resetMsg ? <p>{resetMsg}</p> : <p>{error}</p>}
             <input
               type="email"

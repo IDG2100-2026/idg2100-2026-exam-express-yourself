@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { getMatches, joinMatch } from "../../services/matches-service.js";
 import { getTournaments } from "../../services/tournaments-service.js";
 import { getPlatformActivity } from "../../services/platform-activity-service.js";
@@ -70,7 +70,7 @@ export default function Home() {
   return (
     <div className="home stack-l">
       <section className="home__hero">
-        <h1 className="home__title">Spanish Poker Dice</h1>
+        <h1>Spanish Poker Dice</h1>
         <p className="home__description">
           Challenge players from around the world in the classic Spanish dice game.
           Bluff, roll, and outsmart your opponents to win tournaments and earn trophies.
@@ -80,11 +80,9 @@ export default function Home() {
 
       {data.activity && (
         <section className="home__activity stack-m">
-          <div className="home__section-header">
-            <h2>Platform activity</h2>
-          </div>
+          <h2>Platform activity</h2>
           <ul className="home__activity-list">
-            <li><strong>{data.activity.availableGames}</strong> joinable games</li>
+            <li><strong>{data.activity.availableGames}</strong> open games</li>
             <li><strong>{data.activity.ongoingMatches}</strong> games in progress</li>
             <li><strong>{data.activity.activePlayers}</strong> players active this week</li>
             <li><strong>{data.activity.gamesThisWeek}</strong> games played this week</li>
@@ -98,10 +96,7 @@ export default function Home() {
       {!isLoading && !error && (
         <>
           <section className="home__section stack-m">
-            <div className="home__section-header">
-              <h2>Joinable games</h2>
-              <Link to="/lobby">See all</Link>
-            </div>
+            <h2>Open Games</h2>
             {data.waiting.length === 0 ? (
               <p className="home__empty">No open games right now.</p>
             ) : (
@@ -120,7 +115,7 @@ export default function Home() {
                           }
                         }}
                       >
-                        <h3 className="home__card-player">{p1?.username || "Unknown"}</h3>
+                        <h3>{p1?.username || "Unknown"}</h3>
                         <p className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "?"}</p>
                         <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}, {match.category?.buyIn || 1}pt buy-in</p>
                         <p className="home__card-variant">{match.players?.length || 1}/{match.maxPlayers || 2} players</p>
@@ -131,12 +126,11 @@ export default function Home() {
                 })}
               </ul>
             )}
+            <Link to="/lobby" className="home__see-all">See all open games</Link>
           </section>
 
           <section className="home__section stack-m">
-            <div className="home__section-header">
-              <h2>Top games in progress</h2>
-            </div>
+            <h2>Top games in progress</h2>
             {data.top.length === 0 ? (
               <p className="home__empty">No games yet.</p>
             ) : (
@@ -144,7 +138,7 @@ export default function Home() {
                 {data.top.map((match) => (
                   <li key={match._id}>
                     <Link to={`/game/${match._id}`} className={`home__card home__card--${match.status} card stack-s`}>
-                      <h3 className="home__card-player">{getPlayer(match, 0)?.username || "?"} vs {getPlayer(match, 1)?.username || "waiting"}</h3>
+                      <h3>{getPlayer(match, 0)?.username || "?"} vs {getPlayer(match, 1)?.username || "waiting"}</h3>
                       <p className="home__card-elo">Avg Elo: {avgElo(match)}</p>
                       <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}, {match.category?.buyIn || 1}pt buy-in</p>
                       <p className={`home__card-status home__card-status--${match.status}`}>{match.status}</p>
@@ -156,10 +150,7 @@ export default function Home() {
           </section>
 
           <section className="home__section stack-m">
-            <div className="home__section-header">
-              <h2>Upcoming tournaments</h2>
-              <Link to="/tournaments">See all</Link>
-            </div>
+            <h2>Upcoming tournaments</h2>
             {data.tournaments.length === 0 ? (
               <p className="home__empty">No upcoming tournaments.</p>
             ) : (
@@ -167,7 +158,7 @@ export default function Home() {
                 {data.tournaments.map((tournament) => (
                   <li key={tournament._id}>
                     <Link to={`/tournament/${tournament._id}`} className={`home__card home__card--${tournament.status} card stack-s`}>
-                      <h3 className="home__card-player">{tournament.title}</h3>
+                      <h3>{tournament.title}</h3>
                       <p className="home__card-variant">
                         {new Date(tournament.startDate).toLocaleDateString(undefined, {
                           year: "numeric", month: "short", day: "numeric",
@@ -187,6 +178,7 @@ export default function Home() {
                 ))}
               </ul>
             )}
+            <Link to="/tournaments" className="home__see-all">See all tournaments</Link>
           </section>
         </>
       )}

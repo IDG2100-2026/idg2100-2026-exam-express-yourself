@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 import { useMatch } from "../../hooks/useMatch.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
@@ -333,7 +333,7 @@ export default function Game() {
 
         {/* ── Sidebar: comments ── */}
         <aside className="game__sidebar">
-          <h2 className="game__sidebar-title">Comments</h2>
+          <h2>Comments</h2>
           <div className="game__comments">
             {messages.length === 0 && (
               <p className="game__no-comments">No comments yet.</p>

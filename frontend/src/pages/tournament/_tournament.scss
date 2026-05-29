@@ -13,8 +13,6 @@
     gap: 1rem;
   }
 
-  &__title { color: $color-accent; }
-
   &__status-badge {
     border: 1px solid $color-border;
     border-radius: $radius;
@@ -124,11 +122,6 @@
   &__joined     { color: $color-green; }
   &__action-msg { color: $color-green; }
 
-  &__section-title {
-    border-bottom: 1px solid $color-border;
-    color: $color-accent;
-  }
-
   &__trophy-item {
     display: flex;
     align-items: center;
@@ -174,12 +167,6 @@
   }
 
   &__round { margin-bottom: 1.25rem; }
-
-  &__round-title {
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: $color-text-muted;
-  }
 
   &__round-matches {
     display: flex;

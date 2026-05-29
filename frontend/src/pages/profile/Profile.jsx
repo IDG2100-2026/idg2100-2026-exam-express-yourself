@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link } from "react-router";
 import { useUser } from "../../hooks/useUser.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { updateUser, uploadAvatar } from "../../services/users-service.js";
@@ -141,7 +141,7 @@ export default function Profile() {
           )}
         </div>
         <div className="profile__info">
-          <h1 className="profile__username">{user.username}</h1>
+          <h1>{user.username}</h1>
           {isOwnProfile && <p className="profile__email">{user.email}</p>}
           <p className="profile__bio">{user.bio || "No bio yet."}</p>
           {isOwnProfile && (
@@ -157,7 +157,7 @@ export default function Profile() {
 
       {editing && (
         <form className="profile__form" onSubmit={handleSave}>
-          <h2 className="profile__form-title">Edit Profile</h2>
+          <h2>Edit Profile</h2>
           <div className="profile__field">
             <label>Email</label>
             <input
@@ -262,7 +262,7 @@ export default function Profile() {
 
       {user.trophies?.length > 0 && (
         <div className="profile__trophies">
-          <h2 className="profile__section-title">Trophies</h2>
+          <h2>Trophies</h2>
           <div className="profile__trophy-list">
             {user.trophies.map((trophy) => (
               <div key={trophy._id} className="profile__trophy">
@@ -277,7 +277,7 @@ export default function Profile() {
       )}
 
       <div className="profile__games">
-        <h2 className="profile__section-title">Game History</h2>
+        <h2>Game History</h2>
         {games.length === 0 ? (
           <p className="profile__status">No games played yet.</p>
         ) : (

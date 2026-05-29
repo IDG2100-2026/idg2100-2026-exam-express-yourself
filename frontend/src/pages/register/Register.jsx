@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { registerUser } from "../../services/auth-service.js";
 
 export default function Register() {
@@ -68,7 +68,7 @@ export default function Register() {
   return (
     <div className="register">
       <div className="register__card">
-        <h1 className="register__title">Create Account</h1>
+        <h1>Create Account</h1>
         <p className="register__subtitle">Join PokerDados today</p>
         {success && <p>Registration successful! Confirm your account from the email you got to login</p>}
         <form className="register__form" onSubmit={handleSubmit}>

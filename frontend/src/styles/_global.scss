@@ -13,6 +13,20 @@ body {
   background-color: $color-bg;
 }
 
+h1 {
+  color: $color-accent;
+}
+
+h2 {
+  padding-block-end: 0.5rem;
+  border-block-end: 2px solid $color-text-muted;
+  color: $color-text-muted;
+}
+
+h3 {
+  color: $color-text-muted;
+}
+
 a,
 button {
   text-decoration: none;

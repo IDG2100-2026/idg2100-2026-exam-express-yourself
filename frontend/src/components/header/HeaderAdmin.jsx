@@ -1,4 +1,4 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router";
 import { useAuth } from "../../hooks/useAuth.js";
 
 export default function HeaderAdmin() {

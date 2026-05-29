@@ -1,4 +1,4 @@
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate } from "react-router";
 import { useAuth } from "../hooks/useAuth.js";
 
 export default function AdminRoute() {

@@ -123,11 +123,6 @@
     background-color: $color-bg-card;
   }
 
-  &__sidebar-title {
-    border-bottom: 1px solid $color-border;
-    color: $color-accent;
-  }
-
   &__comments {
     display: flex;
     flex-direction: column;

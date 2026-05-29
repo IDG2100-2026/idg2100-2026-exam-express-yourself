@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { createTournament, updateTournament, getTournament } from "../../../services/tournaments-service.js";
 
 const EMPTY_FORM = {
@@ -106,7 +106,7 @@ export default function AdminTournamentCreate() {
 
   return (
     <div className="admin-tc">
-      <h1 className="admin-tc__title">{isEdit ? "Edit Tournament" : "Create Tournament"}</h1>
+      <h1>{isEdit ? "Edit Tournament" : "Create Tournament"}</h1>
 
       {error && <p className="admin-tc__error">{error}</p>}
 

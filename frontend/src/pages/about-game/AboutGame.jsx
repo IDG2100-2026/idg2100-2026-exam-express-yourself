@@ -1,7 +1,7 @@
 export default function AboutGame() {
   return (
     <div className="about-game">
-      <h1 className="about-game__title">About Spanish Poker Dice</h1>
+      <h1>About Spanish Poker Dice</h1>
       <section className="about-game__section">
         <h2>What is it?</h2>
         <p>Spanish Poker Dice is a classic dice game popular across Spain and Latin America. It is played with five special dice showing playing card symbols (9, 10, Jack, Queen, King and Ace) instead of numbers. Players roll the dice and try to form the best poker hand possible.</p>

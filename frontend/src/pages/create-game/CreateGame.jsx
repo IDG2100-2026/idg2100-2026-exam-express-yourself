@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { createMatch } from "../../services/matches-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
 
@@ -54,7 +54,7 @@ export default function CreateGame() {
 
   return (
     <div className="create">
-      <h1 className="create__title">Create a New Game</h1>
+      <h1>Create a New Game</h1>
       <p className="create__subtitle">Choose your settings. You will be Player 1.</p>
 
       <form className="create__form" onSubmit={handleSubmit}>

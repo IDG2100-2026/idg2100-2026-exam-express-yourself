@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router";
 import { resetPassword } from "../../services/auth-service.js";
 
 const ResetPassword = () => {
@@ -43,7 +43,7 @@ const ResetPassword = () => {
           <p>{invalidReqError}</p>
         ) : (
           <form className="reset__form" onSubmit={handleSubmit}>
-            <h2 className="reset__title">Reset Password</h2>
+            <h2>Reset Password</h2>
             {success ? (
               <p>
                 Reset password successful. You will be redirected to the login

@@ -1,7 +1,7 @@
 export default function Privacy() {
   return (
     <div className="privacy">
-      <h1 className="privacy__title">Privacy Policy</h1>
+      <h1>Privacy Policy</h1>
       <p className="privacy__updated">Last updated: April 2026</p>
       <section className="privacy__section">
         <h2>1. What we collect</h2>

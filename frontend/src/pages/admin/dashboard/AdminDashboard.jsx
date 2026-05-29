@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { getPlatformActivity } from "../../../services/platform-activity-service.js";
 import { getSecurityIncidents } from "../../../services/security-incidents-service.js";
 
@@ -20,7 +20,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard">
-      <h1 className="admin-dashboard__title">Dashboard</h1>
+      <h1>Dashboard</h1>
 
       {error && <p className="admin-dashboard__error">{error}</p>}
 

@@ -25,7 +25,7 @@ export default function AdminComments() {
 
   return (
     <div className="admin-comments">
-      <h1 className="admin-comments__title">Comment Administration</h1>
+      <h1>Comment Administration</h1>
 
       {error && <p className="admin-comments__error">{error}</p>}
 

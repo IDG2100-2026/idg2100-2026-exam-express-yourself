@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router";
 import {
   getTournament,
   joinTournament,
@@ -221,7 +221,7 @@ export default function Tournament() {
   return (
     <div className="tournament">
       <div className="tournament__header">
-        <h1 className="tournament__title">{tournament.title}</h1>
+        <h1>{tournament.title}</h1>
         <span
           className={`tournament__status-badge tournament__status-badge--${tournament.status}`}
         >
@@ -313,7 +313,7 @@ export default function Tournament() {
 
       {tournament.rules && (
         <div className="tournament__rules">
-          <h2 className="tournament__section-title">Rules</h2>
+          <h2>Rules</h2>
           <p className="tournament__rules-text">{tournament.rules}</p>
         </div>
       )}
@@ -384,7 +384,7 @@ export default function Tournament() {
       {/* Live matches, spectators click in, participants are auto-redirected */}
       {tournament.status === "in-progress" && tournament.bracket?.length > 0 && (
         <div className="tournament__live-matches">
-          <h2 className="tournament__section-title">
+          <h2>
             Round {tournament.currentRound}: Live Matches
           </h2>
           <div className="tournament__live-match-list">
@@ -407,7 +407,7 @@ export default function Tournament() {
       {/* Trophy */}
       {tournament.trophy && (
         <div className="tournament__trophy">
-          <h2 className="tournament__section-title">Trophy</h2>
+          <h2>Trophy</h2>
           <div className="tournament__trophy-item">
             {tournament.trophy.imageUrl && (
               <img
@@ -431,10 +431,10 @@ export default function Tournament() {
       {/* Standings, shown when in-progress or completed */}
       {standings && standings.standings?.length > 0 && (
         <div className="tournament__standings">
-          <h2 className="tournament__section-title">Standings</h2>
+          <h2>Standings</h2>
           {standings.standings.map((round) => (
             <div key={round.round} className="tournament__round">
-              <h3 className="tournament__round-title">Round {round.round}</h3>
+              <h3>Round {round.round}</h3>
               <div className="tournament__round-matches">
                 {round.matches.map((m, i) => (
                   <div key={i} className="tournament__match">
@@ -472,7 +472,7 @@ export default function Tournament() {
 
       {/* Participants */}
       <div className="tournament__participants">
-        <h2 className="tournament__section-title">
+        <h2>
           Participants ({tournament.participants?.length || 0})
         </h2>
         {!tournament.participants?.length ? (
@@ -505,7 +505,7 @@ export default function Tournament() {
 
       {/* Comments */}
       <div className="tournament__comments-section">
-        <h2 className="tournament__section-title">Comments</h2>
+        <h2>Comments</h2>
         <div className="tournament__comments">
           {messages.length === 0 && (
             <p className="tournament__status">No comments yet.</p>

@@ -12,10 +12,6 @@
     background-color: $color-bg-card;
   }
 
-  &__title {
-    color: $color-accent;
-  }
-
   &__description {
     max-width: 500px;
     line-height: 1.7;
@@ -28,9 +24,7 @@
     color: #1a1200;
     background-color: $color-accent;
 
-    &:hover {
-      background-color: $color-accent-hover;
-    }
+    &:hover { background-color: $color-accent-hover; }
   }
 
   &__activity-list {
@@ -41,11 +35,11 @@
     color: $color-text-muted;
   }
 
-  &__section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-block-end: 2px solid $color-accent;
+  &__see-all {
+    display: block;
+    color: $color-text-muted;
+
+    &:hover { color: $color-accent; }
   }
 
   &__status { color: $color-text-muted; }
@@ -77,23 +71,7 @@
   &__card-player { font-weight: bold; }
   &__card-variant { color: $color-text-muted; }
   &__card-elo     { color: $color-text-muted; }
-
-  &__card-waiting {
-    color: $color-accent;
-  }
-
-  &__card--btn {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    border: 1px solid $color-border;
-    border-inline-start: 3px solid $color-border;
-    border-radius: $radius;
-    text-align: start;
-    background-color: $color-bg-card;
-
-    &:hover { border-color: $color-accent; }
-  }
+  &__card-waiting { color: $color-accent; }
 
   &__card--upcoming    { border-inline-start-color: $color-accent; }
   &__card--waiting     { border-inline-start-color: $color-accent; }
@@ -102,7 +80,6 @@
   &__card--cancelled   { border-inline-start-color: $color-red; }
 
   &__card-status {
-
     &--in-progress { color: $color-green; }
     &--completed   { color: $color-text-muted; }
     &--waiting     { color: $color-accent; }

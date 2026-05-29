@@ -1,19 +1,6 @@
 @use '../../../styles/variables.scss' as *;
 
 .admin-dashboard {
-  &__title {
-  }
-
-  &__section {
-
-    h2 {
-      border-bottom: 1px solid $color-border;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: $color-text-muted;
-    }
-  }
-
   &__stats {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -51,9 +38,6 @@
     transition: border-color 0.15s;
 
     &:hover { border-color: $color-accent; }
-
-    h3 {
-    }
 
     p { color: $color-text-muted; }
   }

@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import HeaderAdmin from "../../components/header/HeaderAdmin.jsx";
 
 export default function AdminLayout() {

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router";
 import { AuthProvider } from "./providers/AuthProvider.jsx";
 import { AppearanceProvider } from "./providers/AppearanceProvider.jsx";
 import MainLayout from "./layouts/main-layout/MainLayout.jsx";
