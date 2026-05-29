@@ -4,6 +4,25 @@ import { checkPassword } from "../utils/password-hash.js";
 import { BusinessLogicError } from "../utils/errors.js";
 import { MSEC_PER_DAY } from "../config/constants.js";
 
+// checking if the username is available or not
+export const checkIfUsernameIsAvailable = async (username) => {
+  const exists = await User.findOne({ username });
+  if (exists)
+    throw new BusinessLogicError(
+      "Username is already taken! Try a new one",
+      403,
+    );
+};
+
+// check if this email already is a registered user
+export const checkIfEmailExists = async (email) => {
+  const exists = await User.findOne({ email });
+  if (exists)
+    throw new BusinessLogicError(
+      "Email already exist! Login, or register with a new one",
+      403,
+    );
+};
 
 // Get a paginated, filtered list of all users
 export async function getAllUsers(filters) {
@@ -24,7 +43,6 @@ export async function getAllUsers(filters) {
 
   return { page, limit, total, results: users };
 }
-
 
 // Get a single user by ID with stats and paginated recent matches, hiding email from other users
 export async function getUser(userId, requestingUserId, filters = {}) {
@@ -101,7 +119,6 @@ export async function getUser(userId, requestingUserId, filters = {}) {
   };
 }
 
-
 // Update a user's profile fields, handling password change with old password verification
 export async function updateUser(userId, updateData, requestingUserId) {
   // Only the owner or an admin can update a profile
@@ -143,7 +160,10 @@ export async function updateUser(userId, updateData, requestingUserId) {
 
   if (updateData.password !== undefined) {
     if (updateData.oldPassword === undefined) {
-      throw new BusinessLogicError("Old password is required to change password", 400);
+      throw new BusinessLogicError(
+        "Old password is required to change password",
+        400,
+      );
     }
     const passwordMatch = checkPassword(updateData.oldPassword, user.password);
     if (!passwordMatch) {
@@ -156,7 +176,6 @@ export async function updateUser(userId, updateData, requestingUserId) {
   return savedUser;
 }
 
-
 // Set a new profile image URL on a user, enforcing ownership (only owner or admin can change it)
 export async function uploadAvatar(userId, profileImageUrl, requestingUserId) {
   if (requestingUserId !== userId) {
@@ -166,13 +185,16 @@ export async function uploadAvatar(userId, profileImageUrl, requestingUserId) {
     }
   }
 
-  const user = await User.findByIdAndUpdate(userId, { profileImageUrl }, { new: true });
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { profileImageUrl },
+    { new: true },
+  );
   if (!user) {
     throw new BusinessLogicError("User not found", 404);
   }
   return user;
 }
-
 
 // Set a user as banned so they can no longer join tournaments or matches
 export async function banUser(userId) {
@@ -184,7 +206,6 @@ export async function banUser(userId) {
   const savedUser = await user.save();
   return savedUser;
 }
-
 
 // Give a user the admin role
 export async function makeAdmin(userId) {

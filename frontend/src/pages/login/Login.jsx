@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
-import { loginUser } from "../../services/auth-service.js";
+import { loginUser, verifyEmail } from "../../services/auth-service.js";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -12,6 +12,24 @@ export default function Login() {
   const navigate = useNavigate();
   const { user, login } = useAuth();
   const { loadAppearance } = useAppearance();
+  const [searchParam, setSearchParam] = useSearchParams();
+
+  useEffect(() => {
+    const code = searchParam.get("code"); // get the code from the url
+    if (!code) return;
+    const verifyUserEmail = async () => {
+      try {
+        const data = await verifyEmail(code); // call the function that fetches the verify email route
+        setSuccess(data.message); // show success msg
+      } catch (err) {
+        setError(err.message); // show error msg
+      } finally {
+        setLoading(false); // cleanup to be sure that we don't load anymore
+      }
+    };
+
+    verifyUserEmail();
+  }, []); // only run on mount
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -48,7 +66,7 @@ export default function Login() {
           <h1 className="login__title">Log In</h1>
           <p className="login__subtitle">Welcome back to PokerDados</p>
           {success ? (
-            <span>{success}</span>
+            <span className="login__success">{success}</span>
           ) : (
             <span className="login__error">{error}</span>
           )}

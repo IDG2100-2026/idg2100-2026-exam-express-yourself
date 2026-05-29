@@ -7,7 +7,7 @@ import {
   sendPasswordResetMail,
   sendVerificationMail,
 } from "./email-service.js";
-import { TokenVerification } from "../models/TokenVerification.js";
+import { UserVerification } from "../models/UserVerification.js";
 import { normalizeIp } from "../utils/normalize-ip.js";
 import { getAccessToken } from "../utils/jwt.js";
 
@@ -36,12 +36,31 @@ export const registerUser = async (userData) => {
 
   await newUser.save(); // Saves to db. This triggers the password to be hashed
 
-  const verificationToken = await TokenVerification.create({
+  const verificationToken = await UserVerification.create({
     // generates  verification token linked to the user
     userId: newUser._id,
   });
   await sendVerificationMail(newUser.email, verificationToken.token); // this is the to and token in sendVerificationMail in service.
+
   return newUser;
+};
+
+export const resendUserVerification = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) return;
+
+  const findVerificationToken = await UserVerification.findOne({
+    userId: user._id,
+  });
+
+  if (findVerificationToken) {
+    await findVerificationToken.deleteOne();
+  }
+
+  const newToken = await UserVerification.create({
+    userId: user._id,
+  });
+  await sendVerificationMail(user.email, newToken.token);
 };
 
 export const authenticateUser = async (email, password) => {
@@ -58,7 +77,7 @@ export const authenticateUser = async (email, password) => {
 
 export const verifyEmailService = async (code) => {
   if (!code) throw new BusinessLogicError("Verification code is required", 400);
-  const token = await TokenVerification.findOne({ token: code }); // finds the token in db
+  const token = await UserVerification.findOne({ token: code }); // finds the token in db
   if (!token) return;
 
   await User.findByIdAndUpdate(token.userId, { isVerified: true }); // marking the user as verified
@@ -79,8 +98,9 @@ export const resetPasswordRequest = async (email) => {
 };
 
 export const resetPassword = async (code, newPassword) => {
-  if (!code || !newPassword) throw new BusinessLogicError("code and password are required", 400);
-  
+  if (!code || !newPassword)
+    throw new BusinessLogicError("code and password are required", 400);
+
   const resetToken = await ResetPassword.findOne({ token: code }); // search up for the reset password token
   if (!resetToken)
     throw new BusinessLogicError("Invalid or expired token", 400); // error if we dont find the reset token

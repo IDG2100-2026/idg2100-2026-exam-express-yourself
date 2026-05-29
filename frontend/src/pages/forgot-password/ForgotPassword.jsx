@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { verifyEmail, requestResetPassword } from "../../services/auth-service";
+import { requestResetPassword } from "../../services/auth-service";
 import { Link, useSearchParams } from "react-router-dom";
 import "../login/login.scss";
 
@@ -7,28 +7,10 @@ const ForgotPassword = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [resetMessage, setResetMessage] = useState("");
-  const [searchParam, setSearchParam] = useSearchParams();
   const [sendMail, setSendMail] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const code = searchParam.get("code"); // get the code from the url
-    if (!code) return;
-    const verifyUserEmail = async () => {
-      setLoading(true);
-      try {
-        const data = await verifyEmail(code); // call the function that fetches the verify email route
-        setSuccess(data.message); // show success msg
-      } catch (err) {
-        setError(err.message); // show error msg
-      } finally {
-        setLoading(false); // cleanup to be sure that we don't load anymore
-      }
-    };
-
-    verifyUserEmail();
-  }, []); // only run on mount
 
   const sendEmailCode = async (e) => {
     e.preventDefault();
@@ -49,7 +31,7 @@ const ForgotPassword = () => {
       <div className="forgotPassword__card">
         <form className="forgotPassword__field" onSubmit={sendEmailCode}>
           <h2 className="forgotPassword__title">Forgot Password</h2>
-          {resetMessage ? <span>{resetMessage}</span> : <span>{error}</span>}
+          {resetMessage ? <span className="forgotPassword__success">{resetMessage}</span> : <span className="forgotPassword__error">{error}</span>}
           <input
             type="email"
             value={sendMail}

@@ -5,6 +5,7 @@ import {
   createAccessToken,
   logoutUser,
   verifyEmailController,
+  resendVerifyEmailController,
   resetPasswordController,
   forgotPasswordController,
 } from "../controllers/auth-controller.js";
@@ -17,8 +18,13 @@ import {
   validateForgotPassword,
 } from "../validators/passwordResetValidator.js";
 import { validate } from "../validators/validate.js";
-import { apiRateLimiter, forgotPasswordRateLimiter } from "../middlewares/rate-limiter.js";
+import {
+  apiRateLimiter,
+  forgotPasswordRateLimiter,
+  resendVerificationEmail,
+} from "../middlewares/rate-limiter.js";
 import cookieParser from "cookie-parser";
+import { verify } from "crypto";
 
 const authRouter = express.Router();
 authRouter.use(cookieParser(process.env.COOKIE_SECRET));
@@ -31,8 +37,13 @@ authRouter.post(
   registerUserController,
 ); // Create a new user
 
-authRouter.post("/forgot-password", forgotPasswordRateLimiter, validateForgotPassword(), validate, forgotPasswordController); // sends the email with reset link
-
+authRouter.post(
+  "/forgot-password",
+  forgotPasswordRateLimiter,
+  validateForgotPassword(),
+  validate,
+  forgotPasswordController,
+); // sends the email with reset link
 
 authRouter.post(
   "/reset-password",
@@ -42,13 +53,20 @@ authRouter.post(
   resetPasswordController,
 ); // changes the password
 
-authRouter.get(
-  "/verify-email",
-  apiRateLimiter,
-  verifyEmailController,
-); // sends email to verify account!
+authRouter.get("/verify-email", apiRateLimiter, verifyEmailController); // sends email to verify account!
+authRouter.post(
+  "/resend-verify-email",
+  resendVerificationEmail,
+  resendVerifyEmailController,
+); // re-sends email to verify account;
 
-authRouter.post("/login", apiRateLimiter, validateLogin(), validate, loginUserController); // Login an existing user
+authRouter.post(
+  "/login",
+  apiRateLimiter,
+  validateLogin(),
+  validate,
+  loginUserController,
+); // Login an existing user
 
 authRouter.post("/sessions/token", createAccessToken); // to get a new access token after expire
 authRouter.delete("/sessions/current", logoutUser); // on user logout

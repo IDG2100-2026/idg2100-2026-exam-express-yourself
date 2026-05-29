@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { randomUUID } from "crypto";
 import { VERIFICATION_TOKEN_TTL } from "../config/auth-config.js";
-const tokenVerification = new mongoose.Schema({
+const userVerification = new mongoose.Schema({
   token: {
     type: String,
     unique: true,
@@ -20,7 +20,7 @@ const tokenVerification = new mongoose.Schema({
   },
 });
 
-export const TokenVerification = mongoose.model(
-  "tokenVerification",
-  tokenVerification,
+export const UserVerification = mongoose.model(
+  "userVerification",
+  userVerification,
 );
