@@ -2,10 +2,10 @@ import { Link } from "react-router";
 
 export default function NotFound() {
   return (
-    <div className="not-found">
+    <div className="not-found stack-s">
       <h1>404</h1>
-      <p className="not-found__text">Page not found. The dice rolled off the table.</p>
-      <Link to="/" className="not-found__link">← Back to Home</Link>
+      <p>Page not found. The dice rolled off the table.</p>
+      <Link to="/" className="btn--link">Back to home</Link>
     </div>
   );
 }

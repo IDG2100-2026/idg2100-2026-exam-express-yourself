@@ -234,7 +234,7 @@ export default function Tournament() {
         <div className="tournament__winner">
           <span className="tournament__countdown-label">Winner</span>
           <div className="tournament__winner-profile">
-            <Avatar imageUrl={tournament.winnerId.profileImageUrl} username={tournament.winnerId.username} size={56} />
+            <Avatar imageUrl={tournament.winnerId.profileImageUrl} username={tournament.winnerId.username} size={48} />
             <span>{tournament.winnerId.username}</span>
           </div>
         </div>
@@ -505,10 +505,12 @@ export default function Tournament() {
           )}
           {messages.map((message) => (
             <div key={message._id} className="tournament__comment">
-              <Avatar imageUrl={message.authorId?.profileImageUrl} username={message.authorId?.username} size={32} />
-              <span className="tournament__comment-author">
-                {message.authorId?.username}
-              </span>
+              <div className="tournament__comment-header">
+                <Avatar imageUrl={message.authorId?.profileImageUrl} username={message.authorId?.username} size={32} />
+                <span className="tournament__comment-author">
+                  {message.authorId?.username}
+                </span>
+              </div>
               <span className="tournament__comment-date">
                 {new Date(message.createdAt).toLocaleDateString("en-GB")}
               </span>

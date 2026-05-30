@@ -1,22 +1,9 @@
 @use '../../styles/variables.scss' as *;
 
 .privacy {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-width: 700px;
-
-  &__updated {
-    color: $color-text-dim;
-  }
+  &__updated { color: $color-text-dim; }
 
   &__section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    p {
-      line-height: 1.7;
-    }
+    p { max-width: 50ch; }
   }
 }

@@ -73,7 +73,7 @@ export async function getTournament(tournamentId) {
   const tournament = await Tournament.findById(tournamentId)
     .populate("createdBy", "username")
     .populate("participants", "username eloRating profileImageUrl")
-    .populate("winnerId", "username")
+    .populate("winnerId", "username profileImageUrl")
     .populate("bracket.matches.players", "username")
     .populate("bracket.matches.winner", "username");
 

@@ -1,17 +1,9 @@
 @use '../../styles/variables.scss' as *;
 
 .about-us {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  max-width: 700px;
-
   &__section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-
     p {
+      max-width: 50ch;
       line-height: 1.8;
     }
   }
@@ -19,17 +11,16 @@
   &__team {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: $space-l;
+    list-style: none;
   }
 
   &__member {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.4rem;
+    gap: $space-xs;
     text-align: center;
-
-    span { color: $color-text-dim; }
   }
 
   &__member-avatar {
@@ -38,8 +29,8 @@
     justify-content: center;
     width: 56px;
     height: 56px;
+    border-radius: 50%;
     color: #1a1200;
     background-color: $color-yellow;
-    border-radius: 50%;
   }
 }

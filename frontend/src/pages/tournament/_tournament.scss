@@ -128,7 +128,7 @@
     align-items: center;
     gap: $space-m;
 
-    span { font-size: 2rem; }
+    span { font-size: 1.5rem; }
   }
 
   &__live-match-list {
@@ -211,6 +211,12 @@
     background-color: $color-inner;
   }
 
+  &__comment-header {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+  }
+
   &__comment-author { color: $color-yellow; }
   &__comment-date   { color: $color-text-dim; }
 
@@ -223,7 +229,7 @@
   }
 
   &__comment-input {
-    min-block-size: 150px;
+    min-block-size: 75px;
     max-block-size: 200px;
     padding: $space-s;
     border: 1px solid $color-border;

@@ -1,21 +1,11 @@
 @use '../../styles/variables.scss' as *;
 
 .terms {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-width: 700px;
-
-  &__updated {
-    color: $color-text-dim;
-  }
+  &__updated { color: $color-text-dim; }
 
   &__section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
     p {
+      max-width: 50ch;
       line-height: 1.7;
     }
   }
