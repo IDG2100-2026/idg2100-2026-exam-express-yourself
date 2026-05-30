@@ -66,3 +66,19 @@ export const apiRateLimiter = rateLimit({
     res.status(429).json({ error: "Too many requests. Please slow down." });
   },
 });
+
+export const sessionTokenLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10,
+  handler: async (req, res) => {
+    logIncident({
+      type: "rate-limit",
+      ip: req.ip,
+      userAgent: req.headers["user-agent"] || "unknown",
+    }).catch(() => {}); // fire and forget, don't block the response
+
+    res.status(429).json({ error: "Too many requests for  refresh tokens. Please slow down with refreshing the page." });
+  },
+});
+
+

@@ -22,6 +22,7 @@ import {
   apiRateLimiter,
   forgotPasswordRateLimiter,
   resendVerificationEmail,
+  sessionTokenLimiter,
 } from "../middlewares/rate-limiter.js";
 import cookieParser from "cookie-parser";
 import { verify } from "crypto";
@@ -68,7 +69,7 @@ authRouter.post(
   loginUserController,
 ); // Login an existing user
 
-authRouter.post("/sessions/token", createAccessToken); // to get a new access token after expire
-authRouter.delete("/sessions/current", logoutUser); // on user logout
+authRouter.post("/sessions/token", sessionTokenLimiter, createAccessToken); // to get a new access token after expire
+authRouter.delete("/sessions/current", sessionTokenLimiter, logoutUser); // on user logout
 
 export default authRouter;

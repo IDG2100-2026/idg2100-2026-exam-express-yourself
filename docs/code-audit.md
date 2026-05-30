@@ -18,14 +18,14 @@
 **File:** `backend/src/utils/password-hash.js`
 
 SHA-256 with a single static env-var salt. Every user with the same password produces the same hash. GPU-trivially brute-forceable. Must be replaced with bcrypt/Argon2id with per-user salts.
-
+> FIXED - using crypto
 ---
 
 ### 2. `/sessions/token` and `/sessions/current` have no rate limiting ❌
 **Files:** `backend/src/routes/auth-routes.js:71-72`, `backend/server.js:39-42`
 
 The refresh-token and logout endpoints have no per-route rate limiter. Worse: the global `apiRateLimiter` (server.js line 42) is mounted **after** `authRouter` (line 39), so `/api/auth/*` routes are entirely exempt from it.
-
+> FIXED
 ---
 
 ### 3. WebSocket connections are not authenticated 🆕
@@ -97,7 +97,7 @@ When a session IP mismatch is detected during token refresh, the session is dele
 **File:** `backend/src/services/auth-service.js:117-136`
 
 `createAccessTokenService` looks up the user but never checks `user.isBanned`. A user banned after login retains access until their refresh token expires. Add `if (user.isBanned) { await session.deleteOne(); throw ... }` after the user lookup.
-
+> FIXED
 ---
 
 ### 13. Tournament buy-in not deducted when a user joins 🆕

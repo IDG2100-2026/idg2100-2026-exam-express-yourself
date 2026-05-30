@@ -129,6 +129,10 @@ export const createAccessTokenService = async (refreshToken, requestIp) => {
 
   const user = await User.findById(session.userId); // get the user linked to this session
   if (!user) throw new BusinessLogicError("User not found", 404); // did not find the user
+  if(user.isBanned){
+    await session.deleteOne(); // delete the session if a user is banned
+    throw new BusinessLogicError("User is banned", 400);
+  }
 
   const accessToken = getAccessToken(user, requestIp); // generate a new short lived access token
 
