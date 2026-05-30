@@ -1,16 +1,8 @@
 @use '../../../styles/variables.scss' as *;
 
 .admin-comments {
-  &__list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
   &__item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    padding: $space-m;
     border: 1px solid $color-border;
     border-radius: $radius;
     background: $color-inner;
@@ -20,10 +12,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
-  }
-
-  &__author {
+    gap: $space-m;
   }
 
   &__target {
@@ -31,25 +20,8 @@
     color: $color-text-dim;
   }
 
-  &__date {
-    color: $color-text-dim;
-  }
-
-  &__text {
-    line-height: 1.5;
-  }
-
-  &__delete {
-    align-self: flex-end;
-    border: 1px solid $color-red;
-    border-radius: $radius;
-    color: $color-red;
-    background: transparent;
-    transition: background 0.15s;
-
-    &:hover { background: rgba($color-red, 0.1); }
-  }
+  &__date { color: $color-text-dim; }
 
   &__muted { color: $color-text-dim; }
-  &__error { margin-bottom: 1rem; color: $color-red; }
+  &__error { margin-block-end: $space-m; color: $color-red; }
 }

@@ -3,60 +3,64 @@ import { getAllComments, deleteComment } from "../../../services/comments-servic
 
 export default function AdminComments() {
   const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     getAllComments()
-      .then((data) => setComments(data.results))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+      .then((data) => { setComments(data.results); })
+      .catch((err) => { setError(err.message); })
+      .finally(() => { setIsLoading(false); });
   }, []);
 
   async function handleDelete(id) {
     if (!confirm("Delete this comment?")) return;
     try {
       await deleteComment(id);
-      setComments((prev) => prev.filter((comment) => comment._id !== id));
+      setComments((prev) => {
+        return prev.filter((comment) => { return comment._id !== id; });
+      });
     } catch (err) {
       alert(err.message);
     }
   }
 
   return (
-    <div className="admin-comments">
-      <h1>Comment Administration</h1>
+    <div className="admin-comments stack-l">
+      <h1>Comment administration</h1>
 
       {error && <p className="admin-comments__error">{error}</p>}
 
-      {loading ? (
+      {isLoading ? (
         <p className="admin-comments__muted">Loading...</p>
       ) : comments.length === 0 ? (
         <p className="admin-comments__muted">No comments found.</p>
       ) : (
-        <div className="admin-comments__list">
-          {comments.map((comment) => (
-            <div key={comment._id} className="admin-comments__item">
-              <div className="admin-comments__meta">
-                <span className="admin-comments__author">
-                  {comment.authorId?.username || "Unknown user"}
-                </span>
-                <span className="admin-comments__target">
-                  {comment.targetType} · {comment.targetId}
-                </span>
-                <span className="admin-comments__date">
-                  {new Date(comment.createdAt).toLocaleString()}
-                </span>
+        <div className="admin-comments__list stack-m">
+          {comments.map((comment) => {
+            return (
+              <div key={comment._id} className="admin-comments__item stack-s">
+                <div className="admin-comments__meta">
+                  <span className="admin-comments__author">
+                    {comment.authorId?.username || "Unknown user"}
+                  </span>
+                  <span className="admin-comments__target">
+                    {comment.targetType}, {comment.targetId}
+                  </span>
+                  <span className="admin-comments__date">
+                    {new Date(comment.createdAt).toLocaleString("en-GB", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                </div>
+                <p className="admin-comments__text">{comment.text}</p>
+                <button
+                  className="btn btn--red"
+                  onClick={() => { handleDelete(comment._id); }}
+                >
+                  Delete
+                </button>
               </div>
-              <p className="admin-comments__text">{comment.text}</p>
-              <button
-                className="btn btn--red"
-                onClick={() => { handleDelete(comment._id); }}
-              >
-                Delete
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

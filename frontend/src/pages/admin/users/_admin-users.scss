@@ -28,7 +28,6 @@
       padding: $space-s;
       border-block-end: 1px solid $color-border;
       text-align: start;
-      white-space: nowrap;
       color: $color-text-dim;
       background: $color-frame;
     }
@@ -36,7 +35,6 @@
     td {
       padding: $space-s;
       border-block-end: 1px solid $color-border;
-      white-space: nowrap;
     }
 
     tr:last-child td { border-block-end: none; }

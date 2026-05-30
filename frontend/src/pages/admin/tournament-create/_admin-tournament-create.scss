@@ -1,32 +1,32 @@
 @use '../../../styles/variables.scss' as *;
 
 .admin-tc {
-  max-width: 680px;
-
-  &__form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
   &__field {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: $space-s;
 
-    label {
-      color: $color-text-dim;
-    }
+    label { color: $color-text-dim; }
 
     input[type="text"],
     input[type="number"],
     input[type="datetime-local"],
-    select,
-    textarea {
+    select {
+      padding: $space-s;
       border: 1px solid $color-border;
       border-radius: $radius;
       outline: none;
-      font-family: $font-body;
+      color: $color-text;
+      background: $color-inner;
+
+      &:focus { border-color: $color-yellow; }
+    }
+
+    textarea {
+      padding: $space-s;
+      border: 1px solid $color-border;
+      border-radius: $radius;
+      outline: none;
       color: $color-text;
       background: $color-inner;
       resize: vertical;
@@ -34,47 +34,26 @@
       &:focus { border-color: $color-yellow; }
     }
 
-    input[type="file"] {
-      color: $color-text-dim;
-    }
+    input[type="file"] { color: $color-text-dim; }
 
     &--checkbox {
       flex-direction: row;
       align-items: center;
-      gap: 0.6rem;
+      gap: $space-s;
 
       label { color: $color-text; }
     }
   }
 
   &__row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
 
-  &__actions {
-  }
-
-  &__submit {
-    border: none;
-    border-radius: $radius;
-    color: #000;
-    background: $color-yellow;
-    transition: background 0.15s;
-
-    &:hover { background: $color-yellow-hover; }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    > .admin-tc__field {
+      flex: 1 1 200px;
     }
   }
 
-  &__error {
-    border: 1px solid rgba($color-red, 0.2);
-    border-radius: $radius;
-    color: $color-red;
-    background: rgba($color-red, 0.08);
-  }
+  &__error { color: $color-red; }
 }
