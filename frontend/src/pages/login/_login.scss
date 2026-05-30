@@ -40,9 +40,8 @@
   }
 
   &__forgot {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+    display: block;
+    text-align: center;
   }
 
   &__status  { color: $color-text-dim; }
