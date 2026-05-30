@@ -1,22 +1,8 @@
 @use '../../styles/variables.scss' as *;
 
 .create {
-  max-width: 600px;
-
-  &__subtitle {
-    color: $color-text-dim;
-  }
-
   &__form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  &__group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    padding: $space-m;
     border: 1px solid $color-border;
     border-radius: $radius;
     background-color: $color-inner;
@@ -26,59 +12,18 @@
     color: $color-text-dim;
   }
 
+  &__option--active {
+    border-color: $color-yellow;
+    color: $color-yellow;
+  }
+
   &__options {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  &__option {
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    color: $color-text;
-    background-color: $color-frame;
-
-    &:hover { border-color: $color-yellow; }
-
-    &--selected {
-      border-color: $color-yellow;
-      color: #1a1200;
-      background-color: $color-yellow;
-    }
-  }
-
-  &__slider {
-    width: 100%;
-    accent-color: $color-yellow;
-  }
-
-  &__slider-hint {
-    color: $color-text-dim;
-  }
-
-  &__checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: $color-text-dim;
+    gap: $space-s;
   }
 
   &__error {
     color: $color-red;
-  }
-
-  &__submit {
-    align-self: flex-start;
-    border: none;
-    border-radius: $radius;
-    color: #1a1200;
-    background-color: $color-yellow;
-
-    &:hover { background-color: $color-yellow-hover; }
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
   }
 }
