@@ -237,47 +237,47 @@ export default function Profile() {
               type="button"
               className="btn btn--red"
             >
-              Cancel edit
+              Close edit form
             </button>
           </div>
           </div>
         </form>
       )}
 
-      <div className="profile__stats">
-        <div className="profile__stat">
-          <span className="profile__stat-value">
-            {user.eloRating?.tc10 ?? 1000}
-          </span>
-          <span className="profile__stat-label">Elo (10s)</span>
+      <div className="profile__stats stack-m">
+        <div className="profile__stats-row">
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.eloRating?.tc10 ?? 1000}</span>
+            <span className="profile__stat-label">Elo (10s)</span>
+          </div>
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.eloRating?.tc30 ?? 1000}</span>
+            <span className="profile__stat-label">Elo (30s)</span>
+          </div>
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.eloRating?.tc90 ?? 1000}</span>
+            <span className="profile__stat-label">Elo (90s)</span>
+          </div>
         </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">
-            {user.eloRating?.tc30 ?? 1000}
-          </span>
-          <span className="profile__stat-label">Elo (30s)</span>
+        <div className="profile__stats-row">
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.points ?? 0}</span>
+            <span className="profile__stat-label">Points</span>
+          </div>
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.totalGames}</span>
+            <span className="profile__stat-label">Total Games</span>
+          </div>
         </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">
-            {user.eloRating?.tc90 ?? 1000}
-          </span>
-          <span className="profile__stat-label">Elo (90s)</span>
-        </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{user.points ?? 0}</span>
-          <span className="profile__stat-label">Points</span>
-        </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{user.totalGames}</span>
-          <span className="profile__stat-label">Total Games</span>
-        </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{user.winsLastMonth}</span>
-          <span className="profile__stat-label">Wins (month)</span>
-        </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{user.lossesLastMonth}</span>
-          <span className="profile__stat-label">Losses (month)</span>
+        <div className="profile__stats-row">
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.winsLastMonth}</span>
+            <span className="profile__stat-label">Wins (month)</span>
+          </div>
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.lossesLastMonth}</span>
+            <span className="profile__stat-label">Losses (month)</span>
+          </div>
         </div>
       </div>
 

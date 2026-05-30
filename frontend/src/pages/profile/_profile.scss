@@ -62,7 +62,7 @@
     gap: $space-s;
   }
 
-  &__stats {
+  &__stats-row {
     display: flex;
     flex-wrap: wrap;
     gap: $space-m;
@@ -70,7 +70,7 @@
 
   &__stat {
     display: flex;
-    flex: 1 1 160px;
+    flex: 1 1 150px;
     flex-direction: column;
     gap: $space-xs;
     padding: $space-s;
