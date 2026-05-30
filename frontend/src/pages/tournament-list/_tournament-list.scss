@@ -1,19 +1,16 @@
 @use '../../styles/variables.scss' as *;
 
 .tournaments {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
   &__controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: $space-m;
   }
 
   &__search {
     flex: 1;
     min-width: 200px;
+    padding: $space-s;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
@@ -28,6 +25,7 @@
   }
 
   &__sort {
+    padding: $space-xs;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
@@ -39,42 +37,35 @@
     }
   }
 
-  &__section {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
   &__status { color: $color-text-dim; }
   &__error  { color: $color-red; }
 
   &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
+    list-style: none;
+
+    > li {
+      flex: 1 1 260px;
+    }
   }
 
   &__card {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    border: 1px solid $color-border;
-    border-left: 3px solid $color-border;
-    border-radius: $radius;
-    background-color: $color-inner;
-    transition: border-color 0.15s;
+    gap: $space-s;
+    width: 100%;
+    border-inline-start: 3px solid $color-border;
 
-    &:hover {
-      border-color: $color-yellow;
-    }
-
-    &--upcoming    { border-left-color: $color-yellow; }
-    &--in-progress { border-left-color: #58a6ff; }
-    &--completed   { border-left-color: $color-green; }
-    &--cancelled   { border-left-color: $color-red; }
+    &--upcoming    { border-inline-start-color: $color-yellow; }
+    &--in-progress { border-inline-start-color: #58a6ff; }
+    &--completed   { border-inline-start-color: $color-green; }
+    &--cancelled   { border-inline-start-color: $color-red; }
   }
 
   &__card-status {
+    display: block;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 
@@ -86,13 +77,14 @@
 
   &__card-date    { color: $color-text-dim; }
   &__card-variant { color: $color-text-dim; }
+  &__card-rules   { color: $color-text-dim; }
   &__card-players { color: $color-yellow; }
   &__card-author  { color: $color-text-dim; }
 
   &__card-trophy {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: $space-xs;
   }
 
   &__card-trophy-img {
@@ -108,23 +100,5 @@
   &__load-more {
     display: flex;
     justify-content: center;
-  }
-
-  &__load-more-btn {
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    color: $color-text;
-    background: $color-inner;
-    transition: border-color 0.15s;
-
-    &:hover:not(:disabled) {
-      border-color: $color-yellow;
-      color: $color-yellow;
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
   }
 }

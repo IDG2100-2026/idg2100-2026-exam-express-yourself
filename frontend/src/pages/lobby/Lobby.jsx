@@ -10,15 +10,29 @@ const ROUNDS_OPTIONS = [3, 5, 7];
 
 function getHostElo(match, tc) {
   const elo = match.players?.[0]?.userId?.eloRating;
-  return elo?.[`tc${tc || 10}`] || elo?.tc10 || 0;
+  if (!elo) return 0;
+  const tcKey = tc ? `tc${tc}` : "tc10";
+  if (elo[tcKey]) return elo[tcKey];
+  if (elo.tc10) return elo.tc10;
+  return 0;
 }
 
 function sortMatches(matches, sort, tc) {
-  if (sort === "elo_desc")
-    return [...matches].sort((a, b) => getHostElo(b, tc) - getHostElo(a, tc));
-  if (sort === "elo_asc")
-    return [...matches].sort((a, b) => getHostElo(a, tc) - getHostElo(b, tc));
+  if (sort === "elo_desc") {
+    return [...matches].sort((a, b) => { return getHostElo(b, tc) - getHostElo(a, tc); });
+  }
+  if (sort === "elo_asc") {
+    return [...matches].sort((a, b) => { return getHostElo(a, tc) - getHostElo(b, tc); });
+  }
   return matches;
+}
+
+// Returns the correct class string for filter toggle buttons
+function filterClass(isActive) {
+  if (isActive) {
+    return "btn btn--secondary lobby__filter-btn--active";
+  }
+  return "btn btn--secondary";
 }
 
 export default function Lobby() {
@@ -52,7 +66,10 @@ export default function Lobby() {
         setIsLoading(false);
       })
       .catch((err) => {
-        if (!stale) { setError(err.message); setIsLoading(false); }
+        if (!stale) {
+          setError(err.message);
+          setIsLoading(false);
+        }
       });
     return () => { stale = true; };
   }, [timeControl, rounds, straights, limit, userId]);
@@ -62,12 +79,15 @@ export default function Lobby() {
     setIsLoadingMore(true);
     getMatches({ status: "waiting", timeControl, rounds, straightsAllowed: straights, page: nextPage, limit })
       .then((data) => {
-        setMatches((prev) => [...prev, ...(data.results || [])]);
+        setMatches((prev) => {
+          const newResults = data.results ? data.results : [];
+          return [...prev, ...newResults];
+        });
         setTotal(data.total || 0);
         setPage(nextPage);
         setIsLoadingMore(false);
       })
-      .catch(() => setIsLoadingMore(false));
+      .catch(() => { setIsLoadingMore(false); });
   }
 
   const displayed = sortMatches(matches, sort, timeControl);
@@ -84,9 +104,9 @@ export default function Lobby() {
         <div className="lobby__filter-group">
           <span className="lobby__filter-label">Time</span>
           <div className="lobby__filter-btns">
-            <button className={`lobby__filter-btn${timeControl === null ? " lobby__filter-btn--active" : ""}`} onClick={() => setTimeControl(null)}>All</button>
-            {TIME_CONTROLS.map((t) => (
-              <button key={t} className={`lobby__filter-btn${timeControl === t ? " lobby__filter-btn--active" : ""}`} onClick={() => setTimeControl(t)}>{t}s</button>
+            <button className={filterClass(timeControl === null)} onClick={() => { setTimeControl(null); }}>All</button>
+            {TIME_CONTROLS.map((timeOption) => (
+              <button key={timeOption} className={filterClass(timeControl === timeOption)} onClick={() => { setTimeControl(timeOption); }}>{timeOption}s</button>
             ))}
           </div>
         </div>
@@ -94,9 +114,9 @@ export default function Lobby() {
         <div className="lobby__filter-group">
           <span className="lobby__filter-label">Rounds</span>
           <div className="lobby__filter-btns">
-            <button className={`lobby__filter-btn${rounds === null ? " lobby__filter-btn--active" : ""}`} onClick={() => setRounds(null)}>All</button>
-            {ROUNDS_OPTIONS.map((r) => (
-              <button key={r} className={`lobby__filter-btn${rounds === r ? " lobby__filter-btn--active" : ""}`} onClick={() => setRounds(r)}>BO{r}</button>
+            <button className={filterClass(rounds === null)} onClick={() => { setRounds(null); }}>All</button>
+            {ROUNDS_OPTIONS.map((roundOption) => (
+              <button key={roundOption} className={filterClass(rounds === roundOption)} onClick={() => { setRounds(roundOption); }}>BO{roundOption}</button>
             ))}
           </div>
         </div>
@@ -104,18 +124,18 @@ export default function Lobby() {
         <div className="lobby__filter-group">
           <span className="lobby__filter-label">Straights</span>
           <div className="lobby__filter-btns">
-            <button className={`lobby__filter-btn${straights === null ? " lobby__filter-btn--active" : ""}`} onClick={() => setStraights(null)}>All</button>
-            <button className={`lobby__filter-btn${straights === true ? " lobby__filter-btn--active" : ""}`} onClick={() => setStraights(true)}>Allowed</button>
-            <button className={`lobby__filter-btn${straights === false ? " lobby__filter-btn--active" : ""}`} onClick={() => setStraights(false)}>No straights</button>
+            <button className={filterClass(straights === null)} onClick={() => { setStraights(null); }}>All</button>
+            <button className={filterClass(straights === true)} onClick={() => { setStraights(true); }}>Allowed</button>
+            <button className={filterClass(straights === false)} onClick={() => { setStraights(false); }}>No straights</button>
           </div>
         </div>
 
         <div className="lobby__filter-group">
           <span className="lobby__filter-label">Sort</span>
-          <select className="lobby__sort" value={sort} onChange={(e) => setSort(e.target.value)}>
+          <select className="lobby__sort" value={sort} onChange={(e) => { setSort(e.target.value); }}>
             <option value="newest">Newest</option>
-            <option value="elo_desc">Elo: High to Low</option>
-            <option value="elo_asc">Elo: Low to High</option>
+            <option value="elo_desc">Elo: high to low</option>
+            <option value="elo_asc">Elo: low to high</option>
           </select>
         </div>
       </div>
@@ -126,7 +146,7 @@ export default function Lobby() {
         <p className="lobby__status">No open games match your filters.</p>
       )}
 
-      <h2>Open Games</h2>
+      <h2>Open games</h2>
 
       <ul className="lobby__grid">
         {displayed.map((match) => {
@@ -151,7 +171,7 @@ export default function Lobby() {
                   </div>
                 </div>
                 <p className="lobby__card-variant">
-                  Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}, {match.category?.buyIn || 1}pt buy-in
+                  Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.category?.buyIn || 1}pt buy-in
                 </p>
                 <p className="lobby__card-variant">{match.players?.length || 1}/{match.maxPlayers || 2} players</p>
                 <p className="lobby__card-waiting">{isOwn ? "Your game - waiting for players" : "Click to join"}</p>

@@ -16,6 +16,10 @@ function Avatar({ imageUrl, username, size = 40 }) {
     );
   }
 
+  if (!username) {
+    return <div className="avatar avatar--default" style={style}></div>;
+  }
+
   return (
     <div className="avatar avatar--default" style={style}>
       {username.charAt(0).toUpperCase()}

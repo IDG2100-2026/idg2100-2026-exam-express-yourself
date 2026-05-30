@@ -29,9 +29,10 @@ export default function Game() {
 
   const userId = user?._id || user?.userId;
 
-  const myIndex = match?.players?.findIndex(
-    (p) => (p.userId?._id || p.userId) === userId
-  ) ?? -1;
+  const myIndex = match?.players?.findIndex((player) => {
+    const playerId = player.userId?._id ? player.userId._id : player.userId;
+    return playerId === userId;
+  }) ?? -1;
   const isPlayer = myIndex !== -1;
   const myKey = myIndex === 0 ? "player1" : "player2";
 
@@ -206,9 +207,17 @@ export default function Game() {
   if (error) return <p className="game__error">Error: {error}</p>;
   if (!match) return <p className="game__error">Match not found</p>;
 
-  const p1 = match.players?.[0]?.userId;
-  const p2 = match.players?.[1]?.userId;
-  const tc = match.category?.timeControl || 10;
+  const tc = match.category?.timeControl ? match.category.timeControl : 10;
+  const maxSlots = match.maxPlayers ? match.maxPlayers : 2;
+  const playerSlots = [];
+  for (let i = 0; i < maxSlots; i++) {
+    const player = match.players?.[i]?.userId;
+    if (player) {
+      playerSlots.push(player);
+    } else {
+      playerSlots.push(null);
+    }
+  }
 
   return (
     <div className="game">
@@ -230,21 +239,17 @@ export default function Game() {
 
           {/* ── Player headers ── */}
           <div className="game__players">
-            <div className="game__player">
-              <Avatar imageUrl={p1?.profileImageUrl} username={p1?.username} size={56} />
-              <span className="game__player-name">{p1?.username || "Unknown"}</span>
-              <span className="game__player-elo">
-                Elo: {p1?.eloRating?.[`tc${tc}`] || "?"}
-              </span>
-            </div>
-            <span className="game__vs">vs</span>
-            <div className="game__player">
-              <Avatar imageUrl={p2?.profileImageUrl} username={p2?.username} size={56} />
-              <span className="game__player-name">{p2?.username || "Waiting..."}</span>
-              <span className="game__player-elo">
-                {p2 ? `Elo: ${p2?.eloRating?.[`tc${tc}`] || "?"}` : ""}
-              </span>
-            </div>
+            {playerSlots.map((player, slotIndex) => (
+              <div key={slotIndex} className="game__player">
+                <Avatar imageUrl={player?.profileImageUrl} username={player?.username} size={56} />
+                <span className="game__player-name">{player ? player.username : "Waiting..."}</span>
+                {player && (
+                  <span className="game__player-elo">
+                    Elo: {player.eloRating?.[`tc${tc}`] ? player.eloRating[`tc${tc}`] : "?"}
+                  </span>
+                )}
+              </div>
+            ))}
           </div>
 
           {/* ── Active game ── */}
@@ -254,8 +259,8 @@ export default function Game() {
               {/* The dice board web component */}
               <dice-poker-board
                 ref={boardRef}
-                player1={p1?.username || "Player 1"}
-                player2={p2?.username || "Player 2"}
+                player1={playerSlots[0] ? playerSlots[0].username : "Player 1"}
+                player2={playerSlots[1] ? playerSlots[1].username : "Player 2"}
                 bestof={String(match.category?.rounds || 3)}
                 include-straight={String(match.category?.straightsAllowed ?? true)}
                 style={{

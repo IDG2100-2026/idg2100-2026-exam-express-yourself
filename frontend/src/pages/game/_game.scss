@@ -30,20 +30,20 @@
 
   &__players {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 2rem;
+    gap: $space-l;
   }
 
   &__player {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+    gap: $space-xs;
   }
 
   &__player-name { font-weight: bold; }
   &__player-elo  { color: $color-text-dim; }
-  &__vs          { color: $color-text-dim; }
 
   &__active {
     display: flex;
