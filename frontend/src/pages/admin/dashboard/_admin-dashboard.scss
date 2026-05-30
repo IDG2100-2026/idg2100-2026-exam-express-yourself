@@ -2,35 +2,34 @@
 
 .admin-dashboard {
   &__stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
   }
 
   &__stat {
     display: flex;
+    flex: 1 1 180px;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: $space-xs;
+    padding: $space-s;
     border: 1px solid $color-border;
     border-radius: $radius;
     background: $color-inner;
   }
 
-  &__stat-value {
-    color: $color-yellow;
-  }
-
-  &__stat-label {
-    color: $color-text-dim;
-  }
+  &__stat-value { color: $color-yellow; }
+  &__stat-label { color: $color-text-dim; }
 
   &__links {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
   }
 
   &__card {
+    flex: 1 1 220px;
+    padding: $space-m;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
@@ -42,40 +41,34 @@
     p { color: $color-text-dim; }
   }
 
-  &__incidents {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
   &__incident {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem;
+    gap: $space-s;
+    padding: $space-s;
     border: 1px solid $color-border;
-    border-left: 3px solid $color-red;
+    border-inline-start: 3px solid $color-red;
     border-radius: $radius;
     background: $color-inner;
 
-    &--ip-change   { border-left-color: $color-red; }
-    &--rate-limit  { border-left-color: $color-yellow; }
+    &--ip-change   { border-inline-start-color: $color-red; }
+    &--rate-limit  { border-inline-start-color: $color-yellow; }
   }
 
   &__incident-type {
-    border-radius: 4px;
+    padding: $space-xs;
+    border-radius: $radius;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: $color-red;
-    background: rgba($color-red, 0.15);
   }
 
   &__incident-ip    { font-family: monospace; }
   &__incident-agent { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: $color-text-dim; }
   &__incident-user  { color: $color-yellow; }
-  &__incident-time  { margin-left: auto; white-space: nowrap; color: $color-text-dim; }
+  &__incident-time  { margin-inline-start: auto; white-space: nowrap; color: $color-text-dim; }
 
-  &__loading,
-  &__muted  { color: $color-text-dim; }
-  &__error  { margin-bottom: 1rem; color: $color-red; }
+  &__muted { color: $color-text-dim; }
+  &__error  { margin-block-end: $space-m; color: $color-red; }
 }

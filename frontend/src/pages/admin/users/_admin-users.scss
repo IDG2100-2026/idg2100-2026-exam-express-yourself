@@ -1,12 +1,10 @@
 @use '../../../styles/variables.scss' as *;
 
 .admin-users {
-  &__toolbar {
-  }
-
   &__search {
     width: 100%;
-    max-width: 400px;
+    max-inline-size: 400px;
+    padding: $space-s;
     border: 1px solid $color-border;
     border-radius: $radius;
     outline: none;
@@ -27,17 +25,21 @@
     border-collapse: collapse;
 
     th {
-      border-bottom: 1px solid $color-border;
-      text-align: left;
+      padding: $space-s;
+      border-block-end: 1px solid $color-border;
+      text-align: start;
+      white-space: nowrap;
       color: $color-text-dim;
       background: $color-frame;
     }
 
     td {
-      border-bottom: 1px solid $color-border;
+      padding: $space-s;
+      border-block-end: 1px solid $color-border;
+      white-space: nowrap;
     }
 
-    tr:last-child td { border-bottom: none; }
+    tr:last-child td { border-block-end: none; }
     tr:hover td      { background: $color-frame; }
   }
 
@@ -49,53 +51,23 @@
   }
 
   &__badge {
-    display: inline-block;
-    border-radius: 4px;
-
-    &--admin  { color: $color-yellow;  background: rgba($color-yellow, 0.15); }
-    &--user   { color: $color-text-dim; background: $color-bg; }
-    &--active { color: $color-green; background: rgba($color-green, 0.15); }
-    &--banned { color: $color-red;  background: rgba($color-red, 0.15); }
+    &--admin  { color: $color-yellow; }
+    &--user   { color: $color-text-dim; }
+    &--active { color: $color-green; }
+    &--banned { color: $color-red; }
   }
 
   &__actions {
     display: flex;
-    gap: 0.5rem;
-  }
-
-  &__btn {
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    color: $color-text;
-    background: transparent;
-    transition: background 0.15s, border-color 0.15s;
-
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    &--danger {
-      border-color: $color-red;
-      color: $color-red;
-
-      &:hover { background: rgba($color-red, 0.1); }
-    }
-
-    &--promote {
-      border-color: $color-yellow;
-      color: $color-yellow;
-
-      &:hover { background: rgba($color-yellow, 0.1); }
-    }
+    gap: $space-s;
   }
 
   &__pagination {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: $space-m;
   }
 
   &__page  { color: $color-text-dim; }
-  &__error { margin-bottom: 1rem; color: $color-red; }
+  &__error { margin-block-end: $space-m; color: $color-red; }
 }

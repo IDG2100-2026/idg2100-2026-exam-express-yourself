@@ -29,7 +29,7 @@ const hashedPassword = hashPassword("Password123!");
 const verified = { isVerified: true };
 
 // ---- Users ----
-await User.collection.insertMany([
+await User.insertMany([
   { username: "admin", email: "admin@test.com", password: hashedPassword, ...verified, age: 29, role: "admin", eloRating: { tc10: 1200, tc30: 1150, tc90: 1100 }, points: 500 },
   { username: "emil", email: "emil@test.com", password: hashedPassword, ...verified, age: 20, eloRating: { tc10: 2867, tc30: 2700, tc90: 2500 }, points: 300 },
   { username: "nicolai", email: "nicolai@test.com", password: hashedPassword, ...verified, age: 22, eloRating: { tc10: 1100, tc30: 1050, tc90: 1000 }, points: 200 },
