@@ -54,8 +54,9 @@
   &__card {
     display: flex;
     flex-direction: column;
-    gap: $space-s;
+    gap: $space-m;
     width: 100%;
+    height: 100%;
     border-inline-start: 3px solid $color-border;
 
     &--upcoming    { border-inline-start-color: $color-yellow; }
@@ -78,7 +79,7 @@
   &__card-date    { color: $color-text-dim; }
   &__card-variant { color: $color-text-dim; }
   &__card-rules   { color: $color-text-dim; }
-  &__card-players { color: $color-yellow; }
+  &__card-players { color: $color-text-dim; }
   &__card-author  { color: $color-text-dim; }
 
   &__card-trophy {

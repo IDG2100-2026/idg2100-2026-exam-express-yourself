@@ -175,7 +175,7 @@ function TournamentCard({ tournament }) {
     <li>
       <Link
         to={`/tournament/${tournament._id}`}
-        className={`tournaments__card tournaments__card--${tournament.status} card stack-s`}
+        className={`tournaments__card tournaments__card--${tournament.status} card`}
       >
         <span className={`tournaments__card-status tournaments__card-status--${tournament.status}`}>
           {tournament.status.replace("-", " ")}
