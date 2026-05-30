@@ -12,7 +12,12 @@
     gap: $space-m;
   }
 
-  &__email { color: $color-text-dim; }
+  &__label {
+    display: block;
+    color: $color-text-dim;
+  }
+
+  &__bio { max-width: 50ch; }
 
   &__form {
     padding: $space-m;

@@ -152,8 +152,16 @@ export default function Profile() {
           <h1>{user.username}</h1>
         </div>
         <div className="profile__info stack-s">
-          {isOwnProfile && <p className="profile__email">{user.email}</p>}
-          <p className="profile__bio">{user.bio || "No bio yet."}</p>
+          {isOwnProfile && (
+            <div>
+              <span className="profile__label">Email:</span>
+              <p>{user.email}</p>
+            </div>
+          )}
+          <div>
+            <span className="profile__label">Bio:</span>
+            <p className="profile__bio">{user.bio || "No bio yet."}</p>
+          </div>
         </div>
         {isOwnProfile && !editing && (
           <button
