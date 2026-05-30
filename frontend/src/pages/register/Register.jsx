@@ -18,10 +18,15 @@ export default function Register() {
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    setFormData((prev) => {
+      let newValue;
+      if (type === "checkbox") {
+        newValue = checked;
+      } else {
+        newValue = value;
+      }
+      return { ...prev, [name]: newValue };
+    });
   }
 
   async function handleSubmit(e) {
@@ -29,11 +34,13 @@ export default function Register() {
     setError(null);
 
     if (formData.password !== formData.confirmPassword) {
-      return setError("Passwords do not match");
+      setError("Passwords do not match");
+      return;
     }
 
     if (!formData.agreedToTerms) {
-      return setError("You must agree to the terms and conditions");
+      setError("You must agree to the terms and conditions");
+      return;
     }
 
     const birthDate = new Date(formData.dateOfBirth);
@@ -42,7 +49,8 @@ export default function Register() {
     );
 
     if (age < 18) {
-      return setError("You must be at least 18 years old");
+      setError("You must be at least 18 years old");
+      return;
     }
 
     setIsSubmitting(true);
@@ -54,9 +62,9 @@ export default function Register() {
         password: formData.password,
         age,
       });
-      setSuccess(true); // for showing confirmation msg
+      setSuccess(true);
       setTimeout(() => {
-        navigate("/"); // navigate to homepage after 3 seconds
+        navigate("/");
       }, 3000);
     } catch (err) {
       setError(err.message);
@@ -67,11 +75,10 @@ export default function Register() {
 
   return (
     <div className="register">
-      <div className="register__card">
-        <h1>Create Account</h1>
-        <p className="register__subtitle">Join PokerDados today</p>
-        {success && <p>Registration successful! Confirm your account from the email you got to login</p>}
-        <form className="register__form" onSubmit={handleSubmit}>
+      <div className="register__card stack-m">
+        <form className="register__form stack-m" onSubmit={handleSubmit}>
+          <h1>Create account</h1>
+          {success && <p className="register__success">Registration successful! Confirm your account from the email you received to log in.</p>}
           <div className="register__field">
             <label htmlFor="username">Username</label>
             <input
@@ -84,7 +91,6 @@ export default function Register() {
               required
             />
           </div>
-
           <div className="register__field">
             <label htmlFor="email">Email</label>
             <input
@@ -93,11 +99,10 @@ export default function Register() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="you@example.com"
+              placeholder="name@example.com"
               required
             />
           </div>
-
           <div className="register__field">
             <label htmlFor="password">Password</label>
             <input
@@ -106,26 +111,24 @@ export default function Register() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="••••••••"
+              placeholder="********"
               required
             />
           </div>
-
           <div className="register__field">
-            <label htmlFor="confirmPassword">Repeat Password</label>
+            <label htmlFor="confirmPassword">Repeat password</label>
             <input
               id="confirmPassword"
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              placeholder="••••••••"
+              placeholder="********"
               required
             />
           </div>
-
           <div className="register__field">
-            <label htmlFor="dateOfBirth">Date of Birth</label>
+            <label htmlFor="dateOfBirth">Date of birth</label>
             <input
               id="dateOfBirth"
               type="date"
@@ -135,7 +138,6 @@ export default function Register() {
               required
             />
           </div>
-
           <div className="register__checkbox">
             <input
               id="agreedToTerms"
@@ -145,25 +147,16 @@ export default function Register() {
               onChange={handleChange}
             />
             <label htmlFor="agreedToTerms">
-              I agree to the{" "}
-              <Link to="/terms" target="_blank">
-                Terms & Conditions
-              </Link>
+              I agree to the <Link to="/terms" target="_blank" className="btn--link">Terms & Conditions</Link>
             </label>
           </div>
-
           {error && <p className="register__error">{error}</p>}
-
-          <button
-            className="btn btn--primary"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Creating account..." : "Create Account"}
+          <button type="submit" className="btn btn--primary register__submit" disabled={isSubmitting}>
+            {isSubmitting ? "Creating account..." : "Create account"}
           </button>
         </form>
-
         <p className="register__login">
-          Already have an account? <Link to="/login">Log in</Link>
+          Already have an account? <Link to="/login" className="btn--link">Log in</Link>
         </p>
       </div>
     </div>

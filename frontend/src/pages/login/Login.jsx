@@ -18,9 +18,9 @@ export default function Login() {
   const [sendMail, setSendMail] = useState("");
   const [resetMsg, setResetMsg] = useState("");
   const navigate = useNavigate();
-  const { user, login } = useAuth();
+  const { login } = useAuth();
   const { loadAppearance } = useAppearance();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const code = searchParams.get("code");
@@ -28,10 +28,10 @@ export default function Login() {
     const verifyUserEmail = async () => {
       setIsLoading(true);
       try {
-        const data = await verifyEmail(code); // runs the verify-email endpoint
+        const data = await verifyEmail(code);
         setSuccess(data.message);
       } catch (err) {
-        setError(err.message); // error msg
+        setError(err.message);
       } finally {
         setIsLoading(false);
       }
@@ -42,7 +42,9 @@ export default function Login() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      return { ...prev, [name]: value };
+    });
   }
 
   async function handleSubmit(e) {
@@ -54,10 +56,8 @@ export default function Login() {
       login(result.user, result.accessToken);
       setSuccess(`Login successful ${result.user?.username}! You will be redirected to the homepage`);
       setTimeout(() => {
-        navigate("/"); // navigate to homepage after 3 sec
+        navigate("/");
       }, 3000);
-
-      // Load user appearance preferences
       loadAppearance(result.user?.appearance);
     } catch (err) {
       setError(err.message);
@@ -75,23 +75,28 @@ export default function Login() {
       setResetMsg(data.message);
     } catch (err) {
       setError(err.message);
-    }finally{
+    } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isLoading) return <div className="login"><div className="login__card"><p className="login__status">Verifying your email...</p></div></div>;
+  if (isLoading) {
+    return (
+      <div className="login">
+        <div className="login__card">
+          <p className="login__status">Verifying your email...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="login">
-      <div className="login__card">
+      <div className="login__card stack-m">
         {!showForgotPassword ? (
-          <form className="login__form" onSubmit={handleSubmit}>
-            <h1>Log In</h1>
-            <p className="login__subtitle">Welcome back to PokerDados</p>
-            {success && (
-              <p>{success}</p>
-            )}
+          <form className="login__form stack-m" onSubmit={handleSubmit}>
+            <h1>Log in</h1>
+            {success && <p className="login__success">{success}</p>}
             <div className="login__field">
               <label htmlFor="email">Email</label>
               <input
@@ -100,11 +105,10 @@ export default function Login() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="you@example.com"
+                placeholder="name@example.com"
                 required
               />
             </div>
-
             <div className="login__field">
               <label htmlFor="password">Password</label>
               <input
@@ -113,52 +117,51 @@ export default function Login() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="••••••••"
+                placeholder="********"
                 required
               />
             </div>
+            {error && <p className="login__error">{error}</p>}
+            <button type="submit" className="btn btn--primary login__submit" disabled={isSubmitting}>
+              {isSubmitting ? "Logging in..." : "Log in"}
+            </button>
             <button
               type="button"
-              className="login__forgot"
-              onClick={() => setShowForgotPassword(true)}
+              className="login__forgot btn--link"
+              onClick={() => { setShowForgotPassword(true); }}
             >
-              Forgot Password?
-            </button>
-
-            {error && <p className="login__error">{error}</p>}
-
-            <button
-              type="submit"
-              className="btn btn--primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Logging in..." : "Log In"}
+              Forgot password?
             </button>
           </form>
         ) : (
-          <form className="login__field" onSubmit={sendForgotPasswordMail}>
-            <h2>Forgot Password</h2>
-            {resetMsg ? <p>{resetMsg}</p> : <p>{error}</p>}
-            <input
-              type="email"
-              value={sendMail}
-              onChange={(e) => setSendMail(e.target.value)}
-              placeholder="Enter your email.."
-            />
-            <button className="btn btn--primary">
-              {isSubmitting ? "Sending email" : "Send reset link"}
+          <form className="login__form stack-m" onSubmit={sendForgotPasswordMail}>
+            <h2>Forgot password</h2>
+            {resetMsg && <p className="login__success">{resetMsg}</p>}
+            {error && <p className="login__error">{error}</p>}
+            <div className="login__field">
+              <label htmlFor="resetEmail">Email</label>
+              <input
+                id="resetEmail"
+                type="email"
+                value={sendMail}
+                onChange={(e) => { setSendMail(e.target.value); }}
+                placeholder="name@example.com"
+              />
+            </div>
+            <button type="submit" className="btn btn--primary login__submit" disabled={isSubmitting}>
+              {isSubmitting ? "Sending..." : "Send reset link"}
             </button>
             <button
-              className="login__forgot"
-              onClick={() => setShowForgotPassword(false)}
+              type="button"
+              className="login__forgot btn--link"
+              onClick={() => { setShowForgotPassword(false); }}
             >
               Back to login
             </button>
           </form>
         )}
-
         <p className="login__register">
-          Don't have an account? <Link to="/register">Register</Link>
+          Don't have an account? <Link to="/register" className="btn--link">Register</Link>
         </p>
       </div>
     </div>
