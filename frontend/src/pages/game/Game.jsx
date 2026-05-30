@@ -265,7 +265,7 @@ export default function Game() {
               />
 
               {/* Betting controls, only shown to players during betting phase */}
-              {phase === "betting" && isPlayer && (
+              {/* {phase === "betting" && isPlayer && ( TODO: Needed? We dont have betting! 
                 <div className="game__betting">
                   <p className="game__pot">
                     Pot: {pot} pts, Highest bet: {highestBet} pts
@@ -308,7 +308,7 @@ export default function Game() {
                     </button>
                   </div>
                 </div>
-              )}
+              )} */}
 
               {/* Game-over overlay */}
               {gameEnded && (
@@ -318,13 +318,13 @@ export default function Game() {
                     Winner:{" "}
                     {match.players
                       ?.find(
-                        (p) =>
-                          String(p.userId?._id || p.userId) ===
+                        (player) =>
+                          String(player.userId?._id || player.userId) ===
                           String(gameEnded.winnerId)
                       )
                       ?.userId?.username || "Unknown"}
                   </p>
-                  <button onClick={() => navigate("/lobby")}>Back to Lobby</button>
+                  <button onClick={() => navigate("/")}>Back to Lobby</button>
                 </div>
               )}
             </div>

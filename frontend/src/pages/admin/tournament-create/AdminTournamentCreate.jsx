@@ -31,21 +31,21 @@ export default function AdminTournamentCreate() {
   useEffect(() => {
     if (!isEdit) return;
     getTournament(id)
-      .then((t) => {
+      .then((tournament) => {
         setForm({
-          title: t.title || "",
-          description: t.description || "",
-          rules: t.rules || "",
-          startDate: t.startDate ? t.startDate.slice(0, 16) : "",
-          numberOfRounds: t.numberOfRounds || 1,
-          rounds: t.category?.rounds || 3,
-          timeControl: t.category?.timeControl || 10,
-          straightsAllowed: t.category?.straightsAllowed ?? true,
-          categoryBuyIn: t.category?.buyIn || 1,
-          buyIn: t.buyIn || 0,
-          eloMin: t.eloRange?.min || 0,
-          eloMax: t.eloRange?.max || 9999,
-          trophyTitle: t.trophy?.title || "",
+          title: tournament.title || "",
+          description: tournament.description || "",
+          rules: tournament.rules || "",
+          startDate: tournament.startDate ? tournament.startDate.slice(0, 16) : "",
+          numberOfRounds: tournament.numberOfRounds || 1,
+          rounds: tournament.category?.rounds || 3,
+          timeControl: tournament.category?.timeControl || 10,
+          straightsAllowed: tournament.category?.straightsAllowed ?? true,
+          categoryBuyIn: tournament.category?.buyIn || 1,
+          buyIn: tournament.buyIn || 0,
+          eloMin: tournament.eloRange?.min || 0,
+          eloMax: tournament.eloRange?.max || 9999,
+          trophyTitle: tournament.trophy?.title || "",
           trophyImage: null,
         });
       })
@@ -75,6 +75,19 @@ export default function AdminTournamentCreate() {
           description: form.description,
           rules: form.rules,
           startDate: form.startDate,
+          numberOfRounds: form.numberOfRounds,
+          buyIn: form.buyIn,
+          trophyTitle: form.trophyTitle,
+          category: {
+            rounds: form.rounds,
+            timeControl: form.timeControl,
+            straightsAllowed: form.straightsAllowed,
+            buyIn: form.categoryBuyIn,
+          },
+          eloRange: {
+            min: form.eloMin,
+            max: form.eloMax,
+          },
         });
         navigate(`/tournament/${id}`);
       } else {
@@ -131,81 +144,79 @@ export default function AdminTournamentCreate() {
           <input id="startDate" name="startDate" type="datetime-local" value={form.startDate} onChange={handleChange} required />
         </div>
 
-        {!isEdit && (
-          <>
+        <div className="admin-tc__field">
+          <label htmlFor="numberOfRounds">Number of Tournament Rounds *</label>
+          <input id="numberOfRounds" name="numberOfRounds" type="number" min={1} max={10} value={form.numberOfRounds} onChange={handleChange} required />
+        </div>
+
+        <div className="admin-tc__row">
+          <div className="admin-tc__field">
+            <label htmlFor="rounds">Game Rounds</label>
+            <select id="rounds" name="rounds" value={form.rounds} onChange={handleChange}>
+              <option value={3}>Best of 3</option>
+              <option value={5}>Best of 5</option>
+              <option value={7}>Best of 7</option>
+            </select>
+          </div>
+
+          <div className="admin-tc__field">
+            <label htmlFor="timeControl">Time Control</label>
+            <select id="timeControl" name="timeControl" value={form.timeControl} onChange={handleChange}>
+              <option value={10}>10 seconds</option>
+              <option value={30}>30 seconds</option>
+              <option value={90}>90 seconds</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="admin-tc__field admin-tc__field--checkbox">
+          <input id="straightsAllowed" name="straightsAllowed" type="checkbox" checked={form.straightsAllowed} onChange={handleChange} />
+          <label htmlFor="straightsAllowed">Straights allowed</label>
+        </div>
+
+        <div className="admin-tc__row">
+          <div className="admin-tc__field">
+            <label htmlFor="categoryBuyIn">Match Buy-in (points per game)</label>
+            <select id="categoryBuyIn" name="categoryBuyIn" value={form.categoryBuyIn} onChange={handleChange}>
+              <option value={1}>1 point</option>
+              <option value={10}>10 points</option>
+              <option value={50}>50 points</option>
+            </select>
+          </div>
+          <div className="admin-tc__field">
+            <label htmlFor="buyIn">Tournament Entry Fee (points)</label>
+            <select id="buyIn" name="buyIn" value={form.buyIn} onChange={handleChange}>
+              <option value={0}>Free</option>
+              <option value={1}>1 point</option>
+              <option value={10}>10 points</option>
+              <option value={50}>50 points</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="admin-tc__row">
+          <div className="admin-tc__field">
+            <label htmlFor="eloMin">Min Elo</label>
+            <input id="eloMin" name="eloMin" type="number" min={0} value={form.eloMin} onChange={handleChange} />
+          </div>
+          <div className="admin-tc__field">
+            <label htmlFor="eloMax">Max Elo</label>
+            <input id="eloMax" name="eloMax" type="number" min={0} value={form.eloMax} onChange={handleChange} />
+          </div>
+        </div>
+
+        <div className="admin-tc__row">
+          <div className="admin-tc__field">
+            <label htmlFor="trophyTitle">Trophy Title</label>
+            <input id="trophyTitle" name="trophyTitle" type="text" value={form.trophyTitle} onChange={handleChange} />
+          </div>
+          {!isEdit && (
             <div className="admin-tc__field">
-              <label htmlFor="numberOfRounds">Number of Tournament Rounds *</label>
-              <input id="numberOfRounds" name="numberOfRounds" type="number" min={1} max={10} value={form.numberOfRounds} onChange={handleChange} required />
+              <label htmlFor="trophyImage">Trophy Image</label>
+              <input id="trophyImage" name="trophyImage" type="file" accept="image/*" onChange={handleChange} />
             </div>
-
-            <div className="admin-tc__row">
-              <div className="admin-tc__field">
-                <label htmlFor="rounds">Game Rounds</label>
-                <select id="rounds" name="rounds" value={form.rounds} onChange={handleChange}>
-                  <option value={3}>Best of 3</option>
-                  <option value={5}>Best of 5</option>
-                  <option value={7}>Best of 7</option>
-                </select>
-              </div>
-
-              <div className="admin-tc__field">
-                <label htmlFor="timeControl">Time Control</label>
-                <select id="timeControl" name="timeControl" value={form.timeControl} onChange={handleChange}>
-                  <option value={10}>10 seconds</option>
-                  <option value={30}>30 seconds</option>
-                  <option value={90}>90 seconds</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="admin-tc__field admin-tc__field--checkbox">
-              <input id="straightsAllowed" name="straightsAllowed" type="checkbox" checked={form.straightsAllowed} onChange={handleChange} />
-              <label htmlFor="straightsAllowed">Straights allowed</label>
-            </div>
-
-            <div className="admin-tc__row">
-              <div className="admin-tc__field">
-                <label htmlFor="categoryBuyIn">Match Buy-in (points per game)</label>
-                <select id="categoryBuyIn" name="categoryBuyIn" value={form.categoryBuyIn} onChange={handleChange}>
-                  <option value={1}>1 point</option>
-                  <option value={10}>10 points</option>
-                  <option value={50}>50 points</option>
-                </select>
-              </div>
-              <div className="admin-tc__field">
-                <label htmlFor="buyIn">Tournament Entry Fee (points)</label>
-                <select id="buyIn" name="buyIn" value={form.buyIn} onChange={handleChange}>
-                  <option value={0}>Free</option>
-                  <option value={1}>1 point</option>
-                  <option value={10}>10 points</option>
-                  <option value={50}>50 points</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="admin-tc__row">
-              <div className="admin-tc__field">
-                <label htmlFor="eloMin">Min Elo</label>
-                <input id="eloMin" name="eloMin" type="number" min={0} value={form.eloMin} onChange={handleChange} />
-              </div>
-              <div className="admin-tc__field">
-                <label htmlFor="eloMax">Max Elo</label>
-                <input id="eloMax" name="eloMax" type="number" min={0} value={form.eloMax} onChange={handleChange} />
-              </div>
-            </div>
-
-            <div className="admin-tc__row">
-              <div className="admin-tc__field">
-                <label htmlFor="trophyTitle">Trophy Title</label>
-                <input id="trophyTitle" name="trophyTitle" type="text" value={form.trophyTitle} onChange={handleChange} />
-              </div>
-              <div className="admin-tc__field">
-                <label htmlFor="trophyImage">Trophy Image</label>
-                <input id="trophyImage" name="trophyImage" type="file" accept="image/*" onChange={handleChange} />
-              </div>
-            </div>
-          </>
-        )}
+          )}
+        </div>
 
         <div className="admin-tc__actions">
           <button type="submit" className="btn btn--primary" disabled={submitting}>

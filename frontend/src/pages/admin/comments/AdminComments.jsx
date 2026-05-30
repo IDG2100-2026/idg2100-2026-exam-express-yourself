@@ -17,7 +17,7 @@ export default function AdminComments() {
     if (!confirm("Delete this comment?")) return;
     try {
       await deleteComment(id);
-      setComments((prev) => prev.filter((c) => c._id !== id));
+      setComments((prev) => prev.filter((comment) => comment._id !== id));
     } catch (err) {
       alert(err.message);
     }
@@ -35,23 +35,23 @@ export default function AdminComments() {
         <p className="admin-comments__muted">No comments found.</p>
       ) : (
         <div className="admin-comments__list">
-          {comments.map((c) => (
-            <div key={c._id} className="admin-comments__item">
+          {comments.map((comment) => (
+            <div key={comment._id} className="admin-comments__item">
               <div className="admin-comments__meta">
                 <span className="admin-comments__author">
-                  {c.authorId?.username || "Unknown user"}
+                  {comment.authorId?.username || "Unknown user"}
                 </span>
                 <span className="admin-comments__target">
-                  {c.targetType} · {c.targetId}
+                  {comment.targetType} · {comment.targetId}
                 </span>
                 <span className="admin-comments__date">
-                  {new Date(c.createdAt).toLocaleString()}
+                  {new Date(comment.createdAt).toLocaleString()}
                 </span>
               </div>
-              <p className="admin-comments__text">{c.text}</p>
+              <p className="admin-comments__text">{comment.text}</p>
               <button
                 className="btn btn--red"
-                onClick={() => handleDelete(c._id)}
+                onClick={() => { handleDelete(comment._id); }}
               >
                 Delete
               </button>

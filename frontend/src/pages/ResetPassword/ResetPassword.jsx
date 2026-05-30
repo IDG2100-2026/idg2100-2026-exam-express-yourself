@@ -5,7 +5,7 @@ import { resetPassword } from "../../services/auth-service.js";
 const ResetPassword = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
   const [invalidReqError, setInvalidReqError] = useState(null);
@@ -14,7 +14,7 @@ const ResetPassword = () => {
   const code = searchParams.get("code");
 
   useEffect(() => {
-    if (!code) {
+    if (!code) { // if user enters this page without the code we show this msg
       setInvalidReqError("Invalid or missing reset link");
     }
   }, [code]);
@@ -24,8 +24,8 @@ const ResetPassword = () => {
     setError(null);
     setLoading(true);
     try {
-      await resetPassword(code, password);
-      setSuccess(true);
+      const data = await resetPassword(code, password);
+      setSuccess(data.message);
       setTimeout(() => {
         navigate("/login");
       }, 3000);
@@ -45,12 +45,11 @@ const ResetPassword = () => {
           <form className="reset__form" onSubmit={handleSubmit}>
             <h2>Reset Password</h2>
             {success ? (
-              <p>
-                Reset password successful. You will be redirected to the login
-                page
+              <p className="forgotPassword__success">
+                {success}
               </p>
             ) : (
-              <p>{error}</p>
+              <p className="forgotPassword__error">{error}</p>
             )}
             <div className="reset__field">
               <label htmlFor="password">Password</label>

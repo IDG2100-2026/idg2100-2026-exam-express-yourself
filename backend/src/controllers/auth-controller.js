@@ -5,6 +5,7 @@ import {
   resetPassword,
   resetPasswordRequest,
   verifyEmailService,
+  resendUserVerification,
   createAccessTokenService,
   logoutUserService,
 } from "../services/auth-service.js";
@@ -18,7 +19,13 @@ import { BusinessLogicError } from "../utils/errors.js";
 export const registerUserController = async (req, res, next) => {
   const userData = matchedData(req); // get only validated fields
   const newUser = await registerUser(userData); // gives the userData that the user inputted to registerUser in authService
-  res.status(201).json({ message: "User registered successfully", newUser }); // Success msg, user was created successfully
+  res
+    .status(201)
+    .json({
+      message:
+        "User registered successfully! Press the link that you got on your email to verify your account",
+      newUser,
+    }); // Success msg, user was created successfully
 };
 
 export const verifyEmailController = async (req, res, next) => {
@@ -27,6 +34,12 @@ export const verifyEmailController = async (req, res, next) => {
   res
     .status(200)
     .json({ message: "Email verified successfully! You can now login" });
+};
+
+export const resendVerifyEmailController = async (req, res, next) => {
+  const { email } = req.body;
+  await resendUserVerification(email);
+  res.status(200).json({ message: "Verification email resent" });
 };
 
 export const forgotPasswordController = async (req, res, next) => {
@@ -41,7 +54,7 @@ export const resetPasswordController = async (req, res, next) => {
   const { code, newPassword } = req.body;
   await resetPassword(code, newPassword);
 
-  res.status(201).json({ message: "Password has been changes successfully" });
+  res.status(201).json({ message: "Password has been changed successfully" });
 };
 
 // POST /api/users/login

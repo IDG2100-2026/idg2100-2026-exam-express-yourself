@@ -24,6 +24,7 @@ import AdminDashboard from "./pages/admin/dashboard/AdminDashboard.jsx";
 import AdminUsers from "./pages/admin/users/AdminUsers.jsx";
 import AdminComments from "./pages/admin/comments/AdminComments.jsx";
 import AdminTournamentCreate from "./pages/admin/tournament-create/AdminTournamentCreate.jsx";
+import ForgotPassword from "./pages/forgot-password/ForgotPassword.jsx";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
               <Route path="/lobby" element={<Lobby />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword/>} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/game/:id" element={<Game />} />
               <Route path="/tournaments" element={<TournamentList />} />

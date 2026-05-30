@@ -60,13 +60,13 @@ export default function AdminDashboard() {
           <p className="admin-dashboard__muted">No incidents recorded.</p>
         ) : (
           <div className="admin-dashboard__incidents">
-            {incidents.map((inc) => (
-              <div key={inc._id} className={`admin-dashboard__incident admin-dashboard__incident--${inc.type}`}>
-                <span className="admin-dashboard__incident-type">{inc.type}</span>
-                <span className="admin-dashboard__incident-ip">IP: {inc.ip}</span>
-                <span className="admin-dashboard__incident-agent">{inc.userAgent}</span>
-                {inc.userId && <span className="admin-dashboard__incident-user">User: {inc.userId.username || inc.userId}</span>}
-                <span className="admin-dashboard__incident-time">{new Date(inc.createdAt).toLocaleString()}</span>
+            {incidents.map((incident) => (
+              <div key={incident._id} className={`admin-dashboard__incident admin-dashboard__incident--${incident.type}`}>
+                <span className="admin-dashboard__incident-type">{incident.type}</span>
+                <span className="admin-dashboard__incident-ip">IP: {incident.ip}</span>
+                <span className="admin-dashboard__incident-agent">{incident.userAgent}</span>
+                {incident.userId && <span className="admin-dashboard__incident-user">User: {incident.userId.username || incident.userId}</span>}
+                <span className="admin-dashboard__incident-time">{new Date(incident.createdAt).toLocaleString()}</span>
               </div>
             ))}
           </div>
