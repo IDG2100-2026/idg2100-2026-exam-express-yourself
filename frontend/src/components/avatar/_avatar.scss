@@ -12,16 +12,12 @@
   }
 
   &--default {
-    background-color: $color-frame;
-    border: 1px solid $color-border;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $color-text-dim;
-
-    svg {
-      width: 60%;
-      height: 60%;
-    }
+    font-weight: bold;
+    line-height: 1;
+    color: #1a1200;
+    background-color: $color-yellow;
   }
 }

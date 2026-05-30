@@ -2,8 +2,12 @@
 
 .appearance {
   position: relative;
+  display: flex;
+  align-items: center;
 
   &__toggle {
+    padding: 0;
+    border: none;
     color: $color-text-dim;
 
     &:hover { color: $color-yellow; }

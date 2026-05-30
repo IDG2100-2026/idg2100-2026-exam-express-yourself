@@ -144,7 +144,7 @@ export default function Lobby() {
                 }}
               >
                 <div className="lobby__card-player">
-                  <Avatar imageUrl={p1?.profileImageUrl} size={40} />
+                  <Avatar imageUrl={p1?.profileImageUrl} username={p1?.username} size={40} />
                   <div>
                     <h3>{p1?.username || "Unknown"}</h3>
                     <p className="lobby__card-elo">Elo {p1?.eloRating?.[`tc${match.category?.timeControl || 10}`] || "?"}</p>

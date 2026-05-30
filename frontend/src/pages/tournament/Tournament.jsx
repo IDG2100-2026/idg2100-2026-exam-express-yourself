@@ -512,7 +512,7 @@ export default function Tournament() {
           )}
           {messages.map((message) => (
             <div key={message._id} className="tournament__comment">
-              <Avatar imageUrl={message.authorId?.profileImageUrl} size={32} />
+              <Avatar imageUrl={message.authorId?.profileImageUrl} username={message.authorId?.username} size={32} />
               <span className="tournament__comment-author">
                 {message.authorId?.username}
               </span>

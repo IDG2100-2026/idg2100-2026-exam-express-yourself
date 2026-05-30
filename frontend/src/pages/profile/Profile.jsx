@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router";
+import { useParams, Link, useLocation } from "react-router";
 import { useUser } from "../../hooks/useUser.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { updateUser, uploadAvatar } from "../../services/users-service.js";
 import { getPlayerMatches } from "../../services/matches-service.js";
+import Avatar from "../../components/avatar/Avatar.jsx";
 
 export default function Profile() {
   const { id } = useParams();
+  const { key } = useLocation();
   const { user: authUser, updateUser: updateAuthUser } = useAuth();
   const { user, setUser, isLoading, error, refetch } = useUser(id);
 
@@ -32,6 +34,14 @@ export default function Profile() {
   const [isLoadingGames, setIsLoadingGames] = useState(false);
   const [gamesError, setGamesError] = useState(null);
 
+  // Reset game list and re-fetch whenever this page is navigated to
+  useEffect(() => {
+    setGames([]);
+    setGamesPage(1);
+    setGamesTotal(0);
+    refetch();
+  }, [key]);
+
   useEffect(() => {
     if (user?.recentMatches) {
       setGames(user.recentMatches);
@@ -44,7 +54,7 @@ export default function Profile() {
     const nextPage = gamesPage + 1;
     setIsLoadingGames(true);
     setGamesError(null);
-    getPlayerMatches(id, nextPage, 10)
+    getPlayerMatches(id, nextPage, 5)
       .then((data) => {
         setGames((prev) => [...prev, ...(data.results || [])]);
         setGamesTotal(data.total || 0);
@@ -136,36 +146,29 @@ export default function Profile() {
 
   return (
     <div className="profile stack-l">
-      <div className="profile__header">
-        <div className="profile__avatar">
-          {user.profileImageUrl ? (
-            <img
-              src={user.profileImageUrl}
-              alt={user.username}
-              className="profile__avatar-img"
-            />
-          ) : (
-            <span>{user.username.charAt(0).toUpperCase()}</span>
-          )}
+      <div className="profile__header stack-m">
+        <div className="profile__identity">
+          <Avatar imageUrl={user.profileImageUrl} username={user.username} size={80} />
+          <h1>{user.username}</h1>
         </div>
         <div className="profile__info stack-s">
-          <h1>{user.username}</h1>
           {isOwnProfile && <p className="profile__email">{user.email}</p>}
           <p className="profile__bio">{user.bio || "No bio yet."}</p>
-          {isOwnProfile && !editing && (
-            <button
-              className="btn btn--secondary"
-              onClick={startEditing}
-            >
-              Edit Profile
-            </button>
-          )}
         </div>
+        {isOwnProfile && !editing && (
+          <button
+            className="btn btn--secondary"
+            onClick={startEditing}
+          >
+            Edit profile
+          </button>
+        )}
       </div>
 
       {editing && (
         <form className="profile__form stack-m" onSubmit={handleSave}>
-          <h2>Edit Profile</h2>
+          <h2>Edit profile</h2>
+          <div className="profile__form-inner stack-m">
           <div className="profile__field">
             <label>Username</label>
             <input
@@ -234,8 +237,9 @@ export default function Profile() {
               type="button"
               className="btn btn--red"
             >
-              Close edit form
+              Cancel edit
             </button>
+          </div>
           </div>
         </form>
       )}
@@ -294,36 +298,37 @@ export default function Profile() {
       )}
 
       <section className="profile__games stack-m">
-        <h2>Game History</h2>
+        <h2>Game history</h2>
         {games.length === 0 ? (
           <p className="profile__status">No games played yet.</p>
         ) : (
-          <ul className="profile__game-list">
+          <ul className="profile__game-list stack-s">
             {games.map((match) => {
               const won = match.winnerId?._id === id;
               const opponent = match.players.find((player) => {
                 const playerId = player.userId?._id;
                 return playerId !== id;
               })?.userId;
+
+              let opponentText;
+              if (match.maxPlayers === 2) {
+                opponentText = `vs ${opponent.username}`;
+              } else {
+                opponentText = `${match.maxPlayers}-player game`;
+              }
+
               return (
                 <li key={match._id}>
                   <Link
                     to={`/game/${match._id}`}
                     className="profile__game"
                   >
-                    <span
-                      className={`profile__result profile__result--${won ? "win" : "loss"}`}
-                    >
+                    <span className={`profile__result profile__result--${won ? "win" : "loss"}`}>
                       {won ? "Win" : "Loss"}
                     </span>
-                    <span className="profile__opponent">
-                      vs {opponent?.username}
-                    </span>
-                    <span className="profile__game-variant">
-                      {match.category?.timeControl}s · BO{match.category?.rounds}
-                    </span>
+                    <span className="profile__opponent">{opponentText}</span>
                     <span className="profile__game-date">
-                      {new Date(match.updatedAt).toLocaleDateString()}
+                      {new Date(match.endedAt).toLocaleDateString("en-GB")}
                     </span>
                   </Link>
                 </li>
@@ -332,7 +337,7 @@ export default function Profile() {
           </ul>
         )}
         {gamesError && <p className="profile__error">{gamesError}</p>}
-        {gamesTotal > games.length && (
+        {gamesTotal > games.length ? (
           <button
             className="btn btn--secondary"
             onClick={loadMoreGames}
@@ -340,6 +345,8 @@ export default function Profile() {
           >
             {isLoadingGames ? "Loading..." : "Load more games"}
           </button>
+        ) : (
+          games.length > 0 && <p className="profile__status">All games loaded.</p>
         )}
       </section>
     </div>

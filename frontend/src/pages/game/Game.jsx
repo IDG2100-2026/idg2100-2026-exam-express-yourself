@@ -231,7 +231,7 @@ export default function Game() {
           {/* ── Player headers ── */}
           <div className="game__players">
             <div className="game__player">
-              <Avatar imageUrl={p1?.profileImageUrl} size={56} />
+              <Avatar imageUrl={p1?.profileImageUrl} username={p1?.username} size={56} />
               <span className="game__player-name">{p1?.username || "Unknown"}</span>
               <span className="game__player-elo">
                 Elo: {p1?.eloRating?.[`tc${tc}`] || "?"}
@@ -239,7 +239,7 @@ export default function Game() {
             </div>
             <span className="game__vs">vs</span>
             <div className="game__player">
-              <Avatar imageUrl={p2?.profileImageUrl} size={56} />
+              <Avatar imageUrl={p2?.profileImageUrl} username={p2?.username} size={56} />
               <span className="game__player-name">{p2?.username || "Waiting..."}</span>
               <span className="game__player-elo">
                 {p2 ? `Elo: ${p2?.eloRating?.[`tc${tc}`] || "?"}` : ""}
@@ -342,6 +342,7 @@ export default function Game() {
               <div key={index} className="game__comment">
                 <Avatar
                   imageUrl={message.authorId?.profileImageUrl}
+                  username={message.authorId?.username}
                   size={32}
                 />
 

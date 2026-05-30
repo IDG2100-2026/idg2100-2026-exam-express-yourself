@@ -24,7 +24,7 @@ function AppearanceMenu() {
   return (
     <div className="appearance">
       <button className="appearance__toggle btn btn--secondary" onClick={() => setOpen(!open)}>
-        <GearIcon size="1em" />
+        <GearIcon size={24} />
       </button>
 
       {open && (
