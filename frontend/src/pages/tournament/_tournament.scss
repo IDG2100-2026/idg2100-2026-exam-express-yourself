@@ -1,19 +1,15 @@
 @use '../../styles/variables.scss' as *;
 
 .tournament {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  max-width: 800px;
-
   &__header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
+    gap: $space-m;
   }
 
   &__status-badge {
+    padding: $space-xs;
     border: 1px solid $color-border;
     border-radius: $radius;
     text-transform: uppercase;
@@ -22,14 +18,15 @@
 
     &--upcoming    { border-color: $color-yellow;  color: $color-yellow; }
     &--in-progress { border-color: #58a6ff;        color: #58a6ff; }
-    &--completed   { border-color: $color-green; color: $color-green; }
-    &--cancelled   { border-color: $color-red;  color: $color-red; }
+    &--completed   { border-color: $color-green;   color: $color-green; }
+    &--cancelled   { border-color: $color-red;     color: $color-red; }
   }
 
   &__countdown {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: $space-m;
+    padding: $space-m;
     border: 1px solid $color-border;
     border-radius: $radius;
     background: $color-inner;
@@ -43,14 +40,14 @@
 
   &__countdown-units {
     display: flex;
-    gap: 1.5rem;
+    gap: $space-l;
   }
 
   &__countdown-unit {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.15rem;
+    gap: $space-xs;
   }
 
   &__countdown-value {
@@ -68,7 +65,8 @@
   &__info {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: $space-s;
+    padding: $space-m;
     border: 1px solid $color-border;
     border-radius: $radius;
     background-color: $color-inner;
@@ -76,7 +74,7 @@
 
   &__info-item {
     display: flex;
-    gap: 1rem;
+    gap: $space-m;
   }
 
   &__info-label {
@@ -84,38 +82,19 @@
     color: $color-text-dim;
   }
 
-  &__description,
-  &__rules-text {
-    line-height: 1.7;
-  }
-
   &__actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem;
-  }
-
-  &__btn {
-    display: inline-flex;
-    align-items: center;
-    border: none;
-    border-radius: $radius;
-    transition: opacity 0.15s;
-
-    &:hover { opacity: 0.85; }
-
-    &--primary   { background: $color-yellow;    color: #1a1200; }
-    &--secondary { border: 1px solid $color-border; background: $color-inner; color: $color-text; }
-    &--warning   { background: #e09000;           color: #1a1200; }
-    &--danger    { background: $color-red;     color: #fff; }
+    gap: $space-m;
   }
 
   &__admin-controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    border-left: 1px solid $color-border;
+    gap: $space-s;
+    border-inline-start: 1px solid $color-border;
+    padding-inline-start: $space-m;
   }
 
   &__joined     { color: $color-green; }
@@ -124,82 +103,88 @@
   &__trophy-item {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: $space-m;
   }
 
   &__trophy-img {
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
     border-radius: $radius;
     object-fit: contain;
   }
 
-  &__trophy-title {
-    color: $color-yellow;
+  &__winner {
+    display: flex;
+    flex-direction: column;
+    gap: $space-m;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
   }
 
-  &__winner {
-    color: $color-text-dim;
+  &__winner-profile {
+    display: flex;
+    align-items: center;
+    gap: $space-m;
 
-    strong { color: $color-yellow; }
+    span { font-size: 2rem; }
   }
 
   &__live-match-list {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: $space-xs;
   }
 
   &__live-match {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: $space-s;
+    padding: $space-s;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
     background: $color-inner;
     transition: border-color 0.15s;
 
-    &:hover {
-      border-color: $color-yellow;
-    }
+    &:hover { border-color: $color-yellow; }
   }
 
-  &__round { margin-bottom: 1.25rem; }
+  &__round { margin-block-end: $space-m; }
 
   &__round-matches {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: $space-xs;
   }
 
   &__match {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: $space-s;
+    padding: $space-s;
     border: 1px solid $color-border;
     border-radius: $radius;
     background: $color-inner;
   }
 
   &__match-vs     { color: $color-text-dim; }
-  &__match-result { margin-left: auto; color: $color-green; }
+  &__match-result { margin-inline-start: auto; color: $color-green; }
 
-  &__match-player--winner {
-    color: $color-green;
-  }
+  &__match-player--winner { color: $color-green; }
 
   &__participant-list {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: $space-xs;
     list-style: none;
   }
 
   &__participant {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: $space-s;
   }
 
   &__participant-link {
@@ -213,34 +198,34 @@
   &__comments {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: $space-s;
   }
 
   &__comment {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: $space-xs;
+    padding: $space-s;
     border: 1px solid $color-border;
     border-radius: $radius;
     background-color: $color-inner;
   }
 
-  &__comment-author {
-    color: $color-yellow;
-  }
-
-  &__comment-date  { color: $color-text-dim; }
-  &__comment-text  { margin-top: 0.25rem; }
+  &__comment-author { color: $color-yellow; }
+  &__comment-date   { color: $color-text-dim; }
 
   &__comment-form {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: $space-s;
+
+    button { align-self: flex-start; }
   }
 
   &__comment-input {
-    min-height: 150px;
-    max-height: 200px;
+    min-block-size: 150px;
+    max-block-size: 200px;
+    padding: $space-s;
     border: 1px solid $color-border;
     border-radius: $radius;
     color: $color-text;
@@ -251,16 +236,6 @@
       outline: none;
       border-color: $color-yellow;
     }
-  }
-
-  &__comment-submit {
-    align-self: flex-start;
-    border: none;
-    border-radius: $radius;
-    color: #1a1200;
-    background-color: $color-yellow;
-
-    &:hover { background-color: $color-yellow-hover; }
   }
 
   &__status { color: $color-text-dim; }

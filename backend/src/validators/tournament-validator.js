@@ -4,7 +4,6 @@ import {
   MAX_TOURNAMENT_TITLE_LENGTH,
   MIN_TOURNAMENT_DESCRIPTION_LENGTH,
   MAX_TOURNAMENT_DESCRIPTION_LENGTH,
-  MAX_TOURNAMENT_RULES_LENGTH,
   MIN_TOURNAMENT_BUY_IN,
   TOURNAMENT_STATUSES,
   VALID_ROUNDS,
@@ -59,12 +58,6 @@ export function validateCreateTournament() {
       .escape()
       .isLength({ min: MIN_TOURNAMENT_DESCRIPTION_LENGTH, max: MAX_TOURNAMENT_DESCRIPTION_LENGTH })
       .withMessage(`Description must be between ${MIN_TOURNAMENT_DESCRIPTION_LENGTH} and ${MAX_TOURNAMENT_DESCRIPTION_LENGTH} characters.`),
-    body("rules")
-      .optional()
-      .trim()
-      .escape()
-      .isLength({ max: MAX_TOURNAMENT_RULES_LENGTH })
-      .withMessage(`Rules cannot be longer than ${MAX_TOURNAMENT_RULES_LENGTH} characters.`),
     body("startDate")
       .trim()
       .notEmpty()
@@ -146,12 +139,6 @@ export function validateUpdateTournament() {
       .escape()
       .isLength({ min: MIN_TOURNAMENT_DESCRIPTION_LENGTH, max: MAX_TOURNAMENT_DESCRIPTION_LENGTH })
       .withMessage(`Description must be between ${MIN_TOURNAMENT_DESCRIPTION_LENGTH} and ${MAX_TOURNAMENT_DESCRIPTION_LENGTH} characters.`),
-    body("rules")
-      .optional()
-      .trim()
-      .escape()
-      .isLength({ max: MAX_TOURNAMENT_RULES_LENGTH })
-      .withMessage(`Rules cannot be longer than ${MAX_TOURNAMENT_RULES_LENGTH} characters.`),
     body("startDate")
       .optional()
       .trim()

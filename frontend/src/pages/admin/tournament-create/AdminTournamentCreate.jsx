@@ -5,7 +5,6 @@ import { createTournament, updateTournament, getTournament } from "../../../serv
 const EMPTY_FORM = {
   title: "",
   description: "",
-  rules: "",
   startDate: "",
   numberOfRounds: 1,
   rounds: 3,
@@ -35,7 +34,6 @@ export default function AdminTournamentCreate() {
         setForm({
           title: tournament.title || "",
           description: tournament.description || "",
-          rules: tournament.rules || "",
           startDate: tournament.startDate ? tournament.startDate.slice(0, 16) : "",
           numberOfRounds: tournament.numberOfRounds || 1,
           rounds: tournament.category?.rounds || 3,
@@ -73,7 +71,6 @@ export default function AdminTournamentCreate() {
         await updateTournament(id, {
           title: form.title,
           description: form.description,
-          rules: form.rules,
           startDate: form.startDate,
           numberOfRounds: form.numberOfRounds,
           buyIn: form.buyIn,
@@ -94,7 +91,6 @@ export default function AdminTournamentCreate() {
         const formData = new FormData();
         formData.append("title", form.title);
         formData.append("description", form.description);
-        formData.append("rules", form.rules);
         formData.append("startDate", form.startDate);
         formData.append("numberOfRounds", form.numberOfRounds);
         formData.append("category[rounds]", form.rounds);
@@ -132,11 +128,6 @@ export default function AdminTournamentCreate() {
         <div className="admin-tc__field">
           <label htmlFor="description">Description</label>
           <textarea id="description" name="description" rows={3} value={form.description} onChange={handleChange} />
-        </div>
-
-        <div className="admin-tc__field">
-          <label htmlFor="rules">Rules</label>
-          <textarea id="rules" name="rules" rows={4} value={form.rules} onChange={handleChange} />
         </div>
 
         <div className="admin-tc__field">

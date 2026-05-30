@@ -131,14 +131,14 @@
 
   &__trophy {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: $space-xs;
+    gap: $space-s;
     color: $color-yellow;
 
     img {
       width: 48px;
       height: 48px;
+      border-radius: $radius;
       object-fit: contain;
     }
   }

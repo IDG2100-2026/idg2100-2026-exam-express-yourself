@@ -229,7 +229,6 @@ console.log(`Created ${waitingMatches.length} waiting matches`);
 const tournament1 = await Tournament.create({
   title: "Spring Championship 2026",
   description: "The first major tournament of the year. Battle it out for the Spring Trophy!",
-  rules: "Standard round-robin format. All players get randomly paired each round. Top scorer wins.",
   createdBy: u("admin")._id,
   startDate: new Date("2026-06-01T18:00:00Z"),
   numberOfRounds: 3,
@@ -240,13 +239,12 @@ const tournament1 = await Tournament.create({
     u("mira")._id, u("max")._id, u("stian")._id, u("thea")._id,
   ],
   status: "upcoming",
-  trophy: { title: "Spring Champion Trophy" },
+  trophy: { title: "Spring Champion Trophy", imageUrl: "/uploads/trophy.jpg" },
 });
 
 const tournament2 = await Tournament.create({
   title: "Summer Blitz Cup",
   description: "Fast-paced blitz tournament. Quick rounds, quick thinking!",
-  rules: "10-second total time control. No straights allowed. Single elimination.",
   createdBy: u("admin")._id,
   startDate: new Date("2026-07-15T20:00:00Z"),
   numberOfRounds: 4,
@@ -254,7 +252,7 @@ const tournament2 = await Tournament.create({
   buyIn: 50,
   participants: [u("sara")._id, u("stian")._id, u("max")._id],
   status: "upcoming",
-  trophy: { title: "Blitz Master Trophy" },
+  trophy: { title: "Blitz Master Trophy", imageUrl: "/uploads/trophy.jpg" },
 });
 
 const tournament3 = await Tournament.create({
@@ -270,7 +268,7 @@ const tournament3 = await Tournament.create({
     u("kristian")._id, u("fredrik")._id, u("camilla")._id, u("silje")._id,
   ],
   status: "upcoming",
-  trophy: { title: "Rising Star Trophy" },
+  trophy: { title: "Rising Star Trophy", imageUrl: "/uploads/trophy.jpg" },
 });
 
 const tournament4 = await Tournament.create({
@@ -282,7 +280,7 @@ const tournament4 = await Tournament.create({
   participants: [u("emil")._id, u("sara")._id, u("max")._id, u("mira")._id],
   status: "completed",
   winnerId: u("sara")._id,
-  trophy: { title: "Autumn Champion Trophy" },
+  trophy: { title: "Autumn Champion Trophy", imageUrl: "/uploads/trophy.jpg" },
 });
 
 const tournament5 = await Tournament.create({
@@ -293,7 +291,7 @@ const tournament5 = await Tournament.create({
   category: { rounds: 7, straightsAllowed: true, timeControl: 30 },
   participants: [],
   status: "upcoming",
-  trophy: { title: "Ice Crown Trophy" },
+  trophy: { title: "Ice Crown Trophy", imageUrl: "/uploads/trophy.jpg" },
 });
 
 console.log("Created 5 tournaments");
@@ -317,6 +315,7 @@ await User.findByIdAndUpdate(u("sara")._id, {
   $push: {
     trophies: {
       title: "Autumn Champion Trophy",
+      imageUrl: "/uploads/trophy.jpg",
       wonAt: new Date("2025-10-15"),
     },
   },

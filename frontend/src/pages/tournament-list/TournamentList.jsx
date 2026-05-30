@@ -195,9 +195,6 @@ function TournamentCard({ tournament }) {
         {tournament.numberOfRounds && (
           <p className="tournaments__card-variant">{tournament.numberOfRounds} tournament rounds</p>
         )}
-        {tournament.rules && (
-          <p className="tournaments__card-rules">{tournament.rules}</p>
-        )}
         <p className="tournaments__card-players">{tournament.participants?.length || 0} players signed up</p>
         {tournament.trophy?.title && (
           <div className="tournaments__card-trophy">

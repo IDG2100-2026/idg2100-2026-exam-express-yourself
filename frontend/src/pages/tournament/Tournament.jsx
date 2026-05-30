@@ -29,8 +29,8 @@ function useCountdown(targetDate) {
   useEffect(() => {
     if (!targetDate) return;
     setTimeLeft(getTimeLeft(targetDate));
-    const timer = setInterval(() => setTimeLeft(getTimeLeft(targetDate)), 1000);
-    return () => clearInterval(timer);
+    const timer = setInterval(() => { setTimeLeft(getTimeLeft(targetDate)); }, 1000);
+    return () => { clearInterval(timer); };
   }, [targetDate]);
   return timeLeft;
 }
@@ -179,7 +179,7 @@ export default function Tournament() {
       if (data.type === "history") {
         setMessages(data.messages);
       } else if (data.type === "new_message") {
-        setMessages((prevMsg) => [...prevMsg, data.message]);
+        setMessages((prevMsg) => { return [...prevMsg, data.message]; });
       } else if (data.type === "error") {
         console.error("Server error:", data.message);
       }
@@ -192,7 +192,7 @@ export default function Tournament() {
       console.log("Websocket disconnected");
     };
 
-    return () => newSocket.close();
+    return () => { newSocket.close(); };
   }, [targetId, targetType]);
 
   const sendMessage = () => {
@@ -213,13 +213,14 @@ export default function Tournament() {
 
   const isAdmin = user?.role === "admin";
   const alreadyJoined = tournament.participants?.some(
-    (p) => p._id === userId || p === userId,
+    (participant) => participant._id === userId || participant === userId,
   );
   const canJoin = user && tournament.status === "upcoming" && !alreadyJoined;
-  const canLeave = user && alreadyJoined;
+  const canLeave = user && alreadyJoined && (tournament.status === "upcoming" || tournament.status === "in-progress");
+  const hasActions = canJoin || canLeave || (alreadyJoined && tournament.status === "in-progress") || isAdmin;
 
   return (
-    <div className="tournament">
+    <div className="tournament stack-l">
       <div className="tournament__header">
         <h1>{tournament.title}</h1>
         <span
@@ -228,6 +229,16 @@ export default function Tournament() {
           {tournament.status.replace("-", " ")}
         </span>
       </div>
+
+      {tournament.winnerId && (
+        <div className="tournament__winner">
+          <span className="tournament__countdown-label">Winner</span>
+          <div className="tournament__winner-profile">
+            <Avatar imageUrl={tournament.winnerId.profileImageUrl} username={tournament.winnerId.username} size={56} />
+            <span>{tournament.winnerId.username}</span>
+          </div>
+        </div>
+      )}
 
       {/* Countdown, only for upcoming tournaments that haven't started */}
       {tournament.status === "upcoming" && countdown && (
@@ -263,6 +274,7 @@ export default function Tournament() {
       )}
 
       <div className="tournament__info">
+        <span className="tournament__countdown-label">Tournament details</span>
         {tournament.createdBy && (
           <div className="tournament__info-item">
             <span className="tournament__info-label">Organiser</span>
@@ -272,8 +284,8 @@ export default function Tournament() {
         <div className="tournament__info-item">
           <span className="tournament__info-label">Date</span>
           <span>
-            {new Date(tournament.startDate).toLocaleString(undefined, {
-              year: "numeric", month: "short", day: "numeric",
+            {new Date(tournament.startDate).toLocaleString("en-GB", {
+              year: "numeric", month: "2-digit", day: "2-digit",
               hour: "2-digit", minute: "2-digit",
             })}
           </span>
@@ -282,7 +294,7 @@ export default function Tournament() {
           <span className="tournament__info-label">Format</span>
           <span>
             Best of {tournament.category?.rounds},{" "}
-            {tournament.category?.timeControl}s{tournament.category?.straightsAllowed ? ", Straights" : ", No Straights"}
+            {tournament.category?.timeControl}s{tournament.category?.straightsAllowed ? ", Straights" : ", No straights"}
           </span>
         </div>
         <div className="tournament__info-item">
@@ -305,27 +317,34 @@ export default function Tournament() {
             <span>{tournament.eloRange.min} - {tournament.eloRange.max}</span>
           </div>
         )}
+        {tournament.description && (
+          <div className="tournament__info-item">
+            <span className="tournament__info-label">Description</span>
+            <span>{tournament.description}</span>
+          </div>
+        )}
       </div>
 
-      {tournament.description && (
-        <p className="tournament__description">{tournament.description}</p>
-      )}
-
-      {tournament.rules && (
-        <div className="tournament__rules">
-          <h2>Rules</h2>
-          <p className="tournament__rules-text">{tournament.rules}</p>
+      {tournament.trophy && (
+        <div className="tournament__trophy stack-m">
+          <h2>Trophy</h2>
+          <div className="tournament__trophy-item">
+            {tournament.trophy.imageUrl && (
+              <img src={tournament.trophy.imageUrl} alt={tournament.trophy.title} className="tournament__trophy-img" />
+            )}
+            <span>{tournament.trophy.title}</span>
+          </div>
         </div>
       )}
 
       {/* Join / Leave */}
-      <div className="tournament__actions">
+      {hasActions && <div className="tournament__actions">
         {canJoin && (
           <button
             className="btn btn--primary"
             onClick={handleJoin}
           >
-            Join Tournament
+            Join tournament
           </button>
         )}
         {canLeave && (
@@ -333,10 +352,10 @@ export default function Tournament() {
             className="btn btn--red"
             onClick={handleLeave}
           >
-            Leave Tournament
+            Leave tournament
           </button>
         )}
-        {alreadyJoined && tournament.status !== "upcoming" && (
+        {alreadyJoined && tournament.status === "in-progress" && (
           <p className="tournament__joined">
             You are registered for this tournament
           </p>
@@ -356,7 +375,7 @@ export default function Tournament() {
                 className="btn btn--primary"
                 onClick={handleStart}
               >
-                Start Tournament
+                Start tournament
               </button>
             )}
             {(tournament.status === "upcoming" ||
@@ -376,27 +395,27 @@ export default function Tournament() {
             </button>
           </div>
         )}
-      </div>
+      </div>}
 
       {actionMsg && <p className="tournament__action-msg">{actionMsg}</p>}
       {actionError && <p className="tournament__error">{actionError}</p>}
 
       {/* Live matches, spectators click in, participants are auto-redirected */}
       {tournament.status === "in-progress" && tournament.bracket?.length > 0 && (
-        <div className="tournament__live-matches">
+        <div className="tournament__live-matches stack-m">
           <h2>
-            Round {tournament.currentRound}: Live Matches
+            Round {tournament.currentRound}: Live matches
           </h2>
           <div className="tournament__live-match-list">
             {tournament.bracket
               .find((round) => round.round === tournament.currentRound)
-              ?.matches.map((match, index) => (
-                <Link key={index} to={`/game/${match.gameId}`} className="tournament__live-match">
+              ?.matches.map((match, matchIndex) => (
+                <Link key={matchIndex} to={`/game/${match.gameId}`} className="tournament__live-match">
                   <span>{match.players[0]?.username || "TBD"}</span>
                   <span className="tournament__match-vs">vs</span>
                   <span>{match.players[1]?.username || "TBD"}</span>
                   {match.winner && (
-                    <span className="tournament__match-result">{match.winner.username}</span>
+                    <span className="tournament__match-result">{match.winner.username} won</span>
                   )}
                 </Link>
               ))}
@@ -404,63 +423,37 @@ export default function Tournament() {
         </div>
       )}
 
-      {/* Trophy */}
-      {tournament.trophy && (
-        <div className="tournament__trophy">
-          <h2>Trophy</h2>
-          <div className="tournament__trophy-item">
-            {tournament.trophy.imageUrl && (
-              <img
-                src={tournament.trophy.imageUrl}
-                alt={tournament.trophy.title}
-                className="tournament__trophy-img"
-              />
-            )}
-            <span className="tournament__trophy-title">
-              {tournament.trophy.title}
-            </span>
-          </div>
-          {tournament.winnerId && (
-            <p className="tournament__winner">
-              Winner: <strong>{tournament.winnerId.username}</strong>
-            </p>
-          )}
-        </div>
-      )}
-
       {/* Standings, shown when in-progress or completed */}
       {standings && standings.standings?.length > 0 && (
-        <div className="tournament__standings">
+        <div className="tournament__standings stack-m">
           <h2>Standings</h2>
           {standings.standings.map((round) => (
-            <div key={round.round} className="tournament__round">
+            <div key={round.round} className="tournament__round stack-s">
               <h3>Round {round.round}</h3>
               <div className="tournament__round-matches">
-                {round.matches.map((m, i) => (
-                  <div key={i} className="tournament__match">
+                {round.matches.map((match, matchIndex) => (
+                  <div key={matchIndex} className="tournament__match">
                     <span
                       className={
-                        m.winner === m.player1
+                        match.winner === match.player1
                           ? "tournament__match-player--winner"
                           : ""
                       }
                     >
-                      {m.player1 || "TBD"}
+                      {match.player1 || "TBD"}
                     </span>
                     <span className="tournament__match-vs">vs</span>
                     <span
                       className={
-                        m.winner === m.player2
+                        match.winner === match.player2
                           ? "tournament__match-player--winner"
                           : ""
                       }
                     >
-                      {m.player2 || "TBD"}
+                      {match.player2 || "TBD"}
                     </span>
-                    {m.winner && (
-                      <span className="tournament__match-result">
-                        → {m.winner}
-                      </span>
+                    {match.winner && (
+                      <span className="tournament__match-result">{match.winner} won</span>
                     )}
                   </div>
                 ))}
@@ -471,7 +464,7 @@ export default function Tournament() {
       )}
 
       {/* Participants */}
-      <div className="tournament__participants">
+      <div className="tournament__participants stack-m">
         <h2>
           Participants ({tournament.participants?.length || 0})
         </h2>
@@ -479,20 +472,20 @@ export default function Tournament() {
           <p className="tournament__status">No participants yet.</p>
         ) : (
           <ul className="tournament__participant-list">
-            {tournament.participants.map((p) => (
-              <li key={p._id} className="tournament__participant">
+            {tournament.participants.map((participant) => (
+              <li key={participant._id} className="tournament__participant">
                 <Link
-                  to={`/profile/${p._id}`}
+                  to={`/profile/${participant._id}`}
                   className="tournament__participant-link"
                 >
-                  {p.username}
+                  {participant.username}
                 </Link>
-                {p.eloRating && (
+                {participant.eloRating && (
                   <span className="tournament__participant-elo">
-                    {p.eloRating[
+                    {participant.eloRating[
                       `tc${tournament.category?.timeControl || 10}`
                     ] ??
-                      p.eloRating.tc10 ??
+                      participant.eloRating.tc10 ??
                       "?"}{" "}
                     Elo
                   </span>
@@ -504,7 +497,7 @@ export default function Tournament() {
       </div>
 
       {/* Comments */}
-      <div className="tournament__comments-section">
+      <div className="tournament__comments-section stack-m">
         <h2>Comments</h2>
         <div className="tournament__comments">
           {messages.length === 0 && (
@@ -517,7 +510,7 @@ export default function Tournament() {
                 {message.authorId?.username}
               </span>
               <span className="tournament__comment-date">
-                {new Date(message.createdAt).toLocaleDateString()}
+                {new Date(message.createdAt).toLocaleDateString("en-GB")}
               </span>
               <p className="tournament__comment-text">{message.text}</p>
             </div>
@@ -528,7 +521,7 @@ export default function Tournament() {
             <textarea
               className="tournament__comment-input"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => { setInput(e.target.value); }}
               placeholder="Leave a comment..."
               rows={3}
             />
@@ -537,7 +530,7 @@ export default function Tournament() {
               type="button"
               className="btn btn--primary"
             >
-              Post Comment
+              Post comment
             </button>
           </form>
         ) : (
