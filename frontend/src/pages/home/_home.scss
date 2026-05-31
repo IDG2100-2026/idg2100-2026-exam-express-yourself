@@ -11,6 +11,10 @@
     text-align: center;
     background-color: $color-inner;
   }
+  &__cta{
+    font-size: 1rem;
+    margin-inline-start:1rem;
+  }
 
   &__description {
     max-width: 500px;
@@ -76,5 +80,11 @@
     &--in-progress { color: $color-green; }
     &--completed   { color: $color-text-dim; }
     &--waiting     { color: $color-yellow; }
+  }
+}
+
+@media (max-width: 330px){
+  .home__cta{
+    font-size: .7rem;
   }
 }

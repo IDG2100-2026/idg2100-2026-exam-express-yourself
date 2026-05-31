@@ -75,7 +75,7 @@ export default function Home() {
           Challenge players from around the world in the classic Spanish dice game.
           Bluff, roll, and outsmart your opponents to win tournaments and earn trophies.
         </p>
-        <Link to="/create-game" className="home__cta btn btn--primary">+ Create game</Link>
+        {/* <Link to="/create-game" className="home__cta btn btn--primary">+ Create game</Link> */}
       </section>
 
       {data.activity && (
@@ -96,7 +96,10 @@ export default function Home() {
       {!isLoading && !error && (
         <>
           <section className="home__section stack-m">
-            <h2>Open games</h2>
+            <div>
+            <h2>Open games <Link to="/create-game" className="home__cta btn btn--primary">Create game</Link></h2>
+
+            </div>
             {data.waiting.length === 0 ? (
               <p className="home__empty">No open games right now.</p>
             ) : (
