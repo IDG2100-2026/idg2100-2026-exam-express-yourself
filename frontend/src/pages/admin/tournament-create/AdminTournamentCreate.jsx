@@ -168,7 +168,7 @@ export default function AdminTournamentCreate() {
           formData.append("trophyImage", form.trophyImage);
         }
 
-        const tournament = await createTournament(formData);
+        const { tournament } = await createTournament(formData);
         navigate(`/tournament/${tournament._id}`);
       }
     } catch (err) {
@@ -210,7 +210,7 @@ export default function AdminTournamentCreate() {
         </div>
 
         <div className="admin-tc__field">
-          <label htmlFor="description">Description</label>
+          <label htmlFor="description">Description *</label>
           <textarea
             id="description"
             name="description"

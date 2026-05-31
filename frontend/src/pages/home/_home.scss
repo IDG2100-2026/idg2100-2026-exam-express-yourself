@@ -10,6 +10,7 @@
     border-radius: $radius-large;
     text-align: center;
     background-color: $color-inner;
+    padding: 30px;
   }
   &__cta{
     font-size: 1rem;
@@ -17,8 +18,7 @@
   }
 
   &__description {
-    max-width: 500px;
-    line-height: 1.7;
+    max-width: 60ch;
   }
 
   &__cta {

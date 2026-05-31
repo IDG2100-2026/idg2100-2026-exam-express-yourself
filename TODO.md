@@ -59,5 +59,5 @@ MATCHMAKING
 
 
 TODO: 
-  need to implement a un-ban user
-  maybe have a superAdmin? So if we make another user a admin, that user cannot overthrone the real admin
+  Cannot create tournamnets longer chan 1 month in advance
+  Cannot create tournaments backwards in time
