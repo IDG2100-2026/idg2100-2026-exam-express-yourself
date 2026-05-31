@@ -96,7 +96,7 @@ export default function Home() {
       {!isLoading && !error && (
         <>
           <section className="home__section stack-m">
-            <h2>Open Games</h2>
+            <h2>Open games</h2>
             {data.waiting.length === 0 ? (
               <p className="home__empty">No open games right now.</p>
             ) : (
@@ -117,7 +117,7 @@ export default function Home() {
                       >
                         <h3>{p1?.username || "Unknown"}</h3>
                         <p className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "?"}</p>
-                        <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}, {match.category?.buyIn || 1}pt buy-in</p>
+                        <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.category?.buyIn || 1}pt buy-in</p>
                         <p className="home__card-variant">{match.players?.length || 1}/{match.maxPlayers || 2} players</p>
                         <p className="home__card-waiting">{isOwn ? "Your game - waiting for players" : "Click to join"}</p>
                       </Link>
@@ -126,7 +126,7 @@ export default function Home() {
                 })}
               </ul>
             )}
-            <Link to="/lobby" className="home__see-all">See all open games</Link>
+            <Link to="/lobby" className="home__see-all btn--link">See all open games</Link>
           </section>
 
           <section className="home__section stack-m">
@@ -140,7 +140,7 @@ export default function Home() {
                     <Link to={`/game/${match._id}`} className={`home__card home__card--${match.status} card stack-s`}>
                       <h3>{getPlayer(match, 0)?.username || "?"} vs {getPlayer(match, 1)?.username || "waiting"}</h3>
                       <p className="home__card-elo">Avg Elo: {avgElo(match)}</p>
-                      <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No Straights"}, {match.category?.buyIn || 1}pt buy-in</p>
+                      <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.category?.buyIn || 1}pt buy-in</p>
                       <p className={`home__card-status home__card-status--${match.status}`}>{match.status}</p>
                     </Link>
                   </li>
@@ -160,13 +160,11 @@ export default function Home() {
                     <Link to={`/tournament/${tournament._id}`} className={`home__card home__card--${tournament.status} card stack-s`}>
                       <h3>{tournament.title}</h3>
                       <p className="home__card-variant">
-                        {new Date(tournament.startDate).toLocaleDateString(undefined, {
-                          year: "numeric", month: "short", day: "numeric",
-                        })}
+                        {new Date(tournament.startDate).toLocaleDateString("en-GB")}
                       </p>
                       {tournament.category && (
                         <p className="home__card-variant">
-                          Best of {tournament.category.rounds}, {tournament.category.timeControl}s{tournament.category.straightsAllowed ? ", Straights" : ", No Straights"}, {tournament.category.buyIn || 1}pt buy-in
+                          Best of {tournament.category.rounds}, {tournament.category.timeControl}s{tournament.category.straightsAllowed ? ", Straights" : ", No straights"}, {tournament.category.buyIn || 1}pt buy-in
                         </p>
                       )}
                       {tournament.numberOfRounds && (
@@ -178,7 +176,7 @@ export default function Home() {
                 ))}
               </ul>
             )}
-            <Link to="/tournaments" className="home__see-all">See all tournaments</Link>
+            <Link to="/tournaments" className="home__see-all btn--link">See all tournaments</Link>
           </section>
         </>
       )}

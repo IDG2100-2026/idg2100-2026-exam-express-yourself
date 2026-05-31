@@ -5,6 +5,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: $space-m;
+    list-style: none;
   }
 
   &__stat {
@@ -25,10 +26,13 @@
     display: flex;
     flex-wrap: wrap;
     gap: $space-m;
+    list-style: none;
+
+    > li { flex: 1 1 220px; }
   }
 
   &__card {
-    flex: 1 1 220px;
+    display: block;
     padding: $space-m;
     border: 1px solid $color-border;
     border-radius: $radius;
@@ -40,6 +44,8 @@
 
     p { color: $color-text-dim; }
   }
+
+  &__incidents { list-style: none; }
 
   &__incident {
     display: flex;

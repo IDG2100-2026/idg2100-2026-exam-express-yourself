@@ -2,4 +2,11 @@
 
 .not-found {
   text-align: center;
+
+  p {
+    max-width: 50ch;
+    margin-inline: auto;
+  }
+
+  .btn--link { display: block; }
 }
