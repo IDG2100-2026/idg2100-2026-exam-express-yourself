@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { getAllComments, deleteComment } from "../../../services/comments-service.js";
+import {
+  getAllComments,
+  deleteComment,
+} from "../../../services/comments-service.js";
 
 export default function AdminComments() {
   const [comments, setComments] = useState([]);
@@ -8,9 +11,15 @@ export default function AdminComments() {
 
   useEffect(() => {
     getAllComments()
-      .then((data) => { setComments(data.results); })
-      .catch((err) => { setError(err.message); })
-      .finally(() => { setIsLoading(false); });
+      .then((data) => {
+        setComments(data.results);
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   async function handleDelete(id) {
@@ -18,7 +27,9 @@ export default function AdminComments() {
     try {
       await deleteComment(id);
       setComments((prev) => {
-        return prev.filter((comment) => { return comment._id !== id; });
+        return prev.filter((comment) => {
+          return comment._id !== id;
+        });
       });
     } catch (err) {
       alert(err.message);
@@ -48,13 +59,21 @@ export default function AdminComments() {
                     {comment.targetType}, {comment.targetId}
                   </span>
                   <span className="admin-comments__date">
-                    {new Date(comment.createdAt).toLocaleString("en-GB", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
+                    {new Date(comment.createdAt).toLocaleString("en-GB", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </span>
                 </div>
                 <p className="admin-comments__text">{comment.text}</p>
                 <button
                   className="btn btn--red"
-                  onClick={() => { handleDelete(comment._id); }}
+                  onClick={() => {
+                    handleDelete(comment._id);
+                  }}
                 >
                   Delete
                 </button>
