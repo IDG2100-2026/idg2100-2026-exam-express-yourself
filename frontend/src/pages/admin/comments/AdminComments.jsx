@@ -36,10 +36,10 @@ export default function AdminComments() {
       ) : comments.length === 0 ? (
         <p className="admin-comments__muted">No comments found.</p>
       ) : (
-        <div className="admin-comments__list stack-m">
+        <ul className="admin-comments__list stack-m">
           {comments.map((comment) => {
             return (
-              <div key={comment._id} className="admin-comments__item stack-s">
+              <li key={comment._id} className="admin-comments__item stack-s">
                 <div className="admin-comments__meta">
                   <span className="admin-comments__author">
                     {comment.authorId?.username || "Unknown user"}
@@ -58,10 +58,10 @@ export default function AdminComments() {
                 >
                   Delete
                 </button>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
     </div>
   );

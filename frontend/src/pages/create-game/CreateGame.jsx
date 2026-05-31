@@ -76,7 +76,7 @@ export default function CreateGame() {
 
         {error && <p className="create__error">{error}</p>}
         <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
-          {isSubmitting ? "Creating..." : "Create Game"}
+          {isSubmitting ? "Creating..." : "Create game"}
         </button>
       </form>
     </div>

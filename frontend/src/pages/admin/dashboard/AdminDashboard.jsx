@@ -27,28 +27,28 @@ export default function AdminDashboard() {
       <section className="admin-dashboard__section stack-m">
         <h2>Platform activity</h2>
         {activity ? (
-          <div className="admin-dashboard__stats">
-            <div className="admin-dashboard__stat">
+          <ul className="admin-dashboard__stats">
+            <li className="admin-dashboard__stat">
               <span className="admin-dashboard__stat-value">{activity.activePlayers}</span>
               <span className="admin-dashboard__stat-label">Active players this week</span>
-            </div>
-            <div className="admin-dashboard__stat">
+            </li>
+            <li className="admin-dashboard__stat">
               <span className="admin-dashboard__stat-value">{activity.gamesThisWeek}</span>
               <span className="admin-dashboard__stat-label">Games this week</span>
-            </div>
-            <div className="admin-dashboard__stat">
+            </li>
+            <li className="admin-dashboard__stat">
               <span className="admin-dashboard__stat-value">{activity.ongoingMatches}</span>
               <span className="admin-dashboard__stat-label">Games in progress</span>
-            </div>
-            <div className="admin-dashboard__stat">
+            </li>
+            <li className="admin-dashboard__stat">
               <span className="admin-dashboard__stat-value">{activity.availableGames}</span>
               <span className="admin-dashboard__stat-label">Open games</span>
-            </div>
-            <div className="admin-dashboard__stat">
+            </li>
+            <li className="admin-dashboard__stat">
               <span className="admin-dashboard__stat-value">{activity.newProfiles}</span>
               <span className="admin-dashboard__stat-label">New profiles this week</span>
-            </div>
-          </div>
+            </li>
+          </ul>
         ) : (
           !error && <p className="admin-dashboard__muted">Loading...</p>
         )}
@@ -59,10 +59,10 @@ export default function AdminDashboard() {
         {incidents.length === 0 ? (
           <p className="admin-dashboard__muted">No incidents recorded.</p>
         ) : (
-          <div className="admin-dashboard__incidents stack-s">
+          <ul className="admin-dashboard__incidents stack-s">
             {incidents.map((incident) => {
               return (
-                <div key={incident._id} className={`admin-dashboard__incident admin-dashboard__incident--${incident.type}`}>
+                <li key={incident._id} className={`admin-dashboard__incident admin-dashboard__incident--${incident.type}`}>
                   <span className="admin-dashboard__incident-type">{incident.type}</span>
                   <span className="admin-dashboard__incident-ip">IP: {incident.ip}</span>
                   <span className="admin-dashboard__incident-agent">{incident.userAgent}</span>
@@ -70,29 +70,35 @@ export default function AdminDashboard() {
                   <span className="admin-dashboard__incident-time">
                     {new Date(incident.createdAt).toLocaleString("en-GB", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
                   </span>
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
       </section>
 
       <section className="admin-dashboard__section stack-m">
         <h2>Admin pages</h2>
-        <div className="admin-dashboard__links">
-          <Link to="/admin/users" className="admin-dashboard__card">
-            <h3>User administration</h3>
-            <p>Search, ban, and promote users</p>
-          </Link>
-          <Link to="/admin/comments" className="admin-dashboard__card">
-            <h3>Comment administration</h3>
-            <p>View and delete comments</p>
-          </Link>
-          <Link to="/admin/tournament/create" className="admin-dashboard__card">
-            <h3>Create tournament</h3>
-            <p>Set up a new tournament</p>
-          </Link>
-        </div>
+        <ul className="admin-dashboard__links">
+          <li>
+            <Link to="/admin/users" className="admin-dashboard__card">
+              <h3>User administration</h3>
+              <p>Search, ban, and promote users</p>
+            </Link>
+          </li>
+          <li>
+            <Link to="/admin/comments" className="admin-dashboard__card">
+              <h3>Comment administration</h3>
+              <p>View and delete comments</p>
+            </Link>
+          </li>
+          <li>
+            <Link to="/admin/tournament/create" className="admin-dashboard__card">
+              <h3>Create tournament</h3>
+              <p>Set up a new tournament</p>
+            </Link>
+          </li>
+        </ul>
       </section>
     </div>
   );

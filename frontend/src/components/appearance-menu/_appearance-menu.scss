@@ -8,20 +8,15 @@
   &__toggle {
     padding: 0;
     border: none;
-    color: $color-text-dim;
-
-    &:hover { color: $color-yellow; }
   }
 
   &__menu {
     position: absolute;
-    top: calc(100% + 0.5rem);
+    top: calc(100% + #{$space-s});
     right: 0;
     z-index: 100;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    min-width: 240px;
+    min-inline-size: 240px;
+    padding: $space-m;
     border: 1px solid $color-border;
     border-radius: $radius;
     background-color: $color-inner;
@@ -31,7 +26,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem;
+    gap: $space-s;
   }
 
   &__label {
@@ -41,33 +36,31 @@
 
   &__options {
     display: flex;
-    gap: 0.4rem;
+    gap: $space-xs;
   }
 
   &__btn {
-    border: 1px solid $color-border;
-    border-radius: $radius;
-    color: $color-text-dim;
     background-color: $color-frame;
 
     &--active {
-      color: $color-yellow;
       border-color: $color-yellow;
+      color: $color-yellow;
     }
   }
 
   &__colors {
     display: flex;
-    gap: 0.4rem;
+    gap: $space-xs;
   }
 
   &__color {
-    width: 24px;
-    height: 24px;
-    border: 2px solid rgba(255, 255, 255, 0.18);
+    inline-size: 24px;
+    block-size: 24px;
+    border: 2px solid $color-border;
     border-radius: 50%;
 
-    &--active { border-color: $color-yellow; }
+    &:hover    { border-color: $color-yellow; }
+    &--active  { border-color: $color-yellow; }
   }
 
   &__slider {

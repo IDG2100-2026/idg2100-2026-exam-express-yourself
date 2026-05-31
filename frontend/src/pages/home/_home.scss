@@ -29,16 +29,11 @@
   &__activity-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem 2rem;
+    gap: $space-m $space-xl;
     list-style: none;
   }
 
-  &__see-all {
-    display: block;
-    color: $color-text-dim;
-
-    &:hover { color: $color-yellow; }
-  }
+  &__see-all { display: block; }
 
   &__status { color: $color-text-dim; }
   &__error  { color: $color-red; }
@@ -51,19 +46,19 @@
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
+    gap: $space-m;
     list-style: none;
+
+    > li {
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   &__card {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid $color-border;
+    display: block;
+    flex: 1;
     border-inline-start: 3px solid $color-border;
-    border-radius: $radius;
-    background-color: $color-inner;
-
-    &:hover { border-color: $color-yellow; }
   }
 
   &__card-player { font-weight: bold; }

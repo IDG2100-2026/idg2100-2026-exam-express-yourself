@@ -34,7 +34,7 @@ function Header() {
             <NavLink to="/" end className="header__nav-link">Home</NavLink>
             <NavLink to="/lobby" className="header__nav-link">Lobby</NavLink>
             <NavLink to="/tournaments" className="header__nav-link">Tournaments</NavLink>
-            <NavLink to="/about-game" className="header__nav-link">About the Game</NavLink>
+            <NavLink to="/about-game" className="header__nav-link">About the game</NavLink>
             {user?.role === "admin" && (
               <NavLink to="/admin" className="header__nav-link">Dashboard</NavLink>
             )}
@@ -81,7 +81,7 @@ function Header() {
             <NavLink to="/" end className="header__nav-link">Home</NavLink>
             <NavLink to="/lobby" className="header__nav-link">Lobby</NavLink>
             <NavLink to="/tournaments" className="header__nav-link">Tournaments</NavLink>
-            <NavLink to="/about-game" className="header__nav-link">About the Game</NavLink>
+            <NavLink to="/about-game" className="header__nav-link">About the game</NavLink>
             {user?.role === "admin" && (
               <NavLink to="/admin" className="header__nav-link">Dashboard</NavLink>
             )}

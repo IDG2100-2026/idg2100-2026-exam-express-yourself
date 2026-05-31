@@ -24,7 +24,7 @@ export default function HeaderAdmin() {
             <NavLink to="/admin" end className="admin-header__link">Dashboard</NavLink>
             <NavLink to="/admin/users" className="admin-header__link">Users</NavLink>
             <NavLink to="/admin/comments" className="admin-header__link">Comments</NavLink>
-            <NavLink to="/admin/tournament/create" className="admin-header__link">Create Tournament</NavLink>
+            <NavLink to="/admin/tournament/create" className="admin-header__link">Create tournament</NavLink>
           </nav>
         )}
 
@@ -44,7 +44,7 @@ export default function HeaderAdmin() {
           <NavLink to="/admin" end className="admin-header__link">Dashboard</NavLink>
           <NavLink to="/admin/users" className="admin-header__link">Users</NavLink>
           <NavLink to="/admin/comments" className="admin-header__link">Comments</NavLink>
-          <NavLink to="/admin/tournament/create" className="admin-header__link">Create Tournament</NavLink>
+          <NavLink to="/admin/tournament/create" className="admin-header__link">Create tournament</NavLink>
         </nav>
       )}
     </header>

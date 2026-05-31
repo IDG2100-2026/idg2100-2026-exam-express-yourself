@@ -204,7 +204,7 @@ export default function Profile() {
             />
           </div>
           <div className="profile__field">
-            <label>About Me</label>
+            <label>About me</label>
             <textarea
               name="bio"
               value={formData.bio}
@@ -214,7 +214,7 @@ export default function Profile() {
             />
           </div>
           <div className="profile__field">
-            <label htmlFor="password">Old Password</label>
+            <label htmlFor="password">Old password</label>
             <input
               type="password"
               name="password"
@@ -225,7 +225,7 @@ export default function Profile() {
             />
           </div>
           <div className="profile__field">
-            <label htmlFor="newPassword">New Password</label>
+            <label htmlFor="newPassword">New password</label>
             <input
               type="password"
               name="newPassword"
@@ -238,7 +238,7 @@ export default function Profile() {
           {saveSuccess && <p className="profile__success">{saveSuccess}</p>}
           <div className="profile__save">
             <button type="submit" className="btn btn--primary">
-              Save Changes
+              Save changes
             </button>
             <button
               onClick={handleCloseEditField}
@@ -274,7 +274,7 @@ export default function Profile() {
           </div>
           <div className="profile__stat">
             <span className="profile__stat-value">{user.totalGames}</span>
-            <span className="profile__stat-label">Total Games</span>
+            <span className="profile__stat-label">Total games</span>
           </div>
         </div>
         <div className="profile__stats-row">
