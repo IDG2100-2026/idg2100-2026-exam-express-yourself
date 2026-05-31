@@ -44,121 +44,7 @@ export default function Game() {
   const [input, setInput] = useState("");
   const socketRef = useRef(null);
 
-  // function send(msg) {
-  //   if (wsRef.current?.readyState === WebSocket.OPEN) {
-  //     wsRef.current.send(JSON.stringify(msg));
-  //   }
-  // }
 
-  // useEffect(() => {
-  //   if (!match || match.status !== "in-progress" || !userId) return;
-
-  //   const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
-  //   const ws = new WebSocket(`${proto}//${window.location.hostname}:3000`);
-  //   wsRef.current = ws;
-
-  //   ws.onopen = () => {
-  //     console.log("[WS] connected, userId:", userId, "myKey:", myKey);
-  //     ws.send(JSON.stringify({ type: "join", matchId: id, userId }));
-  //   };
-
-  //   ws.onmessage = (e) => {
-  //     try {
-  //       const msg = JSON.parse(e.data);
-  //       console.log("[WS] received:", msg);
-  //       handleMsg(msg);
-  //     } catch { /* ignore malformed messages */ }
-  //   };
-
-  //   ws.onerror = (e) => console.error("[WS] error", e);
-
-  //   return () => {
-  //     ws.close();
-  //     wsRef.current = null;
-  //   };
-  // }, [match?.status, id, userId]);
-
-  // function handleMsg(msg) {
-  //   const board = boardRef.current;
-
-  //   switch (msg.type) {
-  //     case "turn:changed": {
-  //       const turnKey = msg.currentPlayerIndex === 0 ? "player1" : "player2";
-  //       setPhase(msg.phase || "rolling");
-  //       if (board) {
-  //         board.setTurn(turnKey, 3);
-  //         if (msg.phase === "rolling" && turnKey === myKey) {
-  //           board.autoRoll();
-  //         }
-  //       }
-  //       break;
-  //     }
-
-  //     case "round:started":
-  //       setPhase("rolling");
-  //       setPot(0);
-  //       setHighestBet(0);
-  //       break;
-
-  //     case "bet:placed":
-  //       setPot(msg.pot);
-  //       setHighestBet(msg.highestBet);
-  //       break;
-
-  //     case "bet:matched":
-  //       setPot(msg.pot);
-  //       break;
-
-  //     case "game:ended":
-  //       setGameEnded({ winnerId: msg.winnerId, players: msg.players });
-  //       break;
-
-  //     case "error":
-  //       console.error("WebSocket error:", msg.message);
-  //       break;
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   const board = boardRef.current;
-  //   if (!board) return;
-
-  //   const onRoll = (e) => {
-  //     if (!isPlayer) return;
-  //     if (e.detail?.player !== myKey) return;
-  //     send({ type: "roll", matchId: id, userId });
-  //   };
-
-  //   const onHeld = () => {
-  //     if (!isPlayer) return;
-  //     const myDice = myKey === "player1" ? board._diceP1 : board._diceP2;
-  //     const held = myDice.map((d) => d.getAttribute("held") === "true");
-  //     send({ type: "hold", matchId: id, userId, held });
-  //   };
-
-  //   const onEndTurn = () => {
-  //     if (!isPlayer) return;
-  //     send({ type: "endTurn", matchId: id, userId });
-  //   };
-
-  //   const onMatchOver = () => {
-  //     navigate("/lobby");
-  //   };
-
-  //   board.addEventListener("dp:roll-executed", onRoll);
-  //   board.addEventListener("dp:die-held-changed", onHeld);
-  //   board.addEventListener("board:endTurn", onEndTurn);
-  //   board.addEventListener("board:matchOver", onMatchOver);
-
-  //   return () => {
-  //     board.removeEventListener("dp:roll-executed", onRoll);
-  //     board.removeEventListener("dp:die-held-changed", onHeld);
-  //     board.removeEventListener("board:endTurn", onEndTurn);
-  //     board.removeEventListener("board:matchOver", onMatchOver);
-  //   };
-  // }, [match?.status, isPlayer, myKey, id, userId]);
-
-  //TODO: Noe vits å ha disse 100 linjene med kode når de ikke gjør noe?
   async function handleLeave() {
     try { await leaveMatch(id); } catch { /* ignore */ }
     navigate("/lobby");
@@ -272,52 +158,6 @@ export default function Game() {
                 }}
               />
 
-              {/* Betting controls, only shown to players during betting phase */}
-              {/* {phase === "betting" && isPlayer && ( TODO: Needed? We dont have betting!
-                <div className="game__betting">
-                  <p className="game__pot">
-                    Pot: {pot} pts, Highest bet: {highestBet} pts
-                  </p>
-                  <div className="game__bet-controls">
-                    <input
-                      type="number"
-                      className="game__bet-input"
-                      value={betAmount}
-                      min={1}
-                      onChange={(e) => setBetAmount(Number(e.target.value))}
-                    />
-                    <button
-                      className="btn btn--primary"
-                      onClick={() =>
-                        send({ type: "bet", matchId: id, userId, amount: betAmount })
-                      }
-                    >
-                      Bet
-                    </button>
-                    <button
-                      className="btn btn--primary"
-                      onClick={() =>
-                        send({ type: "raise", matchId: id, userId, amount: betAmount })
-                      }
-                    >
-                      Raise
-                    </button>
-                    <button
-                      className="btn btn--primary"
-                      onClick={() => send({ type: "match", matchId: id, userId })}
-                    >
-                      Match
-                    </button>
-                    <button
-                      className="btn btn--red"
-                      onClick={() => send({ type: "fold", matchId: id, userId })}
-                    >
-                      Fold
-                    </button>
-                  </div>
-                </div>
-              )} */}
-
               {/* Game-over overlay */}
               {gameEnded && (
                 <div className="game__ended">
@@ -333,7 +173,7 @@ export default function Game() {
                       )
                       ?.userId?.username || "Unknown"}
                   </p>
-                  <button className="btn btn--primary" onClick={() => { navigate("/"); }}>Back to lobby</button>
+                  <button className="btn btn--primary" onClick={() => { navigate("/"); }}>Back to lobby</button> {/*TODO: Need ficx */}
                 </div>
               )}
             </div>
@@ -347,9 +187,9 @@ export default function Game() {
             {messages.length === 0 && (
               <p className="game__no-comments">No comments yet.</p>
             )}
-            {messages.map((message, index) => {
+            {messages.map((message) => {
               return (
-                <div key={index} className="game__comment">
+                <div key={message._id} className="game__comment">
                   <div className="game__comment-header">
                     <Avatar
                       imageUrl={message.authorId?.profileImageUrl}

@@ -13,7 +13,7 @@ const resetPasswordSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  expireAt: {
+  expiresAt: {
     type: Date,
     default: Date.now,
     expires: VERIFICATION_TOKEN_TTL,

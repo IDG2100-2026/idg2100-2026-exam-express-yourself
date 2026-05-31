@@ -1,6 +1,5 @@
 import { WebSocketServer } from "ws"; // import the WebSocket server class
 import { getAllComments, createComment } from "../services/comment-service.js";
-import { handleGameMessage } from "./game-handler.js";
 
 let wss;
 
@@ -74,9 +73,6 @@ export const setupWebSocket = (httpServer) => {
             }),
           );
         }
-      } else {
-        // Handle as a game message
-        await handleGameMessage(socket, data);
       }
     });
 
