@@ -23,7 +23,6 @@ export const createSession = async (user, ip, agent) => {
   return session.refreshToken; // return sessions refresh token
 };
 
-
 export const registerUser = async (userData) => {
   const newUser = await new User({
     // creates a new User document
@@ -47,35 +46,45 @@ export const registerUser = async (userData) => {
   return newUser;
 };
 
-
 export const resendUserVerification = async (email) => {
-  const user = await User.findOne({ email });
-  if (!user) return;
+  const user = await User.findOne({ email }); // finds a user by their email
+  if (!user) return; // if no user, don't show that in case of attackers
+  if (user.isVerified) { // if user is already verified, show then error msg
+    throw new BusinessLogicError(
+      "You are already verified! Go to login to log in to your account!",
+    );
+  }
 
-  const findVerificationToken = await UserVerification.findOne({
+  const findVerificationToken = await UserVerification.findOne({ // checks if they already have got an token 
     userId: user._id,
   });
 
   if (findVerificationToken) {
-    await findVerificationToken.deleteOne();
+    await findVerificationToken.deleteOne(); // if token found, delete it!
   }
 
-  const newToken = await UserVerification.create({
+  const newToken = await UserVerification.create({ // create a new token to the user
     userId: user._id,
   });
-  await sendVerificationMail(user.email, newToken.token);
+  await sendVerificationMail(user.email, newToken.token); // send the user their new token
 };
 
 export const authenticateUser = async (email, password) => {
   const user = await User.findOne({ email }).select("+password"); // checks if it finds a user with that email
-  if (!user) throw new BusinessLogicError("Invalid credentials", 401); // If not, throws a global error that is picked up in next()
-  if (!checkPassword(password, user.password))
-    throw new BusinessLogicError("Invalid credentials", 401); // global error handler
+  if (!user) throw new BusinessLogicError("Invalid credentials", 401);
 
-  if (user.isBanned) throw new BusinessLogicError("Account is banned, contact pokerdados2026@gmail.com", 403); // global error handler
+  if (user.isBanned)
+    throw new BusinessLogicError(
+      "Account is banned, contact pokerdados2026@gmail.com",
+      403,
+    );
+
+  if (!checkPassword(password, user.password))
+    throw new BusinessLogicError("Invalid credentials", 401);
+
   if (!user.isVerified)
-    throw new BusinessLogicError("Please verify your email before login", 400); // checking if user is verified
-  return user; // returns the authenticated user to controller
+    throw new BusinessLogicError("Please verify your email before login", 400);
+  return user;
 };
 
 export const verifyEmailService = async (code) => {
@@ -100,7 +109,6 @@ export const resetPasswordRequest = async (email) => {
   await sendPasswordResetMail(user.email, resetToken.token); // sends the email with reset link
 };
 
-
 export const resetPassword = async (code, newPassword) => {
   if (!code || !newPassword)
     throw new BusinessLogicError("code and password are required", 400);
@@ -118,8 +126,11 @@ export const resetPassword = async (code, newPassword) => {
   await Session.deleteMany({ userId: user._id }); // invalidate all sessions after password reset e.g, log out of devices that has a session for this user
 };
 
-
-export const createAccessTokenService = async (refreshToken, requestIp, requestUserAgent) => {
+export const createAccessTokenService = async (
+  refreshToken,
+  requestIp,
+  requestUserAgent,
+) => {
   if (!refreshToken)
     throw new BusinessLogicError("No refresh token provided", 401); // cookie expired or never logged in
 
@@ -140,7 +151,7 @@ export const createAccessTokenService = async (refreshToken, requestIp, requestU
 
   const user = await User.findById(session.userId); // get the user linked to this session
   if (!user) throw new BusinessLogicError("User not found", 404); // did not find the user
-  if(user.isBanned){
+  if (user.isBanned) {
     await session.deleteOne(); // delete the session if a user is banned
     throw new BusinessLogicError("User is banned", 400);
   }
@@ -149,7 +160,6 @@ export const createAccessTokenService = async (refreshToken, requestIp, requestU
 
   return { accessToken, user };
 };
-
 
 export const logoutUserService = async (refreshToken) => {
   if (!refreshToken)

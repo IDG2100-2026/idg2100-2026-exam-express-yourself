@@ -70,6 +70,9 @@ export async function makeAdmin(req, res, next) {
 }
 
 export async function unMakeAdmin(req, res, next) {
+  if (req.params.id === req.userId) {
+    throw new BusinessLogicError("You cannot remove your own admin role", 403);
+  }
   const user = await unMakeAdminService(req.params.id);
   res
     .status(200)

@@ -55,6 +55,7 @@ authRouter.post(
 ); // changes the password
 
 authRouter.get("/verify-email", apiRateLimiter, verifyEmailController); // sends email to verify account!
+
 authRouter.post(
   "/resend-verify-email",
   resendVerificationEmail,

@@ -11,11 +11,10 @@ export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
   const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [disabledBtn] = useState(true);
 
   const fetchUsers = useCallback(async (searchTerm, pageNum, limitUsers) => {
     setIsLoading(true);
