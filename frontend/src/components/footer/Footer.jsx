@@ -5,13 +5,19 @@ function Footer() {
     <footer className="footer">
       <div className="footer__inner">
         <div className="footer__brand">
-          <span className="footer__name">🎲 PokerDados</span>
-          <span className="footer__copy">© 2020-2026</span>
+          <span className="footer__name">PokerDados</span>
+          <span className="footer__copy">© 2026</span>
         </div>
         <nav className="footer__links">
-          <NavLink to="/about-us" className="footer__link">About us</NavLink>
-          <NavLink to="/privacy" className="footer__link">Privacy policy</NavLink>
-          <NavLink to="/terms" className="footer__link">Terms & Conditions</NavLink>
+          <NavLink to="/about-us" className="footer__link">
+            About us
+          </NavLink>
+          <NavLink to="/privacy" className="footer__link">
+            Privacy policy
+          </NavLink>
+          <NavLink to="/terms" className="footer__link">
+            Terms & Conditions
+          </NavLink>
         </nav>
       </div>
     </footer>
