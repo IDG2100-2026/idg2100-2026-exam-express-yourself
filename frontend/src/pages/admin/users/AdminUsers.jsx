@@ -45,11 +45,11 @@ export default function AdminUsers() {
     if (!confirm("Ban this user?")) return;
     try {
       await banUser(id);
-      setUsers((prev) => {
+      setUsers((prev) =>
         prev.map((user) =>
           user._id === id ? { ...user, isBanned: true } : user,
-        );
-      });
+        ),
+      );
     } catch (err) {
       alert(err.message);
     }
@@ -73,11 +73,11 @@ export default function AdminUsers() {
     if (!confirm("Promote this user to admin?")) return;
     try {
       await makeAdmin(id);
-      setUsers((prev) => {
+      setUsers((prev) =>
         prev.map((user) =>
           user._id === id ? { ...user, role: "admin" } : user,
-        );
-      });
+        ),
+      );
     } catch (err) {
       alert(err.message);
     }
@@ -86,11 +86,11 @@ export default function AdminUsers() {
     if (!confirm("Unmake this user as admin")) return;
     try {
       await unMakeAdmin(id);
-      setUsers((prev) => {
+      setUsers((prev) =>
         prev.map((user) =>
           user._id === id ? { ...user, role: "user" } : user,
-        );
-      });
+        ),
+      );
     } catch (err) {
       alert(err.message);
     }
