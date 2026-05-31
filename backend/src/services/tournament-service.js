@@ -563,3 +563,19 @@ export async function cancelTournament(tournamentId) {
   const savedTournament = await tournament.save();
   return savedTournament;
 }
+
+export const createTournamentInFuture = (value) => {
+  if(new Date(value) <= new Date()){
+    throw new BusinessLogicError("Tournament must be in the future", 400);
+  }
+  return true;
+}
+export const createTournamentInAdvanced = (value) => {
+  const createDay = new Date();
+  const oneMonth = new Date(value);
+
+const timeDifference = oneMonth.getTime() - createDay.getTime();
+const dayDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
+return dayDifference >= 0 && dayDifference <= 30;
+}

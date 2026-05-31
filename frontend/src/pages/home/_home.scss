@@ -10,11 +10,15 @@
     border-radius: $radius-large;
     text-align: center;
     background-color: $color-inner;
+    padding: 30px;
+  }
+  &__cta{
+    font-size: 1rem;
+    margin-inline-start:1rem;
   }
 
   &__description {
-    max-width: 500px;
-    line-height: 1.7;
+    max-width: 60ch;
   }
 
   &__cta {
@@ -76,5 +80,11 @@
     &--in-progress { color: $color-green; }
     &--completed   { color: $color-text-dim; }
     &--waiting     { color: $color-yellow; }
+  }
+}
+
+@media (max-width: 330px){
+  .home__cta{
+    font-size: .7rem;
   }
 }

@@ -10,7 +10,7 @@ import {
   VALID_TIME_CONTROLS,
   VALID_BUY_INS,
 } from "../config/constants.js";
-
+import { createTournamentInFuture, createTournamentInAdvanced } from '../services/tournament-service.js';
 
 // Validates optional query params for browsing tournaments (GET /api/tournaments)
 export function validateGetTournaments() {
@@ -64,12 +64,12 @@ export function validateCreateTournament() {
       .withMessage("Start date is required.")
       .isISO8601()
       .withMessage("Start date must be a valid date.")
-      .custom(function(value) {
-        if (new Date(value) <= new Date()) {
-          throw new Error("Start date must be in the future.");
-        }
-        return true;
-      }),
+      .bail()
+      .custom(createTournamentInFuture)
+      .withMessage("Tournament's cannot be created with a start date back in time!")
+      .bail()
+      .custom(createTournamentInAdvanced)
+      .withMessage("Tournament's cannot be created longer than one month in advance"),
     body("numberOfRounds")
       .optional()
       .isInt({ min: 1 })

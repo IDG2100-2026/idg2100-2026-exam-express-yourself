@@ -1,5 +1,5 @@
 // Catches all errors passed with next(err), (Express 5 does it automatically, no need ty try catch errors ourselves with try/catch in controllers)
-const errorHandler = (err, req, res, _next) => {
+const errorHandler = (err, req, res, next) => {
   console.error(err);
 
   // Known operational error thrown by services

@@ -6,7 +6,6 @@ import AppearanceMenu from "../appearance-menu/AppearanceMenu.jsx";
 import Avatar from "../avatar/Avatar.jsx";
 import BurgerIcon from "../../assets/icons/BurgerIcon.jsx";
 import CloseIcon from "../../assets/icons/CloseIcon.jsx";
-
 function Header() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -27,7 +26,7 @@ function Header() {
   return (
     <header className="header">
       <div className="header__inner">
-        <Link to="/" className="header__logo">🎲 PokerDados</Link>
+        <Link to="/" className="header__logo">PokerDados</Link>
 
         {!isMobile && (
           <nav className="header__nav">

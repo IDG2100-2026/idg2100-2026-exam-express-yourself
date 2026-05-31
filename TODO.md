@@ -56,8 +56,3 @@ MATCHMAKING
   [ ] Room-based matchmaking (replace queue)
   [ ] Auto-start when required players joined
   [*] Anonymous users — spectate only, redirect to login on join (redirect done, spectate not implemented)
-
-
-TODO: 
-  need to implement a un-ban user
-  maybe have a superAdmin? So if we make another user a admin, that user cannot overthrone the real admin

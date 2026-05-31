@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, Link } from "react-router";
 import { useMatch } from "../../hooks/useMatch.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
@@ -126,11 +126,13 @@ export default function Game() {
 
           {/* Player headers */}
           <div className="game__players">
-            {playerSlots.map((player, slotIndex) => {
+            {playerSlots.map((player) => {
               return (
-                <div key={slotIndex} className="game__player">
+                <div key={player._id} className="game__player">
                   <Avatar imageUrl={player?.profileImageUrl} username={player?.username} size={48} />
-                  <span className="game__player-name">{player ? player.username : "Waiting..."}</span>
+                  <span className="game__player-name">
+                    {player ? <Link to={`/profile/${player._id}`}>{player.username}</Link> : "Waiting..."}
+                  </span>
                   {player && (
                     <span className="game__player-elo">
                       Elo: {player.eloRating?.[`tc${tc}`] ? player.eloRating[`tc${tc}`] : "?"}
