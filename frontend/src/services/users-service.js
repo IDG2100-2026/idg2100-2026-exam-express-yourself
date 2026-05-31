@@ -14,7 +14,7 @@ export async function updateUser(id, updates) {
   });
 }
 
-export async function getAllUsers(search = "", page = 1, limit = 20) {
+export async function getAllUsers(search = "", page = 1, limit = 10) {
   let query = `?page=${page}&limit=${limit}`;
   if (search) query += `&search=${encodeURIComponent(search)}`;
   return await apiFetch(`/users${query}`, { method: "GET" });
@@ -24,8 +24,20 @@ export async function banUser(id) {
   return await apiFetch(`/users/${id}/ban`, { method: "POST" });
 }
 
+export async function unBannUser(id) {
+  return await apiFetch(`/users/${id}/un-ban`, {
+    method: "POST",
+  });
+}
+
 export async function makeAdmin(id) {
   return await apiFetch(`/users/${id}/make-admin`, { method: "POST" });
+}
+
+export async function unMakeAdmin(id) {
+  return await apiFetch(`/users/${id}/unmake-admin`, {
+    method: "POST",
+  });
 }
 
 export async function uploadAvatar(id, file) {

@@ -209,6 +209,14 @@ export async function banUser(userId) {
   return savedUser;
 }
 
+export async function unBannUser(userId) {
+  const user = await User.findById(userId);
+  if (!user) throw new BusinessLogicError("User not found", 404);
+  user.isBanned = false;
+  const savedUser = await user.save();
+  return savedUser;
+}
+
 // Give a user the admin role
 export async function makeAdmin(userId) {
   const user = await User.findById(userId);
@@ -216,6 +224,15 @@ export async function makeAdmin(userId) {
     throw new BusinessLogicError("User not found", 404);
   }
   user.role = "admin";
+  const savedUser = await user.save();
+  return savedUser;
+}
+
+export async function unMakeAdmin(userId) {
+  const user = await User.findById(userId);
+  if (!user) throw new BusinessLogicError("User not found", 404);
+
+  user.role = "user";
   const savedUser = await user.save();
   return savedUser;
 }

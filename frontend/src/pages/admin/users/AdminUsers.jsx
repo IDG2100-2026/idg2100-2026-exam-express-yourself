@@ -1,24 +1,30 @@
 import { useState, useEffect, useCallback } from "react";
-import { getAllUsers, banUser, makeAdmin } from "../../../services/users-service.js";
-
-const LIMIT = 20;
+import {
+  getAllUsers,
+  banUser,
+  makeAdmin,
+  unBannUser,
+  unMakeAdmin,
+} from "../../../services/users-service.js";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [disabledBtn] = useState(true);
 
-  const fetchUsers = useCallback(async (searchTerm, pageNum) => {
+  const fetchUsers = useCallback(async (searchTerm, pageNum, limitUsers) => {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await getAllUsers(searchTerm, pageNum, LIMIT);
+      const data = await getAllUsers(searchTerm, pageNum, limitUsers);
       const results = data.results ? data.results : [];
       setUsers(results);
-      setHasMore(results.length === LIMIT);
+      setHasMore(results.length === limitUsers);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -27,8 +33,8 @@ export default function AdminUsers() {
   }, []);
 
   useEffect(() => {
-    fetchUsers(search, page);
-  }, [fetchUsers, search, page]);
+    fetchUsers(search, page, limit);
+  }, [fetchUsers, search, page, limit]);
 
   function handleSearch(e) {
     setSearch(e.target.value);
@@ -40,13 +46,24 @@ export default function AdminUsers() {
     try {
       await banUser(id);
       setUsers((prev) => {
-        return prev.map((user) => {
-          if (user._id === id) {
-            return { ...user, isBanned: true };
-          }
-          return user;
-        });
+        prev.map((user) =>
+          user._id === id ? { ...user, isBanned: true } : user,
+        );
       });
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
+  async function handleUnBan(id) {
+    if (!confirm("Un-Ban this user?")) return;
+    try {
+      await unBannUser(id);
+      setUsers((prev) =>
+        prev.map((user) =>
+          user._id === id ? { ...user, isBanned: false } : user,
+        ),
+      );
     } catch (err) {
       alert(err.message);
     }
@@ -57,12 +74,22 @@ export default function AdminUsers() {
     try {
       await makeAdmin(id);
       setUsers((prev) => {
-        return prev.map((user) => {
-          if (user._id === id) {
-            return { ...user, role: "admin" };
-          }
-          return user;
-        });
+        prev.map((user) =>
+          user._id === id ? { ...user, role: "admin" } : user,
+        );
+      });
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+  async function handleUnmakeAdmin(id) {
+    if (!confirm("Unmake this user as admin")) return;
+    try {
+      await unMakeAdmin(id);
+      setUsers((prev) => {
+        prev.map((user) =>
+          user._id === id ? { ...user, role: "user" } : user,
+        );
       });
     } catch (err) {
       alert(err.message);
@@ -99,44 +126,91 @@ export default function AdminUsers() {
           </thead>
           <tbody>
             {isLoading ? (
-              <tr><td colSpan={6} className="admin-users__cell--center">Loading...</td></tr>
+              <tr>
+                <td colSpan={6} className="admin-users__cell--center">
+                  Loading...
+                </td>
+              </tr>
             ) : users.length === 0 ? (
-              <tr><td colSpan={6} className="admin-users__cell--center">No users found.</td></tr>
+              <tr>
+                <td colSpan={6} className="admin-users__cell--center">
+                  No users found.
+                </td>
+              </tr>
             ) : (
               users.map((user) => {
                 return (
-                  <tr key={user._id} className={user.isBanned ? "admin-users__row--banned" : ""}>
+                  <tr
+                    key={user._id}
+                    className={user.isBanned ? "admin-users__row--banned" : ""}
+                  >
                     <td>{user.username}</td>
                     <td>{user.email}</td>
                     <td>
-                      <span className={`admin-users__badge admin-users__badge--${user.role}`}>
+                      <span
+                        className={`admin-users__badge admin-users__badge--${user.role}`}
+                      >
                         {user.role}
                       </span>
                     </td>
                     <td>
-                      {user.isBanned
-                        ? <span className="admin-users__badge admin-users__badge--banned">Banned</span>
-                        : <span className="admin-users__badge admin-users__badge--active">Active</span>
-                      }
+                      {user.isBanned ? (
+                        <span className="admin-users__badge admin-users__badge--banned">
+                          Banned
+                        </span>
+                      ) : (
+                        <span className="admin-users__badge admin-users__badge--active">
+                          Active
+                        </span>
+                      )}
                     </td>
-                    <td>{new Date(user.createdAt).toLocaleDateString("en-GB")}</td>
-                    <td className="admin-users__actions">
-                      {!user.isBanned && (
-                        <button
-                          className="btn btn--red"
-                          onClick={() => { handleBan(user._id); }}
-                        >
-                          Ban
-                        </button>
-                      )}
-                      {user.role !== "admin" && (
-                        <button
-                          className="btn btn--primary"
-                          onClick={() => { handleMakeAdmin(user._id); }}
-                        >
-                          Make admin
-                        </button>
-                      )}
+                    <td>
+                      {new Date(user.createdAt).toLocaleDateString("en-GB")}
+                    </td>
+                    <td>
+                      <div className="admin-users__actions">
+                        {user.role !== "admin" &&
+                          (!user.isBanned ? (
+                            <button
+                              className="btn btn--red"
+                              onClick={() => {
+                                handleBan(user._id);
+                              }}
+                            >
+                              Ban
+                            </button>
+                          ) : (
+                            <button
+                              className="btn btn--red"
+                              onClick={() => {
+                                handleUnBan(user._id);
+                              }}
+                            >
+                              Un-ban
+                            </button>
+                          ))}
+                        {user.username !== "admin" &&
+                          (user.role !== "admin" ? (
+                            <button
+                              className="btn btn--primary"
+                              disabled={user.isBanned}
+                              onClick={() => {
+                                handleMakeAdmin(user._id);
+                              }}
+                            >
+                              Make admin
+                            </button>
+                          ) : (
+                            <button
+                              className="btn btn--primary"
+                              onClick={() => {
+                                handleUnmakeAdmin(user._id);
+                              }}
+                            >
+                              Un-make admin
+                            </button>
+                          ))}
+                      </div>
                     </td>
                   </tr>
                 );
@@ -150,7 +224,11 @@ export default function AdminUsers() {
         <button
           className="btn btn--secondary"
           disabled={page === 1}
-          onClick={() => { setPage((prevPage) => { return prevPage - 1; }); }}
+          onClick={() => {
+            setPage((prevPage) => {
+              return prevPage - 1;
+            });
+          }}
         >
           Previous
         </button>
@@ -158,7 +236,11 @@ export default function AdminUsers() {
         <button
           className="btn btn--secondary"
           disabled={!hasMore}
-          onClick={() => { setPage((prevPage) => { return prevPage + 1; }); }}
+          onClick={() => {
+            setPage((prevPage) => {
+              return prevPage + 1;
+            });
+          }}
         >
           Next
         </button>
