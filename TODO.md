@@ -56,8 +56,3 @@ MATCHMAKING
   [ ] Room-based matchmaking (replace queue)
   [ ] Auto-start when required players joined
   [*] Anonymous users — spectate only, redirect to login on join (redirect done, spectate not implemented)
-
-
-TODO: 
-  Cannot create tournamnets longer chan 1 month in advance
-  Cannot create tournaments backwards in time

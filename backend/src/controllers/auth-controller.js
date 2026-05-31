@@ -43,7 +43,7 @@ export const resendVerifyEmailController = async (req, res, next) => {
 };
 
 export const forgotPasswordController = async (req, res, next) => {
-  const { email } = req.body;
+  const { email } = matchedData(req);
   await resetPasswordRequest(email);
   res.json({
     message: "If the email exists, a password reset link has been sent",
