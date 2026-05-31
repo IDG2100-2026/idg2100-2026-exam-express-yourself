@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAppearance } from "../../hooks/useAppearance.js";
+import GearIcon from "../../assets/icons/GearIcon.jsx";
 
 const BOARD_COLORS = [
   { label: "Navy", value: "#1c2130" },
@@ -22,8 +23,8 @@ function AppearanceMenu() {
 
   return (
     <div className="appearance">
-      <button className="appearance__toggle" onClick={() => setOpen(!open)}>
-        ⚙ Appearance
+      <button className="appearance__toggle btn btn--secondary" onClick={() => setOpen(!open)}>
+        <GearIcon size={24} />
       </button>
 
       {open && (

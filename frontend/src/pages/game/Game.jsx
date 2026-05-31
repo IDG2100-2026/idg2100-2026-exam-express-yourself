@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 import { useMatch } from "../../hooks/useMatch.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { leaveMatch } from "../../services/matches-service.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
-import "./game.scss";
 
 // Register the custom elements as side effects
 import "../../components/web-components/dice-poker-die.js";
@@ -30,11 +29,13 @@ export default function Game() {
 
   const userId = user?._id || user?.userId;
 
-  const myIndex = match?.players?.findIndex(
-    (p) => (p.userId?._id || p.userId) === userId
-  ) ?? -1;
+  const myIndex = match?.players?.findIndex((player) => {
+    const playerId = player.userId?._id ? player.userId._id : player.userId;
+    return playerId === userId;
+  }) ?? -1;
   const isPlayer = myIndex !== -1;
-  const myKey = myIndex === 0 ? "player1" : "player2";
+  let myKey = "player2";
+  if (myIndex === 0) { myKey = "player1"; }
 
   // Comment WebSocket state
   const targetType = "Match";
@@ -157,7 +158,7 @@ export default function Game() {
   //   };
   // }, [match?.status, isPlayer, myKey, id, userId]);
 
-  //TODO: Noe vits å ha disse 100 linjene med kode når de ikke gjør noe? 
+  //TODO: Noe vits å ha disse 100 linjene med kode når de ikke gjør noe?
   async function handleLeave() {
     try { await leaveMatch(id); } catch { /* ignore */ }
     navigate("/lobby");
@@ -176,7 +177,7 @@ export default function Game() {
       if (data.type === "history") {
         setMessages(data.messages); // load previous comments from DB
       } else if (data.type === "new_message") {
-        setMessages((prev) => [...prev, data.message]); // append new comments into the message array
+        setMessages((prev) => { return [...prev, data.message]; }); // append new comments into the message array
       } else if (data.type === "error") {
         console.error("Server error:", data.message); // handle errors
       }
@@ -189,7 +190,7 @@ export default function Game() {
       console.log("Websocket disconnected"); // gives a msg to the clients browser that they are disconnected
     };
 
-    return () => newSocket.close(); // clean up on unmount. if not done, the connection would still be live after moving away from the page
+    return () => { newSocket.close(); }; // clean up on unmount. if not done, the connection would still be live after moving away from the page
   }, [targetType, targetId]); // re-render if any of these change!
 
   const sendMessage = () => {
@@ -207,56 +208,62 @@ export default function Game() {
   if (error) return <p className="game__error">Error: {error}</p>;
   if (!match) return <p className="game__error">Match not found</p>;
 
-  const p1 = match.players?.[0]?.userId;
-  const p2 = match.players?.[1]?.userId;
-  const tc = match.category?.timeControl || 10;
+  const tc = match.category?.timeControl ? match.category.timeControl : 10;
+  const maxSlots = match.maxPlayers ? match.maxPlayers : 2;
+  const playerSlots = [];
+  for (let i = 0; i < maxSlots; i++) {
+    const player = match.players?.[i]?.userId;
+    if (player) {
+      playerSlots.push(player);
+    } else {
+      playerSlots.push(null);
+    }
+  }
 
   return (
     <div className="game">
       <div className="game__layout">
         <div className="game__board">
 
-          {/* ── Waiting for opponent ── */}
+          {/* Waiting for opponent */}
           {match.status === "waiting" && (
             <div className="game__waiting">
               <p>Waiting for another player to join...</p>
               <small>Refreshes every 15 seconds</small>
               {isPlayer && (
-                <button className="game__leave-btn" onClick={handleLeave}>
+                <button className="btn btn--red" onClick={handleLeave}>
                   Leave game
                 </button>
               )}
             </div>
           )}
 
-          {/* ── Player headers ── */}
+          {/* Player headers */}
           <div className="game__players">
-            <div className="game__player">
-              <Avatar imageUrl={p1?.profileImageUrl} size={56} />
-              <span className="game__player-name">{p1?.username || "Unknown"}</span>
-              <span className="game__player-elo">
-                Elo: {p1?.eloRating?.[`tc${tc}`] || "?"}
-              </span>
-            </div>
-            <span className="game__vs">vs</span>
-            <div className="game__player">
-              <Avatar imageUrl={p2?.profileImageUrl} size={56} />
-              <span className="game__player-name">{p2?.username || "Waiting..."}</span>
-              <span className="game__player-elo">
-                {p2 ? `Elo: ${p2?.eloRating?.[`tc${tc}`] || "?"}` : ""}
-              </span>
-            </div>
+            {playerSlots.map((player, slotIndex) => {
+              return (
+                <div key={slotIndex} className="game__player">
+                  <Avatar imageUrl={player?.profileImageUrl} username={player?.username} size={48} />
+                  <span className="game__player-name">{player ? player.username : "Waiting..."}</span>
+                  {player && (
+                    <span className="game__player-elo">
+                      Elo: {player.eloRating?.[`tc${tc}`] ? player.eloRating[`tc${tc}`] : "?"}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
-          {/* ── Active game ── */}
+          {/* Active game */}
           {match.status === "in-progress" && (
             <div className="game__active">
 
               {/* The dice board web component */}
               <dice-poker-board
                 ref={boardRef}
-                player1={p1?.username || "Player 1"}
-                player2={p2?.username || "Player 2"}
+                player1={playerSlots[0] ? playerSlots[0].username : "Player 1"}
+                player2={playerSlots[1] ? playerSlots[1].username : "Player 2"}
                 bestof={String(match.category?.rounds || 3)}
                 include-straight={String(match.category?.straightsAllowed ?? true)}
                 style={{
@@ -266,7 +273,7 @@ export default function Game() {
               />
 
               {/* Betting controls, only shown to players during betting phase */}
-              {/* {phase === "betting" && isPlayer && ( TODO: Needed? We dont have betting! 
+              {/* {phase === "betting" && isPlayer && ( TODO: Needed? We dont have betting!
                 <div className="game__betting">
                   <p className="game__pot">
                     Pot: {pot} pts, Highest bet: {highestBet} pts
@@ -280,7 +287,7 @@ export default function Game() {
                       onChange={(e) => setBetAmount(Number(e.target.value))}
                     />
                     <button
-                      className="game__bet-btn"
+                      className="btn btn--primary"
                       onClick={() =>
                         send({ type: "bet", matchId: id, userId, amount: betAmount })
                       }
@@ -288,7 +295,7 @@ export default function Game() {
                       Bet
                     </button>
                     <button
-                      className="game__bet-btn"
+                      className="btn btn--primary"
                       onClick={() =>
                         send({ type: "raise", matchId: id, userId, amount: betAmount })
                       }
@@ -296,13 +303,13 @@ export default function Game() {
                       Raise
                     </button>
                     <button
-                      className="game__bet-btn"
+                      className="btn btn--primary"
                       onClick={() => send({ type: "match", matchId: id, userId })}
                     >
                       Match
                     </button>
                     <button
-                      className="game__bet-btn game__bet-btn--fold"
+                      className="btn btn--red"
                       onClick={() => send({ type: "fold", matchId: id, userId })}
                     >
                       Fold
@@ -314,63 +321,64 @@ export default function Game() {
               {/* Game-over overlay */}
               {gameEnded && (
                 <div className="game__ended">
-                  <h2>Game Over</h2>
+                  <h2>Game over</h2>
                   <p>
                     Winner:{" "}
                     {match.players
                       ?.find(
-                        (player) =>
-                          String(player.userId?._id || player.userId) ===
-                          String(gameEnded.winnerId)
+                        (player) => {
+                          return String(player.userId?._id || player.userId) ===
+                            String(gameEnded.winnerId);
+                        }
                       )
                       ?.userId?.username || "Unknown"}
                   </p>
-                  <button onClick={() => navigate("/")}>Back to Lobby</button>
+                  <button className="btn btn--primary" onClick={() => { navigate("/"); }}>Back to lobby</button>
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* ── Sidebar: comments ── */}
+        {/* Sidebar: comments */}
         <aside className="game__sidebar">
-          <h2 className="game__sidebar-title">Comments</h2>
+          <h2>Comments</h2>
           <div className="game__comments">
             {messages.length === 0 && (
               <p className="game__no-comments">No comments yet.</p>
             )}
-            {messages.map((message, index) => (
-              <div key={index} className="game__comment">
-                <Avatar
-                  imageUrl={message.authorId?.profileImageUrl}
-                  size={32}
-                />
-
-                <div className="game__comment-body">
-                  <span className="game__comment-author">
-                    {message.authorId?.username || "Unknown"}
-                  </span>
+            {messages.map((message, index) => {
+              return (
+                <div key={index} className="game__comment">
+                  <div className="game__comment-header">
+                    <Avatar
+                      imageUrl={message.authorId?.profileImageUrl}
+                      username={message.authorId?.username}
+                      size={32}
+                    />
+                    <span className="game__comment-author">
+                      {message.authorId?.username || "Unknown"}
+                    </span>
+                  </div>
                   <span className="game__comment-date">
-                    {new Date(message.createdAt).toLocaleDateString()}
+                    {new Date(message.createdAt).toLocaleDateString("en-GB")}
                   </span>
+                  <p className="game__comment-text">{message.text}</p>
                 </div>
-                <p className="game__comment-text">{message.text}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
           {user ? (
-            <form
-              className="game__comment-form"
-            >
+            <form className="game__comment-form">
               <textarea
                 className="game__comment-input"
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => { setInput(e.target.value); }}
                 placeholder="Leave a comment..."
                 rows={3}
               />
-              <button onClick={sendMessage} type="button" className="game__comment-submit">
-                Post Comment
+              <button onClick={sendMessage} type="button" className="btn btn--primary">
+                Post comment
               </button>
             </form>
           ) : (

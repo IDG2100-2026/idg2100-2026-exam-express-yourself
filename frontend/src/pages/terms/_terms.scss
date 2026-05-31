@@ -1,0 +1,12 @@
+@use '../../styles/variables.scss' as *;
+
+.terms {
+  &__updated { color: $color-text-dim; }
+
+  &__section {
+    p {
+      max-width: 50ch;
+      line-height: 1.7;
+    }
+  }
+}

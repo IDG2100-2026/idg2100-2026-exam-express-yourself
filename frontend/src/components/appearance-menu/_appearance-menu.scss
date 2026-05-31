@@ -1,0 +1,77 @@
+@use '../../styles/variables.scss' as *;
+
+.appearance {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &__toggle {
+    padding: 0;
+    border: none;
+    color: $color-text-dim;
+
+    &:hover { color: $color-yellow; }
+  }
+
+  &__menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 240px;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__label {
+    white-space: nowrap;
+    color: $color-text-dim;
+  }
+
+  &__options {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  &__btn {
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text-dim;
+    background-color: $color-frame;
+
+    &--active {
+      color: $color-yellow;
+      border-color: $color-yellow;
+    }
+  }
+
+  &__colors {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  &__color {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+
+    &--active { border-color: $color-yellow; }
+  }
+
+  &__slider {
+    flex: 1;
+    accent-color: $color-yellow;
+  }
+}

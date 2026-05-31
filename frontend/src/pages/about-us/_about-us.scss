@@ -1,0 +1,36 @@
+@use '../../styles/variables.scss' as *;
+
+.about-us {
+  &__section {
+    p {
+      max-width: 50ch;
+      line-height: 1.8;
+    }
+  }
+
+  &__team {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-l;
+    list-style: none;
+  }
+
+  &__member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-xs;
+    text-align: center;
+  }
+
+  &__member-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    color: #1a1200;
+    background-color: $color-yellow;
+  }
+}

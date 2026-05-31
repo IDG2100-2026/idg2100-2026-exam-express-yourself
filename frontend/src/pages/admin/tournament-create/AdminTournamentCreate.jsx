@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { createTournament, updateTournament, getTournament } from "../../../services/tournaments-service.js";
-import "./admin-tournament-create.scss";
 
 const EMPTY_FORM = {
   title: "",
   description: "",
-  rules: "",
   startDate: "",
   numberOfRounds: 1,
   rounds: 3,
@@ -27,54 +25,63 @@ export default function AdminTournamentCreate() {
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [error, setError] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!isEdit) return;
     getTournament(id)
       .then((tournament) => {
-        setForm({
-          title: tournament.title || "",
-          description: tournament.description || "",
-          rules: tournament.rules || "",
-          startDate: tournament.startDate ? tournament.startDate.slice(0, 16) : "",
-          numberOfRounds: tournament.numberOfRounds || 1,
-          rounds: tournament.category?.rounds || 3,
-          timeControl: tournament.category?.timeControl || 10,
-          straightsAllowed: tournament.category?.straightsAllowed ?? true,
-          categoryBuyIn: tournament.category?.buyIn || 1,
-          buyIn: tournament.buyIn || 0,
-          eloMin: tournament.eloRange?.min || 0,
-          eloMax: tournament.eloRange?.max || 9999,
-          trophyTitle: tournament.trophy?.title || "",
-          trophyImage: null,
-        });
+        let title = "";
+        if (tournament.title) { title = tournament.title; }
+        let description = "";
+        if (tournament.description) { description = tournament.description; }
+        let startDate = "";
+        if (tournament.startDate) { startDate = tournament.startDate.slice(0, 16); }
+        let numberOfRounds = 1;
+        if (tournament.numberOfRounds) { numberOfRounds = tournament.numberOfRounds; }
+        let rounds = 3;
+        if (tournament.category?.rounds) { rounds = tournament.category.rounds; }
+        let timeControl = 10;
+        if (tournament.category?.timeControl) { timeControl = tournament.category.timeControl; }
+        const straightsAllowed = tournament.category?.straightsAllowed ?? true;
+        let categoryBuyIn = 1;
+        if (tournament.category?.buyIn) { categoryBuyIn = tournament.category.buyIn; }
+        let buyIn = 0;
+        if (tournament.buyIn) { buyIn = tournament.buyIn; }
+        let eloMin = 0;
+        if (tournament.eloRange?.min) { eloMin = tournament.eloRange.min; }
+        let eloMax = 9999;
+        if (tournament.eloRange?.max) { eloMax = tournament.eloRange.max; }
+        let trophyTitle = "";
+        if (tournament.trophy?.title) { trophyTitle = tournament.trophy.title; }
+        setForm({ title, description, startDate, numberOfRounds, rounds, timeControl, straightsAllowed, categoryBuyIn, buyIn, eloMin, eloMax, trophyTitle, trophyImage: null });
       })
-      .catch((err) => setError(err.message));
+      .catch((err) => { setError(err.message); });
   }, [id, isEdit]);
 
   function handleChange(e) {
     const { name, value, type, checked, files } = e.target;
     if (type === "file") {
-      setForm((prev) => ({ ...prev, trophyImage: files[0] || null }));
+      let imageFile = null;
+      if (files[0]) { imageFile = files[0]; }
+      setForm((prev) => { return { ...prev, trophyImage: imageFile }; });
     } else if (type === "checkbox") {
-      setForm((prev) => ({ ...prev, [name]: checked }));
+      setForm((prev) => { return { ...prev, [name]: checked }; });
     } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
+      setForm((prev) => { return { ...prev, [name]: value }; });
     }
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
-    setSubmitting(true);
+    setIsSubmitting(true);
 
     try {
       if (isEdit) {
         await updateTournament(id, {
           title: form.title,
           description: form.description,
-          rules: form.rules,
           startDate: form.startDate,
           numberOfRounds: form.numberOfRounds,
           buyIn: form.buyIn,
@@ -95,7 +102,6 @@ export default function AdminTournamentCreate() {
         const formData = new FormData();
         formData.append("title", form.title);
         formData.append("description", form.description);
-        formData.append("rules", form.rules);
         formData.append("startDate", form.startDate);
         formData.append("numberOfRounds", form.numberOfRounds);
         formData.append("category[rounds]", form.rounds);
@@ -105,8 +111,8 @@ export default function AdminTournamentCreate() {
         formData.append("buyIn", form.buyIn);
         formData.append("eloRange[min]", form.eloMin);
         formData.append("eloRange[max]", form.eloMax);
-        if (form.trophyTitle) formData.append("trophyTitle", form.trophyTitle);
-        if (form.trophyImage) formData.append("trophyImage", form.trophyImage);
+        if (form.trophyTitle) { formData.append("trophyTitle", form.trophyTitle); }
+        if (form.trophyImage) { formData.append("trophyImage", form.trophyImage); }
 
         const tournament = await createTournament(formData);
         navigate(`/tournament/${tournament._id}`);
@@ -114,17 +120,27 @@ export default function AdminTournamentCreate() {
     } catch (err) {
       setError(err.message);
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
   }
 
+  let pageTitle = "Create tournament";
+  if (isEdit) { pageTitle = "Edit tournament"; }
+
+  let submitLabel = "Create tournament";
+  if (isSubmitting) {
+    submitLabel = "Saving...";
+  } else if (isEdit) {
+    submitLabel = "Save changes";
+  }
+
   return (
-    <div className="admin-tc">
-      <h1 className="admin-tc__title">{isEdit ? "Edit Tournament" : "Create Tournament"}</h1>
+    <div className="admin-tc stack-l">
+      <h1>{pageTitle}</h1>
 
       {error && <p className="admin-tc__error">{error}</p>}
 
-      <form className="admin-tc__form" onSubmit={handleSubmit}>
+      <form className="admin-tc__form stack-m" onSubmit={handleSubmit}>
         <div className="admin-tc__field">
           <label htmlFor="title">Title *</label>
           <input id="title" name="title" type="text" value={form.title} onChange={handleChange} required />
@@ -136,32 +152,26 @@ export default function AdminTournamentCreate() {
         </div>
 
         <div className="admin-tc__field">
-          <label htmlFor="rules">Rules</label>
-          <textarea id="rules" name="rules" rows={4} value={form.rules} onChange={handleChange} />
-        </div>
-
-        <div className="admin-tc__field">
-          <label htmlFor="startDate">Start Date & Time *</label>
+          <label htmlFor="startDate">Start date & time *</label>
           <input id="startDate" name="startDate" type="datetime-local" value={form.startDate} onChange={handleChange} required />
         </div>
 
         <div className="admin-tc__field">
-          <label htmlFor="numberOfRounds">Number of Tournament Rounds *</label>
+          <label htmlFor="numberOfRounds">Number of tournament rounds *</label>
           <input id="numberOfRounds" name="numberOfRounds" type="number" min={1} max={10} value={form.numberOfRounds} onChange={handleChange} required />
         </div>
 
         <div className="admin-tc__row">
           <div className="admin-tc__field">
-            <label htmlFor="rounds">Game Rounds</label>
+            <label htmlFor="rounds">Game rounds</label>
             <select id="rounds" name="rounds" value={form.rounds} onChange={handleChange}>
               <option value={3}>Best of 3</option>
               <option value={5}>Best of 5</option>
               <option value={7}>Best of 7</option>
             </select>
           </div>
-
           <div className="admin-tc__field">
-            <label htmlFor="timeControl">Time Control</label>
+            <label htmlFor="timeControl">Time control</label>
             <select id="timeControl" name="timeControl" value={form.timeControl} onChange={handleChange}>
               <option value={10}>10 seconds</option>
               <option value={30}>30 seconds</option>
@@ -177,7 +187,7 @@ export default function AdminTournamentCreate() {
 
         <div className="admin-tc__row">
           <div className="admin-tc__field">
-            <label htmlFor="categoryBuyIn">Match Buy-in (points per game)</label>
+            <label htmlFor="categoryBuyIn">Match buy-in (points per game)</label>
             <select id="categoryBuyIn" name="categoryBuyIn" value={form.categoryBuyIn} onChange={handleChange}>
               <option value={1}>1 point</option>
               <option value={10}>10 points</option>
@@ -185,7 +195,7 @@ export default function AdminTournamentCreate() {
             </select>
           </div>
           <div className="admin-tc__field">
-            <label htmlFor="buyIn">Tournament Entry Fee (points)</label>
+            <label htmlFor="buyIn">Tournament entry fee (points)</label>
             <select id="buyIn" name="buyIn" value={form.buyIn} onChange={handleChange}>
               <option value={0}>Free</option>
               <option value={1}>1 point</option>
@@ -208,22 +218,20 @@ export default function AdminTournamentCreate() {
 
         <div className="admin-tc__row">
           <div className="admin-tc__field">
-            <label htmlFor="trophyTitle">Trophy Title</label>
+            <label htmlFor="trophyTitle">Trophy title</label>
             <input id="trophyTitle" name="trophyTitle" type="text" value={form.trophyTitle} onChange={handleChange} />
           </div>
           {!isEdit && (
             <div className="admin-tc__field">
-              <label htmlFor="trophyImage">Trophy Image</label>
+              <label htmlFor="trophyImage">Trophy image</label>
               <input id="trophyImage" name="trophyImage" type="file" accept="image/*" onChange={handleChange} />
             </div>
           )}
         </div>
 
-        <div className="admin-tc__actions">
-          <button type="submit" className="admin-tc__submit" disabled={submitting}>
-            {submitting ? "Saving..." : isEdit ? "Save Changes" : "Create Tournament"}
-          </button>
-        </div>
+        <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
+          {submitLabel}
+        </button>
       </form>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router";
 
 function Footer() {
   return (
@@ -9,9 +9,9 @@ function Footer() {
           <span className="footer__copy">© 2020-2026</span>
         </div>
         <nav className="footer__links">
-          <Link to="/about-us" className="footer__link">About Us</Link>
-          <Link to="/privacy" className="footer__link">Privacy Policy</Link>
-          <Link to="/terms" className="footer__link">Terms & Conditions</Link>
+          <NavLink to="/about-us" className="footer__link">About Us</NavLink>
+          <NavLink to="/privacy" className="footer__link">Privacy Policy</NavLink>
+          <NavLink to="/terms" className="footer__link">Terms & Conditions</NavLink>
         </nav>
       </div>
     </footer>

@@ -1,0 +1,55 @@
+@use '../../styles/variables.scss' as *;
+
+.login {
+  display: flex;
+  justify-content: center;
+
+  &__card {
+    width: 100%;
+    max-width: 420px;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+
+    label { color: $color-text-dim; }
+
+    input {
+      padding: $space-s;
+      border: 1px solid $color-border;
+      border-radius: $radius;
+      color: $color-text;
+      background-color: $color-frame;
+
+      &:focus {
+        outline: none;
+        border-color: $color-yellow;
+      }
+    }
+  }
+
+  &__submit {
+    width: 100%;
+    justify-content: center;
+  }
+
+  &__forgot {
+    display: block;
+    text-align: center;
+  }
+
+  &__status  { color: $color-text-dim; }
+  &__success { color: $color-green; }
+  &__error   { color: $color-red; }
+
+  &__register {
+    text-align: center;
+    color: $color-text-dim;
+  }
+}

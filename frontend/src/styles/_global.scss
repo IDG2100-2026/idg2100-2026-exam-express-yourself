@@ -1,0 +1,41 @@
+@use 'variables.scss' as *;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-block-size: 100vh;
+  font-family: $font-body;
+  color: $color-text;
+  background-color: $color-bg;
+}
+
+h1 {
+  color: $color-h1;
+}
+
+h2 {
+  padding-block-end: 0.5rem;
+  border-block-end: 2px solid $color-h2;
+  color: $color-h2;
+}
+
+h3 {
+  color: $color-h3;
+}
+
+a,
+button {
+  text-decoration: none;
+  color: $color-yellow;
+  cursor: pointer;
+}
+
+button {
+  border: none;
+  font: inherit;
+  background: none;
+}

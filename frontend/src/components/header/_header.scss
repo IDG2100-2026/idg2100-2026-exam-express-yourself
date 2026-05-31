@@ -1,0 +1,92 @@
+@use '../../styles/variables.scss' as *;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-block-end: 1px solid $color-border;
+  background-color: $color-frame;
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1600px;
+    margin-inline: auto;
+    padding: $space-m;
+  }
+
+  &__logo {
+    font-weight: bold;
+    color: $color-yellow;
+  }
+
+  &__nav {
+    display: flex;
+    gap: $space-xs;
+  }
+
+  &__nav-link {
+    padding: $space-s;
+    border-radius: $radius;
+    color: $color-text-dim;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      color: $color-text;
+      background-color: $color-inner;
+    }
+
+    &.active {
+      color: $color-yellow;
+      background-color: $color-inner;
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: $space-m;
+  }
+
+  &__auth {
+    display: flex;
+    align-items: center;
+    gap: $space-m;
+  }
+
+  &__burger {
+    padding: 0;
+    color: $color-text-dim;
+
+    &:hover { color: $color-yellow; }
+  }
+
+  &__mobile-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-m;
+    padding: $space-m;
+    border-block-start: 1px solid $color-border;
+    background-color: $color-frame;
+  }
+
+  &__mobile-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-s;
+  }
+
+  &__greeting {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+    padding: 0;
+    border: none;
+    color: $color-text-dim;
+
+    &:hover { color: $color-yellow; }
+  }
+}

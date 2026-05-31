@@ -1,0 +1,158 @@
+@use '../../styles/variables.scss' as *;
+
+.game {
+  &__status { color: $color-text-dim; }
+  &__error  { color: $color-red; }
+
+  &__layout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: $space-l;
+  }
+
+  &__board {
+    display: flex;
+    flex: 1;
+    flex: 1 1 550px;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-xl;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius-large;
+    background-color: $color-inner;
+  }
+
+  &__waiting {
+    text-align: center;
+    color: $color-text-dim;
+
+    small { display: block; margin-block-start: $space-s; }
+  }
+
+  &__players {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-l;
+  }
+
+  &__player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-xs;
+  }
+
+  &__player-name { font-weight: bold; }
+  &__player-elo  { color: $color-text-dim; }
+
+  &__active {
+    display: flex;
+    flex-direction: column;
+    gap: $space-m;
+    width: 100%;
+  }
+
+  &__betting {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__pot { color: $color-text-dim; }
+
+  &__bet-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-s;
+  }
+
+  &__bet-input {
+    width: 80px;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    background-color: $color-frame;
+  }
+
+  &__ended {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-m;
+    padding: $space-m;
+    border: 2px solid $color-yellow;
+    border-radius: $radius-large;
+    text-align: center;
+    background-color: $color-inner;
+  }
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: $space-m;
+    width: 320px;
+    flex-shrink: 0;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__comments {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: $space-s;
+  }
+
+  &__comment {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+    padding: $space-s;
+    border-radius: $radius;
+    background-color: $color-frame;
+  }
+
+  &__comment-header {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+  }
+
+  &__comment-author { color: $color-yellow; }
+  &__comment-date   { color: $color-text-dim; }
+  &__comment-text   { margin-block-start: $space-xs; }
+  &__no-comments    { color: $color-text-dim; }
+
+  &__comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+
+    button { align-self: flex-start; }
+  }
+
+  &__comment-input {
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    background-color: $color-frame;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: $color-yellow;
+    }
+  }
+}

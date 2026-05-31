@@ -1,0 +1,23 @@
+@use '../../styles/variables.scss' as *;
+
+.avatar {
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &--default {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    line-height: 1;
+    color: #1a1200;
+    background-color: $color-yellow;
+  }
+}

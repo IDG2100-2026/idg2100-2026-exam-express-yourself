@@ -73,7 +73,7 @@ export async function getTournament(tournamentId) {
   const tournament = await Tournament.findById(tournamentId)
     .populate("createdBy", "username")
     .populate("participants", "username eloRating profileImageUrl")
-    .populate("winnerId", "username")
+    .populate("winnerId", "username profileImageUrl")
     .populate("bracket.matches.players", "username")
     .populate("bracket.matches.winner", "username");
 
@@ -89,7 +89,6 @@ export async function getTournament(tournamentId) {
 export async function createTournament(userId, tournamentData, imageUrl) {
   const title = tournamentData.title;
   const description = tournamentData.description;
-  const rules = tournamentData.rules;
   const startDate = tournamentData.startDate;
   const numberOfRounds = tournamentData.numberOfRounds;
   const buyIn = tournamentData.buyIn;
@@ -105,9 +104,6 @@ export async function createTournament(userId, tournamentData, imageUrl) {
 
   if (description !== undefined) {
     tournamentObj.description = description;
-  }
-  if (rules !== undefined) {
-    tournamentObj.rules = rules;
   }
   if (numberOfRounds !== undefined) {
     tournamentObj.numberOfRounds = numberOfRounds;
@@ -502,9 +498,6 @@ export async function updateTournament(tournamentId, updateData) {
   }
   if (updateData.description !== undefined) {
     tournament.description = updateData.description;
-  }
-  if (updateData.rules !== undefined) {
-    tournament.rules = updateData.rules;
   }
   if (updateData.startDate !== undefined) {
     tournament.startDate = updateData.startDate;

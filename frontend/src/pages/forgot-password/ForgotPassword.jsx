@@ -1,53 +1,54 @@
-import { useState, useEffect } from "react";
-import { requestResetPassword } from "../../services/auth-service";
-import { Link, useSearchParams } from "react-router-dom";
-import "../login/login.scss";
+import { useState } from "react";
+import { Link } from "react-router";
+import { requestResetPassword } from "../../services/auth-service.js";
 
-const ForgotPassword = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export default function ForgotPassword() {
+  const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
-  const [resetMessage, setResetMessage] = useState("");
-  const [sendMail, setSendMail] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-
-  const sendEmailCode = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
     setIsSubmitting(true);
     try {
-      const data = await requestResetPassword(sendMail); // sending the email with reset password link!
-      setResetMessage(data.message); // showing success msg
+      const data = await requestResetPassword(email);
+      setSuccess(data.message);
     } catch (err) {
-      setError(err.message); // showing error msg
+      setError(err.message);
     } finally {
-      setIsSubmitting(false); // cleanup so we don't have submitting to true anymore
+      setIsSubmitting(false);
     }
-  };
+  }
 
   return (
-    <section className="forgotPassword">
-      <div className="forgotPassword__card">
-        <form className="forgotPassword__field" onSubmit={sendEmailCode}>
-          <h2 className="forgotPassword__title">Forgot Password</h2>
-          {resetMessage ? <span className="forgotPassword__success">{resetMessage}</span> : <span className="forgotPassword__error">{error}</span>}
-          <input
-            type="email"
-            value={sendMail}
-            onChange={(e) => setSendMail(e.target.value)} // sending the email to the inputted email
-            placeholder="Enter your email"
-          />
-          <button className="forgotPassword__submit" disabled={isSubmitting}>
-            {isSubmitting ? "Sending email...." : "Send reset link"}
+    <div className="forgot-password">
+      <div className="forgot-password__card stack-m">
+        <form className="forgot-password__form stack-m" onSubmit={handleSubmit}>
+          <h1>Forgot password</h1>
+          {success && <p className="forgot-password__success">{success}</p>}
+          {error && <p className="forgot-password__error">{error}</p>}
+          <div className="forgot-password__field">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); }}
+              placeholder="name@example.com"
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn--primary forgot-password__submit" disabled={isSubmitting}>
+            {isSubmitting ? "Sending..." : "Send reset link"}
           </button>
-          <Link className="forgotPassword__forgot" to="/login">
-            Back to login
+          <Link to="/login" className="forgot-password__back btn--link">
+            Back to log in
           </Link>
         </form>
       </div>
-    </section>
+    </div>
   );
-};
-
-export default ForgotPassword;
+}

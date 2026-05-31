@@ -1,0 +1,15 @@
+@use '../../styles/variables.scss' as *;
+
+.about-game {
+  &__section {
+    p { max-width: 50ch; }
+  }
+
+  &__list {
+    max-width: 50ch;
+    list-style-position: inside;
+    line-height: 2;
+
+    li::marker { color: $color-yellow; }
+  }
+}

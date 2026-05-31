@@ -1,0 +1,29 @@
+@use '../../styles/variables.scss' as *;
+
+.create {
+  &__form {
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__group-label {
+    color: $color-text-dim;
+  }
+
+  &__option--active {
+    border-color: $color-yellow;
+    color: $color-yellow;
+  }
+
+  &__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-s;
+  }
+
+  &__error {
+    color: $color-red;
+  }
+}

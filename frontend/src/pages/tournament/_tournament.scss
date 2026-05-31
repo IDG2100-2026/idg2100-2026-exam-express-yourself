@@ -1,0 +1,249 @@
+@use '../../styles/variables.scss' as *;
+
+.tournament {
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-m;
+  }
+
+  &__status-badge {
+    padding: $space-xs;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background-color: $color-inner;
+
+    &--upcoming    { border-color: $color-yellow;  color: $color-yellow; }
+    &--in-progress { border-color: #58a6ff;        color: #58a6ff; }
+    &--completed   { border-color: $color-green;   color: $color-green; }
+    &--cancelled   { border-color: $color-red;     color: $color-red; }
+  }
+
+  &__countdown {
+    display: flex;
+    flex-direction: column;
+    gap: $space-m;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background: $color-inner;
+  }
+
+  &__countdown-label {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: $color-text-dim;
+  }
+
+  &__countdown-units {
+    display: flex;
+    gap: $space-l;
+  }
+
+  &__countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-xs;
+  }
+
+  &__countdown-value {
+    min-width: 2.5ch;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: $color-yellow;
+  }
+
+  &__countdown-text {
+    text-transform: uppercase;
+    color: $color-text-dim;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__info-item {
+    display: flex;
+    gap: $space-m;
+  }
+
+  &__info-label {
+    min-width: 80px;
+    color: $color-text-dim;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-m;
+  }
+
+  &__admin-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-s;
+    border-inline-start: 1px solid $color-border;
+    padding-inline-start: $space-m;
+  }
+
+  &__joined     { color: $color-green; }
+  &__action-msg { color: $color-green; }
+
+  &__trophy-item {
+    display: flex;
+    align-items: center;
+    gap: $space-m;
+  }
+
+  &__trophy-img {
+    width: 48px;
+    height: 48px;
+    border-radius: $radius;
+    object-fit: contain;
+  }
+
+  &__winner {
+    display: flex;
+    flex-direction: column;
+    gap: $space-m;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__winner-profile {
+    display: flex;
+    align-items: center;
+    gap: $space-m;
+
+    span { font-size: 1.5rem; }
+  }
+
+  &__live-match-list {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+  }
+
+  &__live-match {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    background: $color-inner;
+    transition: border-color 0.15s;
+
+    &:hover { border-color: $color-yellow; }
+  }
+
+  &__round { margin-block-end: $space-m; }
+
+  &__round-matches {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+  }
+
+  &__match {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background: $color-inner;
+  }
+
+  &__match-vs     { color: $color-text-dim; }
+  &__match-result { margin-inline-start: auto; color: $color-green; }
+
+  &__match-player--winner { color: $color-green; }
+
+  &__participant-list {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+    list-style: none;
+  }
+
+  &__participant {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+  }
+
+  &__participant-link {
+    color: $color-text;
+
+    &:hover { color: $color-yellow; }
+  }
+
+  &__participant-elo { color: $color-text-dim; }
+
+  &__comments {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+  }
+
+  &__comment {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__comment-header {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+  }
+
+  &__comment-author { color: $color-yellow; }
+  &__comment-date   { color: $color-text-dim; }
+
+  &__comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+
+    button { align-self: flex-start; }
+  }
+
+  &__comment-input {
+    min-block-size: 75px;
+    max-block-size: 200px;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    background-color: $color-frame;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: $color-yellow;
+    }
+  }
+
+  &__status { color: $color-text-dim; }
+  &__error  { color: $color-red; }
+}

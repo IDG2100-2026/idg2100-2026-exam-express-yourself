@@ -78,7 +78,7 @@ export async function getUser(userId, requestingUserId, filters = {}) {
 
   // Paginated recent matches
   const matchPage = filters.matchPage || 1;
-  const matchLimit = filters.matchLimit || 10;
+  const matchLimit = filters.matchLimit || 5;
   const skip = (matchPage - 1) * matchLimit;
 
   const recentMatches = await Match.find({
@@ -87,7 +87,7 @@ export async function getUser(userId, requestingUserId, filters = {}) {
   })
     .populate("players.userId", "username")
     .populate("winnerId", "username")
-    .sort({ updatedAt: -1 })
+    .sort({ endedAt: -1 })
     .skip(skip)
     .limit(matchLimit);
 
@@ -133,6 +133,9 @@ export async function updateUser(userId, updateData, requestingUserId) {
     throw new BusinessLogicError("User not found", 404);
   }
 
+  if (updateData.username !== undefined) {
+    user.username = updateData.username;
+  }
   if (updateData.email !== undefined) {
     user.email = updateData.email;
   }

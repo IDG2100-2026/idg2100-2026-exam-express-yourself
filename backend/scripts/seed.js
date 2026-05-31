@@ -29,7 +29,7 @@ const hashedPassword = hashPassword("Password123!");
 const verified = { isVerified: true };
 
 // ---- Users ----
-await User.collection.insertMany([
+await User.insertMany([
   { username: "admin", email: "admin@test.com", password: hashedPassword, ...verified, age: 29, role: "admin", eloRating: { tc10: 1200, tc30: 1150, tc90: 1100 }, points: 500 },
   { username: "emil", email: "emil@test.com", password: hashedPassword, ...verified, age: 20, eloRating: { tc10: 2867, tc30: 2700, tc90: 2500 }, points: 300 },
   { username: "nicolai", email: "nicolai@test.com", password: hashedPassword, ...verified, age: 22, eloRating: { tc10: 1100, tc30: 1050, tc90: 1000 }, points: 200 },
@@ -94,6 +94,60 @@ const completedMatches = await Match.insertMany([
     winnerId: u("nicolai")._id,
     startedAt: new Date("2026-05-10T14:00:00Z"),
     endedAt: new Date("2026-05-10T14:20:00Z"),
+  },
+  {
+    players: [{ userId: u("sara")._id }, { userId: u("mira")._id }],
+    maxPlayers: 2,
+    category: { rounds: 5, straightsAllowed: true, timeControl: 10 },
+    status: "completed",
+    winnerId: u("sara")._id,
+    startedAt: new Date("2026-04-28T11:00:00Z"),
+    endedAt: new Date("2026-04-28T11:18:00Z"),
+  },
+  {
+    players: [{ userId: u("max")._id }, { userId: u("sara")._id }],
+    maxPlayers: 2,
+    category: { rounds: 7, straightsAllowed: true, timeControl: 30 },
+    status: "completed",
+    winnerId: u("max")._id,
+    startedAt: new Date("2026-05-03T19:00:00Z"),
+    endedAt: new Date("2026-05-03T19:25:00Z"),
+  },
+  {
+    players: [{ userId: u("sara")._id }, { userId: u("stian")._id }],
+    maxPlayers: 2,
+    category: { rounds: 3, straightsAllowed: false, timeControl: 90 },
+    status: "completed",
+    winnerId: u("stian")._id,
+    startedAt: new Date("2026-05-15T16:30:00Z"),
+    endedAt: new Date("2026-05-15T16:50:00Z"),
+  },
+  {
+    players: [{ userId: u("sara")._id }, { userId: u("lena")._id }],
+    maxPlayers: 2,
+    category: { rounds: 5, straightsAllowed: false, timeControl: 10 },
+    status: "completed",
+    winnerId: u("sara")._id,
+    startedAt: new Date("2026-05-22T13:00:00Z"),
+    endedAt: new Date("2026-05-22T13:20:00Z"),
+  },
+  {
+    players: [{ userId: u("sara")._id }, { userId: u("jonas")._id }, { userId: u("hanna")._id }],
+    maxPlayers: 3,
+    category: { rounds: 3, straightsAllowed: true, timeControl: 30 },
+    status: "completed",
+    winnerId: u("sara")._id,
+    startedAt: new Date("2026-05-25T10:00:00Z"),
+    endedAt: new Date("2026-05-25T10:22:00Z"),
+  },
+  {
+    players: [{ userId: u("sara")._id }, { userId: u("stian")._id }, { userId: u("tobias")._id }, { userId: u("kristian")._id }, { userId: u("anders")._id }],
+    maxPlayers: 5,
+    category: { rounds: 5, straightsAllowed: false, timeControl: 10 },
+    status: "completed",
+    winnerId: u("stian")._id,
+    startedAt: new Date("2026-05-27T18:00:00Z"),
+    endedAt: new Date("2026-05-27T18:35:00Z"),
   },
 ]);
 console.log(`Created ${completedMatches.length} completed matches`);
@@ -175,7 +229,6 @@ console.log(`Created ${waitingMatches.length} waiting matches`);
 const tournament1 = await Tournament.create({
   title: "Spring Championship 2026",
   description: "The first major tournament of the year. Battle it out for the Spring Trophy!",
-  rules: "Standard round-robin format. All players get randomly paired each round. Top scorer wins.",
   createdBy: u("admin")._id,
   startDate: new Date("2026-06-01T18:00:00Z"),
   numberOfRounds: 3,
@@ -186,13 +239,12 @@ const tournament1 = await Tournament.create({
     u("mira")._id, u("max")._id, u("stian")._id, u("thea")._id,
   ],
   status: "upcoming",
-  trophy: { title: "Spring Champion Trophy" },
+  trophy: { title: "Spring Champion Trophy", imageUrl: "/uploads/trophy.jpg" },
 });
 
 const tournament2 = await Tournament.create({
   title: "Summer Blitz Cup",
   description: "Fast-paced blitz tournament. Quick rounds, quick thinking!",
-  rules: "10-second total time control. No straights allowed. Single elimination.",
   createdBy: u("admin")._id,
   startDate: new Date("2026-07-15T20:00:00Z"),
   numberOfRounds: 4,
@@ -200,7 +252,7 @@ const tournament2 = await Tournament.create({
   buyIn: 50,
   participants: [u("sara")._id, u("stian")._id, u("max")._id],
   status: "upcoming",
-  trophy: { title: "Blitz Master Trophy" },
+  trophy: { title: "Blitz Master Trophy", imageUrl: "/uploads/trophy.jpg" },
 });
 
 const tournament3 = await Tournament.create({
@@ -216,7 +268,7 @@ const tournament3 = await Tournament.create({
     u("kristian")._id, u("fredrik")._id, u("camilla")._id, u("silje")._id,
   ],
   status: "upcoming",
-  trophy: { title: "Rising Star Trophy" },
+  trophy: { title: "Rising Star Trophy", imageUrl: "/uploads/trophy.jpg" },
 });
 
 const tournament4 = await Tournament.create({
@@ -228,7 +280,7 @@ const tournament4 = await Tournament.create({
   participants: [u("emil")._id, u("sara")._id, u("max")._id, u("mira")._id],
   status: "completed",
   winnerId: u("sara")._id,
-  trophy: { title: "Autumn Champion Trophy" },
+  trophy: { title: "Autumn Champion Trophy", imageUrl: "/uploads/trophy.jpg" },
 });
 
 const tournament5 = await Tournament.create({
@@ -239,7 +291,7 @@ const tournament5 = await Tournament.create({
   category: { rounds: 7, straightsAllowed: true, timeControl: 30 },
   participants: [],
   status: "upcoming",
-  trophy: { title: "Ice Crown Trophy" },
+  trophy: { title: "Ice Crown Trophy", imageUrl: "/uploads/trophy.jpg" },
 });
 
 console.log("Created 5 tournaments");
@@ -263,6 +315,7 @@ await User.findByIdAndUpdate(u("sara")._id, {
   $push: {
     trophies: {
       title: "Autumn Champion Trophy",
+      imageUrl: "/uploads/trophy.jpg",
       wonAt: new Date("2025-10-15"),
     },
   },

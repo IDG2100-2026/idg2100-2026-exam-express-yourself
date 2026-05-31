@@ -1,0 +1,27 @@
+@use '../../../styles/variables.scss' as *;
+
+.admin-comments {
+  &__item {
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background: $color-inner;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-m;
+  }
+
+  &__target {
+    font-family: monospace;
+    color: $color-text-dim;
+  }
+
+  &__date { color: $color-text-dim; }
+
+  &__muted { color: $color-text-dim; }
+  &__error { margin-block-end: $space-m; color: $color-red; }
+}

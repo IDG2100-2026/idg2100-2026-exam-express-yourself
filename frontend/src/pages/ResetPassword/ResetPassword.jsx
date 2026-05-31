@@ -1,29 +1,28 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router";
 import { resetPassword } from "../../services/auth-service.js";
-import "../login/login.scss"
 
-const ResetPassword = () => {
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [searchParams] = useSearchParams();
+export default function ResetPassword() {
   const [password, setPassword] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [invalidReqError, setInvalidReqError] = useState(null);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [invalidLink, setInvalidLink] = useState(null);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const code = searchParams.get("code");
 
   useEffect(() => {
     if (!code) { // if user enters this page without the code we show this msg
-      setInvalidReqError("Invalid or missing reset link");
+      setInvalidLink("Invalid or missing reset link.");
     }
   }, [code]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    setLoading(true);
+    setIsLoading(true);
     try {
       const data = await resetPassword(code, password);
       setSuccess(data.message);
@@ -33,45 +32,41 @@ const ResetPassword = () => {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <section className="reset">
-      <div className="reset__card">
-        {invalidReqError ? (
-          <p>{invalidReqError}</p>
+    <div className="reset-password">
+      <div className="reset-password__card stack-m">
+        {invalidLink ? (
+          <p className="reset-password__error">{invalidLink}</p>
         ) : (
-          <form className="reset__form" onSubmit={handleSubmit}>
-            <h2 className="reset__title">Reset Password</h2>
-            {success ? (
-              <p className="forgotPassword__success">
-                {success}
-              </p>
-            ) : (
-              <p className="forgotPassword__error">{error}</p>
-            )}
-            <div className="reset__field">
-              <label htmlFor="password">Password</label>
+          <form className="reset-password__form stack-m" onSubmit={handleSubmit}>
+            <h1>Reset password</h1>
+            {success && <p className="reset-password__success">{success}</p>}
+            {error && <p className="reset-password__error">{error}</p>}
+            <div className="reset-password__field">
+              <label htmlFor="password">New password</label>
               <input
                 id="password"
                 name="password"
                 type="password"
-                placeholder="New Password"
-                required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => { setPassword(e.target.value); }}
+                placeholder="********"
+                required
               />
-              <button className="reset__submit" disabled={loading}>
-                {loading ? "Resetting..." : "Reset Password"}
-              </button>
             </div>
+            <button type="submit" className="btn btn--primary reset-password__submit" disabled={isLoading}>
+              {isLoading ? "Resetting..." : "Reset password"}
+            </button>
+            <Link to="/login" className="reset-password__back btn--link">
+              Back to log in
+            </Link>
           </form>
         )}
       </div>
-    </section>
+    </div>
   );
-};
-
-export default ResetPassword;
+}

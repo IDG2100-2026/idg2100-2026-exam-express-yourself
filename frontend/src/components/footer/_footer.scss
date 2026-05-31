@@ -1,0 +1,52 @@
+@use '../../styles/variables.scss' as *;
+
+.footer {
+  border-block-start: 1px solid $color-border;
+  background-color: $color-frame;
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1600px;
+    margin-inline: auto;
+    padding: $space-m;
+  }
+
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+  }
+
+  &__name {
+    font-weight: bold;
+    color: $color-yellow;
+  }
+
+  &__copy {
+    color: $color-text-dim;
+  }
+
+  &__links {
+    display: flex;
+    gap: $space-xs;
+  }
+
+  &__link {
+    padding: $space-s;
+    border-radius: $radius;
+    color: $color-text-dim;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      color: $color-text;
+      background-color: $color-inner;
+    }
+
+    &.active {
+      color: $color-yellow;
+      background-color: $color-inner;
+    }
+  }
+}

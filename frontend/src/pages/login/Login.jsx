@@ -1,58 +1,56 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router";
+import { loginUser, verifyEmail } from "../../services/auth-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
-import { loginUser, verifyEmail } from "../../services/auth-service.js";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
-  const { user, login } = useAuth();
+  const { login } = useAuth();
   const { loadAppearance } = useAppearance();
-  const [searchParam] = useSearchParams();
-  const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const code = searchParam.get("code"); // get the code from the url
+    const code = searchParams.get("code");
     if (!code) return;
     const verifyUserEmail = async () => {
-      setLoading(true);
+      setIsLoading(true);
       try {
-        const data = await verifyEmail(code); // call the function that fetches the verify email route
-        setSuccess(data.message); // show success msg
+        const data = await verifyEmail(code);
+        setSuccess(data.message);
       } catch (err) {
-        setError(err.message); // show error msg
+        setError(err.message);
       } finally {
-        setLoading(false); // cleanup to be sure that we don't load anymore
+        setIsLoading(false);
       }
     };
 
     verifyUserEmail();
-  }, []); // only run on mount
+  }, []);
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      return { ...prev, [name]: value };
+    });
   }
 
   async function handleSubmit(e) {
-    e.preventDefault(); // prevents that the page is refreshed
-    setError(null); // if fails first, this will go away when successful
-    setIsSubmitting(true); // disable the button when true
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
     try {
-      const result = await loginUser(formData); // tries to login the user
-      login(result.user, result.accessToken); // sets the user, and the accessToken
-      setSuccess(
-        `Login successful ${result.user?.username}! You will be redirected to the homepage`, // success msg
-      );
+      const result = await loginUser(formData);
+      login(result.user, result.accessToken);
+      setSuccess(`Login successful ${result.user?.username}! You will be redirected to the homepage`);
       setTimeout(() => {
-        navigate("/"); // navigate to homepage after 3 sec
+        navigate("/");
       }, 3000);
-
-      // Load user appearance preferences
       loadAppearance(result.user?.appearance);
     } catch (err) {
       setError(err.message);
@@ -61,17 +59,22 @@ export default function Login() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="login">
+        <div className="login__card">
+          <p className="login__status">Verifying your email...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="login">
-      <div className="login__card">
-        <form className="login__form" onSubmit={handleSubmit}>
-          <h1 className="login__title">Log In</h1>
-          <p className="login__subtitle">Welcome back to PokerDados</p>
-          {success ? (
-            <span className="login__success">{success}</span>
-          ) : (
-            <span className="login__error">{error}</span>
-          )}
+      <div className="login__card stack-m">
+        <form className="login__form stack-m" onSubmit={handleSubmit}>
+          <h1>Log in</h1>
+          {success && <p className="login__success">{success}</p>}
           <div className="login__field">
             <label htmlFor="email">Email</label>
             <input
@@ -80,9 +83,11 @@ export default function Login() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="you@example.com"
+              placeholder="name@example.com"
               required
             />
+          </div>
+          <div className="login__field">
             <label htmlFor="password">Password</label>
             <input
               id="password"
@@ -90,23 +95,20 @@ export default function Login() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="••••••••"
+              placeholder="********"
               required
             />
-            <Link to="/forgot-password" className="login__forgot">
-              Forgot Password
-            </Link>
-            <button
-              type="submit"
-              className="login__submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Logging in..." : "Log In"}
-            </button>
           </div>
+          {error && <p className="login__error">{error}</p>}
+          <button type="submit" className="btn btn--primary login__submit" disabled={isSubmitting}>
+            {isSubmitting ? "Logging in..." : "Log in"}
+          </button>
+          <Link to="/forgot-password" className="login__forgot btn--link">
+            Forgot password?
+          </Link>
         </form>
         <p className="login__register">
-          Don't have an account? <Link to="/register">Register here</Link>
+          Don't have an account? <Link to="/register" className="btn--link">Register</Link>
         </p>
       </div>
     </div>
