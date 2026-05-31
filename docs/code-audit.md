@@ -1,6 +1,6 @@
 # Code Audit — Full Project Review
 
-> Re-audited 2026-05-31. Six parallel agents reviewed backend auth/security, game/WebSocket backend, tournament service, frontend pages, and frontend services/infrastructure. Previous baseline: 2026-05-29. Excludes `old-obligs/`.
+> Re-audited 2026-05-31 (pass 2). Targeted agents reviewed all changes from the last 3 commits: unban/unmakeAdmin backend+frontend, websocket cleanup, auth-service IP logging, admin UI refactor. Previous baseline: 2026-05-31 (pass 1). Excludes `old-obligs/`.
 
 ---
 
@@ -14,188 +14,208 @@
 
 ## 🔴 Critical / Security
 
-### 1. JWT_SECRET undefined silently forges all tokens 🆕
+### 1. JWT_SECRET undefined silently forges all tokens ❌
 **File:** `backend/src/utils/jwt.js:5`
 
 `JWT_SECRET` is read once at module load from `process.env`. If the variable is missing, `jwt.sign`/`jwt.verify` receive `undefined` and silently fall back to the string `"undefined"` as the secret. Any attacker who discovers this pattern can forge valid tokens for any `userId` and `role`.
 
-**Fix:** Add a startup guard — if `JWT_SECRET` is falsy, throw immediately so the server refuses to boot.
+**Fix:** Add `if (!JWT_SECRET) throw new Error("JWT_SECRET environment variable is not set");` immediately after line 5. Use a plain `Error`, not `BusinessLogicError` — this is a startup crash, not an HTTP response.
 
 ---
 
-### 2. endGame and recordResult can both complete the same match ❌
-**Files:** `backend/src/websockets/route-handler.js:79`, `backend/src/services/match-service.js:292-362`
+### 2. WebSocket connections are not authenticated ❌
+**File:** `backend/src/websockets/websocket.js:10`
 
-`endGame` (WebSocket path) does not check whether `match.status === "completed"` before writing. If a REST call to `PATCH /api/matches/:id/result` races with the WebSocket `endGame`, both read `status='in-progress'`, both set `status='completed'`, both run the ELO update, and both award pot points — the winner receives double points and ELO is calculated twice.
-
----
-
-### 3. Missing awaits in endRound and handleRoll cause stale DB writes 🆕
-**Files:** `backend/src/websockets/route-handler.js:61`, `backend/src/websockets/game-handler.js:73`
-
-- `endRound` calls `endGame(...)` without `await`, so its own `match.save()` can land after `endGame` has already written its state, overwriting the completed match with a stale document.
-- `handleRoll` calls `handleEndTurn(...)` without `await` after the 3rd roll; `handleEndTurn` immediately fetches the pre-save document from DB and broadcasts stale dice values to the room.
+The WebSocket server accepts all connections without verifying any JWT. Any unauthenticated client can connect, receive comment history, and post comments attributed to any user ID they supply. The fix was discussed but never committed.
 
 ---
 
-### 4. JSON.parse in WebSocket message handler has no try/catch 🆕
-**File:** `backend/src/websockets/websocket.js:43`
+### 3. WebSocket comment author is client-supplied ❌
+**File:** `backend/src/websockets/websocket.js:48`
 
-`JSON.parse(message)` is called with no surrounding try/catch. A malformed frame from any client throws a `SyntaxError` that propagates out of the async `message` handler uncaught, breaking that socket silently for all subsequent messages.
+`createComment(data.authorId, ...)` trusts the `authorId` field sent in the message payload. Since there is no authentication on the connection (finding #2), any client can post a comment as any user.
 
 ---
 
-### 5. Ban check after password check leaks password validity 🆕
+### 4. Ban check after password check leaks password validity 🆕
 **File:** `backend/src/services/auth-service.js:69`
 
-`authenticateUser` checks the password first, then checks `isBanned`. A banned user who supplies the wrong password receives `"Invalid credentials"`; the same user with the correct password receives `"Account is banned"`. The differing response lets anyone confirm a banned account's correct password via response differentiation.
+`authenticateUser` checks the password first, then `isBanned`. A banned user who supplies the wrong password gets `"Invalid credentials"`; the same user with the correct password gets `"Account is banned"`. The different responses confirm whether the banned account's password was correct.
 
-**Fix:** Check `isBanned` before checking the password, or return the same `"Invalid credentials"` error in both cases.
+**Fix:** Check `isBanned` before verifying the password, or return the same generic error in both cases.
+> FIXED
+---
+
+### 5. JSON.parse in WebSocket message handler has no try/catch ❌
+**File:** `backend/src/websockets/websocket.js:43`
+
+`JSON.parse(message)` is called outside any try/catch. A malformed frame from any client throws a `SyntaxError` before the inner try block, propagates as an unhandled rejection, and leaves the socket open but broken.
 
 ---
 
 ## 🟠 Serious / Functional Bugs
 
-### 6. Tournament buy-in not deducted when a user joins ❌
+### 6. unMakeAdmin has no last-admin guard 🆕
+**File:** `backend/src/services/user-service.js:231`
+
+`unMakeAdmin` sets `role = "user"` with no check for whether this is the final admin in the system. If the last admin demotes themselves (or another admin does it via the API), the system is left with zero admins and no recovery path through the API.
+
+**Fix:** Count admins before demoting: `const adminCount = await User.countDocuments({ role: "admin" }); if (adminCount <= 1) throw new BusinessLogicError("Cannot remove the last admin", 400);`
+
+---
+
+### 7. unMakeAdmin has no self-demotion guard 🆕
+**File:** `backend/src/services/user-service.js:231`, `backend/src/routes/user-routes.js:52`
+
+The `unMakeAdmin` service does not compare the target `userId` against the calling admin's `req.userId`. An admin can demote themselves via `POST /api/users/:id/unmake-admin`. Their token still claims `role: "admin"` until it expires, creating an inconsistent state.
+
+---
+
+### 8. AdminUsers username guard is fragile and incomplete 🆕
+**File:** `frontend/src/pages/admin/users/AdminUsers.jsx:192`
+
+The guard `user.username !== "admin"` hides the make/un-make admin buttons only for the account with the literal username `"admin"`. Any admin with a different username (e.g. `"superuser"`) sees the button on their own row and can un-make-admin themselves. The correct guard is `user._id !== currentUser._id`.
+
+---
+
+### 9. Tournament buy-in not deducted when a user joins ❌
 **File:** `backend/src/services/tournament-service.js:179`
 
-`joinTournament` checks `user.points >= tournament.buyIn` but never deducts the points. Deduction only happens when matches are created at round start. A user with 10 points and a buyIn of 10 can join multiple tournaments simultaneously, exceeding their available balance.
+`joinTournament` checks `user.points >= tournament.buyIn` but never deducts. Deduction only happens at round start, so a user can join multiple tournaments simultaneously exceeding their balance.
 
 ---
 
-### 7. Buy-in deducted in rounds without a balance check ❌
+### 10. Buy-in deducted in rounds without a balance check ❌
 **File:** `backend/src/services/tournament-service.js:343`
 
-`$inc: { points: -matchBuyIn }` is applied via `findByIdAndUpdate` without `runValidators: true`. This bypasses Mongoose's `min: 0` constraint, so a player with fewer points than the buyIn ends up with a negative balance.
+`$inc: { points: -matchBuyIn }` is applied via `findByIdAndUpdate` without `runValidators: true`, bypassing Mongoose's `min: 0` constraint and allowing points to go negative.
 
 ---
 
-### 8. reportMatchResult never updates the Match document ❌
+### 11. reportMatchResult never updates the Match document ❌
 **File:** `backend/src/services/tournament-service.js:319`
 
-`reportMatchResult` sets `foundMatch.winner` on the tournament bracket sub-document but never calls `Match.findByIdAndUpdate(foundMatch.gameId, { winnerId, status: "completed" })`. The actual `Match` record stays `status: 'waiting'` and `winnerId: null` indefinitely, breaking game history and leaderboard stats.
+`reportMatchResult` sets the winner on the bracket sub-document but never updates the actual `Match` record's `winnerId` or `status`. The match stays `status: 'waiting'` indefinitely.
 
 ---
 
-### 9. Second 401 after token refresh not handled ❌
+### 12. Second 401 after token refresh not handled ❌
 **File:** `frontend/src/api.js:59`
 
-After a successful token refresh, `authFetch` retries the original request. If that retry also returns `401` (e.g. account banned mid-session, or the new token is immediately rejected), the code falls through to the generic error path — `clearAccessToken()` is never called, `auth-expired` is never dispatched, and the user stays stuck in a broken authenticated state.
+After a successful refresh, if the retried request returns 401 again, `clearAccessToken()` is never called and `auth-expired` is never dispatched — the user stays stuck in a broken authenticated state.
 
 ---
 
-### 10. leaveTournament has no status guard ❌
+### 13. leaveTournament has no status guard ❌
 **File:** `backend/src/services/tournament-service.js:192`
 
-A player can call `leaveTournament` on a tournament with `status: 'in-progress'` or `'completed'`. Removing a participant mid-tournament means the bracket still references their ID in existing matches, but they can never be paired again — the bracket stalls.
+A player can leave a tournament with `status: 'in-progress'` or `'completed'`, orphaning bracket entries that still reference their ID.
 
 ---
 
-### 11. updateTournament has no status guard 🆕
+### 14. updateTournament has no status guard ❌
 **File:** `backend/src/services/tournament-service.js:490`
 
-An admin can modify `numberOfRounds`, `category`, or `buyIn` on a live tournament. Reducing `numberOfRounds` below `currentRound` causes the next `reportMatchResult` call to immediately declare the tournament finished with wrong win counts.
+An admin can modify `numberOfRounds` or `category` on a live tournament. Reducing `numberOfRounds` below `currentRound` causes the next result report to immediately declare the tournament finished with wrong win counts.
 
 ---
 
-### 12. deleteTournament does not clean up Match documents 🆕
+### 15. deleteTournament does not clean up Match documents ❌
 **File:** `backend/src/services/tournament-service.js:547`
 
-`deleteTournament` deletes the `Tournament` document but performs no `Match.deleteMany({ tournamentId })`. All associated `Match` records remain in the database with a dangling `tournamentId` reference.
+Deleting a tournament leaves all associated `Match` documents with a dangling `tournamentId` reference.
 
 ---
 
-### 13. Refresh token cookie missing `secure` and `sameSite` ⚠️
+### 16. Refresh token cookie missing `secure` and `sameSite` ⚠️
 **File:** `backend/src/controllers/auth-controller.js:76`
 
-`httpOnly: true` and a scoped `path` are set. `secure: true` and `sameSite` are absent, leaving the cookie transmittable over plain HTTP and vulnerable to CSRF on the token-refresh endpoint.
+`httpOnly: true` and a scoped `path` are set. `secure: true` and `sameSite` are absent, leaving the cookie transmittable over plain HTTP and vulnerable to CSRF.
 
 ---
 
-### 14. Multer file type check is spoofable ❌
+### 17. Multer file type check is spoofable ❌
 **File:** `backend/src/middlewares/upload.js:9`
 
-Only `file.mimetype` (a client-supplied header) is checked. Any file can be uploaded with `Content-Type: image/png`. Validate actual magic bytes using a library such as `file-type`.
+Only the client-supplied `mimetype` header is checked — no magic-byte inspection.
 
 ---
 
-### 15. Tournament shuffle is biased ❌
-**Files:** `backend/src/services/tournament-service.js:225`, `backend/src/services/tournament-service.js:332`
+### 18. Tournament shuffle is biased ❌
+**Files:** `backend/src/services/tournament-service.js:225`, `:332`
 
-Both round-1 pairing (`startTournament`) and subsequent-round pairing (`reportMatchResult`) use `participants.sort(() => 0.5 - Math.random())`, a known non-uniform distribution. Replace with Fisher-Yates for fair random pairings.
+Both round-1 and next-round pairing use `sort(() => 0.5 - Math.random())`, a known non-uniform distribution. Replace with Fisher-Yates.
 
 ---
 
-### 16. resendVerifyEmail sends to already-verified users and has no input validation 🆕
+### 19. resendVerifyEmail sends to already-verified users and has no input validation ❌
 **Files:** `backend/src/services/auth-service.js:51`, `backend/src/controllers/auth-controller.js:39`
 
-- `resendUserVerification` does not check `user.isVerified` — it will create a new token and send a spurious email to users who are already verified.
-- `resendVerifyEmailController` reads `email` from `req.body` with no express-validator middleware. Submitting `email: undefined` causes `User.findOne({ email: undefined })`, which in Mongoose matches the first document with no email field.
+No `isVerified` guard and no express-validator middleware on the route. `email: undefined` causes `User.findOne({ email: undefined })`.
 
 ---
 
-### 17. Logout route shares the token-refresh rate limiter 🆕
+### 20. Logout route shares the token-refresh rate limiter ❌
 **File:** `backend/src/routes/auth-routes.js:73`
 
-`DELETE /sessions/current` (logout) is protected by `sessionTokenLimiter` (10 req/min), the same limiter as `POST /sessions/token`. An attacker who sends 10 fast token-refresh requests exhausts the window, preventing the victim from logging out until it resets.
+`DELETE /sessions/current` uses `sessionTokenLimiter` (10 req/min), the same limiter as token refresh. An attacker who exhausts the window can prevent the victim from logging out.
 
 ---
 
-### 18. Uploaded files stored without file extension ❌
+### 21. Uploaded files stored without extension ❌
 **File:** `backend/src/middlewares/upload.js:6`
 
-Multer's `dest: "uploads/"` stores files without extensions. Browsers cannot determine MIME type from filename, so avatar images may not render. Combined with issue 14, this also raises the risk of serving unidentifiable files.
+Multer's `dest: "uploads/"` stores files without extensions. Browsers cannot determine MIME type from filename.
 
 ---
 
-### 19. db.js and seed.js log the MongoDB URI in plaintext ❌
+### 22. db.js and seed.js log the MongoDB URI in plaintext ❌
 **Files:** `backend/src/config/db.js:12`, `backend/scripts/seed.js:13`
 
-Both log the full connection URI. If the URI contains credentials they will appear in logs. Strip credentials before logging.
+Both log the full connection URI. Strip credentials before logging.
 
 ---
 
-### 20. Sound implementation incomplete ❌
-**Files:** `frontend/src/providers/AppearanceProvider.jsx`, web components
-
-The appearance context exposes a `sound` toggle and the menu renders an on/off control, but there are no audio files, no `Audio` objects, and no event hooks in the game components. The README requires sounds for round start/end, dice rolls, holds, and game end.
+### 23. Sound implementation incomplete ❌
+No audio files, no `Audio` objects, no event hooks in game components. README requires sounds for round start/end, dice rolls, holds, and game end.
 
 ---
 
-### 21. Board background color not applied to web component ❌
+### 24. Board background color not applied to web component ❌
 **Files:** `frontend/src/components/appearance-menu/AppearanceMenu.jsx`, `frontend/src/components/web-components/dice-poker-board.js:406`
 
-`AppearanceMenu` lets the user pick a `boardColor`, but the web component hardcodes `--board-bg-color: #0b5f0b` inside its shadow DOM. The chosen color is never passed to the component as a CSS custom property on the host element.
+The chosen `boardColor` is never passed to the web component as a CSS custom property on the host element; the board background is hardcoded.
 
 ---
 
-### 22. No game state restoration on page reload ❌
+### 25. No game state restoration on page reload ❌
 **File:** `frontend/src/components/web-components/dice-poker-board.js`
 
-All web component state (dice values, held state, current player, round) is stored in in-memory instance properties. A browser refresh wipes all game state. The README explicitly requires state restoration on page reload.
+All web component state is in-memory. A browser refresh wipes all game state. README explicitly requires state restoration.
 
 ---
 
-### 23. Web components missing disconnectedCallback ❌
-**Files:** `frontend/src/components/web-components/dice-poker-board.js`, `frontend/src/components/web-components/dice-poker-die.js`
+### 26. Web components missing disconnectedCallback ❌
+**Files:** `frontend/src/components/web-components/dice-poker-board.js`, `dice-poker-die.js`
 
-`DicePokerMonitor` correctly removes listeners in `disconnectedCallback`. `DicePokerBoard` and `DicePokerDie` have no `disconnectedCallback` — their shadow DOM listeners are never removed when the elements are unmounted. `DicePokerDie` also has an active `_rollTimer` that can fire on a disconnected element.
+Shadow DOM listeners are never removed on unmount. `DicePokerDie` also has an active `_rollTimer` that can fire on a disconnected element.
 
 ---
 
 ## 🟡 Minor / Polish
 
-- **`frontend/src/pages/profile/Profile.jsx:322`** 🆕 — Unconditional access to `opponent.username` crashes with `TypeError` when a match has fewer than 2 players or the opponent's `userId` is null. Wrap with optional chaining: `opponent?.username`.
-- **`frontend/src/pages/profile/Profile.jsx:121`** 🆕 — `handleSave` replaces the entire `formData` object with `{ password: '', newPassword: '' }` after a password change, wiping `username`, `email`, and `bio`. A subsequent save without re-entering data sends an empty update.
-- **`frontend/src/pages/tournament/Tournament.jsx:411`** 🆕 — Live-matches list uses array index as React `key`. When matches change order or are removed, React reuses DOM nodes by position and can display stale winner data.
-- **`frontend/src/pages/login/Login.jsx:32`** ❌ — `useEffect` reads `searchParams` from the outer scope but has an empty dependency array `[]`. Works by intent (mount-only), but ESLint will warn and the stale closure can break if the component ever re-mounts with a different code in the URL.
-- **`frontend/src/pages/game/Game.jsx:342`** — Comments rendered with `key={index}`. Use `comment._id` for a stable key.
-- **`frontend/src/pages/lobby/Lobby.jsx:104,119,136`** — The "All" reset buttons inside filter groups have no `key` prop while sibling buttons do.
-- **`frontend/src/pages/all-games/AllGames.jsx`** ❌ — Route registered in `App.jsx` but reachable only from the Profile page; no main nav link.
-- **`frontend/src/pages/profile/Profile.jsx:99-109`** ⚠️ — `setSaveSuccess` is only called on email or password change. A user who saves only their bio or avatar gets no confirmation.
-- **`backend/src/services/elo-service.js:42`** ❌ — K-factor `32` is a bare magic number. Move to a named constant in `constants.js`.
-- **`backend/scripts/seed.js:273`** ⚠️ — Log says `'password123'`; actual seeded password is `Password123!`. Misleads developers trying to log in with seed data.
-- **`frontend/src/pages/game/Game.jsx:186,190`** — Two active `console.log` / `console.error` calls left in production code.
+- **`frontend/src/pages/admin/users/AdminUsers.jsx:18`** 🆕 — `const [disabledBtn] = useState(true)` is declared but never referenced. Dead state.
+- **`frontend/src/pages/admin/users/AdminUsers.jsx:14`** 🆕 — `setLimit` is never called anywhere; `limit` is permanently 10. Dead setter masquerading as configurable state.
+- **`backend/src/controllers/user-controller.js:75`** 🆕 — Double "not" typo: `"is not not an admin anymore"`. Should be `"is no longer an admin"`.
+- **`frontend/src/pages/profile/Profile.jsx:322`** — Unconditional access to `opponent.username` crashes with `TypeError` when a match has fewer than 2 players. Use optional chaining: `opponent?.username`.
+- **`frontend/src/pages/profile/Profile.jsx:121`** — `handleSave` replaces the entire `formData` with `{ password: '', newPassword: '' }` after a password change, corrupting `username`, `email`, and `bio`.
+- **`frontend/src/pages/tournament/Tournament.jsx:411`** — Live-matches list uses array index as React `key`. Use a stable match ID instead.
+- **`frontend/src/pages/login/Login.jsx:32`** ❌ — `useEffect` reads `searchParams` but has an empty dependency array.
+- **`frontend/src/pages/all-games/AllGames.jsx`** ❌ — Route registered but reachable only from the Profile page; no main nav link.
+- **`frontend/src/pages/profile/Profile.jsx:99-109`** ⚠️ — `setSaveSuccess` not called when saving bio or avatar only.
+- **`backend/src/services/elo-service.js:42`** ❌ — K-factor `32` is a bare magic number.
+- **`backend/scripts/seed.js:273`** ⚠️ — Log says `'password123'`; actual seeded password is `Password123!`.
+- **`frontend/src/pages/game/Game.jsx:173`** — TODO comment left in production code on the "Back to lobby" button.
 
 ---
 
@@ -203,11 +223,11 @@ All web component state (dice values, held state, current player, round) is stor
 
 | File | What's dead | Status |
 |------|-------------|--------|
-| `frontend/src/providers/AuthProvider.jsx` | `const [error, setError]` — set in catch block but never exposed in context value or rendered | ❌ |
-| `frontend/src/services/activity-service.js` | `getActivity()` — exported but never imported anywhere | ❌ |
+| `frontend/src/providers/AuthProvider.jsx` | `const [error, setError]` — set in catch block but never exposed or rendered | ❌ |
+| `frontend/src/services/activity-service.js` | `getActivity()` — exported but never imported | ❌ |
 | `frontend/src/hooks/useWebSockets.js` | `useGameWebSocket` — exported but never imported by any component | ❌ |
-| `frontend/src/pages/game/Game.jsx:46-159` | ~100 lines of WebSocket betting/board logic fully commented out with a TODO | ❌ |
-| `frontend/src/layouts/admin-layout/AdminLayout.jsx:1-2` | Two consecutive `import` lines from `"react-router-dom"` — should be one | ❌ |
+| `frontend/src/layouts/admin-layout/AdminLayout.jsx:1-2` | Two consecutive `import` lines from `"react-router-dom"` | ❌ |
+| `frontend/src/pages/admin/users/AdminUsers.jsx:18` | `disabledBtn` state — declared, never used | 🆕 |
 
 ---
 
@@ -217,30 +237,31 @@ All web component state (dice values, held state, current player, round) is stor
 |-------|----------|
 | Password hashing not secure (SHA-256 + static salt) | Replaced with bcrypt/crypto with per-user salts |
 | `/sessions/token` and `/sessions/current` had no rate limiting | Per-route `sessionTokenLimiter` added to auth routes |
-| WebSocket connections not authenticated | JWT verified on connection; socket closed with 4001 if invalid |
-| WebSocket messages trusted client-supplied `userId` | Game handler now uses `socket.userId` from verified token |
 | IP-mismatch incident not logged during token refresh | `logIncident` call added in `createAccessTokenService` |
 | Banned users could bypass ban via token refresh | `isBanned` check added in `createAccessTokenService` |
 | Security incidents endpoint lacked admin authorization | `authorize("admin")` middleware added |
 | `Login.jsx` crashed on email verification (`setLoading` undefined) | State now correctly uses `setIsLoading` |
 | `AdminDashboard.jsx` crashed rendering incidents (`inc` undefined) | Loop variable corrected |
 | `resetPasswordController` returned `201 Created` for an update | Changed to `200 OK` |
-| `passwordReset.js` field named `expireAt` (missing 's') | Renamed to `expiresAt` for consistency |
+| `passwordReset.js` field named `expireAt` (missing 's') | Renamed to `expiresAt` |
+| endGame + recordResult double ELO/points race | `route-handler.js` and `betting-handler.js` deleted |
+| Missing awaits in endRound/handleRoll causing stale DB writes | `route-handler.js` and `game-handler.js` deleted |
+| Admins could not be unbanned | `unBannUser` service + route + controller added |
+| Admins could not have admin role removed | `unMakeAdmin` service + route + controller added |
+| Game.jsx comment key used array index | Fixed to use `message._id` |
 | `registerUser` always returned `undefined` | `return newUser` added |
-| `passwordReset.js` broken `import { ref } from "process"` | Now imports from `crypto` and `auth-config` |
+| `passwordReset.js` broken import | Now imports from `crypto` and `auth-config` |
 | Circular dependency: `auth-controller` ↔ `auth-service` | `getAccessToken` moved to `utils/jwt.js` |
 | Email exposed in public profile endpoint | Owner/admin check added in `user-service.js` |
 | `express.static` used relative path | `path.join(import.meta.dirname, "uploads")` in `server.js` |
 | Leaderboard `straightsAllowed` filter inverted | Logic corrected in `leaderboard-service.js` |
 | `loadMoreGames` had no error handling | `.catch` and `.finally` added |
-| Dead imports in `auth-controller.js` | Removed |
-| Dead imports in `auth-routes.js` | Removed |
-| `ResetPassword.jsx` imported from wrong router package | Fixed |
+| Dead imports in `auth-controller.js` and `auth-routes.js` | Removed |
 | `Game.jsx` WebSocket hardcoded port `3000` | Now uses `VITE_WS_URL` env variable |
-| Password reset did not invalidate existing sessions | `Session.deleteMany({ userId })` added in `resetPassword` |
+| Password reset did not invalidate existing sessions | `Session.deleteMany({ userId })` added |
 | `verifyEmailService` silently succeeded on invalid tokens | Now throws `BusinessLogicError` |
-| `AppearanceProvider` crashed on corrupted localStorage | `JSON.parse` wrapped in try/catch with `defaultAppearance` fallback |
-| `AdminTournamentCreate` edit mode discarded most fields | All fields now loaded and submitted in edit mode |
+| `AppearanceProvider` crashed on corrupted localStorage | `JSON.parse` wrapped in try/catch |
+| `AdminTournamentCreate` edit mode discarded most fields | All fields now loaded and submitted |
 | Blank `<p></p>` always rendered in `ResetPassword.jsx` | Conditional rendering fixed |
 | `main.jsx` app not wrapped in `StrictMode` | `StrictMode` now wraps `<App />` |
-| Token TTL unit inconsistency | `REFRESH_TOKEN_TTL` in ms for cookie `maxAge`, JWT values in seconds |
+| Token TTL unit inconsistency | `REFRESH_TOKEN_TTL` in ms, JWT values in seconds |

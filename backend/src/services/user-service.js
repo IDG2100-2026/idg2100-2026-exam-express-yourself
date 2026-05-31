@@ -231,7 +231,11 @@ export async function makeAdmin(userId) {
 export async function unMakeAdmin(userId) {
   const user = await User.findById(userId);
   if (!user) throw new BusinessLogicError("User not found", 404);
-
+  const adminCount = await User.countDocuments({ role: "admin" });
+  if (adminCount <= 1) {
+    throw new BusinessLogicError("Cannot remove the last admin", 400);
+  }
+  
   user.role = "user";
   const savedUser = await user.save();
   return savedUser;
