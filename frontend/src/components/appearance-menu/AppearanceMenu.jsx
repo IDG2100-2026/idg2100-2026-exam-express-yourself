@@ -99,7 +99,7 @@ function AppearanceMenu() {
             <input
               type="range"
               min="1"
-              max="10"
+              max="5"
               value={lobbySize}
               className="appearance__slider"
               onChange={(e) => { setSliderValue(parseInt(e.target.value)); }}

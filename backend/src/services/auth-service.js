@@ -10,6 +10,7 @@ import {
 import { UserVerification } from "../models/UserVerification.js";
 import { normalizeIp } from "../utils/normalize-ip.js";
 import { getAccessToken } from "../utils/jwt.js";
+import { logIncident } from "./security-incidents-service.js";
 
 export const createSession = async (user, ip, agent) => {
   const session = await new Session({
@@ -21,6 +22,7 @@ export const createSession = async (user, ip, agent) => {
   await session.save(); // Saves the new session to db
   return session.refreshToken; // return sessions refresh token
 };
+
 
 export const registerUser = async (userData) => {
   const newUser = await new User({
@@ -44,6 +46,7 @@ export const registerUser = async (userData) => {
 
   return newUser;
 };
+
 
 export const resendUserVerification = async (email) => {
   const user = await User.findOne({ email });
@@ -97,6 +100,7 @@ export const resetPasswordRequest = async (email) => {
   await sendPasswordResetMail(user.email, resetToken.token); // sends the email with reset link
 };
 
+
 export const resetPassword = async (code, newPassword) => {
   if (!code || !newPassword)
     throw new BusinessLogicError("code and password are required", 400);
@@ -114,7 +118,8 @@ export const resetPassword = async (code, newPassword) => {
   await Session.deleteMany({ userId: user._id }); // invalidate all sessions after password reset e.g, log out of devices that has a session for this user
 };
 
-export const createAccessTokenService = async (refreshToken, requestIp) => {
+
+export const createAccessTokenService = async (refreshToken, requestIp, requestUserAgent) => {
   if (!refreshToken)
     throw new BusinessLogicError("No refresh token provided", 401); // cookie expired or never logged in
 
@@ -123,6 +128,12 @@ export const createAccessTokenService = async (refreshToken, requestIp) => {
 
   if (session.ip !== "unknown" && session.ip !== normalizeIp(requestIp)) {
     // If the ip that makes the request is different from the session ip
+    logIncident({
+      type: "ip-change",
+      ip: requestIp,
+      userAgent: requestUserAgent || "unknown",
+      userId: session.userId,
+    }).catch(() => {}); // fire and forget, don't block the response
     await session.deleteOne(); // deletes the session if the request is from another ip
     throw new BusinessLogicError("Session invalidated due to IP change", 401);
   }
@@ -138,6 +149,7 @@ export const createAccessTokenService = async (refreshToken, requestIp) => {
 
   return { accessToken, user };
 };
+
 
 export const logoutUserService = async (refreshToken) => {
   if (!refreshToken)

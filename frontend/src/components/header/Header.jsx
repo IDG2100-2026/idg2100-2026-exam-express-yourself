@@ -49,7 +49,7 @@ function Header() {
               {user ? (
                 <>
                   <Link to={`/profile/${user._id || user.userId}`} className="header__greeting btn btn--secondary">
-                    <span>Hello,</span>
+                    <span>Hello, {user.username}</span>
                     <Avatar imageUrl={user.profileImageUrl} username={user.username} size={24} />
                   </Link>
                   <button className="btn btn--red" onClick={handleLogout}>Log out</button>
@@ -89,7 +89,7 @@ function Header() {
           {user ? (
             <>
               <Link to={`/profile/${user._id || user.userId}`} className="header__greeting btn btn--secondary">
-                <span>Hello,</span>
+                <span>Hello, {user.username}</span>
                 <Avatar imageUrl={user.profileImageUrl} username={user.username} size={24} />
               </Link>
               <button className="btn btn--red" onClick={handleLogout}>Log out</button>

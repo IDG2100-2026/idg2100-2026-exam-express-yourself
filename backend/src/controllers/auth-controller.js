@@ -54,7 +54,7 @@ export const resetPasswordController = async (req, res, next) => {
   const { code, newPassword } = req.body;
   await resetPassword(code, newPassword);
 
-  res.status(201).json({ message: "Password has been changed successfully" });
+  res.status(200).json({ message: "Password has been changed successfully" });
 };
 
 // POST /api/users/login
@@ -99,6 +99,7 @@ export const createAccessToken = async (req, res, next) => {
   const { accessToken, user } = await createAccessTokenService(
     refreshToken,
     req.ip,
+    req.headers["user-agent"],
   );
 
   // return access token with minimal user info for frontend
