@@ -160,6 +160,9 @@ export default function Game() {
                 }}
               />
 
+              {/* Game status monitor */}
+              <dice-poker-monitor style={{ width: "100%" }} />
+
               {/* Game-over overlay */}
               {gameEnded && (
                 <div className="game__ended">
