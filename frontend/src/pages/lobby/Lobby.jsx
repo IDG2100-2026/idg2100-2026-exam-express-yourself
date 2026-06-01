@@ -171,7 +171,7 @@ export default function Lobby() {
                   </div>
                 </div>
                 <p className="lobby__card-variant">
-                  Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.category?.buyIn || 1}pt buy-in
+                  Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.buyIn || 1}pt buy-in
                 </p>
                 <p className="lobby__card-variant">{match.players?.length || 1}/{match.maxPlayers || 2} players</p>
                 <p className="lobby__card-waiting">{isOwn ? "Your game - waiting for players" : "Click to join"}</p>
