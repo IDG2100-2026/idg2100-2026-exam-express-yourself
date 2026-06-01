@@ -90,10 +90,10 @@ export default function Home() {
         <section className="home__activity stack-m">
           <h2>Platform activity</h2>
           <ul className="home__activity-list">
-            <li><strong>{data.activity.availableGames}</strong> open games</li>
-            <li><strong>{data.activity.ongoingMatches}</strong> games in progress</li>
-            <li><strong>{data.activity.activePlayers}</strong> players active this week</li>
-            <li><strong>{data.activity.gamesThisWeek}</strong> games played this week</li>
+            <li><span className="home__activity-value">{data.activity.availableGames}</span> open games</li>
+            <li><span className="home__activity-value">{data.activity.ongoingMatches}</span> games in progress</li>
+            <li><span className="home__activity-value">{data.activity.activePlayers}</span> players active this week</li>
+            <li><span className="home__activity-value">{data.activity.gamesThisWeek}</span> games played this week</li>
           </ul>
         </section>
       )}

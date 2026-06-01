@@ -169,7 +169,7 @@ export default function Register() {
               onChange={handleChange}
             />
             <label htmlFor="agreedToTerms">
-              I agree to the <Link to="/terms" target="_blank" className="btn--link">Terms & Conditions</Link>
+              I agree to the <Link to="/terms" target="_blank" className="btn--link">Terms & conditions</Link>
             </label>
           </div>
           <button type="submit" className="btn btn--primary register__submit" disabled={isSubmitting}>

@@ -2,7 +2,7 @@
 
 .admin-users {
   &__search {
-    width: 100%;
+    inline-size: 100%;
     max-inline-size: 400px;
     padding: $space-s;
     border: 1px solid $color-border;
@@ -21,7 +21,7 @@
   }
 
   &__table {
-    width: 100%;
+    inline-size: 100%;
     border-collapse: collapse;
 
     th {
