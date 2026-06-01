@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { loginUser, verifyEmail } from "../../services/auth-service.js";
+import { loginUser, verifyEmail, resendVerifyEmail } from "../../services/auth-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 
@@ -10,6 +10,11 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [verificationFailed, setVerificationFailed] = useState(false);
+  const [resendEmail, setResendEmail] = useState("");
+  const [resendSuccess, setResendSuccess] = useState(null);
+  const [resendError, setResendError] = useState(null);
+  const [isResending, setIsResending] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
   const { loadAppearance } = useAppearance();
@@ -24,7 +29,8 @@ export default function Login() {
         const data = await verifyEmail(code);
         setSuccess(data.message);
       } catch (err) {
-        setError(err.message);
+        setResendError(err.message);
+        setVerificationFailed(true);
       } finally {
         setIsLoading(false);
       }
@@ -56,6 +62,21 @@ export default function Login() {
       setError(err.message);
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function handleResend(event) {
+    event.preventDefault();
+    setResendError(null);
+    setResendSuccess(null);
+    setIsResending(true);
+    try {
+      const data = await resendVerifyEmail(resendEmail);
+      setResendSuccess(data.message);
+    } catch (err) {
+      setResendError(err.message);
+    } finally {
+      setIsResending(false);
     }
   }
 
@@ -111,6 +132,28 @@ export default function Login() {
         <p className="login__register">
           Don't have an account? <Link to="/register" className="btn--link">Register</Link>
         </p>
+
+        {verificationFailed && (
+          <form className="login__form stack-m" onSubmit={handleResend}>
+            <p className="login__status">Enter your email to receive a new verification link.</p>
+            {resendError && <p className="login__error">{resendError}</p>}
+            {resendSuccess && <p className="login__success">{resendSuccess}</p>}
+            <div className="login__field">
+              <label htmlFor="resendEmail">Email</label>
+              <input
+                id="resendEmail"
+                type="email"
+                value={resendEmail}
+                onChange={(e) => { setResendEmail(e.target.value); }}
+                placeholder="name@example.com"
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn--secondary login__submit" disabled={isResending}>
+              {isResending ? "Sending..." : "Resend verification email"}
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );

@@ -35,8 +35,8 @@ tournamentRouter.use(authenticate);
 
 
 // Authenticated users
-tournamentRouter.post("/:id/join", authorize("user"), joinTournament); // join a tournament
-tournamentRouter.post("/:id/leave", authorize("user"), leaveTournament); // leave a tournament
+tournamentRouter.post("/:id/join", authorize("user", "admin"), joinTournament); // join a tournament
+tournamentRouter.post("/:id/leave", authorize("user", "admin"), leaveTournament); // leave a tournament
 
 
 // Admin only
