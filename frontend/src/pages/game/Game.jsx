@@ -149,6 +149,15 @@ export default function Game() {
             })}
           </div>
 
+          {/* Game details */}
+          <ul className="game__meta">
+            <li>Best of {match.category?.rounds}</li>
+            <li>{match.category?.timeControl}s</li>
+            <li>{match.category?.straightsAllowed ? "Straights" : "No straights"}</li>
+            <li>{match.buyIn || 1}pt buy-in</li>
+            <li>{match.maxPlayers} players</li>
+          </ul>
+
           {/* Active game */}
           {match.status === "in-progress" && (
             <div className="game__active">
