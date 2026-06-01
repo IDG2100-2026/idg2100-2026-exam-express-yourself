@@ -45,6 +45,12 @@ export default function Game() {
   const socketRef = useRef(null);
 
 
+  useEffect(() => {
+    const handleMatchOver = () => navigate("/lobby");
+    window.addEventListener("board:matchOver", handleMatchOver);
+    return () => window.removeEventListener("board:matchOver", handleMatchOver);
+  }, [navigate]);
+
   async function handleLeave() {
     try { await leaveMatch(id); } catch { /* ignore */ }
     navigate("/lobby");
