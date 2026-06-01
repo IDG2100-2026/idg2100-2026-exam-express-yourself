@@ -132,9 +132,9 @@ export default function Game() {
 
           {/* Player headers */}
           <div className="game__players">
-            {playerSlots.map((player) => {
+            {playerSlots.map((player, index) => {
               return (
-                <div key={player._id} className="game__player">
+                <div key={index} className="game__player">
                   <Avatar imageUrl={player?.profileImageUrl} username={player?.username} size={48} />
                   <span className="game__player-name">
                     {player ? <Link to={`/profile/${player._id}`}>{player.username}</Link> : "Waiting..."}
