@@ -3,11 +3,13 @@ import {
   getAllComments,
   deleteComment,
 } from "../../../services/comments-service.js";
+import ConfirmModal from "../../../components/confirm-modal/ConfirmModal.jsx";
 
 export default function AdminComments() {
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(null);
 
   useEffect(() => {
     getAllComments()
@@ -22,18 +24,23 @@ export default function AdminComments() {
       });
   }, []);
 
-  async function handleDelete(id) {
-    if (!confirm("Delete this comment?")) return;
-    try {
-      await deleteComment(id);
-      setComments((prev) => {
-        return prev.filter((comment) => {
-          return comment._id !== id;
-        });
-      });
-    } catch (err) {
-      alert(err.message);
-    }
+  function handleDelete(id) {
+    setConfirmModal({
+      message: "Delete this comment?",
+      onConfirm: async () => {
+        setConfirmModal(null);
+        try {
+          await deleteComment(id);
+          setComments((prev) => {
+            return prev.filter((comment) => {
+              return comment._id !== id;
+            });
+          });
+        } catch (err) {
+          setError(err.message);
+        }
+      },
+    });
   }
 
   return (
@@ -81,6 +88,13 @@ export default function AdminComments() {
             );
           })}
         </ul>
+      )}
+      {confirmModal && (
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => { setConfirmModal(null); }}
+        />
       )}
     </div>
   );

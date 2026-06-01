@@ -6,6 +6,7 @@ import {
   unBannUser,
   unMakeAdmin,
 } from "../../../services/users-service.js";
+import ConfirmModal from "../../../components/confirm-modal/ConfirmModal.jsx";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -15,6 +16,7 @@ export default function AdminUsers() {
   const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(null);
 
   const fetchUsers = useCallback(async (searchTerm, pageNum, limitUsers) => {
     setIsLoading(true);
@@ -40,59 +42,84 @@ export default function AdminUsers() {
     setPage(1);
   }
 
-  async function handleBan(id) {
-    if (!confirm("Ban this user?")) return;
-    try {
-      await banUser(id);
-      setUsers((prev) =>
-        prev.map((user) =>
-          user._id === id ? { ...user, isBanned: true } : user,
-        ),
-      );
-    } catch (err) {
-      alert(err.message);
-    }
+  function handleBan(id) {
+    setConfirmModal({
+      message: "Ban this user?",
+      onConfirm: async () => {
+        setConfirmModal(null);
+        try {
+          await banUser(id);
+          setUsers((prev) => {
+            return prev.map((user) => {
+              if (user._id === id) { return { ...user, isBanned: true }; }
+              return user;
+            });
+          });
+        } catch (err) {
+          setError(err.message);
+        }
+      },
+    });
   }
 
-  async function handleUnBan(id) {
-    if (!confirm("Un-Ban this user?")) return;
-    try {
-      await unBannUser(id);
-      setUsers((prev) =>
-        prev.map((user) =>
-          user._id === id ? { ...user, isBanned: false } : user,
-        ),
-      );
-    } catch (err) {
-      alert(err.message);
-    }
+  function handleUnBan(id) {
+    setConfirmModal({
+      message: "Un-ban this user?",
+      onConfirm: async () => {
+        setConfirmModal(null);
+        try {
+          await unBannUser(id);
+          setUsers((prev) => {
+            return prev.map((user) => {
+              if (user._id === id) { return { ...user, isBanned: false }; }
+              return user;
+            });
+          });
+        } catch (err) {
+          setError(err.message);
+        }
+      },
+    });
   }
 
-  async function handleMakeAdmin(id) {
-    if (!confirm("Promote this user to admin?")) return;
-    try {
-      await makeAdmin(id);
-      setUsers((prev) =>
-        prev.map((user) =>
-          user._id === id ? { ...user, role: "admin" } : user,
-        ),
-      );
-    } catch (err) {
-      alert(err.message);
-    }
+  function handleMakeAdmin(id) {
+    setConfirmModal({
+      message: "Promote this user to admin?",
+      onConfirm: async () => {
+        setConfirmModal(null);
+        try {
+          await makeAdmin(id);
+          setUsers((prev) => {
+            return prev.map((user) => {
+              if (user._id === id) { return { ...user, role: "admin" }; }
+              return user;
+            });
+          });
+        } catch (err) {
+          setError(err.message);
+        }
+      },
+    });
   }
-  async function handleUnmakeAdmin(id) {
-    if (!confirm("Unmake this user as admin")) return;
-    try {
-      await unMakeAdmin(id);
-      setUsers((prev) =>
-        prev.map((user) =>
-          user._id === id ? { ...user, role: "user" } : user,
-        ),
-      );
-    } catch (err) {
-      alert(err.message);
-    }
+
+  function handleUnmakeAdmin(id) {
+    setConfirmModal({
+      message: "Remove admin from this user?",
+      onConfirm: async () => {
+        setConfirmModal(null);
+        try {
+          await unMakeAdmin(id);
+          setUsers((prev) => {
+            return prev.map((user) => {
+              if (user._id === id) { return { ...user, role: "user" }; }
+              return user;
+            });
+          });
+        } catch (err) {
+          setError(err.message);
+        }
+      },
+    });
   }
 
   return (
@@ -244,6 +271,13 @@ export default function AdminUsers() {
           Next
         </button>
       </div>
+      {confirmModal && (
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => { setConfirmModal(null); }}
+        />
+      )}
     </div>
   );
 }

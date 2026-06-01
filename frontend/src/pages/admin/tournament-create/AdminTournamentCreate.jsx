@@ -5,6 +5,7 @@ import {
   updateTournament,
   getTournament,
 } from "../../../services/tournaments-service.js";
+import ConfirmModal from "../../../components/confirm-modal/ConfirmModal.jsx";
 
 const EMPTY_FORM = {
   title: "",
@@ -30,6 +31,7 @@ export default function AdminTournamentCreate() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(null);
 
   useEffect(() => {
     if (!isEdit) return;
@@ -122,11 +124,9 @@ export default function AdminTournamentCreate() {
     }
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function doSubmit() {
     setError(null);
     setIsSubmitting(true);
-
     try {
       if (isEdit) {
         await updateTournament(id, {
@@ -167,7 +167,6 @@ export default function AdminTournamentCreate() {
         if (form.trophyImage) {
           formData.append("trophyImage", form.trophyImage);
         }
-
         const { tournament } = await createTournament(formData);
         navigate(`/tournament/${tournament._id}`);
       }
@@ -175,6 +174,21 @@ export default function AdminTournamentCreate() {
       setError(err.message);
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    if (isEdit) {
+      doSubmit();
+    } else {
+      setConfirmModal({
+        message: "Create this tournament?",
+        onConfirm: async () => {
+          setConfirmModal(null);
+          await doSubmit();
+        },
+      });
     }
   }
 
@@ -376,6 +390,14 @@ export default function AdminTournamentCreate() {
           {submitLabel}
         </button>
       </form>
+
+      {confirmModal && (
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => { setConfirmModal(null); }}
+        />
+      )}
     </div>
   );
 }

@@ -11,6 +11,7 @@ import {
 } from "../../services/tournaments-service.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
+import ConfirmModal from "../../components/confirm-modal/ConfirmModal.jsx";
 
 
 function getTimeLeft(targetDate) {
@@ -48,6 +49,7 @@ export default function Tournament() {
   const [error, setError] = useState(null);
   const [actionMsg, setActionMsg] = useState("");
   const [actionError, setActionError] = useState("");
+  const [confirmModal, setConfirmModal] = useState(null);
   const targetType = "Tournament";
   const targetId = id;
   const [messages, setMessages] = useState([]);
@@ -132,40 +134,55 @@ export default function Tournament() {
     }
   }
 
-  async function handleStart() {
-    setActionMsg("");
-    setActionError("");
-    try {
-      await startTournament(id);
-      setActionMsg("Tournament started!");
-      setTournament(await getTournament(id));
-    } catch (err) {
-      setActionError(err.message);
-    }
+  function handleStart() {
+    setConfirmModal({
+      message: "Start this tournament?",
+      onConfirm: async () => {
+        setConfirmModal(null);
+        setActionMsg("");
+        setActionError("");
+        try {
+          await startTournament(id);
+          setActionMsg("Tournament started!");
+          setTournament(await getTournament(id));
+        } catch (err) {
+          setActionError(err.message);
+        }
+      },
+    });
   }
 
-  async function handleCancel() {
-    if (!confirm("Cancel this tournament?")) return;
-    setActionMsg("");
-    setActionError("");
-    try {
-      await cancelTournament(id);
-      setActionMsg("Tournament cancelled.");
-      setTournament(await getTournament(id));
-    } catch (err) {
-      setActionError(err.message);
-    }
+  function handleCancel() {
+    setConfirmModal({
+      message: "Cancel this tournament?",
+      onConfirm: async () => {
+        setConfirmModal(null);
+        setActionMsg("");
+        setActionError("");
+        try {
+          await cancelTournament(id);
+          setActionMsg("Tournament cancelled.");
+          setTournament(await getTournament(id));
+        } catch (err) {
+          setActionError(err.message);
+        }
+      },
+    });
   }
 
-  async function handleDelete() {
-    if (!confirm("Permanently delete this tournament? This cannot be undone."))
-      return;
-    try {
-      await deleteTournament(id);
-      navigate("/tournaments");
-    } catch (err) {
-      setActionError(err.message);
-    }
+  function handleDelete() {
+    setConfirmModal({
+      message: "Delete this tournament?",
+      onConfirm: async () => {
+        setConfirmModal(null);
+        try {
+          await deleteTournament(id);
+          navigate("/tournaments");
+        } catch (err) {
+          setActionError(err.message);
+        }
+      },
+    });
   }
 
   useEffect(() => {
@@ -539,6 +556,14 @@ export default function Tournament() {
           <p className="tournament__status">Log in to leave a comment.</p>
         )}
       </div>
+
+      {confirmModal && (
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => { setConfirmModal(null); }}
+        />
+      )}
     </div>
   );
 }
