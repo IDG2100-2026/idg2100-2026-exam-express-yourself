@@ -12,21 +12,12 @@
     background-color: $color-inner;
   }
 
-  &__hero h1 { color: $color-text; }
-
   &__hero-accent {
     color: $color-yellow;
   }
 
   &__hero-description {
-    max-width: 50ch;
-    color: $color-text-dim;
-  }
-
-  &__hero-image {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    max-inline-size: 50ch;
   }
 
   &__hero-img {
@@ -93,12 +84,12 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 700px) {
   .home__hero {
     grid-template-columns: 1fr;
   }
 
-  .home__hero-image {
-    justify-content: center;
+  .home__hero-img {
+    margin-block-start: $space-m;
   }
 }

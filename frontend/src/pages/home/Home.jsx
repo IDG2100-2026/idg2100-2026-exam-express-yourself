@@ -72,7 +72,8 @@ export default function Home() {
     <div className="home stack-l">
       <section className="home__hero">
         <div className="home__hero-content stack-m">
-          <h1>Spanish <span className="home__hero-accent">poker</span> dice</h1>
+          <h1>PokerDados</h1>
+          <h2>Spanish <span className="home__hero-accent">poker</span> dice</h2>
           <p className="home__hero-description">
             Challenge players from around the world in the classic Spanish dice game.
             Bluff, roll, and outsmart your opponents to win tournaments and earn trophies.
@@ -81,9 +82,7 @@ export default function Home() {
             Create game
           </Link>
         </div>
-        <div className="home__hero-image">
-          <img src={spanishDiceImg} alt="Spanish poker dice" className="home__hero-img" />
-        </div>
+        <img src={spanishDiceImg} alt="Spanish poker dice" className="home__hero-img" />
       </section>
 
       {data.activity && (
