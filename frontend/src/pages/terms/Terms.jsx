@@ -1,7 +1,7 @@
 export default function Terms() {
   return (
     <div className="terms stack-l">
-      <h1>Terms & Conditions</h1>
+      <h1>Terms & conditions</h1>
       <p className="terms__updated">Last updated: April 2026</p>
       <section className="terms__section stack-s">
         <h2>1. Acceptance</h2>

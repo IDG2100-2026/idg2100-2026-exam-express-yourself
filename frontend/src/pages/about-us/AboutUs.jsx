@@ -24,15 +24,15 @@ export default function AboutUs() {
         <ul className="about-us__team">
           <li className="about-us__member">
             <div className="about-us__member-avatar">EL</div>
-            <strong>Emil</strong>
+            <span className="about-us__member-name">Emil</span>
           </li>
           <li className="about-us__member">
             <div className="about-us__member-avatar">NB</div>
-            <strong>Nicolai</strong>
+            <span className="about-us__member-name">Nicolai</span>
           </li>
           <li className="about-us__member">
             <div className="about-us__member-avatar">AM</div>
-            <strong>Adrian</strong>
+            <span className="about-us__member-name">Adrian</span>
           </li>
         </ul>
       </section>

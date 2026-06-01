@@ -49,7 +49,7 @@ function AppearanceMenu() {
 
       {open && (
         <div className="appearance__menu stack-m">
-          <div className="appearance__row">
+          <div className="appearance__row stack-s">
             <span className="appearance__label">Theme</span>
             <div className="appearance__options">
               <button className={darkBtnClass} onClick={() => { update("theme", "dark"); }}>
@@ -61,7 +61,7 @@ function AppearanceMenu() {
             </div>
           </div>
 
-          <div className="appearance__row">
+          <div className="appearance__row stack-s">
             <span className="appearance__label">Board colour</span>
             <div className="appearance__colors">
               {BOARD_COLORS.map((colorOption) => {
@@ -82,7 +82,7 @@ function AppearanceMenu() {
             </div>
           </div>
 
-          <div className="appearance__row">
+          <div className="appearance__row stack-s">
             <span className="appearance__label">Sound</span>
             <div className="appearance__options">
               <button className={soundOnClass} onClick={() => { update("sound", true); }}>
@@ -94,12 +94,12 @@ function AppearanceMenu() {
             </div>
           </div>
 
-          <div className="appearance__row">
-            <span className="appearance__label">Lobby preview ({lobbySize})</span>
+          <div className="appearance__row stack-s">
+            <span className="appearance__label">Lobby preview (<span className="appearance__count">{lobbySize}</span>)</span>
             <input
               type="range"
               min="1"
-              max="5"
+              max="10"
               value={lobbySize}
               className="appearance__slider"
               onChange={(e) => { setSliderValue(parseInt(e.target.value)); }}

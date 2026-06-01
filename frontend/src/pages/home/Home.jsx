@@ -5,6 +5,7 @@ import { getTournaments } from "../../services/tournaments-service.js";
 import { getPlatformActivity } from "../../services/platform-activity-service.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { useAuth } from "../../hooks/useAuth.js";
+import spanishDiceImg from "../../assets/images/spanish-dice.jpg";
 
 function getPlayer(match, index) {
   return match.players?.[index]?.userId || null;
@@ -70,22 +71,28 @@ export default function Home() {
   return (
     <div className="home stack-l">
       <section className="home__hero">
-        <h1>Spanish Poker Dice</h1>
-        <p className="home__description">
-          Challenge players from around the world in the classic Spanish dice game.
-          Bluff, roll, and outsmart your opponents to win tournaments and earn trophies.
-        </p>
-        {/* <Link to="/create-game" className="home__cta btn btn--primary">+ Create game</Link> */}
+        <div className="home__hero-content stack-m">
+          <h1>PokerDados</h1>
+          <h2>Spanish <span className="home__hero-accent">poker</span> dice</h2>
+          <p className="home__hero-description">
+            Challenge players from around the world in the classic Spanish dice game.
+            Bluff, roll, and outsmart your opponents to win tournaments and earn trophies.
+          </p>
+          <Link to="/create-game" className="btn btn--primary">
+            Create game
+          </Link>
+        </div>
+        <img src={spanishDiceImg} alt="Spanish poker dice" className="home__hero-img" />
       </section>
 
       {data.activity && (
         <section className="home__activity stack-m">
           <h2>Platform activity</h2>
           <ul className="home__activity-list">
-            <li><strong>{data.activity.availableGames}</strong> open games</li>
-            <li><strong>{data.activity.ongoingMatches}</strong> games in progress</li>
-            <li><strong>{data.activity.activePlayers}</strong> players active this week</li>
-            <li><strong>{data.activity.gamesThisWeek}</strong> games played this week</li>
+            <li><span className="home__activity-value">{data.activity.availableGames}</span> open games</li>
+            <li><span className="home__activity-value">{data.activity.ongoingMatches}</span> games in progress</li>
+            <li><span className="home__activity-value">{data.activity.activePlayers}</span> players active this week</li>
+            <li><span className="home__activity-value">{data.activity.gamesThisWeek}</span> games played this week</li>
           </ul>
         </section>
       )}
@@ -96,10 +103,7 @@ export default function Home() {
       {!isLoading && !error && (
         <>
           <section className="home__section stack-m">
-            <div>
-            <h2>Open games <Link to="/create-game" className="home__cta btn btn--primary">Create game</Link></h2>
-
-            </div>
+            <h2>Open games</h2>
             {data.waiting.length === 0 ? (
               <p className="home__empty">No open games right now.</p>
             ) : (

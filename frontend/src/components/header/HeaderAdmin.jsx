@@ -17,7 +17,7 @@ export default function HeaderAdmin() {
   return (
     <header className="admin-header">
       <div className="admin-header__inner">
-        <Link to="/" className="admin-header__logo">🎲 PokerDados</Link>
+        <Link to="/" className="admin-header__logo">PokerDados</Link>
 
         {!isMobile && (
           <nav className="admin-header__nav">

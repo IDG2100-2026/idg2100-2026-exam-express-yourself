@@ -15,23 +15,21 @@
     top: calc(100% + #{$space-s});
     right: 0;
     z-index: 100;
-    min-inline-size: 240px;
     padding: $space-m;
     border: 1px solid $color-border;
     border-radius: $radius;
     background-color: $color-inner;
   }
 
-  &__row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: $space-s;
-  }
-
   &__label {
     white-space: nowrap;
     color: $color-text-dim;
+  }
+
+  &__count {
+    display: inline-block;
+    inline-size: 2ch;
+    text-align: center;
   }
 
   &__options {
@@ -64,7 +62,7 @@
   }
 
   &__slider {
-    flex: 1;
+    inline-size: 100%;
     accent-color: $color-yellow;
   }
 }

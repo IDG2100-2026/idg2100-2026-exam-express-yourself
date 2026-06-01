@@ -24,8 +24,8 @@
 
     textarea {
       padding: $space-s;
-      max-height: 210px;
-      min-height: 100px;
+      max-block-size: 210px;
+      min-block-size: 100px;
       border: 1px solid $color-border;
       border-radius: $radius;
       outline: none;

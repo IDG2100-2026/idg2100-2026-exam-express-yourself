@@ -26,10 +26,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 56px;
-    height: 56px;
+    inline-size: 56px;
+    block-size: 56px;
     border-radius: 50%;
     color: #1a1200;
     background-color: $color-yellow;
+  }
+
+  &__member-name {
+    font-weight: bold;
   }
 }

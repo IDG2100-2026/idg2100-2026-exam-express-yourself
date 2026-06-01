@@ -52,12 +52,10 @@
 }
 
 @media (max-width: 520px) {
-  .footer__inner{
+  .footer__inner {
     flex-direction: column;
+    gap: $space-m;
     text-align: center;
-  }
-  .footer__links{
-    font-size: .8rem;
   }
 }
 @media (max-width: 350px) {

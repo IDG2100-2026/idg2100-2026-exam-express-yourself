@@ -51,7 +51,7 @@
   }
 
   &__countdown-value {
-    min-width: 2.5ch;
+    min-inline-size: 2.5ch;
     font-variant-numeric: tabular-nums;
     text-align: center;
     color: $color-yellow;
@@ -78,7 +78,7 @@
   }
 
   &__info-label {
-    min-width: 80px;
+    min-inline-size: 80px;
     color: $color-text-dim;
   }
 
@@ -107,8 +107,8 @@
   }
 
   &__trophy-img {
-    width: 48px;
-    height: 48px;
+    inline-size: 48px;
+    block-size: 48px;
     border-radius: $radius;
     object-fit: contain;
   }
