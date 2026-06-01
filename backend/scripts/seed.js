@@ -5,6 +5,7 @@ import Match from "../src/models/Match.js";
 import Tournament from "../src/models/Tournament.js";
 import Comment from "../src/models/Comment.js";
 import { Session } from "../src/models/Session.js";
+import { hashPassword } from "../src/utils/password-hash.js";
 
 const { DB_HOSTNAME, DB_PORT, DB_NAME } = process.env;
 const MONGODB_URI = `mongodb://${DB_HOSTNAME}:${DB_PORT}/${DB_NAME}`;
@@ -21,10 +22,6 @@ await Session.deleteMany({});
 console.log("Cleared all collections");
 
 // Shared hashed password, all seed users use "Password123!"
-const hashPassword = (password) => {
-  const hash = password + process.env.PASSWORD_SALT;
-  return crypto.createHash("sha256").update(hash).digest("hex").toString();
-};
 const hashedPassword = hashPassword("Password123!");
 const verified = { isVerified: true };
 

@@ -106,6 +106,7 @@ export default function Login() {
           <Link to="/forgot-password" className="login__forgot btn--link">
             Forgot password?
           </Link>
+          <Link className="login__forgot btn--link">Re-send verification email</Link>
         </form>
         <p className="login__register">
           Don't have an account? <Link to="/register" className="btn--link">Register</Link>
