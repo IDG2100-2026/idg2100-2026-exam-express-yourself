@@ -124,7 +124,7 @@ export default function Home() {
                       >
                         <h3>{p1?.username || "Unknown"}</h3>
                         <p className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "?"}</p>
-                        <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.category?.buyIn || 1}pt buy-in</p>
+                        <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.buyIn || 1}pt buy-in</p>
                         <p className="home__card-variant">{match.players?.length || 1}/{match.maxPlayers || 2} players</p>
                         <p className="home__card-waiting">{isOwn ? "Your game - waiting for players" : "Click to join"}</p>
                       </Link>
@@ -147,7 +147,7 @@ export default function Home() {
                     <Link to={`/game/${match._id}`} className={`home__card home__card--${match.status} card stack-s`}>
                       <h3>{getPlayer(match, 0)?.username || "?"} vs {getPlayer(match, 1)?.username || "waiting"}</h3>
                       <p className="home__card-elo">Avg Elo: {avgElo(match)}</p>
-                      <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.category?.buyIn || 1}pt buy-in</p>
+                      <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.buyIn || 1}pt buy-in</p>
                       <p className={`home__card-status home__card-status--${match.status}`}>{match.status}</p>
                     </Link>
                   </li>
