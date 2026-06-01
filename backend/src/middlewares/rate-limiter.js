@@ -28,7 +28,7 @@ export const forgotPasswordRateLimiter = rateLimit({
       .status(429)
       .json({
         error:
-          "Too many password reset attempts. Please try again in 15 minutes.",
+          "Too many password reset attempts. Please try again in 15 minutes or contact pokerdados2026@gmail.com",
       });
   },
 });
