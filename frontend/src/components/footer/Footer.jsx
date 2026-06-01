@@ -16,7 +16,7 @@ function Footer() {
             Privacy policy
           </NavLink>
           <NavLink to="/terms" className="footer__link">
-            Terms & Conditions
+            Terms & conditions
           </NavLink>
         </nav>
       </div>

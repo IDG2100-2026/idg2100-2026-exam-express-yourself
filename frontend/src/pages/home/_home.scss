@@ -2,32 +2,40 @@
 
 .home {
   &__hero {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    gap: 1rem;
+    gap: $space-xl;
+    padding: $space-xl;
     border: 1px solid $color-border;
     border-radius: $radius-large;
-    text-align: center;
     background-color: $color-inner;
-    padding: 30px;
-  }
-  &__cta{
-    font-size: 1rem;
-    margin-inline-start:1rem;
   }
 
-  &__description {
-    max-width: 60ch;
+  &__hero h1 { color: $color-text; }
+
+  &__hero-accent {
+    color: $color-yellow;
   }
 
-  &__cta {
-    display: inline-block;
-    border-radius: $radius;
-    color: #1a1200;
-    background-color: $color-yellow;
+  &__hero-description {
+    max-width: 50ch;
+    color: $color-text-dim;
+  }
 
-    &:hover { background-color: $color-yellow-hover; }
+  &__hero-image {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  &__hero-img {
+    max-inline-size: 100%;
+    max-block-size: 280px;
+    object-fit: contain;
+    border-radius: $radius-large;
+    transform: rotate(4deg);
+    box-shadow: 0 16px 16px rgba(0, 0, 0, 0.2);
   }
 
   &__activity-list {
@@ -83,8 +91,12 @@
   }
 }
 
-@media (max-width: 330px){
-  .home__cta{
-    font-size: .7rem;
+@media (max-width: 640px) {
+  .home__hero {
+    grid-template-columns: 1fr;
+  }
+
+  .home__hero-image {
+    justify-content: center;
   }
 }
