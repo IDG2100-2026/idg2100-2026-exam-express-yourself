@@ -29,7 +29,7 @@ export default function Login() {
         const data = await verifyEmail(code);
         setSuccess(data.message);
       } catch (err) {
-        setError(err.message);
+        setResendError(err.message);
         setVerificationFailed(true);
       } finally {
         setIsLoading(false);
