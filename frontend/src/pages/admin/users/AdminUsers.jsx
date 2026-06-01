@@ -119,6 +119,7 @@ export default function AdminUsers() {
               <th>Email</th>
               <th>Role</th>
               <th>Status</th>
+              <th>Verified</th>
               <th>Joined</th>
               <th>Actions</th>
             </tr>
@@ -160,6 +161,17 @@ export default function AdminUsers() {
                       ) : (
                         <span className="admin-users__badge admin-users__badge--active">
                           Active
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      {user.isVerified ? (
+                        <span>
+                          Verified
+                        </span>
+                      ) : (
+                        <span className="admin-users__badge admin-users__badge--notVerified">
+                          Not Verified
                         </span>
                       )}
                     </td>

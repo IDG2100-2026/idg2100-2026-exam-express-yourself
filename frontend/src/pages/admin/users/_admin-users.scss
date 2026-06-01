@@ -53,6 +53,7 @@
     &--user   { color: $color-text-dim; }
     &--active { color: $color-green; }
     &--banned { color: $color-red; }
+    &--notVerified {color: $color-red}
   }
 
   &__actions {
