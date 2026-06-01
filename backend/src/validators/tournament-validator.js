@@ -69,7 +69,7 @@ export function validateCreateTournament() {
       .withMessage("Tournament's cannot be created with a start date back in time!")
       .bail()
       .custom(createTournamentInAdvanced)
-      .withMessage("Tournament's cannot be created longer than one month in advance"),
+      .withMessage("Tournament's cannot be created longer than one year in advance"),
     body("numberOfRounds")
       .optional()
       .isInt({ min: 1 })

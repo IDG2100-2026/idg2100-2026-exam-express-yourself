@@ -572,10 +572,10 @@ export const createTournamentInFuture = (value) => {
 }
 export const createTournamentInAdvanced = (value) => {
   const createDay = new Date();
-  const oneMonth = new Date(value);
+  const oneYear = new Date(value);
 
-const timeDifference = oneMonth.getTime() - createDay.getTime();
+const timeDifference = oneYear.getTime() - createDay.getTime();
 const dayDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
 
-return dayDifference >= 0 && dayDifference <= 30;
+return dayDifference >= 0 && dayDifference <= 365;
 }
