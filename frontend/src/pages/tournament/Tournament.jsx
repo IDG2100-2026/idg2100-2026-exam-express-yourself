@@ -252,7 +252,7 @@ export default function Tournament() {
           <span className="tournament__countdown-label">Winner</span>
           <div className="tournament__winner-profile">
             <Avatar imageUrl={tournament.winnerId.profileImageUrl} username={tournament.winnerId.username} size={48} />
-            <span>{tournament.winnerId.username}</span>
+            <Link to={`/profile/${tournament.winnerId._id}`}><span>{tournament.winnerId.username}</span></Link>
           </div>
         </div>
       )}
