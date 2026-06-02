@@ -11,6 +11,12 @@ class DicePokerMonitor extends HTMLElement {
     this._onRoundDecided = this._onRoundDecided.bind(this);
   }
 
+  _name(key) {
+    return key === "player1"
+      ? (this.getAttribute("player1") || "Player 1")
+      : (this.getAttribute("player2") || "Player 2");
+  }
+
   connectedCallback() {
     this._render();
     this._eventTarget = this.getRootNode();
@@ -40,20 +46,17 @@ class DicePokerMonitor extends HTMLElement {
 
   _onRoundDecided(event) {
     const { winner, hands } = event.detail;
-    const winnerText =
-      winner === "player1"
-        ? "Winner: Player 1"
-        : winner === "player2"
-        ? "Winner: Player 2"
-        : "Winner: Tie";
+    const winnerText = winner === "tie"
+      ? "Tie"
+      : `Winner: ${this._name(winner)}`;
     const p1Hand = hands.player1.handType;
     const p2Hand = hands.player2.handType;
-    this._roundResultText = `${winnerText} | P1: ${p1Hand} | P2: ${p2Hand}`;
+    this._roundResultText = `${winnerText} | ${this._name("player1")}: ${p1Hand} | ${this._name("player2")}: ${p2Hand}`;
     this._render();
   }
 
   _render() {
-    const playerLabel = this._activePlayer === "player1" ? "Player 1" : "Player 2";
+    const playerLabel = this._name(this._activePlayer);
      
     this.shadowRoot.innerHTML = `
     <style>

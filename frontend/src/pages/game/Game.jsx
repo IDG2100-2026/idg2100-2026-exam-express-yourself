@@ -176,7 +176,11 @@ export default function Game() {
               />
 
               {/* Game status monitor */}
-              <dice-poker-monitor style={{ width: "100%" }} />
+              <dice-poker-monitor
+                player1={playerSlots[0] ? playerSlots[0].username : "Player 1"}
+                player2={playerSlots[1] ? playerSlots[1].username : "Player 2"}
+                style={{ width: "100%" }}
+              />
 
               {/* Game-over overlay */}
               {gameEnded && (
