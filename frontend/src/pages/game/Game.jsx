@@ -10,7 +10,6 @@ import Avatar from "../../components/avatar/Avatar.jsx";
 // Register the custom elements as side effects
 import "../../components/web-components/dice-poker-die.js";
 import "../../components/web-components/dice-poker-board.js";
-import "../../components/web-components/dice-poker-monitor.js";
 
 export default function Game() {
   const { id } = useParams();
@@ -52,7 +51,7 @@ export default function Game() {
     return () => window.removeEventListener("board:matchOver", handleMatchOver);
   }, [navigate]);
 
-  // Sound effects — gated by appearance.sound setting
+  // Sound effects, gated by appearance.sound setting
   useEffect(() => {
     if (!appearance.sound) return;
     const play = (fn) => () => fn();
@@ -189,13 +188,6 @@ export default function Game() {
                   width: "100%",
                   "--board-bg-color": appearance.boardColor,
                 }}
-              />
-
-              {/* Game status monitor */}
-              <dice-poker-monitor
-                player1={playerSlots[0] ? playerSlots[0].username : "Player 1"}
-                player2={playerSlots[1] ? playerSlots[1].username : "Player 2"}
-                style={{ width: "100%" }}
               />
 
               {/* Game-over overlay */}
