@@ -15,6 +15,7 @@ class DicePokerBoard extends HTMLElement {
     this._wins = { player1: 0, player2: 0 };
     this._matchOver = false;
     this._matchWinner = null;
+    this._lastResult = "";
   }
 
   connectedCallback() {
@@ -89,7 +90,7 @@ class DicePokerBoard extends HTMLElement {
     });
   }
 
-  // ── Public API for WebSocket integration ──────────────────────────────────
+  // ---- Public API for WebSocket integration ----
 
   // Force the active player to roll (called automatically at round/turn start)
   autoRoll() {
@@ -116,7 +117,7 @@ class DicePokerBoard extends HTMLElement {
     setTimeout(() => this.autoRoll(), 50);
   }
 
-  // ── Internal game logic ───────────────────────────────────────────────────
+  // ---- Internal game logic ----
 
   _tryRoll(player) {
     if (this._matchOver) return;
@@ -153,6 +154,16 @@ class DicePokerBoard extends HTMLElement {
     const faces1 = this._getFacesFor("player1");
     const faces2 = this._getFacesFor("player2");
     const comparison = this._compareHands(faces1, faces2);
+
+    let roundWinnerText;
+    if (comparison.winner === "tie") {
+      roundWinnerText = "Tie";
+    } else if (comparison.winner === "player1") {
+      roundWinnerText = `${this._player1} wins`;
+    } else {
+      roundWinnerText = `${this._player2} wins`;
+    }
+    this._lastResult = `${roundWinnerText} | ${this._player1}: ${comparison.hand1.name} | ${this._player2}: ${comparison.hand2.name}`;
 
     this._emitRoundDecided({
       winner: comparison.winner,
@@ -205,6 +216,7 @@ class DicePokerBoard extends HTMLElement {
     this._wins.player2 = 0;
     this._matchOver = false;
     this._matchWinner = null;
+    this._lastResult = "";
     this._activePlayer = "player1";
     this._remainingRolls = 3;
     this._render();
@@ -219,12 +231,27 @@ class DicePokerBoard extends HTMLElement {
   }
 
   _updateTurnUI() {
-    const status = this.shadowRoot.getElementById("turnStatus");
-    if (!status) return;
-    const name = this._activePlayer === "player1" ? this._player1 : this._player2;
-    status.textContent =
-      `Turn: ${name} | Rolls left: ${this._remainingRolls} | ` +
-      `Score: ${this._wins.player1}-${this._wins.player2}`;
+    const statusBar = this.shadowRoot.getElementById("statusBar");
+    if (!statusBar) return;
+
+    let activePlayerName;
+    if (this._activePlayer === "player1") {
+      activePlayerName = this._player1;
+    } else {
+      activePlayerName = this._player2;
+    }
+
+    let lastResultText = "-";
+    if (this._lastResult) {
+      lastResultText = this._lastResult;
+    }
+
+    statusBar.innerHTML =
+      `<span>Round: ${this._round}</span>` +
+      `<span>Turn: ${activePlayerName}</span>` +
+      `<span>Rolls left: ${this._remainingRolls}</span>` +
+      `<span>Score: ${this._wins.player1}-${this._wins.player2}</span>` +
+      `<span>Last result: ${lastResultText}</span>`;
   }
 
   _updateButtonsUI() {
@@ -457,6 +484,12 @@ class DicePokerBoard extends HTMLElement {
 
       .small { font-size: 0.9rem; opacity: 0.9; }
 
+      .status-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
       .player-name.p1 { color: var(--player1-color, #3b82f6); }
       .player-name.p2 { color: var(--player2-color, #ef4444); }
 
@@ -494,8 +527,7 @@ class DicePokerBoard extends HTMLElement {
       <div class="top">
         <div>
           <div><strong>Spanish Dice Poker</strong></div>
-          <div class="small" id="roundDisplay">Round: ${this._round}</div>
-          <div class="small" id="turnStatus"></div>
+          <div class="status-bar" id="statusBar"></div>
         </div>
         <div class="controls">
           <button id="resetHolds">Reset holds</button>
