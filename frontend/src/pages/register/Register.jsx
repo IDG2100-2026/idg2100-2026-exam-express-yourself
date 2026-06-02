@@ -65,6 +65,7 @@ export default function Register() {
       });
       setSuccess(userData.message);
       setSuccessfulCreate(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
       setFormData({
         username: "",
         email: formData.email,
