@@ -19,7 +19,7 @@ import AboutGame from "./pages/about-game/AboutGame.jsx";
 import Terms from "./pages/terms/Terms.jsx";
 import Privacy from "./pages/privacy/Privacy.jsx";
 import NotFound from "./pages/not-found/NotFound.jsx";
-import ResetPassword from "./pages/ResetPassword/ResetPassword.jsx";
+import ResetPassword from "./pages/reset-password/ResetPassword.jsx";
 import AdminDashboard from "./pages/admin/dashboard/AdminDashboard.jsx";
 import AdminUsers from "./pages/admin/users/AdminUsers.jsx";
 import AdminComments from "./pages/admin/comments/AdminComments.jsx";
