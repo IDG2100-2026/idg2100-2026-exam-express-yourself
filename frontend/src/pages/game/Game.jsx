@@ -197,7 +197,7 @@ export default function Game() {
                       )
                       ?.userId?.username || "Unknown"}
                   </p>
-                  <button className="btn btn--primary" onClick={() => { navigate("/"); }}>Back to lobby</button> {/*TODO: Need ficx */}
+                  <button className="btn btn--primary" onClick={() => { navigate("/"); }}>Back to lobby</button>
                 </div>
               )}
             </div>
