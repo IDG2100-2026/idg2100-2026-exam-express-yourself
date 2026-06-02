@@ -4,6 +4,7 @@ import {
   MAX_TOURNAMENT_TITLE_LENGTH,
   MIN_TOURNAMENT_DESCRIPTION_LENGTH,
   MAX_TOURNAMENT_DESCRIPTION_LENGTH,
+  ALLOWED_TOURNAMENT_DESCRIPTION_FORMAT,
   DEFAULT_TOURNAMENT_NUMBER_OF_ROUNDS,
   DEFAULT_TOURNAMENT_BUY_IN,
   MIN_TOURNAMENT_BUY_IN,
@@ -40,6 +41,10 @@ const tournamentSchema = new mongoose.Schema(
       maxLength: [
         MAX_TOURNAMENT_DESCRIPTION_LENGTH,
         `Description must be between ${MIN_TOURNAMENT_DESCRIPTION_LENGTH} and ${MAX_TOURNAMENT_DESCRIPTION_LENGTH} characters. [schema]`,
+      ],
+      match: [
+        ALLOWED_TOURNAMENT_DESCRIPTION_FORMAT,
+        "Description can only contain letters, numbers, spaces, and basic punctuation. [schema]",
       ],
     },
     createdBy: {

@@ -9,6 +9,7 @@ import Avatar from "../../components/avatar/Avatar.jsx";
 const EMAIL_FORMAT = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_FORMAT = /^[a-zA-Z0-9]+$/;
 const PASSWORD_STRENGTH = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])/;
+const BIO_FORMAT = /^[a-zA-Z0-9 .,\-!?'"():;\n\r]*$/;
 
 export default function Profile() {
   const { id } = useParams();
@@ -111,6 +112,11 @@ export default function Profile() {
 
     if (formData.email && !EMAIL_FORMAT.test(formData.email)) {
       setSaveError("Must be a valid email address, e.g. user@mail.com.");
+      return;
+    }
+
+    if (formData.bio && !BIO_FORMAT.test(formData.bio)) {
+      setSaveError("Bio can only contain letters, numbers, spaces, and basic punctuation.");
       return;
     }
 

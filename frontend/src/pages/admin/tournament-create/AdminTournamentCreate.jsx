@@ -7,6 +7,8 @@ import {
 } from "../../../services/tournaments-service.js";
 import ConfirmModal from "../../../components/confirm-modal/ConfirmModal.jsx";
 
+const DESCRIPTION_FORMAT = /^[a-zA-Z0-9 .,\-!?'"():;\n\r]*$/;
+
 const EMPTY_FORM = {
   title: "",
   description: "",
@@ -193,6 +195,11 @@ export default function AdminTournamentCreate() {
 
     if (formData.description && (formData.description.length < 4 || formData.description.length > 500)) {
       setError("Description must be between 4 and 500 characters.");
+      return;
+    }
+
+    if (formData.description && !DESCRIPTION_FORMAT.test(formData.description)) {
+      setError("Description can only contain letters, numbers, spaces, and basic punctuation.");
       return;
     }
 
