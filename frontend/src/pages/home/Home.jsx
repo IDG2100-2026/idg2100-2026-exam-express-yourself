@@ -5,7 +5,7 @@ import { getTournaments } from "../../services/tournaments-service.js";
 import { getPlatformActivity } from "../../services/platform-activity-service.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { useAuth } from "../../hooks/useAuth.js";
-import spanishDiceImg from "../../assets/images/spanish-dice.jpg";
+import spanishDiceImg from "../../assets/images/spanish-dice.png";
 
 function getPlayer(match, index) {
   return match.players?.[index]?.userId || null;
