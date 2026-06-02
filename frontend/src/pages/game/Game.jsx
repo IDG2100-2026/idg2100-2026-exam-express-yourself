@@ -6,6 +6,7 @@ import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { createComment } from "../../services/comments-service.js";
 import { leaveMatch } from "../../services/matches-service.js";
+import { sounds } from "../../services/sound-service.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
 import "./game.scss";
 
@@ -164,6 +165,21 @@ export default function Game() {
       board.removeEventListener("board:matchOver", onMatchOver);
     };
   }, [match?.status, isPlayer, myKey, id, userId]);
+
+  // Sound effects — gated by appearance.sound setting
+  useEffect(() => {
+    if (!appearance.sound) return;
+    const play = (fn) => () => fn();
+    const handlers = [
+      ["dp:roll-executed",   play(sounds.roll)],
+      ["dp:die-held-changed", play(sounds.hold)],
+      ["dp:round-start",     play(sounds.roundStart)],
+      ["dp:round-decided",   play(sounds.roundEnd)],
+      ["dp:match-decided",   play(sounds.gameEnd)],
+    ];
+    handlers.forEach(([evt, fn]) => window.addEventListener(evt, fn));
+    return () => handlers.forEach(([evt, fn]) => window.removeEventListener(evt, fn));
+  }, [appearance.sound]);
 
   async function handleLeave() {
     try { await leaveMatch(id); } catch { /* ignore */ }

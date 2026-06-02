@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { AppearanceContext } from "../contexts/appearance-context.js";
 import { updateUser } from "../services/users-service.js";
+import { getAccessToken } from "../services/token-manager.js";
 
 const defaultAppearance = {
   theme: "dark",
@@ -26,12 +27,12 @@ export function AppearanceProvider({ children }) {
     setAppearance(updated);
     localStorage.setItem("appearance", JSON.stringify(updated));
 
-    // Sync to backend for logged-in users
+    // Sync to backend only when we have a valid session
     const userId = localStorage.getItem("userId");
-    if (userId) {
+    if (userId && getAccessToken()) {
       try {
         await updateUser(userId, { appearance: updated });
-      } catch (err) {
+      } catch {
         // Silently fail — appearance sync is non-critical
       }
     }
