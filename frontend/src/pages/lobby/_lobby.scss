@@ -78,7 +78,7 @@
     text-align: start;
 
     &--waiting     { border-inline-start-color: $color-yellow; }
-    &--in-progress { border-inline-start-color: #58a6ff; }
+    &--in-progress { border-inline-start-color: $color-blue; }
     &--completed   { border-inline-start-color: $color-green; }
   }
 

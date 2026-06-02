@@ -24,6 +24,7 @@
   --color-yellow-hover: #f0c84e;
   --color-red:          #f85149;
   --color-green:        #3fb950;
+  --color-blue:         #58a6ff;
 }
 
 [data-theme="light"] {
@@ -49,6 +50,7 @@
   --color-yellow-hover: #c49a1a;
   --color-red:          #cc2222;
   --color-green:        #1a7f37;
+  --color-blue:         #0969da;
 }
 
 
@@ -66,6 +68,7 @@ $color-yellow:       var(--color-yellow);
 $color-yellow-hover: var(--color-yellow-hover);
 $color-red:          var(--color-red);
 $color-green:        var(--color-green);
+$color-blue:         var(--color-blue);
 
 
 // Values that never change with theme

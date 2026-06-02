@@ -73,7 +73,7 @@
 
   &__card--upcoming    { border-inline-start-color: $color-yellow; }
   &__card--waiting     { border-inline-start-color: $color-yellow; }
-  &__card--in-progress { border-inline-start-color: #58a6ff; }
+  &__card--in-progress { border-inline-start-color: $color-blue; }
   &__card--completed   { border-inline-start-color: $color-green; }
   &__card--cancelled   { border-inline-start-color: $color-red; }
 
