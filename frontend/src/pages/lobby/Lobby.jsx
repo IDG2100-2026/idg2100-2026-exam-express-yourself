@@ -11,10 +11,8 @@ const ROUNDS_OPTIONS = [3, 5, 7];
 function getHostElo(match, tc) {
   const elo = match.players?.[0]?.userId?.eloRating;
   if (!elo) return 0;
-  const tcKey = tc ? `tc${tc}` : "tc10";
-  if (elo[tcKey]) return elo[tcKey];
-  if (elo.tc10) return elo.tc10;
-  return 0;
+  const tcKey = `tc${tc || match.category?.timeControl || 10}`;
+  return elo[tcKey] || 0;
 }
 
 function sortMatches(matches, sort, tc) {
