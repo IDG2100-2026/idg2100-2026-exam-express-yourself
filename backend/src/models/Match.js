@@ -5,6 +5,7 @@ import {
   VALID_TIME_CONTROLS,
   VALID_BUY_INS,
   MATCH_STATUSES,
+  MATCH_PHASES,
 } from "../config/constants.js";
 
 const matchSchema = new mongoose.Schema(
@@ -99,7 +100,7 @@ const matchSchema = new mongoose.Schema(
     },
     currentRound: {
       type: Number,
-      default: 0
+      default: 1 // starts at round one
     },
     currentPlayerIndex: {
       type: Number,
@@ -107,8 +108,11 @@ const matchSchema = new mongoose.Schema(
     },
     phase: {
       type: String,
-      enum: ["rolling", "betting", "reveal"],
-      default: "rolling"
+      default: "rolling",
+      enum: {
+        values: MATCH_PHASES,
+        message: `Phase must be one of: ${MATCH_PHASES.join(", ")}. [schema]`,
+      },
     },
     pot: {
       type: Number,
@@ -117,10 +121,6 @@ const matchSchema = new mongoose.Schema(
     highestBet: {
       type: Number,
       default: 0
-    },
-    isAnonymous: {
-      type: Boolean,
-      default: false,
     },
     // Tournament link
     tournamentId: {

@@ -1,0 +1,80 @@
+@use '../../../styles/variables.scss' as *;
+
+.admin-dashboard {
+  &__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
+    list-style: none;
+  }
+
+  &__stat {
+    display: flex;
+    flex: 1 1 180px;
+    flex-direction: column;
+    gap: $space-xs;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background: $color-inner;
+  }
+
+  &__stat-value { color: $color-yellow; }
+  &__stat-label { color: $color-text-dim; }
+
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
+    list-style: none;
+
+    > li { flex: 1 1 220px; }
+  }
+
+  &__card {
+    display: block;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    background: $color-inner;
+    transition: border-color 0.15s;
+
+    &:hover { border-color: $color-yellow; }
+
+    p { color: $color-text-dim; }
+  }
+
+  &__incidents { list-style: none; }
+
+  &__incident {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-s;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-inline-start: 3px solid $color-red;
+    border-radius: $radius;
+    background: $color-inner;
+
+    &--ip-change   { border-inline-start-color: $color-red; }
+    &--rate-limit  { border-inline-start-color: $color-yellow; }
+  }
+
+  &__incident-type {
+    padding: $space-xs;
+    border-radius: $radius;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: $color-red;
+  }
+
+  &__incident-ip    { font-family: monospace; }
+  &__incident-agent { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: $color-text-dim; }
+  &__incident-user  { color: $color-yellow; }
+  &__incident-time  { margin-inline-start: auto; white-space: nowrap; color: $color-text-dim; }
+
+  &__muted { color: $color-text-dim; }
+  &__error  { margin-block-end: $space-m; color: $color-red; }
+}

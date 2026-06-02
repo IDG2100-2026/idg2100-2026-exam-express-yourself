@@ -1,5 +1,5 @@
-// Catches all errors passed with next(err)
-const errorHandler = (err, req, res, _next) => {
+// Catches all errors passed with next(err), (Express 5 does it automatically, no need ty try catch errors ourselves with try/catch in controllers)
+const errorHandler = (err, req, res, next) => {
   console.error(err);
 
   // Known operational error thrown by services
@@ -10,6 +10,11 @@ const errorHandler = (err, req, res, _next) => {
   // Duplicate key error (e.g. same username or email)
   if (err.code === 11000) {
     return res.status(400).json({ error: "That value already exists" });
+  }
+
+  // Invalid ObjectId in URL params (e.g. /api/users/not-a-valid-id)
+  if (err.name === "CastError") {
+    return res.status(400).json({ error: "Invalid ID format." });
   }
 
   // Mongoose validation error

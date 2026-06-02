@@ -1,0 +1,61 @@
+@use '../../../styles/variables.scss' as *;
+
+.admin-tc {
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+
+    label { color: $color-text-dim; }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    select {
+      padding: $space-s;
+      border: 1px solid $color-border;
+      border-radius: $radius;
+      outline: none;
+      color: $color-text;
+      background: $color-inner;
+
+      &:focus { border-color: $color-yellow; }
+    }
+
+    textarea {
+      padding: $space-s;
+      max-block-size: 210px;
+      min-block-size: 100px;
+      border: 1px solid $color-border;
+      border-radius: $radius;
+      outline: none;
+      color: $color-text;
+      background: $color-inner;
+      resize: vertical;
+
+      &:focus { border-color: $color-yellow; }
+    }
+
+    input[type="file"] { color: $color-text-dim; }
+
+    &--checkbox {
+      flex-direction: row;
+      align-items: center;
+      gap: $space-s;
+
+      label { color: $color-text; }
+    }
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
+
+    > .admin-tc__field {
+      flex: 1 1 200px;
+    }
+  }
+
+  &__error { color: $color-red; }
+}

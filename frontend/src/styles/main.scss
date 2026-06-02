@@ -1,23 +1,29 @@
 @use 'global.scss';
 
+// Utils
+@use 'utils.scss';
+
 // Components
 @use '../components/avatar/avatar.scss';
+@use '../components/confirm-modal/confirm-modal.scss';
 @use '../components/header/header.scss';
+@use '../components/header/header-admin.scss';
 @use '../components/footer/footer.scss';
 @use '../components/appearance-menu/appearance-menu.scss';
 
 // Layouts
 @use '../layouts/main-layout/main-layout.scss';
+@use '../layouts/admin-layout/admin-layout.scss';
 
 // Pages
 @use '../pages/home/home.scss';
 @use '../pages/lobby/lobby.scss';
 @use '../pages/login/login.scss';
 @use '../pages/register/register.scss';
+@use '../pages/forgot-password/forgot-password.scss';
 @use '../pages/game/game.scss';
 @use '../pages/create-game/create-game.scss';
 @use '../pages/profile/profile.scss';
-@use '../pages/all-games/all-games.scss';
 @use '../pages/tournament-list/tournament-list.scss';
 @use '../pages/tournament/tournament.scss';
 @use '../pages/about-us/about-us.scss';
@@ -25,3 +31,10 @@
 @use '../pages/terms/terms.scss';
 @use '../pages/privacy/privacy.scss';
 @use '../pages/not-found/not-found.scss';
+@use '../pages/ResetPassword/ResetPassword.scss';
+
+// Admin pages
+@use '../pages/admin/dashboard/admin-dashboard.scss';
+@use '../pages/admin/users/admin-users.scss';
+@use '../pages/admin/comments/admin-comments.scss';
+@use '../pages/admin/tournament-create/admin-tournament-create.scss';

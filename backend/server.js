@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import errorHandler from "./src/middlewares/error-middleware.js";
 import cors from "cors";
 import userRouter from "./src/routes/user-routes.js";
@@ -9,8 +10,8 @@ import leaderboardRouter from "./src/routes/leaderboard-routes.js";
 import authRouter from "./src/routes/auth-routes.js";
 import helmet from "helmet";
 import { connectDB, disconnectDB } from "./src/config/db.js";
-import activityRoutes from "./src/routes/activity-routes.js";
-import { setupWebSocket } from "./src/websockets/index.js";
+import platformActivityRouter from "./src/routes/platform-activity-routes.js";
+import { setupWebSocket } from "./src/websockets/websocket.js";
 import { apiRateLimiter } from "./src/middlewares/rate-limiter.js";
 import securityIncidentsRouter from "./src/routes/security-incidents-routes.js";
 import { scheduleWeeklyTopup } from "./src/utils/weekly-topup.js";
@@ -29,23 +30,22 @@ app.use(
 await connectDB();
 scheduleWeeklyTopup();
 
-// Apply rate limiter to all API routes
-app.use("/api", apiRateLimiter);
-
 // Parse JSON bodies
 app.use(express.json());
 
-// Serve uploaded files (trophy images etc.)
-app.use("/uploads", express.static("uploads"));
-
+// Serve uploaded files, trophy images and avatar images
+app.use("/uploads", express.static(path.join(import.meta.dirname, "uploads")));
 
 app.use("/api/auth", authRouter);
+
+
+app.use("/api", apiRateLimiter); // Apply rate limiter to all other API routes
 app.use("/api/users", userRouter);
 app.use("/api/matches", matchRouter);
 app.use("/api/tournaments", tournamentRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/leaderboard", leaderboardRouter);
-app.use("/api/activity", activityRoutes);
+app.use("/api/platform-activity", platformActivityRouter);
 app.use("/api/security-incidents", securityIncidentsRouter);
 
 
@@ -63,7 +63,7 @@ httpServer.on("listening", () => {
   console.log("Server is listening on port:", httpServer.address().port);
 });
 
-// Graceful shutdown — closes DB connection before stopping
+// Graceful shutdown, closes DB connection before stopping
 async function gracefulShutdown() {
   console.log("\nServer is shutting down...");
   await disconnectDB();

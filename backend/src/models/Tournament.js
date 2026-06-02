@@ -4,7 +4,6 @@ import {
   MAX_TOURNAMENT_TITLE_LENGTH,
   MIN_TOURNAMENT_DESCRIPTION_LENGTH,
   MAX_TOURNAMENT_DESCRIPTION_LENGTH,
-  MAX_TOURNAMENT_RULES_LENGTH,
   DEFAULT_TOURNAMENT_NUMBER_OF_ROUNDS,
   DEFAULT_TOURNAMENT_BUY_IN,
   MIN_TOURNAMENT_BUY_IN,
@@ -13,6 +12,7 @@ import {
   TOURNAMENT_STATUSES,
   VALID_ROUNDS,
   VALID_TIME_CONTROLS,
+  VALID_BUY_INS,
 } from "../config/constants.js";
 
 const tournamentSchema = new mongoose.Schema(
@@ -42,14 +42,6 @@ const tournamentSchema = new mongoose.Schema(
         `Description must be between ${MIN_TOURNAMENT_DESCRIPTION_LENGTH} and ${MAX_TOURNAMENT_DESCRIPTION_LENGTH} characters. [schema]`,
       ],
     },
-    rules: {
-      type: String,
-      trim: true,
-      maxLength: [
-        MAX_TOURNAMENT_RULES_LENGTH,
-        `Rules cannot be longer than ${MAX_TOURNAMENT_RULES_LENGTH} characters. [schema]`,
-      ],
-    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "Creator is required. [schema]"],
@@ -66,6 +58,7 @@ const tournamentSchema = new mongoose.Schema(
     category: {
       rounds: {
         type: Number,
+        required: [true, "Category rounds is required. [schema]"],
         enum: {
           values: VALID_ROUNDS,
           message: `Rounds must be one of: ${VALID_ROUNDS.join(", ")}. [schema]`,
@@ -74,9 +67,18 @@ const tournamentSchema = new mongoose.Schema(
       straightsAllowed: { type: Boolean, default: true },
       timeControl: {
         type: Number,
+        required: [true, "Category time control is required. [schema]"],
         enum: {
           values: VALID_TIME_CONTROLS,
           message: `Time control must be one of: ${VALID_TIME_CONTROLS.join(", ")}. [schema]`,
+        },
+      },
+      buyIn: {
+        type: Number,
+        default: 1,
+        enum: {
+          values: VALID_BUY_INS,
+          message: `Buy-in must be one of: ${VALID_BUY_INS.join(", ")}. [schema]`,
         },
       },
     },

@@ -1,0 +1,94 @@
+@use '../../styles/variables.scss' as *;
+
+.lobby {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__status { color: $color-text-dim; }
+  &__error  { color: $color-red; }
+
+  &__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-m;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__filter-group {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+  }
+
+  &__filter-label {
+    white-space: nowrap;
+    color: $color-text-dim;
+  }
+
+  &__filter-btns {
+    display: flex;
+    gap: $space-xs;
+  }
+
+  &__filter-btn--active {
+    border-color: $color-yellow;
+    color: $color-yellow;
+  }
+
+  &__sort {
+    padding: $space-xs;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    background-color: $color-frame;
+
+    &:focus {
+      outline: none;
+      border-color: $color-yellow;
+    }
+  }
+
+  &__load-more {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
+    list-style: none;
+
+    > li {
+      flex: 1 1 310px;
+    }
+  }
+
+  &__card {
+    display: block;
+    width: 100%;
+    border-inline-start: 3px solid $color-border;
+    text-align: start;
+
+    &--waiting     { border-inline-start-color: $color-yellow; }
+    &--in-progress { border-inline-start-color: #58a6ff; }
+    &--completed   { border-inline-start-color: $color-green; }
+  }
+
+  &__card-player {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+  }
+
+  &__card-elo     { color: $color-text-dim; }
+  &__card-variant { color: $color-text-dim; }
+  &__card-waiting { color: $color-yellow; }
+}

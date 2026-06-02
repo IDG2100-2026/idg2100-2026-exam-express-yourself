@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { AppearanceContext } from "../contexts/appearance-context.js";
 import { updateUser } from "../services/users-service.js";
+import { useAuth } from "../hooks/useAuth.js";
 import { getAccessToken } from "../services/token-manager.js";
 
 const defaultAppearance = {
@@ -12,10 +13,16 @@ const defaultAppearance = {
 
 function loadFromLocalStorage() {
   const saved = localStorage.getItem("appearance");
-  return saved ? JSON.parse(saved) : defaultAppearance;
+  if (!saved) return defaultAppearance;
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return defaultAppearance;
+  }
 }
 
 export function AppearanceProvider({ children }) {
+  const { user } = useAuth();
   const [appearance, setAppearance] = useState(loadFromLocalStorage);
 
   // Apply theme to body whenever it changes
@@ -28,10 +35,9 @@ export function AppearanceProvider({ children }) {
     localStorage.setItem("appearance", JSON.stringify(updated));
 
     // Sync to backend only when we have a valid session
-    const userId = localStorage.getItem("userId");
-    if (userId && getAccessToken()) {
+    if (user?._id && getAccessToken()) {
       try {
-        await updateUser(userId, { appearance: updated });
+        await updateUser(user._id, { appearance: updated });
       } catch {
         // Silently fail — appearance sync is non-critical
       }

@@ -1,0 +1,17 @@
+@baseUrl = http://localhost:3000
+
+
+### Get all comments
+GET {{baseUrl}}/api/comments
+
+
+### Get all comments, filter by target type
+GET {{baseUrl}}/api/comments?targetType=Match
+
+
+### Get all comments, search by text
+GET {{baseUrl}}/api/comments?search=great
+
+
+### Get all comments, paginated
+GET {{baseUrl}}/api/comments?page=1&limit=5

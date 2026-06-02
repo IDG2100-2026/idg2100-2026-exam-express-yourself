@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
           setUser(refresh.user);
         }
       } catch (err) {
+        setError(err.message);
         setUser(null); // if session could not be restored, we set user to null
         console.error("Could not restore session");
       }finally{
@@ -34,6 +35,10 @@ export const AuthProvider = ({ children }) => {
   const login = useCallback((userData, accessToken) => {
     setUser(userData); // update react state to show logged in user
     setAccessToken(accessToken); // stores the access token in memory for future api calls
+  }, []);
+
+  const updateUser = useCallback((updates) => {
+    setUser((prev) => (prev ? { ...prev, ...updates } : prev));
   }, []);
 
   const logout = useCallback(async () => {
@@ -64,7 +69,7 @@ export const AuthProvider = ({ children }) => {
 
   if(loading) return <p>Loading...</p>; // show a loading txt
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

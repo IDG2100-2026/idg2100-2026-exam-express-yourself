@@ -1,14 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router";
 import { useMatch } from "../../hooks/useMatch.js";
-import { useComments } from "../../hooks/useComments.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
-import { createComment } from "../../services/comments-service.js";
 import { leaveMatch } from "../../services/matches-service.js";
 import { sounds } from "../../services/sound-service.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
-import "./game.scss";
 
 // Register the custom elements as side effects
 import "../../components/web-components/dice-poker-die.js";
@@ -21,10 +18,7 @@ export default function Game() {
   const { user } = useAuth();
   const { appearance } = useAppearance();
   const { match, isLoading, error } = useMatch(id);
-  const { comments, refetch: refetchComments } = useComments("Match", id);
-
-  const [commentText, setCommentText] = useState("");
-  const [commentError, setCommentError] = useState(null);
+  // Game state
   const [phase, setPhase] = useState("rolling");
   const [pot, setPot] = useState(0);
   const [highestBet, setHighestBet] = useState(0);
@@ -36,135 +30,27 @@ export default function Game() {
 
   const userId = user?._id || user?.userId;
 
-  // Which player slot am I? (0 = player1, 1 = player2)
-  const myIndex = match?.players?.findIndex(
-    (p) => (p.userId?._id || p.userId) === userId
-  ) ?? -1;
+  const myIndex = match?.players?.findIndex((player) => {
+    const playerId = player.userId?._id ? player.userId._id : player.userId;
+    return playerId === userId;
+  }) ?? -1;
   const isPlayer = myIndex !== -1;
-  const myKey = myIndex === 0 ? "player1" : "player2";
+  let myKey = "player2";
+  if (myIndex === 0) { myKey = "player1"; }
 
-  // Send a message through the WebSocket
-  function send(msg) {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(msg));
-    }
-  }
+  // Comment WebSocket state
+  const targetType = "Match";
+  const targetId = id;
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const socketRef = useRef(null);
 
-  // Connect to WebSocket when the game is in-progress
+
   useEffect(() => {
-    if (!match || match.status !== "in-progress" || !userId) return;
-
-    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const ws = new WebSocket(`${proto}//${window.location.hostname}:3000`);
-    wsRef.current = ws;
-
-    ws.onopen = () => {
-      console.log("[WS] connected, userId:", userId, "myKey:", myKey);
-      ws.send(JSON.stringify({ type: "join", matchId: id, userId }));
-    };
-
-    ws.onmessage = (e) => {
-      try {
-        const msg = JSON.parse(e.data);
-        console.log("[WS] received:", msg);
-        handleMsg(msg);
-      } catch { /* ignore malformed messages */ }
-    };
-
-    ws.onerror = (e) => console.error("[WS] error", e);
-
-    return () => {
-      ws.close();
-      wsRef.current = null;
-    };
-  }, [match?.status, id, userId]);
-
-  // Handle incoming WebSocket messages
-  function handleMsg(msg) {
-    const board = boardRef.current;
-
-    switch (msg.type) {
-      case "turn:changed": {
-        const turnKey = msg.currentPlayerIndex === 0 ? "player1" : "player2";
-        setPhase(msg.phase || "rolling");
-        if (board) {
-          board.setTurn(turnKey, 3);
-          // Auto-roll on my browser when it becomes my turn
-          if (msg.phase === "rolling" && turnKey === myKey) {
-            board.autoRoll();
-          }
-        }
-        break;
-      }
-
-      case "round:started":
-        setPhase("rolling");
-        setPot(0);
-        setHighestBet(0);
-        break;
-
-      case "bet:placed":
-        setPot(msg.pot);
-        setHighestBet(msg.highestBet);
-        break;
-
-      case "bet:matched":
-        setPot(msg.pot);
-        break;
-
-      case "game:ended":
-        setGameEnded({ winnerId: msg.winnerId, players: msg.players });
-        break;
-
-      case "error":
-        console.error("WebSocket error:", msg.message);
-        break;
-    }
-  }
-
-  // Listen to board events and forward them to the server
-  useEffect(() => {
-    const board = boardRef.current;
-    if (!board) return;
-
-    // Player rolled — only forward MY rolls to the server
-    // (board also auto-rolls the opponent locally for visual purposes)
-    const onRoll = (e) => {
-      if (!isPlayer) return;
-      if (e.detail?.player !== myKey) return;
-      send({ type: "roll", matchId: id, userId });
-    };
-
-    // A die was held/unheld — send the full held array to the server
-    const onHeld = () => {
-      if (!isPlayer) return;
-      const myDice = myKey === "player1" ? board._diceP1 : board._diceP2;
-      const held = myDice.map((d) => d.getAttribute("held") === "true");
-      send({ type: "hold", matchId: id, userId, held });
-    };
-
-    // End-turn button clicked — tell the server
-    const onEndTurn = () => {
-      if (!isPlayer) return;
-      send({ type: "endTurn", matchId: id, userId });
-    };
-
-    const onMatchOver = () => {
-      navigate("/lobby");
-    };
-
-    board.addEventListener("dp:roll-executed", onRoll);
-    board.addEventListener("dp:die-held-changed", onHeld);
-    board.addEventListener("board:endTurn", onEndTurn);
-    board.addEventListener("board:matchOver", onMatchOver);
-
-    return () => {
-      board.removeEventListener("dp:roll-executed", onRoll);
-      board.removeEventListener("dp:die-held-changed", onHeld);
-      board.removeEventListener("board:endTurn", onEndTurn);
-      board.removeEventListener("board:matchOver", onMatchOver);
-    };
-  }, [match?.status, isPlayer, myKey, id, userId]);
+    const handleMatchOver = () => navigate("/lobby");
+    window.addEventListener("board:matchOver", handleMatchOver);
+    return () => window.removeEventListener("board:matchOver", handleMatchOver);
+  }, [navigate]);
 
   // Sound effects — gated by appearance.sound setting
   useEffect(() => {
@@ -186,73 +72,117 @@ export default function Game() {
     navigate("/lobby");
   }
 
-  async function handleComment(e) {
-    e.preventDefault();
-    if (!commentText.trim()) return;
-    setCommentError(null);
-    try {
-      await createComment(commentText, "Match", id);
-      setCommentText("");
-      refetchComments();
-    } catch (err) {
-      setCommentError(err.message);
+  useEffect(() => {
+    // Connect with targetType and targetId from your route params
+    const newSocket = new WebSocket(
+      `${import.meta.env.VITE_WS_URL}?targetType=${targetType}&targetId=${targetId}`,
+    );
+    socketRef.current = newSocket;
+
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data); // parses raw string into json object
+
+      if (data.type === "history") {
+        setMessages(data.messages); // load previous comments from DB
+      } else if (data.type === "new_message") {
+        setMessages((prev) => { return [...prev, data.message]; }); // append new comments into the message array
+      } else if (data.type === "error") {
+        console.error("Server error:", data.message); // handle errors
+      }
+    };
+
+    newSocket.onopen = () => {
+      console.log("Websocket connected"); // gives a msg to the clients browser that they are connected
+    };
+    newSocket.onclose = () => {
+      console.log("Websocket disconnected"); // gives a msg to the clients browser that they are disconnected
+    };
+
+    return () => { newSocket.close(); }; // clean up on unmount. if not done, the connection would still be live after moving away from the page
+  }, [targetType, targetId]); // re-render if any of these change!
+
+  const sendMessage = () => {
+    if (input.trim() && socketRef.current?.readyState === WebSocket.OPEN) {
+      const payload = JSON.stringify({
+        authorId: user?._id, // send the user's ObjectId
+        text: input, // send the comment text
+      });
+      socketRef.current.send(payload); // send over WebSocket
+      setInput(""); // clear the input field
     }
-  }
+  };
 
   if (isLoading) return <p className="game__status">Loading game...</p>;
   if (error) return <p className="game__error">Error: {error}</p>;
   if (!match) return <p className="game__error">Match not found</p>;
 
-  const p1 = match.players?.[0]?.userId;
-  const p2 = match.players?.[1]?.userId;
-  const tc = match.category?.timeControl || 10;
+  const tc = match.category?.timeControl ? match.category.timeControl : 10;
+  const maxSlots = match.maxPlayers ? match.maxPlayers : 2;
+  const playerSlots = [];
+  for (let i = 0; i < maxSlots; i++) {
+    const player = match.players?.[i]?.userId;
+    if (player) {
+      playerSlots.push(player);
+    } else {
+      playerSlots.push(null);
+    }
+  }
 
   return (
     <div className="game">
       <div className="game__layout">
         <div className="game__board">
 
-          {/* ── Waiting for opponent ── */}
+          {/* Waiting for opponent */}
           {match.status === "waiting" && (
             <div className="game__waiting">
               <p>Waiting for another player to join...</p>
               <small>Refreshes every 15 seconds</small>
               {isPlayer && (
-                <button className="game__leave-btn" onClick={handleLeave}>
+                <button className="btn btn--red" onClick={handleLeave}>
                   Leave game
                 </button>
               )}
             </div>
           )}
 
-          {/* ── Player headers ── */}
+          {/* Player headers */}
           <div className="game__players">
-            <div className="game__player">
-              <Avatar imageUrl={p1?.profileImageUrl} size={56} />
-              <span className="game__player-name">{p1?.username || "Unknown"}</span>
-              <span className="game__player-elo">
-                Elo: {p1?.eloRating?.[`tc${tc}`] || "—"}
-              </span>
-            </div>
-            <span className="game__vs">vs</span>
-            <div className="game__player">
-              <Avatar imageUrl={p2?.profileImageUrl} size={56} />
-              <span className="game__player-name">{p2?.username || "Waiting..."}</span>
-              <span className="game__player-elo">
-                {p2 ? `Elo: ${p2?.eloRating?.[`tc${tc}`] || "—"}` : ""}
-              </span>
-            </div>
+            {playerSlots.map((player, index) => {
+              return (
+                <div key={index} className="game__player">
+                  <Avatar imageUrl={player?.profileImageUrl} username={player?.username} size={48} />
+                  <span className="game__player-name">
+                    {player ? <Link to={`/profile/${player._id}`}>{player.username}</Link> : "Waiting..."}
+                  </span>
+                  {player && (
+                    <span className="game__player-elo">
+                      Elo: {player.eloRating?.[`tc${tc}`] ? player.eloRating[`tc${tc}`] : "?"}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
-          {/* ── Active game ── */}
+          {/* Game details */}
+          <ul className="game__meta">
+            <li>Best of {match.category?.rounds}</li>
+            <li>{match.category?.timeControl}s</li>
+            <li>{match.category?.straightsAllowed ? "Straights" : "No straights"}</li>
+            <li>{match.buyIn || 1}pt buy-in</li>
+            <li>{match.maxPlayers} players</li>
+          </ul>
+
+          {/* Active game */}
           {match.status === "in-progress" && (
             <div className="game__active">
 
               {/* The dice board web component */}
               <dice-poker-board
                 ref={boardRef}
-                player1={p1?.username || "Player 1"}
-                player2={p2?.username || "Player 2"}
+                player1={playerSlots[0] ? playerSlots[0].username : "Player 1"}
+                player2={playerSlots[1] ? playerSlots[1].username : "Player 2"}
                 bestof={String(match.category?.rounds || 3)}
                 include-straight={String(match.category?.straightsAllowed ?? true)}
                 style={{
@@ -261,104 +191,74 @@ export default function Game() {
                 }}
               />
 
-              {/* Betting controls — only shown to players during betting phase */}
-              {phase === "betting" && isPlayer && (
-                <div className="game__betting">
-                  <p className="game__pot">
-                    Pot: {pot} pts — Highest bet: {highestBet} pts
-                  </p>
-                  <div className="game__bet-controls">
-                    <input
-                      type="number"
-                      className="game__bet-input"
-                      value={betAmount}
-                      min={1}
-                      onChange={(e) => setBetAmount(Number(e.target.value))}
-                    />
-                    <button
-                      className="game__bet-btn"
-                      onClick={() =>
-                        send({ type: "bet", matchId: id, userId, amount: betAmount })
-                      }
-                    >
-                      Bet
-                    </button>
-                    <button
-                      className="game__bet-btn"
-                      onClick={() =>
-                        send({ type: "raise", matchId: id, userId, amount: betAmount })
-                      }
-                    >
-                      Raise
-                    </button>
-                    <button
-                      className="game__bet-btn"
-                      onClick={() => send({ type: "match", matchId: id, userId })}
-                    >
-                      Match
-                    </button>
-                    <button
-                      className="game__bet-btn game__bet-btn--fold"
-                      onClick={() => send({ type: "fold", matchId: id, userId })}
-                    >
-                      Fold
-                    </button>
-                  </div>
-                </div>
-              )}
+              {/* Game status monitor */}
+              <dice-poker-monitor
+                player1={playerSlots[0] ? playerSlots[0].username : "Player 1"}
+                player2={playerSlots[1] ? playerSlots[1].username : "Player 2"}
+                style={{ width: "100%" }}
+              />
 
               {/* Game-over overlay */}
               {gameEnded && (
                 <div className="game__ended">
-                  <h2>Game Over</h2>
+                  <h2>Game over</h2>
                   <p>
                     Winner:{" "}
                     {match.players
                       ?.find(
-                        (p) =>
-                          String(p.userId?._id || p.userId) ===
-                          String(gameEnded.winnerId)
+                        (player) => {
+                          return String(player.userId?._id || player.userId) ===
+                            String(gameEnded.winnerId);
+                        }
                       )
                       ?.userId?.username || "Unknown"}
                   </p>
-                  <button onClick={() => navigate("/lobby")}>Back to Lobby</button>
+                  <button className="btn btn--primary" onClick={() => { navigate("/"); }}>Back to lobby</button> {/*TODO: Need ficx */}
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* ── Sidebar: comments ── */}
+        {/* Sidebar: comments */}
         <aside className="game__sidebar">
-          <h2 className="game__sidebar-title">Comments</h2>
+          <h2>Comments</h2>
           <div className="game__comments">
-            {comments.length === 0 && (
+            {messages.length === 0 && (
               <p className="game__no-comments">No comments yet.</p>
             )}
-            {comments.map((c) => (
-              <div key={c._id} className="game__comment">
-                <span className="game__comment-author">
-                  {c.authorId?.username || "Unknown"}
-                </span>
-                <span className="game__comment-date">
-                  {new Date(c.createdAt).toLocaleDateString()}
-                </span>
-                <p className="game__comment-text">{c.text}</p>
-              </div>
-            ))}
+            {messages.map((message) => {
+              return (
+                <div key={message._id} className="game__comment">
+                  <div className="game__comment-header">
+                    <Avatar
+                      imageUrl={message.authorId?.profileImageUrl}
+                      username={message.authorId?.username}
+                      size={32}
+                    />
+                    <span className="game__comment-author">
+                      {message.authorId?.username || "Unknown"}
+                    </span>
+                  </div>
+                  <span className="game__comment-date">
+                    {new Date(message.createdAt).toLocaleDateString("en-GB")}
+                  </span>
+                  <p className="game__comment-text">{message.text}</p>
+                </div>
+              );
+            })}
           </div>
           {user ? (
-            <form className="game__comment-form" onSubmit={handleComment}>
+            <form className="game__comment-form">
               <textarea
                 className="game__comment-input"
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
+                value={input}
+                onChange={(e) => { setInput(e.target.value); }}
                 placeholder="Leave a comment..."
                 rows={3}
               />
-              {commentError && <p className="game__error">{commentError}</p>}
-              <button type="submit" className="game__comment-submit">
-                Post Comment
+              <button onClick={sendMessage} type="button" className="btn btn--primary">
+                Post comment
               </button>
             </form>
           ) : (

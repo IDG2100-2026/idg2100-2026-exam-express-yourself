@@ -1,14 +1,35 @@
 import express from "express";
+import {
+  validateGetComments,
+  validateCreateComment,
+} from "../validators/comment-validator.js";
+import { validate } from "../validators/validate.js";
 import { commentRateLimiter } from "../middlewares/rate-limiter.js";
-import { getComments, createComment, deleteComment } from "../controllers/comment-controller.js";
+import {
+  getComments,
+  createComment,
+  deleteComment,
+} from "../controllers/comment-controller.js";
 import { authenticate, authorize } from "../middlewares/auth-middleware.js";
+
 const commentsRouter = express.Router();
 
-// Public — anyone can read comments on a tournament or match
-commentsRouter.get("/", getComments);
+// Public routes
+commentsRouter.get("/", validateGetComments(), validate, getComments); // get all comments
 
-// Authenticated routes
-commentsRouter.post("/", authenticate, authorize("user", "admin"), commentRateLimiter, createComment);
-commentsRouter.delete("/:id", authenticate, authorize("admin"), deleteComment);
+commentsRouter.use(authenticate);
+
+// Authenticated users
+commentsRouter.post(
+  "/",
+  authorize("user", "admin"),
+  commentRateLimiter,
+  validateCreateComment(),
+  validate,
+  createComment,
+); // post a comment
+
+// Admin only
+commentsRouter.delete("/:id", authorize("admin"), deleteComment); // soft delete a comment
 
 export default commentsRouter;

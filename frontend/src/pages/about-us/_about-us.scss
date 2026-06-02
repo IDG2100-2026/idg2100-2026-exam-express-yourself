@@ -1,0 +1,39 @@
+@use '../../styles/variables.scss' as *;
+
+.about-us {
+  &__section {
+    p {
+      max-width: 50ch;
+    }
+  }
+
+  &__team {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-l;
+    list-style: none;
+  }
+
+  &__member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-xs;
+    text-align: center;
+  }
+
+  &__member-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 56px;
+    block-size: 56px;
+    border-radius: 50%;
+    color: #1a1200;
+    background-color: $color-yellow;
+  }
+
+  &__member-name {
+    font-weight: bold;
+  }
+}

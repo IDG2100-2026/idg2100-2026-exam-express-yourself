@@ -1,9 +1,16 @@
 import User from "../models/User.js";
-import { chechPassword, hashPassword } from "../utils/password-hash.js";
+import { checkPassword, hashPassword } from "../utils/password-hash.js";
 import { Session } from "../models/Session.js";
 import { BusinessLogicError } from "../utils/errors.js";
 import { ResetPassword } from "../models/passwordReset.js";
-import { sendPasswordResetMail } from "./email-service.js";
+import {
+  sendPasswordResetMail,
+  sendVerificationMail,
+} from "./email-service.js";
+import { UserVerification } from "../models/UserVerification.js";
+import { normalizeIp } from "../utils/normalize-ip.js";
+import { getAccessToken } from "../utils/jwt.js";
+import { logIncident } from "./security-incidents-service.js";
 
 export const createSession = async (user, ip, agent) => {
   const session = await new Session({
@@ -23,29 +30,76 @@ export const registerUser = async (userData) => {
     password: userData.password,
     email: userData.email,
     age: userData.age,
-    roles: userData.role || "user",
+    role: userData.role || "user",
   });
   if (!newUser)
     throw new BusinessLogicError("Could not create a new user", 400); // If somethings wrong with the input, we trow a global error, and its picked up in next()
-  return await newUser.save(); // Saves to db. This triggers the password to be hashed
+
+  await newUser.save(); // Saves to db. This triggers the password to be hashed
+
+  const verificationToken = await UserVerification.create({
+    // generates  verification token linked to the user
+    userId: newUser._id,
+  });
+  await sendVerificationMail(newUser.email, verificationToken.token); // this is the to and token in sendVerificationMail in service.
+
+  return newUser;
+};
+
+export const resendUserVerification = async (email) => {
+  const user = await User.findOne({ email }); // finds a user by their email
+  if (!user) return; // if no user, don't show that in case of attackers
+  if (user.isVerified) { // if user is already verified, show then error msg
+    throw new BusinessLogicError(
+      "You are already verified! Go to login to log in to your account!",
+    );
+  }
+
+  const findVerificationToken = await UserVerification.findOne({ // checks if they already have got an token 
+    userId: user._id,
+  });
+
+  if (findVerificationToken) {
+    await findVerificationToken.deleteOne(); // if token found, delete it!
+  }
+
+  const newToken = await UserVerification.create({ // create a new token to the user
+    userId: user._id,
+  });
+  await sendVerificationMail(user.email, newToken.token); // send the user their new token
 };
 
 export const authenticateUser = async (email, password) => {
   const user = await User.findOne({ email }).select("+password"); // checks if it finds a user with that email
-  if (!user) throw new BusinessLogicError("Invalid credentials", 401); // If not, throws a global error that is picked up in next()
-  if (!chechPassword(password, user.password))
-    throw new BusinessLogicError("Invalid credentials", 401); // global error handler
+  if (!user) throw new BusinessLogicError("Invalid credentials", 401);
 
-  if (user.isBanned) throw new BusinessLogicError("Account is banned", 403); // global error handler
+  if (user.isBanned)
+    throw new BusinessLogicError(
+      "Account is banned, contact pokerdados2026@gmail.com",
+      403,
+    );
+
+  if (!checkPassword(password, user.password))
+    throw new BusinessLogicError("Invalid credentials", 401);
+
   if (!user.isVerified)
-    throw new BusinessLogicError("Please verify your email before login"); // checking if user is verified
-  return user; // returns the authenticated user to controller
+    throw new BusinessLogicError("Please verify your email before login", 400);
+  return user;
+};
+
+export const verifyEmailService = async (code) => {
+  if (!code) throw new BusinessLogicError("Verification code is required", 400);
+  const token = await UserVerification.findOne({ token: code }); // finds the token in db
+  if (!token) throw new BusinessLogicError("Token is required!", 400);
+
+  await User.findByIdAndUpdate(token.userId, { isVerified: true }); // marking the user as verified
+  await token.deleteOne(); // delete the used or expired token
 };
 
 export const resetPasswordRequest = async (email) => {
+  if (!email) throw new BusinessLogicError("email is required", 400);
   const user = await User.findOne({ email }); // finding the user with their email
   if (!user) return; // don't reveal that the user don't exists in case of unwanted request
-
   await ResetPassword.deleteMany({ userId: user._id }); // delete any existing reset tokens
 
   const resetToken = await ResetPassword.create({
@@ -56,6 +110,9 @@ export const resetPasswordRequest = async (email) => {
 };
 
 export const resetPassword = async (code, newPassword) => {
+  if (!code || !newPassword)
+    throw new BusinessLogicError("code and password are required", 400);
+
   const resetToken = await ResetPassword.findOne({ token: code }); // search up for the reset password token
   if (!resetToken)
     throw new BusinessLogicError("Invalid or expired token", 400); // error if we dont find the reset token
@@ -63,8 +120,51 @@ export const resetPassword = async (code, newPassword) => {
   const user = await User.findById(resetToken.userId); // Find the user that the reset token is connected to
   if (!user) throw new BusinessLogicError("User was not found", 404); // error if not found user
 
-
   user.password = newPassword; // users password is now the new password
   await user.save(); // saves the changes to the user
-  await resetToken.deleteOne(); // deletes the reset token after it has been used. 
+  await resetToken.deleteOne(); // deletes the reset token after it has been used.
+  await Session.deleteMany({ userId: user._id }); // invalidate all sessions after password reset e.g, log out of devices that has a session for this user
+};
+
+export const createAccessTokenService = async (
+  refreshToken,
+  requestIp,
+  requestUserAgent,
+) => {
+  if (!refreshToken)
+    throw new BusinessLogicError("No refresh token provided", 401); // cookie expired or never logged in
+
+  const session = await Session.findOne({ refreshToken }); // looking up the session from db.
+  if (!session) throw new BusinessLogicError("Invalid refresh token", 401); // session expired, revoked or never existed
+
+  if (session.ip !== "unknown" && session.ip !== normalizeIp(requestIp)) {
+    // If the ip that makes the request is different from the session ip
+    logIncident({
+      type: "ip-change",
+      ip: requestIp,
+      userAgent: requestUserAgent || "unknown",
+      userId: session.userId,
+    }).catch(() => {}); // fire and forget, don't block the response
+    await session.deleteOne(); // deletes the session if the request is from another ip
+    throw new BusinessLogicError("Session invalidated due to IP change", 401);
+  }
+
+  const user = await User.findById(session.userId); // get the user linked to this session
+  if (!user) throw new BusinessLogicError("User not found", 404); // did not find the user
+  if (user.isBanned) {
+    await session.deleteOne(); // delete the session if a user is banned
+    throw new BusinessLogicError("User is banned", 400);
+  }
+
+  const accessToken = getAccessToken(user, requestIp); // generate a new short lived access token
+
+  return { accessToken, user };
+};
+
+export const logoutUserService = async (refreshToken) => {
+  if (!refreshToken)
+    throw new BusinessLogicError("No refresh token provided", 401);
+
+  const session = await Session.findOneAndDelete({ refreshToken });
+  if (!session) throw new BusinessLogicError("Session not found", 401);
 };

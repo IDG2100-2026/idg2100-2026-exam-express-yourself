@@ -1,0 +1,72 @@
+@use '../../../styles/variables.scss' as *;
+
+.admin-users {
+  &__search {
+    inline-size: 100%;
+    max-inline-size: 400px;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    outline: none;
+    color: $color-text;
+    background: $color-inner;
+
+    &:focus { border-color: $color-yellow; }
+  }
+
+  &__table-wrap {
+    overflow-x: auto;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+  }
+
+  &__table {
+    inline-size: 100%;
+    border-collapse: collapse;
+
+    th {
+      padding: $space-s;
+      border-block-end: 1px solid $color-border;
+      text-align: start;
+      color: $color-text-dim;
+      background: $color-frame;
+    }
+
+    td {
+      padding: $space-s;
+      border-block-end: 1px solid $color-border;
+    }
+
+    tr:last-child td { border-block-end: none; }
+    tr:hover td      { background: $color-frame; }
+  }
+
+  &__row--banned td { opacity: 0.5; }
+
+  &__cell--center {
+    text-align: center;
+    color: $color-text-dim;
+  }
+
+  &__badge {
+    &--admin  { color: $color-yellow; }
+    &--user   { color: $color-text-dim; }
+    &--active { color: $color-green; }
+    &--banned { color: $color-red; }
+    &--notVerified {color: $color-red}
+  }
+
+  &__actions {
+    display: flex;
+    gap: $space-s;
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    gap: $space-m;
+  }
+
+  &__page  { color: $color-text-dim; }
+  &__error { margin-block-end: $space-m; color: $color-red; }
+}

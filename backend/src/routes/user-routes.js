@@ -1,46 +1,54 @@
 import express from "express";
 import {
-  validateRegister,
-  validateLogin,
+  validateGetUsers,
   validateUpdateUser,
 } from "../validators/user-validator.js";
 import { validate } from "../validators/validate.js";
 import {
-  getAllUsers,
+  getUsers,
   getUser,
   updateUser,
   uploadAvatar,
   banUser,
   makeAdmin,
+  unBannUser,
+  unMakeAdmin,
 } from "../controllers/user-controller.js";
-import { authenticate, authorize } from "../middlewares/auth-middleware.js";
+import {
+  authenticate,
+  authorize,
+  optionalAuthenticate,
+} from "../middlewares/auth-middleware.js";
 import upload from "../middlewares/upload.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/:id", getUser); // public — profile pages don't require login
+// Public routes
+userRouter.get("/:id", optionalAuthenticate, getUser); // get a user profile
 
 userRouter.use(authenticate);
 
-userRouter.get("/", authorize("admin"), getAllUsers);
-
+// Authenticated users
 userRouter.patch(
   "/:id",
   authorize("admin", "user"),
   validateUpdateUser(),
   validate,
   updateUser,
-);
+); // update a user profile
 
 userRouter.patch(
   "/:id/avatar",
   authorize("admin", "user"),
   upload.single("avatar"),
   uploadAvatar,
-);
+); // upload a profile avatar
 
-userRouter.post("/:id/ban", authorize("admin"), banUser);
-
-userRouter.post("/:id/make-admin", authorize("admin"), makeAdmin);
+// Admin only
+userRouter.get("/", authorize("admin"), validateGetUsers(), validate, getUsers); // get all users
+userRouter.post("/:id/ban", authorize("admin"), banUser); // ban a user
+userRouter.post("/:id/un-ban", authorize("admin"), unBannUser); // un-bannig a user
+userRouter.post("/:id/make-admin", authorize("admin"), makeAdmin); // make a user an admin
+userRouter.post("/:id/unmake-admin", authorize("admin"), unMakeAdmin); // remove a user as admin
 
 export default userRouter;

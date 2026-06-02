@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../../services/auth-service.js";
+import { Link, useNavigate } from "react-router";
+import { registerUser, resendVerifyEmail } from "../../services/auth-service.js";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -13,15 +13,21 @@ export default function Register() {
   });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [successfulCreate, setSuccessfulCreate] = useState(false);
   const navigate = useNavigate();
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    setFormData((prev) => {
+      let newValue;
+      if (type === "checkbox") {
+        newValue = checked;
+      } else {
+        newValue = value;
+      }
+      return { ...prev, [name]: newValue };
+    });
   }
 
   async function handleSubmit(e) {
@@ -29,11 +35,13 @@ export default function Register() {
     setError(null);
 
     if (formData.password !== formData.confirmPassword) {
-      return setError("Passwords do not match");
+      setError("Passwords do not match");
+      return;
     }
 
     if (!formData.agreedToTerms) {
-      return setError("You must agree to the terms and conditions");
+      setError("You must agree to the terms and conditions");
+      return;
     }
 
     const birthDate = new Date(formData.dateOfBirth);
@@ -42,22 +50,43 @@ export default function Register() {
     );
 
     if (age < 18) {
-      return setError("You must be at least 18 years old");
+      setError("You must be at least 18 years old");
+      return;
     }
 
     setIsSubmitting(true);
 
     try {
-      await registerUser({
+      const userData = await registerUser({
         username: formData.username,
         email: formData.email,
         password: formData.password,
         age,
       });
-      setSuccess(true); // for showing confirmation msg
-      setTimeout(() => {
-        navigate("/"); // navigate to homepage after 3 seconds
-      }, 3000);
+      setSuccess(userData.message);
+      setSuccessfulCreate(true);
+      setFormData({
+        username: "",
+        email: formData.email,
+        password: "",
+        confirmPassword: "",
+        dateOfBirth: "",
+        agreedToTerms: false,
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function resendUserVerification(email) {
+    setIsSubmitting(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const data = await resendVerifyEmail(email);
+      setSuccess(data.message);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -67,11 +96,11 @@ export default function Register() {
 
   return (
     <div className="register">
-      <div className="register__card">
-        <h1 className="register__title">Create Account</h1>
-        <p className="register__subtitle">Join PokerDados today</p>
-        {success && <p>Registration successful! Confirm your account from the email you got to login</p>}
-        <form className="register__form" onSubmit={handleSubmit}>
+      <div className="register__card stack-m">
+        <form className="register__form stack-m" onSubmit={handleSubmit}>
+          <h1>Create account</h1>
+          {success && <p className="register__success">{success}</p>}
+          {error && <p className="register__error">{error}</p>}
           <div className="register__field">
             <label htmlFor="username">Username</label>
             <input
@@ -84,7 +113,6 @@ export default function Register() {
               required
             />
           </div>
-
           <div className="register__field">
             <label htmlFor="email">Email</label>
             <input
@@ -93,11 +121,10 @@ export default function Register() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="you@example.com"
+              placeholder="name@example.com"
               required
             />
           </div>
-
           <div className="register__field">
             <label htmlFor="password">Password</label>
             <input
@@ -106,26 +133,24 @@ export default function Register() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="••••••••"
+              placeholder="********"
               required
             />
           </div>
-
           <div className="register__field">
-            <label htmlFor="confirmPassword">Repeat Password</label>
+            <label htmlFor="confirmPassword">Repeat password</label>
             <input
               id="confirmPassword"
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              placeholder="••••••••"
+              placeholder="********"
               required
             />
           </div>
-
           <div className="register__field">
-            <label htmlFor="dateOfBirth">Date of Birth</label>
+            <label htmlFor="dateOfBirth">Date of birth</label>
             <input
               id="dateOfBirth"
               type="date"
@@ -135,7 +160,6 @@ export default function Register() {
               required
             />
           </div>
-
           <div className="register__checkbox">
             <input
               id="agreedToTerms"
@@ -145,25 +169,25 @@ export default function Register() {
               onChange={handleChange}
             />
             <label htmlFor="agreedToTerms">
-              I agree to the{" "}
-              <Link to="/terms" target="_blank">
-                Terms & Conditions
-              </Link>
+              I agree to the <Link to="/terms" target="_blank" className="btn--link">Terms & conditions</Link>
             </label>
           </div>
-
-          {error && <p className="register__error">{error}</p>}
-
-          <button
-            className="register__submit"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Creating account..." : "Create Account"}
+          <button type="submit" className="btn btn--primary register__submit" disabled={isSubmitting}>
+            {isSubmitting ? "Creating account..." : "Create account"}
           </button>
+          {successfulCreate && (
+            <button
+              type="button"
+              className="btn btn--secondary register__submit"
+              disabled={isSubmitting}
+              onClick={() => { resendUserVerification(formData.email); }}
+            >
+              {isSubmitting ? "Sending..." : "Resend verification email"}
+            </button>
+          )}
         </form>
-
         <p className="register__login">
-          Already have an account? <Link to="/login">Log in</Link>
+          Already have an account? <Link to="/login" className="btn--link">Log in</Link>
         </p>
       </div>
     </div>

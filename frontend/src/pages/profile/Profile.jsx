@@ -1,25 +1,29 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router";
 import { useUser } from "../../hooks/useUser.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { updateUser, uploadAvatar } from "../../services/users-service.js";
 import { getPlayerMatches } from "../../services/matches-service.js";
+import Avatar from "../../components/avatar/Avatar.jsx";
 
 export default function Profile() {
   const { id } = useParams();
-  const { user: authUser } = useAuth();
-  const { user, isLoading, error, refetch } = useUser(id);
+  const { key } = useLocation();
+  const { user: authUser, updateUser: updateAuthUser } = useAuth();
+  const { user, setUser, isLoading, error, refetch } = useUser(id);
 
   const userId = authUser?._id || authUser?.userId;
   const isOwnProfile = userId === id;
 
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
+    username: "",
     email: "",
     bio: "",
     password: "",
     newPassword: "",
   });
+
   const [avatarFile, setAvatarFile] = useState(null);
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(null);
@@ -28,10 +32,20 @@ export default function Profile() {
   const [gamesPage, setGamesPage] = useState(1);
   const [gamesTotal, setGamesTotal] = useState(0);
   const [isLoadingGames, setIsLoadingGames] = useState(false);
+  const [gamesError, setGamesError] = useState(null);
+
+  // Reset game list and re-fetch whenever this page is navigated to
+  useEffect(() => {
+    setGames([]);
+    setGamesPage(1);
+    setGamesTotal(0);
+    refetch();
+  }, [key]);
 
   useEffect(() => {
     if (user?.recentMatches) {
       setGames(user.recentMatches);
+      setGamesTotal(user.recentMatchesTotal || 0);
       setGamesPage(1);
     }
   }, [user]);
@@ -39,23 +53,26 @@ export default function Profile() {
   function loadMoreGames() {
     const nextPage = gamesPage + 1;
     setIsLoadingGames(true);
-    getPlayerMatches(id, nextPage, 10)
+    setGamesError(null);
+    getPlayerMatches(id, nextPage, 5)
       .then((data) => {
         setGames((prev) => [...prev, ...(data.results || [])]);
         setGamesTotal(data.total || 0);
         setGamesPage(nextPage);
       })
+      .catch((err) => setGamesError(err.message))
       .finally(() => setIsLoadingGames(false));
   }
 
   function startEditing() {
     setFormData({
+      username: user?.username || "",
       email: user?.email || "",
       bio: user?.bio || "",
       password: "",
       newPassword: "",
     });
-    setAvatarFile(null);
+    // setAvatarFile(null); // TODO: needed?
     setEditing(true);
     setSaveError(null);
     setSaveSuccess(null);
@@ -72,15 +89,18 @@ export default function Profile() {
     setSaveSuccess(null);
 
     if (formData.newPassword && formData.password === formData.newPassword) {
-      return setSaveError("New password must differ from old password.");
+      return setSaveError("New password must differ from old password."); // of the old and new password are identical, we show this
     }
 
     try {
+      let profileImageUrl;
       if (avatarFile) {
-        await uploadAvatar(id, avatarFile);
+        ({ profileImageUrl } = await uploadAvatar(id, avatarFile));
+        if (isOwnProfile) updateAuthUser({ profileImageUrl });
       }
 
       const updates = {
+        ...(formData.username && { username: formData.username }),
         ...(formData.email && { email: formData.email }),
         bio: formData.bio,
         ...(formData.newPassword && {
@@ -90,72 +110,82 @@ export default function Profile() {
       };
 
       await updateUser(id, updates);
-      setSaveSuccess("Profile updated!");
-      refetch();
+      if (formData.username && formData.username !== user.username) {
+        setSaveSuccess("Username updated successfully");
+        if (isOwnProfile) updateAuthUser({ username: formData.username });
+      }
+      if (formData.email && formData.email !== user.email) {
+        setSaveSuccess("Email updated successfully");
+      }
+      if (formData.newPassword) {
+        setSaveSuccess("Password changed successfully");
+        setFormData({
+          password: "",
+          newPassword: "",
+        });
+      }
+
+      setUser((prev) => ({
+        ...prev,
+        username: formData.username || prev.username,
+        email: formData.email || prev.email,
+        bio: formData.bio || prev.bio,
+        ...(profileImageUrl && { profileImageUrl }),
+      }));
     } catch (err) {
       setSaveError(err.message);
     }
   }
-
-  function calcStats(matches) {
-    if (!matches || matches.length === 0)
-      return { wins: 0, losses: 0, monthWins: 0, monthLosses: 0 };
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-    let wins = 0,
-      losses = 0,
-      monthWins = 0,
-      monthLosses = 0;
-    matches.forEach((m) => {
-      const won = m.winnerId?._id === id || m.winnerId === id;
-      if (won) wins++;
-      else losses++;
-      if (new Date(m.updatedAt) >= oneMonthAgo) {
-        if (won) monthWins++;
-        else monthLosses++;
-      }
-    });
-    return { wins, losses, monthWins, monthLosses };
-  }
+  const handleCloseEditField = () => {
+    setEditing(false);
+  };
 
   if (isLoading) return <p className="profile__status">Loading profile...</p>;
   if (error) return <p className="profile__error">{error}</p>;
   if (!user) return null;
 
-  const stats = calcStats(user.recentMatches);
-
   return (
-    <div className="profile">
-      <div className="profile__header">
-        <div className="profile__avatar">
-          {user.profileImageUrl ? (
-            <img
-              src={user.profileImageUrl}
-              alt={user.username}
-              className="profile__avatar-img"
-            />
-          ) : (
-            <span>{user.username.charAt(0).toUpperCase()}</span>
-          )}
+    <div className="profile stack-l">
+      <div className="profile__header stack-m">
+        <div className="profile__identity">
+          <Avatar imageUrl={user.profileImageUrl} username={user.username} size={80} />
+          <h1>{user.username}</h1>
         </div>
-        <div className="profile__info">
-          <h1 className="profile__username">{user.username}</h1>
-          {isOwnProfile && <p className="profile__email">{user.email}</p>}
-          <p className="profile__bio">{user.bio || "No bio yet."}</p>
+        <div className="profile__info stack-s">
           {isOwnProfile && (
-            <button
-              className="profile__edit-btn"
-              onClick={editing ? () => setEditing(false) : startEditing}
-            >
-              {editing ? "Cancel" : "Edit Profile"}
-            </button>
+            <div>
+              <span className="profile__label">Email:</span>
+              <p>{user.email}</p>
+            </div>
           )}
+          <div>
+            <span className="profile__label">Bio:</span>
+            <p className="profile__bio">{user.bio || "No bio yet."}</p>
+          </div>
         </div>
+        {isOwnProfile && !editing && (
+          <button
+            className="btn btn--secondary"
+            onClick={startEditing}
+          >
+            Edit profile
+          </button>
+        )}
       </div>
 
       {editing && (
-        <form className="profile__form" onSubmit={handleSave}>
-          <h2 className="profile__form-title">Edit Profile</h2>
+        <form className="profile__form stack-m" onSubmit={handleSave}>
+          <h2>Edit profile</h2>
+          <div className="profile__form-inner stack-m">
+          <div className="profile__field">
+            <label>Username</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+            />
+          </div>
           <div className="profile__field">
             <label>Email</label>
             <input
@@ -174,7 +204,7 @@ export default function Profile() {
             />
           </div>
           <div className="profile__field">
-            <label>About Me</label>
+            <label>About me</label>
             <textarea
               name="bio"
               value={formData.bio}
@@ -184,7 +214,7 @@ export default function Profile() {
             />
           </div>
           <div className="profile__field">
-            <label htmlFor="password">Old Password</label>
+            <label htmlFor="password">Old password</label>
             <input
               type="password"
               name="password"
@@ -195,7 +225,7 @@ export default function Profile() {
             />
           </div>
           <div className="profile__field">
-            <label htmlFor="newPassword">New Password</label>
+            <label htmlFor="newPassword">New password</label>
             <input
               type="password"
               name="newPassword"
@@ -206,108 +236,127 @@ export default function Profile() {
           </div>
           {saveError && <p className="profile__error">{saveError}</p>}
           {saveSuccess && <p className="profile__success">{saveSuccess}</p>}
-          <button type="submit" className="profile__save-btn">
-            Save Changes
-          </button>
+          <div className="profile__save">
+            <button type="submit" className="btn btn--primary">
+              Save changes
+            </button>
+            <button
+              onClick={handleCloseEditField}
+              type="button"
+              className="btn btn--red"
+            >
+              Close edit form
+            </button>
+          </div>
+          </div>
         </form>
       )}
 
-      <div className="profile__stats">
-        <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating?.tc10 ?? 1000}</span>
-          <span className="profile__stat-label">Elo (10s)</span>
+      <div className="profile__stats stack-m">
+        <div className="profile__stats-row">
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.eloRating?.tc10 ?? 1000}</span>
+            <span className="profile__stat-label">Elo (10s)</span>
+          </div>
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.eloRating?.tc30 ?? 1000}</span>
+            <span className="profile__stat-label">Elo (30s)</span>
+          </div>
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.eloRating?.tc90 ?? 1000}</span>
+            <span className="profile__stat-label">Elo (90s)</span>
+          </div>
         </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating?.tc30 ?? 1000}</span>
-          <span className="profile__stat-label">Elo (30s)</span>
+        <div className="profile__stats-row">
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.points ?? 0}</span>
+            <span className="profile__stat-label">Points</span>
+          </div>
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.totalGames}</span>
+            <span className="profile__stat-label">Total games</span>
+          </div>
         </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{user.eloRating?.tc90 ?? 1000}</span>
-          <span className="profile__stat-label">Elo (90s)</span>
-        </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{user.points ?? 0}</span>
-          <span className="profile__stat-label">Points</span>
-        </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{stats.wins}</span>
-          <span className="profile__stat-label">Total Wins</span>
-        </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{stats.losses}</span>
-          <span className="profile__stat-label">Total Losses</span>
-        </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{stats.monthWins}</span>
-          <span className="profile__stat-label">Wins (month)</span>
-        </div>
-        <div className="profile__stat">
-          <span className="profile__stat-value">{stats.monthLosses}</span>
-          <span className="profile__stat-label">Losses (month)</span>
+        <div className="profile__stats-row">
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.winsLastMonth}</span>
+            <span className="profile__stat-label">Wins (month)</span>
+          </div>
+          <div className="profile__stat">
+            <span className="profile__stat-value">{user.lossesLastMonth}</span>
+            <span className="profile__stat-label">Losses (month)</span>
+          </div>
         </div>
       </div>
 
       {user.trophies?.length > 0 && (
-        <div className="profile__trophies">
-          <h2 className="profile__section-title">Trophies</h2>
-          <div className="profile__trophy-list">
-            {user.trophies.map((trophy, i) => (
-              <div key={i} className="profile__trophy">
+        <section className="profile__trophies stack-m">
+          <h2>Trophies</h2>
+          <ul className="profile__trophy-list">
+            {user.trophies.map((trophy) => (
+              <li key={trophy._id} className="profile__trophy">
                 {trophy.imageUrl && (
                   <img src={trophy.imageUrl} alt={trophy.title} />
                 )}
                 <span>{trophy.title}</span>
-              </div>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
       )}
 
-      <div className="profile__games">
-        <h2 className="profile__section-title">Game History</h2>
+      <section className="profile__games stack-m">
+        <h2>Game history</h2>
         {games.length === 0 ? (
           <p className="profile__status">No games played yet.</p>
         ) : (
-          <div className="profile__game-list">
+          <ul className="profile__game-list stack-s">
             {games.map((match) => {
-              const won = match.winnerId?._id === id || match.winnerId === id;
-              const opponent = (match.players || []).find((p) => {
-                const pId = p.userId?._id || p.userId;
-                return pId !== id;
+              const won = match.winnerId?._id === id;
+              const opponent = match.players.find((player) => {
+                const playerId = player.userId?._id;
+                return playerId !== id;
               })?.userId;
+
+              let opponentText;
+              if (match.maxPlayers === 2) {
+                opponentText = `vs ${opponent.username}`;
+              } else {
+                opponentText = `${match.maxPlayers}-player game`;
+              }
+
               return (
-                <Link
-                  to={`/game/${match._id}`}
-                  key={match._id}
-                  className="profile__game"
-                >
-                  <span className={`profile__result profile__result--${won ? "win" : "loss"}`}>
-                    {won ? "Win" : "Loss"}
-                  </span>
-                  <span className="profile__opponent">
-                    vs {opponent?.username || "Unknown"}
-                  </span>
-                  <span className="profile__game-variant">
-                    {match.category?.timeControl}s · BO{match.category?.rounds}
-                  </span>
-                  <span className="profile__game-date">
-                    {new Date(match.updatedAt).toLocaleDateString()}
-                  </span>
-                </Link>
+                <li key={match._id}>
+                  <Link
+                    to={`/game/${match._id}`}
+                    className="profile__game"
+                  >
+                    <span className={`profile__result profile__result--${won ? "win" : "loss"}`}>
+                      {won ? "Win" : "Loss"}
+                    </span>
+                    <span className="profile__opponent">{opponentText}</span>
+                    <span className="profile__game-date">
+                      {new Date(match.endedAt).toLocaleDateString("en-GB")}
+                    </span>
+                  </Link>
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
-        {(games.length === 10 || gamesTotal > games.length) && (
+        {gamesError && <p className="profile__error">{gamesError}</p>}
+        {gamesTotal > games.length ? (
           <button
-            className="profile__load-more"
+            className="btn btn--secondary"
             onClick={loadMoreGames}
             disabled={isLoadingGames}
           >
             {isLoadingGames ? "Loading..." : "Load more games"}
           </button>
+        ) : (
+          games.length > 0 && <p className="profile__status">All games loaded.</p>
         )}
-      </div>
+      </section>
     </div>
   );
 }

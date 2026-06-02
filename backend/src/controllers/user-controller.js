@@ -1,135 +1,80 @@
-import User from "../models/User.js";
-import Match from "../models/Match.js";
-import bcrypt from "bcryptjs";
-import { matchedData } from "express-validator";
-import { hashPassword, chechPassword } from "../utils/password-hash.js";
 import { BusinessLogicError } from "../utils/errors.js";
-// GET /api/users — admin only, supports ?search=
-export async function getAllUsers(req, res, next) {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+import {
+  getAllUsers as getAllUsersService,
+  getUser as getUserService,
+  updateUser as updateUserService,
+  uploadAvatar as uploadAvatarService,
+  banUser as banUserService,
+  makeAdmin as makeAdminService,
+  unBannUser as unBannUserService,
+  unMakeAdmin as unMakeAdminService,
+} from "../services/user-service.js";
 
-    const filter = {};
-    if (req.query.search) {
-      filter.$or = [
-        { username: { $regex: req.query.search, $options: "i" } },
-        { email: { $regex: req.query.search, $options: "i" } },
-      ];
-    }
-
-    const users = await User.find(filter).skip(skip).limit(limit);
-    const total = await User.countDocuments(filter);
-
-    res.json({ page, limit, total, results: users });
-  } catch (err) {
-    next(err);
-  }
+// Get a paginated list of all users (GET /api/users?page=&limit=&search=)
+export async function getUsers(req, res, next) {
+  const result = await getAllUsersService(req.validated);
+  res.status(200);
+  res.json(result);
 }
 
-// GET /api/users/:id
+// Get a single user profile with their recent matches (GET /api/users/:id?matchPage=&matchLimit=)
 export async function getUser(req, res, next) {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    // Fetch 10 most recent completed matches for this user
-    const recentMatches = await Match.find({
-      "players.userId": user._id,
-      status: "completed",
-    })
-      .populate("players.userId", "username")
-      .populate("winnerId", "username")
-      .sort({ updatedAt: -1 })
-      .limit(10);
-
-    res.json({ ...user.toObject(), recentMatches });
-  } catch (err) {
-    next(err);
-  }
+  const result = await getUserService(req.params.id, req.userId, req.validated);
+  res.status(200);
+  res.json(result);
 }
 
-// PATCH /api/users/:id
+// Update a user's profile fields or password (PATCH /api/users/:id)
 export async function updateUser(req, res, next) {
-  try {
-    const { email, bio, profileImageUrl, password, oldPassword, appearance } =
-      req.body;
-
-    const updates = {};
-    if (email !== undefined) updates.email = email;
-    if (bio !== undefined) updates.bio = bio;
-    if (profileImageUrl !== undefined)
-      updates.profileImageUrl = profileImageUrl;
-    if (appearance !== undefined) updates.appearance = appearance;
-
-    // Hash new password if provided
-    if (password) {
-      const user = await User.findById(req.params.id).select("+password"); // User needs to confirm change with the old password
-      if (!user) throw new BusinessLogicError("User not found", 404);
-
-      if (!chechPassword(oldPassword, user.password)) {
-        // checks if the old password is the same user typed
-        throw new BusinessLogicError("Old password is incorrect", 401);
-      }
-      
-      updates.password = hashPassword(password); // hashes the new password
-    }
-
-    const user = await User.findByIdAndUpdate(req.params.id, updates, {
-      new: true,
-    });
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    res.json(user);
-  } catch (err) {
-    next(err);
-  }
+  const user = await updateUserService(
+    req.params.id,
+    req.validated,
+    req.userId,
+  );
+  res.status(200);
+  res.json(user);
 }
 
-// PATCH /api/users/:id/avatar — upload profile picture
+// Upload a profile avatar image (PATCH /api/users/:id/avatar)
 export async function uploadAvatar(req, res, next) {
-  try {
-    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-    const profileImageUrl = `/uploads/${req.file.filename}`;
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { profileImageUrl },
-      { new: true },
-    );
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json({ profileImageUrl });
-  } catch (err) {
-    next(err);
+  if (!req.file) {
+    throw new BusinessLogicError("No file uploaded", 400);
   }
+  const profileImageUrl = `/uploads/${req.file.filename}`;
+  const user = await uploadAvatarService(
+    req.params.id,
+    profileImageUrl,
+    req.userId,
+  );
+  res.status(200);
+  res.json({ profileImageUrl });
 }
 
-// POST /api/users/:id/ban — admin only
+// Ban a user so they can no longer join tournaments or matches (POST /api/users/:id/ban)
 export async function banUser(req, res, next) {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { isBanned: true },
-      { new: true },
-    );
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json({ message: `${user.username} has been banned` });
-  } catch (err) {
-    next(err);
-  }
+  const user = await banUserService(req.params.id);
+  res.status(200);
+  res.json({ message: `${user.username} has been banned` });
 }
 
-// POST /api/users/:id/make-admin — admin only
+export async function unBannUser(req, res, next) {
+  const user = await unBannUserService(req.params.id);
+  res.status(200).json({ message: `${user.username} has been unbanned` });
+}
+
+// Give a user the admin role (POST /api/users/:id/make-admin)
 export async function makeAdmin(req, res, next) {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { role: "admin" },
-      { new: true },
-    );
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json({ message: `${user.username} is now an admin` });
-  } catch (err) {
-    next(err);
+  const user = await makeAdminService(req.params.id);
+  res.status(200);
+  res.json({ message: `${user.username} is now an admin` });
+}
+
+export async function unMakeAdmin(req, res, next) {
+  if (req.params.id === req.userId) {
+    throw new BusinessLogicError("You cannot remove your own admin role", 403);
   }
+  const user = await unMakeAdminService(req.params.id);
+  res
+    .status(200)
+    .json({ message: `${user.username} is not not an admin anymore` });
 }

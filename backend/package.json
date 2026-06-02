@@ -1,7 +1,7 @@
 {
   "name": "spanish-poker-dice-backend",
   "version": "1.0.0",
-  "description": "Backend for the Spanish Poker Dice platform — merged starter from obligs",
+  "description": "Backend for the Spanish Poker Dice platform, merged starter from obligs",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -10,7 +10,6 @@
     "seed": "node --env-file=.env scripts/seed.js"
   },
   "dependencies": {
-    "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "express": "^5.2.1",

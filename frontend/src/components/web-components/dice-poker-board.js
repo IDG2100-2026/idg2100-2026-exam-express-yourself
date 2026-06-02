@@ -495,7 +495,6 @@ class DicePokerBoard extends HTMLElement {
         <div>
           <div><strong>Spanish Dice Poker</strong></div>
           <div class="small" id="roundDisplay">Round: ${this._round}</div>
-          <div class="small">Best of ${this._bestOf} | Straights: ${this._includeStraight === "true" ? "On" : "Off"}</div>
           <div class="small" id="turnStatus"></div>
         </div>
         <div class="controls">

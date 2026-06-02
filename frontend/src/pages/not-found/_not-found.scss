@@ -1,0 +1,12 @@
+@use '../../styles/variables.scss' as *;
+
+.not-found {
+  text-align: center;
+
+  p {
+    max-width: 50ch;
+    margin-inline: auto;
+  }
+
+  .btn--link { display: block; }
+}

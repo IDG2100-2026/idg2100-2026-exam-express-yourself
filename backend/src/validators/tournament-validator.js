@@ -4,13 +4,13 @@ import {
   MAX_TOURNAMENT_TITLE_LENGTH,
   MIN_TOURNAMENT_DESCRIPTION_LENGTH,
   MAX_TOURNAMENT_DESCRIPTION_LENGTH,
-  MAX_TOURNAMENT_RULES_LENGTH,
   MIN_TOURNAMENT_BUY_IN,
   TOURNAMENT_STATUSES,
   VALID_ROUNDS,
   VALID_TIME_CONTROLS,
+  VALID_BUY_INS,
 } from "../config/constants.js";
-
+import { createTournamentInFuture, createTournamentInAdvanced } from '../services/tournament-service.js';
 
 // Validates optional query params for browsing tournaments (GET /api/tournaments)
 export function validateGetTournaments() {
@@ -58,36 +58,32 @@ export function validateCreateTournament() {
       .escape()
       .isLength({ min: MIN_TOURNAMENT_DESCRIPTION_LENGTH, max: MAX_TOURNAMENT_DESCRIPTION_LENGTH })
       .withMessage(`Description must be between ${MIN_TOURNAMENT_DESCRIPTION_LENGTH} and ${MAX_TOURNAMENT_DESCRIPTION_LENGTH} characters.`),
-    body("rules")
-      .optional()
-      .trim()
-      .escape()
-      .isLength({ max: MAX_TOURNAMENT_RULES_LENGTH })
-      .withMessage(`Rules cannot be longer than ${MAX_TOURNAMENT_RULES_LENGTH} characters.`),
     body("startDate")
       .trim()
       .notEmpty()
       .withMessage("Start date is required.")
       .isISO8601()
       .withMessage("Start date must be a valid date.")
-      .custom(function(value) {
-        if (new Date(value) <= new Date()) {
-          throw new Error("Start date must be in the future.");
-        }
-        return true;
-      }),
+      .bail()
+      .custom(createTournamentInFuture)
+      .withMessage("Tournament's cannot be created with a start date back in time!")
+      .bail()
+      .custom(createTournamentInAdvanced)
+      .withMessage("Tournament's cannot be created longer than one year in advance"),
     body("numberOfRounds")
       .optional()
       .isInt({ min: 1 })
       .withMessage("Number of rounds must be a positive integer.")
       .toInt(),
     body("category.rounds")
-      .optional()
+      .notEmpty()
+      .withMessage("Category rounds is required.")
       .toInt()
       .isIn(VALID_ROUNDS)
       .withMessage(`Rounds must be one of: ${VALID_ROUNDS.join(", ")}.`),
     body("category.timeControl")
-      .optional()
+      .notEmpty()
+      .withMessage("Category time control is required.")
       .toInt()
       .isIn(VALID_TIME_CONTROLS)
       .withMessage(`Time control must be one of: ${VALID_TIME_CONTROLS.join(", ")}.`),
@@ -96,6 +92,11 @@ export function validateCreateTournament() {
       .isBoolean()
       .withMessage("Straights allowed must be true or false.")
       .toBoolean(),
+    body("category.buyIn")
+      .optional()
+      .toInt()
+      .isIn(VALID_BUY_INS)
+      .withMessage(`Category buy-in must be one of: ${VALID_BUY_INS.join(", ")}.`),
     body("buyIn")
       .optional()
       .isInt({ min: MIN_TOURNAMENT_BUY_IN })
@@ -138,12 +139,6 @@ export function validateUpdateTournament() {
       .escape()
       .isLength({ min: MIN_TOURNAMENT_DESCRIPTION_LENGTH, max: MAX_TOURNAMENT_DESCRIPTION_LENGTH })
       .withMessage(`Description must be between ${MIN_TOURNAMENT_DESCRIPTION_LENGTH} and ${MAX_TOURNAMENT_DESCRIPTION_LENGTH} characters.`),
-    body("rules")
-      .optional()
-      .trim()
-      .escape()
-      .isLength({ max: MAX_TOURNAMENT_RULES_LENGTH })
-      .withMessage(`Rules cannot be longer than ${MAX_TOURNAMENT_RULES_LENGTH} characters.`),
     body("startDate")
       .optional()
       .trim()
@@ -175,6 +170,11 @@ export function validateUpdateTournament() {
       .isBoolean()
       .withMessage("Straights allowed must be true or false.")
       .toBoolean(),
+    body("category.buyIn")
+      .optional()
+      .toInt()
+      .isIn(VALID_BUY_INS)
+      .withMessage(`Category buy-in must be one of: ${VALID_BUY_INS.join(", ")}.`),
     body("buyIn")
       .optional()
       .isInt({ min: MIN_TOURNAMENT_BUY_IN })

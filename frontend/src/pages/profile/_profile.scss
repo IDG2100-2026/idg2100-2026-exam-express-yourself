@@ -1,0 +1,145 @@
+@use '../../styles/variables.scss' as *;
+
+.profile {
+
+  &__status  { color: $color-text-dim; }
+  &__error   { color: $color-red; }
+  &__success { color: $color-green; }
+
+  &__identity {
+    display: flex;
+    align-items: center;
+    gap: $space-m;
+  }
+
+  &__label {
+    display: block;
+    color: $color-text-dim;
+  }
+
+  &__bio { max-width: 50ch; }
+
+  &__form {
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__form-inner {
+    max-width: 50ch;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+
+    label {
+      color: $color-text-dim;
+
+      span { color: $color-text-dim; }
+    }
+
+    input,
+    textarea {
+      padding: $space-s;
+      border: 1px solid $color-border;
+      border-radius: $radius;
+      color: $color-text;
+      background-color: $color-frame;
+
+      &:focus {
+        outline: none;
+        border-color: $color-yellow;
+      }
+    }
+
+    textarea {
+      min-block-size: 100px;
+      max-block-size: 200px;
+      resize: vertical;
+    }
+  }
+
+  &__save {
+    display: flex;
+    gap: $space-s;
+  }
+
+  &__stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
+  }
+
+  &__stat {
+    display: flex;
+    flex: 1 1 150px;
+    flex-direction: column;
+    gap: $space-xs;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    text-align: center;
+    background-color: $color-inner;
+  }
+
+  &__stat-value {
+    color: $color-yellow;
+  }
+
+  &__stat-label {
+    text-transform: uppercase;
+    color: $color-text-dim;
+  }
+
+  &__game-list {
+    list-style: none;
+  }
+
+  &__game {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-m;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+
+    &:hover { border-color: $color-yellow; }
+  }
+
+  &__result {
+    padding: $space-xs;
+    border-radius: $radius;
+
+    &--win  { background-color: $color-green; color: #fff; }
+    &--loss { background-color: $color-red;  color: #fff; }
+  }
+
+  &__opponent { flex: 1; }
+
+  &__game-date { color: $color-text-dim; }
+
+  &__trophy-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
+  }
+
+  &__trophy {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+    color: $color-yellow;
+
+    img {
+      width: 48px;
+      height: 48px;
+      border-radius: $radius;
+      object-fit: contain;
+    }
+  }
+}

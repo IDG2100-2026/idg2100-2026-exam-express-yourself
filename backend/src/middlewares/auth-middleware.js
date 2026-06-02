@@ -1,7 +1,8 @@
 import { verifyAccessToken } from "../utils/jwt.js";
 import { BusinessLogicError } from "../utils/errors.js";
-import SecurityIncident from "../models/SecurityIncident.js";
+import { logIncident } from "../services/security-incidents-service.js";
 import { normalizeIp } from "../utils/normalize-ip.js";
+
 
 export const authenticate = (req, res, next) => {
   try {
@@ -12,14 +13,14 @@ export const authenticate = (req, res, next) => {
 
     // IP-change detection. log incident and force new login
     if (decoded.ip && decoded.ip !== normalizeIp(req.ip)) {
-      SecurityIncident.create({
+      logIncident({
         type: "ip-change",
         ip: req.ip,
         userAgent: req.headers["user-agent"] || "unknown",
         userId: decoded.userId || null,
-      }).catch(() => {});
+      }).catch(() => {}); // fire and forget, don't block the request
 
-      throw new BusinessLogicError("IP mismatch — please re-authenticate", 401);
+      throw new BusinessLogicError("IP mismatch, please re-authenticate", 401);
     }
 
     req.userId = decoded.userId;
@@ -29,6 +30,23 @@ export const authenticate = (req, res, next) => {
     next(err);
   }
 };
+
+
+// Sets req.userId and req.role if a valid token is present, but never blocks the request
+export const optionalAuthenticate = (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (token) {
+      const decoded = verifyAccessToken(token);
+      req.userId = decoded.userId;
+      req.role = decoded.role;
+    }
+  } catch {
+    // invalid or missing token on a public route, just continue
+  }
+  next();
+};
+
 
 export const authorize = (...allowedRoles) => {
   return (req, res, next) => {

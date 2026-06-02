@@ -1,17 +1,23 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router";
 
 function Footer() {
   return (
     <footer className="footer">
       <div className="footer__inner">
         <div className="footer__brand">
-          <span className="footer__name">🎲 PokerDados</span>
-          <span className="footer__copy">© 2020–2026</span>
+          <span className="footer__name">PokerDados</span>
+          <span className="footer__copy">© 2026</span>
         </div>
         <nav className="footer__links">
-          <Link to="/about-us" className="footer__link">About Us</Link>
-          <Link to="/privacy" className="footer__link">Privacy Policy</Link>
-          <Link to="/terms" className="footer__link">Terms & Conditions</Link>
+          <NavLink to="/about-us" className="footer__link">
+            About us
+          </NavLink>
+          <NavLink to="/privacy" className="footer__link">
+            Privacy policy
+          </NavLink>
+          <NavLink to="/terms" className="footer__link">
+            Terms & conditions
+          </NavLink>
         </nav>
       </div>
     </footer>

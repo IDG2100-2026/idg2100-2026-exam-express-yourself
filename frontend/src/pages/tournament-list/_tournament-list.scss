@@ -1,0 +1,104 @@
+@use '../../styles/variables.scss' as *;
+
+.tournaments {
+  &__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
+  }
+
+  &__search {
+    flex: 1;
+    min-width: 200px;
+    padding: $space-s;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    background: $color-frame;
+
+    &:focus {
+      outline: none;
+      border-color: $color-yellow;
+    }
+
+    &::placeholder { color: $color-text-dim; }
+  }
+
+  &__sort {
+    padding: $space-xs;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    color: $color-text;
+    background: $color-frame;
+
+    &:focus {
+      outline: none;
+      border-color: $color-yellow;
+    }
+  }
+
+  &__status { color: $color-text-dim; }
+  &__error  { color: $color-red; }
+
+  &__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
+    list-style: none;
+
+    > li {
+      flex: 1 1 260px;
+    }
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: $space-m;
+    inline-size: 100%;
+    block-size: 100%;
+    border-inline-start: 3px solid $color-border;
+
+    &--upcoming    { border-inline-start-color: $color-yellow; }
+    &--in-progress { border-inline-start-color: #58a6ff; }
+    &--completed   { border-inline-start-color: $color-green; }
+    &--cancelled   { border-inline-start-color: $color-red; }
+  }
+
+  &__card-status {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+
+    &--upcoming    { color: $color-yellow; }
+    &--in-progress { color: #58a6ff; }
+    &--completed   { color: $color-green; }
+    &--cancelled   { color: $color-red; }
+  }
+
+  &__card-date    { color: $color-text-dim; }
+  &__card-variant { color: $color-text-dim; }
+  &__card-players { color: $color-text-dim; }
+  &__card-author  { color: $color-text-dim; }
+
+  &__card-trophy {
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
+  }
+
+  &__card-trophy-img {
+    flex-shrink: 0;
+    inline-size: 20px;
+    block-size: 20px;
+    border-radius: 2px;
+    object-fit: cover;
+  }
+
+  &__card-trophy-title { color: $color-text-dim; }
+
+  &__load-more {
+    display: flex;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,21 @@
+@baseUrl = http://localhost:3000
+
+
+### Get all tournaments
+GET {{baseUrl}}/api/tournaments
+
+
+### Get all tournaments, filter by status
+GET {{baseUrl}}/api/tournaments?status=upcoming
+
+
+### Get all tournaments, search by title
+GET {{baseUrl}}/api/tournaments?search=spring
+
+
+### Get all tournaments, sorted by title
+GET {{baseUrl}}/api/tournaments?sort=title
+
+
+### Get all tournaments, paginated
+GET {{baseUrl}}/api/tournaments?page=1&limit=3

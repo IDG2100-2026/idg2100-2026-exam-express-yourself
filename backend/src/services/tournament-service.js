@@ -2,7 +2,7 @@ import Tournament from "../models/Tournament.js";
 import Match from "../models/Match.js";
 import User from "../models/User.js";
 import { BusinessLogicError } from "../utils/errors.js";
-import { TOURNAMENT_WIN_POINTS } from "../config/constants.js";
+import { TOURNAMENT_WIN_POINTS, ELO_FIELD_BY_TIME_CONTROL } from "../config/constants.js";
 
 
 // Get a paginated, filtered list of tournaments
@@ -27,17 +27,42 @@ export async function getAllTournaments(filters) {
   if (filters.sort === "date") {
     sortObj = { startDate: -1 };
   }
-  // Sorting by participant count needs a special MongoDB aggregation query, so "players" falls back to date sort
 
-  const tournaments = await Tournament.find(filter)
-    .populate("createdBy", "username")
-    .populate("participants", "username")
-    .populate("winnerId", "username")
-    .sort(sortObj)
-    .skip(skip)
-    .limit(limit);
+  let tournaments;
+  let total;
 
-  const total = await Tournament.countDocuments(filter);
+  if (filters.sort === "players") {
+    // Sorting by participant count requires aggregation since .sort() cannot operate on array length
+    const aggregated = await Tournament.aggregate([
+      { $match: filter },
+      { $addFields: { participantCount: { $size: "$participants" } } },
+      { $sort: { participantCount: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+    ]);
+
+    tournaments = await Tournament.populate(aggregated, [
+      { path: "createdBy", select: "username" },
+      { path: "participants", select: "username" },
+      { path: "winnerId", select: "username" },
+    ]);
+
+    const countResult = await Tournament.aggregate([
+      { $match: filter },
+      { $count: "total" },
+    ]);
+    total = countResult.length > 0 ? countResult[0].total : 0;
+  } else {
+    tournaments = await Tournament.find(filter)
+      .populate("createdBy", "username")
+      .populate("participants", "username")
+      .populate("winnerId", "username")
+      .sort(sortObj)
+      .skip(skip)
+      .limit(limit);
+
+    total = await Tournament.countDocuments(filter);
+  }
 
   return { page, limit, total, results: tournaments };
 }
@@ -48,7 +73,7 @@ export async function getTournament(tournamentId) {
   const tournament = await Tournament.findById(tournamentId)
     .populate("createdBy", "username")
     .populate("participants", "username eloRating profileImageUrl")
-    .populate("winnerId", "username")
+    .populate("winnerId", "username profileImageUrl")
     .populate("bracket.matches.players", "username")
     .populate("bracket.matches.winner", "username");
 
@@ -64,7 +89,6 @@ export async function getTournament(tournamentId) {
 export async function createTournament(userId, tournamentData, imageUrl) {
   const title = tournamentData.title;
   const description = tournamentData.description;
-  const rules = tournamentData.rules;
   const startDate = tournamentData.startDate;
   const numberOfRounds = tournamentData.numberOfRounds;
   const buyIn = tournamentData.buyIn;
@@ -80,9 +104,6 @@ export async function createTournament(userId, tournamentData, imageUrl) {
 
   if (description !== undefined) {
     tournamentObj.description = description;
-  }
-  if (rules !== undefined) {
-    tournamentObj.rules = rules;
   }
   if (numberOfRounds !== undefined) {
     tournamentObj.numberOfRounds = numberOfRounds;
@@ -141,9 +162,12 @@ export async function joinTournament(tournamentId, userId) {
     throw new BusinessLogicError("Banned users cannot join tournaments", 403);
   }
 
-  // ELO range check uses the tournament's time-control-specific rating
-  const tc = tournament.category?.timeControl || 10;
-  const userElo = user.eloRating?.[`tc${tc}`] ?? 1000;
+  // Use the ELO rating for this tournament's time control, fall back to tc30 if none is set
+  let eloField = ELO_FIELD_BY_TIME_CONTROL[tournament.category.timeControl];
+  if (eloField === undefined) {
+    eloField = "tc30";
+  }
+  const userElo = user.eloRating[eloField];
   if (userElo < tournament.eloRange.min || userElo > tournament.eloRange.max) {
     throw new BusinessLogicError("Your ELO rating is not within the required range for this tournament", 400);
   }
@@ -211,13 +235,19 @@ export async function startTournament(tournamentId) {
     const player1 = shuffled[i];
     const player2 = shuffled[i + 1];
 
+    // Deduct the match buy-in from each player's profile so it becomes their starting stack
+    const matchBuyIn = tournament.category.buyIn;
+    await User.findByIdAndUpdate(player1._id, { $inc: { points: -matchBuyIn } });
+    await User.findByIdAndUpdate(player2._id, { $inc: { points: -matchBuyIn } });
+
     const newMatch = new Match({
       players: [
-        { userId: player1._id },
-        { userId: player2._id },
+        { userId: player1._id, stack: matchBuyIn },
+        { userId: player2._id, stack: matchBuyIn },
       ],
       maxPlayers: 2,
       category: tournament.category,
+      buyIn: matchBuyIn,
       status: "waiting",
       tournamentId: tournament._id,
       round: 1,
@@ -296,7 +326,7 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
 
   if (allMatchesDone) {
     if (tournament.currentRound < tournament.numberOfRounds) {
-      // More rounds left — re-pair ALL participants randomly for the next round
+      // More rounds left, re-pair all participants randomly for the next round
       const nextRoundNumber = tournament.currentRound + 1;
 
       const shuffled = tournament.participants.slice().sort(function () {
@@ -306,13 +336,21 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
       const nextBracketMatches = [];
 
       for (let i = 0; i + 1 < shuffled.length; i += 2) {
+        const player1Id = shuffled[i];
+        const player2Id = shuffled[i + 1];
+
+        const matchBuyIn = tournament.category.buyIn;
+        await User.findByIdAndUpdate(player1Id, { $inc: { points: -matchBuyIn } });
+        await User.findByIdAndUpdate(player2Id, { $inc: { points: -matchBuyIn } });
+
         const newMatch = new Match({
           players: [
-            { userId: shuffled[i] },
-            { userId: shuffled[i + 1] },
+            { userId: player1Id, stack: matchBuyIn },
+            { userId: player2Id, stack: matchBuyIn },
           ],
           maxPlayers: 2,
           category: tournament.category,
+          buyIn: matchBuyIn,
           status: "waiting",
           tournamentId: tournament._id,
           round: nextRoundNumber,
@@ -321,7 +359,7 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
 
         nextBracketMatches.push({
           gameId: savedMatch._id,
-          players: [shuffled[i], shuffled[i + 1]],
+          players: [player1Id, player2Id],
           winner: null,
         });
       }
@@ -332,7 +370,7 @@ export async function reportMatchResult(tournamentId, matchId, winnerId) {
       });
       tournament.currentRound = nextRoundNumber;
     } else {
-      // All rounds done — count wins per participant across every round to find the winner
+      // All rounds done, count wins per participant across every round to find the winner
       const winCounts = {};
 
       for (const round of tournament.bracket) {
@@ -461,9 +499,6 @@ export async function updateTournament(tournamentId, updateData) {
   if (updateData.description !== undefined) {
     tournament.description = updateData.description;
   }
-  if (updateData.rules !== undefined) {
-    tournament.rules = updateData.rules;
-  }
   if (updateData.startDate !== undefined) {
     tournament.startDate = updateData.startDate;
   }
@@ -487,6 +522,9 @@ export async function updateTournament(tournamentId, updateData) {
     }
     if (updateData.category.straightsAllowed !== undefined) {
       tournament.category.straightsAllowed = updateData.category.straightsAllowed;
+    }
+    if (updateData.category.buyIn !== undefined) {
+      tournament.category.buyIn = updateData.category.buyIn;
     }
   }
 
@@ -524,4 +562,20 @@ export async function cancelTournament(tournamentId) {
   tournament.status = "cancelled";
   const savedTournament = await tournament.save();
   return savedTournament;
+}
+
+export const createTournamentInFuture = (value) => {
+  if(new Date(value) <= new Date()){
+    throw new BusinessLogicError("Tournament must be in the future", 400);
+  }
+  return true;
+}
+export const createTournamentInAdvanced = (value) => {
+  const createDay = new Date();
+  const oneYear = new Date(value);
+
+const timeDifference = oneYear.getTime() - createDay.getTime();
+const dayDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
+return dayDifference >= 0 && dayDifference <= 365;
 }

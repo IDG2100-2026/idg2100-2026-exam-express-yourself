@@ -1,0 +1,33 @@
+@use '../../../styles/variables.scss' as *;
+
+.admin-comments {
+  &__list { list-style: none; }
+
+  &__item {
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background: $color-inner;
+  }
+
+  &__author {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+    font-weight: bold;
+  }
+
+  &__info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m;
+  }
+
+  &__target { color: $color-text-dim; }
+  &__date   { color: $color-text-dim; }
+
+  &__text { max-width: 50ch; }
+
+  &__muted { color: $color-text-dim; }
+  &__error { margin-block-end: $space-m; color: $color-red; }
+}

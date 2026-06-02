@@ -1,5 +1,6 @@
 import rateLimit from "express-rate-limit";
-import SecurityIncident from "../models/SecurityIncident.js";
+import { logIncident } from "../services/security-incidents-service.js";
+import { RATE_LIMIT_WINDOW } from "../config/constants.js";
 
 // Prevent comment spam
 export const commentRateLimiter = rateLimit({
@@ -12,17 +13,72 @@ export const commentRateLimiter = rateLimit({
   },
 });
 
+// Strict limiter for forgot-password to prevent email bombing
+export const forgotPasswordRateLimiter = rateLimit({
+  windowMs: RATE_LIMIT_WINDOW,
+  max: 5,
+  handler: async (req, res) => {
+    logIncident({
+      type: "rate-limit",
+      ip: req.ip,
+      userAgent: req.headers["user-agent"] || "unknown",
+    }).catch(() => {});
+
+    res
+      .status(429)
+      .json({
+        error:
+          "Too many password reset attempts. Please try again in 15 minutes or contact pokerdados2026@gmail.com",
+      });
+  },
+});
+
+export const resendVerificationEmail = rateLimit({
+  windowMs: RATE_LIMIT_WINDOW, // 15 minutes
+  max: 3,
+  handler: async (req, res) => {
+    logIncident({
+      type: "rate-limit",
+      ip: req.ip,
+      userAgent: req.headers["user-agent"] || "unknown",
+    }).catch(() => {});
+
+    res
+      .status(429)
+      .json({
+        error:
+          "Too many resend verification email attempts. Please try again in 15 minutes.",
+      });
+  },
+});
+
 // General API rate limiter. logs incidents to DB
 export const apiRateLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 100,
   handler: async (req, res) => {
-    SecurityIncident.create({
+    logIncident({
       type: "rate-limit",
       ip: req.ip,
       userAgent: req.headers["user-agent"] || "unknown",
-    }).catch(() => {}); // fire and forget.  don't block the response
+    }).catch(() => {}); // fire and forget, don't block the response
 
     res.status(429).json({ error: "Too many requests. Please slow down." });
   },
 });
+
+export const sessionTokenLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10,
+  handler: async (req, res) => {
+    logIncident({
+      type: "rate-limit",
+      ip: req.ip,
+      userAgent: req.headers["user-agent"] || "unknown",
+    }).catch(() => {}); // fire and forget, don't block the response
+
+    res.status(429).json({ error: "Too many requests for  refresh tokens. Please slow down with refreshing the page." });
+  },
+});
+
+

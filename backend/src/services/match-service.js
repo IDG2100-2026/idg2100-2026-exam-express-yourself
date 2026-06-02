@@ -31,7 +31,7 @@ export const evaluateHand = (dice, straightAllowed) => {
   } else if (diceValues[0] === 4) {
     rank = 7; // four of a kind
   } else if (diceValues[0] === 3 && diceValues[1] === 2) {
-    rank = 6; // full hoguse
+    rank = 6; // full house
   } else if (isStraight) {
     rank = 5; // straight
   } else if (diceValues[0] === 3) {
@@ -243,10 +243,13 @@ export async function joinMatch(matchId, userId) {
   if (match.players.length >= match.maxPlayers) {
     match.status = "in-progress";
     match.startedAt = new Date();
+    match.currentRound = 1;
+    match.phase = "rolling"
   }
-
+  
   const savedMatch = await match.save();
-  return savedMatch;
+  const populatedMatch = await savedMatch.populate("players.userId", "username"); // populate player usernames so the frontend can display them
+  return populatedMatch;
 }
 
 

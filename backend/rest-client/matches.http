@@ -1,0 +1,17 @@
+@baseUrl = http://localhost:3000
+
+
+### Get all matches (lobby)
+GET {{baseUrl}}/api/matches
+
+
+### Get all matches, filter by status
+GET {{baseUrl}}/api/matches?status=waiting
+
+
+### Get all matches, filter by player count
+GET {{baseUrl}}/api/matches?maxPlayers=2
+
+
+### Get all matches, paginated
+GET {{baseUrl}}/api/matches?page=1&limit=5

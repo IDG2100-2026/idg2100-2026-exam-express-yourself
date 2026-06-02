@@ -1,5 +1,5 @@
 import { apiFetch, fetchWithoutAccesstoken } from "../api.js";
-import { setAccessToken, clearAccessToken } from "./token-manager.js";
+import { clearAccessToken } from "./token-manager.js";
 
 export const registerUser = async (userData) => {
   return await apiFetch("/auth/register", {
@@ -32,6 +32,13 @@ export const verifyEmail = async (code) => {
   // Had to be hardcoded because apiFetch tries to give access token, but we don't have that yet
   return await fetchWithoutAccesstoken(`/auth/verify-email?code=${code}`);
 };
+
+export const resendVerifyEmail = async (email) => {
+  return await fetchWithoutAccesstoken("/auth/resend-verify-email", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
 
 export const requestResetPassword = async (email) => {
   return await fetchWithoutAccesstoken("/auth/forgot-password", {

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router";
 import { getMatches, joinMatch } from "../../services/matches-service.js";
 import { getTournaments } from "../../services/tournaments-service.js";
-import { getActivity } from "../../services/activity-service.js";
+import { getPlatformActivity } from "../../services/platform-activity-service.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 import { useAuth } from "../../hooks/useAuth.js";
+import spanishDiceImg from "../../assets/images/spanish-dice.jpg";
 
 function getPlayer(match, index) {
   return match.players?.[index]?.userId || null;
@@ -28,18 +29,19 @@ export default function Home() {
 
   const { appearance } = useAppearance();
   const { user } = useAuth();
-  const navigate = useNavigate();
+
+  const userId = user?._id || user?.userId;
 
   useEffect(() => {
     let stale = false;
     async function fetchAll() {
       try {
         const [waitingRes, activeRes, completedRes, tournamentsRes, activityRes] = await Promise.all([
-          getMatches("waiting"),
-          getMatches("in-progress"),
-          getMatches("completed"),
-          getTournaments(),
-          getActivity(),
+          getMatches({ status: "waiting", limit: 9 }),
+          getMatches({ status: "in-progress", limit: 9 }),
+          getMatches({ status: "completed", limit: 9 }),
+          getTournaments({ status: "upcoming", limit: 5 }),
+          getPlatformActivity(),
         ]);
 
         if (stale) return;
@@ -66,34 +68,32 @@ export default function Home() {
     return () => { stale = true; };
   }, []);
 
-  async function handleJoinGame(match) {
-    const p1Id = getPlayer(match, 0)?._id;
-    const userId = user?._id || user?.userId;
-    if (p1Id === userId) {
-      navigate(`/game/${match._id}`);
-      return;
-    }
-    try { await joinMatch(match._id); } catch (err) { /* proceed anyway */ }
-    navigate(`/game/${match._id}`);
-  }
-
   return (
-    <div className="home">
+    <div className="home stack-l">
       <section className="home__hero">
-        <h1 className="home__title">Spanish Poker Dice</h1>
-        <p className="home__description">
-          Challenge players from around the world in the classic Spanish dice game.
-          Bluff, roll, and outsmart your opponents to climb the leaderboard.
-        </p>
-        <Link to="/create-game" className="home__cta">Create a Game</Link>
+        <div className="home__hero-content stack-m">
+          <h1>PokerDados</h1>
+          <h2>Spanish <span className="home__hero-accent">poker</span> dice</h2>
+          <p className="home__hero-description">
+            Challenge players from around the world in the classic Spanish dice game.
+            Bluff, roll, and outsmart your opponents to win tournaments and earn trophies.
+          </p>
+          <Link to="/create-game" className="btn btn--primary">
+            Create game
+          </Link>
+        </div>
+        <img src={spanishDiceImg} alt="Spanish poker dice" className="home__hero-img" />
       </section>
 
       {data.activity && (
-        <section className="home__activity">
-          <div className="home__activity-item"><strong>{data.activity.ongoingMatches}</strong> games in progress</div>
-          <div className="home__activity-item"><strong>{data.activity.availableGames}</strong> open games</div>
-          <div className="home__activity-item"><strong>{data.activity.activePlayers}</strong> active this week</div>
-          <div className="home__activity-item"><strong>{data.activity.gamesThisWeek}</strong> games this week</div>
+        <section className="home__activity stack-m">
+          <h2>Platform activity</h2>
+          <ul className="home__activity-list">
+            <li><span className="home__activity-value">{data.activity.availableGames}</span> open games</li>
+            <li><span className="home__activity-value">{data.activity.ongoingMatches}</span> games in progress</li>
+            <li><span className="home__activity-value">{data.activity.activePlayers}</span> players active this week</li>
+            <li><span className="home__activity-value">{data.activity.gamesThisWeek}</span> games played this week</li>
+          </ul>
         </section>
       )}
 
@@ -102,66 +102,88 @@ export default function Home() {
 
       {!isLoading && !error && (
         <>
-          <section className="home__section">
-            <div className="home__section-header">
-              <h2>Open Games</h2>
-              <Link to="/lobby">See all</Link>
-            </div>
+          <section className="home__section stack-m">
+            <h2>Open games</h2>
             {data.waiting.length === 0 ? (
               <p className="home__empty">No open games right now.</p>
             ) : (
-              <div className="home__grid">
+              <ul className="home__grid">
                 {data.waiting.slice(0, appearance.lobbySize).map((match) => {
                   const p1 = getPlayer(match, 0);
+                  const isOwn = userId && (p1?._id || p1) === userId;
                   return (
-                    <button key={match._id} className="home__card home__card--btn" onClick={() => handleJoinGame(match)}>
-                      <div className="home__card-player">{p1?.username || "Unknown"}</div>
-                      <div className="home__card-variant">Best of {match.category?.rounds} — {match.category?.timeControl}s</div>
-                      <div className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "—"}</div>
-                      <div className="home__card-waiting">Click to join</div>
-                    </button>
+                    <li key={match._id}>
+                      <Link
+                        to={user ? `/game/${match._id}` : "/login"}
+                        className="home__card home__card--waiting card stack-s"
+                        onClick={() => {
+                          if (user && !isOwn) {
+                            joinMatch(match._id).catch(() => {});
+                          }
+                        }}
+                      >
+                        <h3>{p1?.username || "Unknown"}</h3>
+                        <p className="home__card-elo">Elo: {getPlayerElo(p1, match.category?.timeControl) || "?"}</p>
+                        <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.buyIn || 1}pt buy-in</p>
+                        <p className="home__card-variant">{match.players?.length || 1}/{match.maxPlayers || 2} players</p>
+                        <p className="home__card-waiting">{isOwn ? "Your game - waiting for players" : "Click to join"}</p>
+                      </Link>
+                    </li>
                   );
                 })}
-              </div>
+              </ul>
             )}
+            <Link to="/lobby" className="home__see-all btn--link">See all open games</Link>
           </section>
 
-          <section className="home__section">
-            <div className="home__section-header"><h2>Top Games</h2></div>
+          <section className="home__section stack-m">
+            <h2>Top games in progress</h2>
             {data.top.length === 0 ? (
               <p className="home__empty">No games yet.</p>
             ) : (
-              <div className="home__grid">
+              <ul className="home__grid">
                 {data.top.map((match) => (
-                  <Link to={`/game/${match._id}`} key={match._id} className="home__card">
-                    <div className="home__card-player">{getPlayer(match, 0)?.username || "?"} vs {getPlayer(match, 1)?.username || "waiting"}</div>
-                    <div className="home__card-variant">Best of {match.category?.rounds} — {match.category?.timeControl}s</div>
-                    <div className="home__card-elo">Avg Elo: {avgElo(match)}</div>
-                    <div className={`home__card-status home__card-status--${match.status}`}>{match.status}</div>
-                  </Link>
+                  <li key={match._id}>
+                    <Link to={`/game/${match._id}`} className={`home__card home__card--${match.status} card stack-s`}>
+                      <h3>{getPlayer(match, 0)?.username || "?"} vs {getPlayer(match, 1)?.username || "waiting"}</h3>
+                      <p className="home__card-elo">Avg Elo: {avgElo(match)}</p>
+                      <p className="home__card-variant">Best of {match.category?.rounds}, {match.category?.timeControl}s, {match.category?.straightsAllowed ? "Straights" : "No straights"}, {match.buyIn || 1}pt buy-in</p>
+                      <p className={`home__card-status home__card-status--${match.status}`}>{match.status}</p>
+                    </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
           </section>
 
-          <section className="home__section">
-            <div className="home__section-header">
-              <h2>Upcoming Tournaments</h2>
-              <Link to="/tournaments">See all</Link>
-            </div>
+          <section className="home__section stack-m">
+            <h2>Upcoming tournaments</h2>
             {data.tournaments.length === 0 ? (
               <p className="home__empty">No upcoming tournaments.</p>
             ) : (
-              <div className="home__grid">
-                {data.tournaments.map((t) => (
-                  <Link to={`/tournament/${t._id}`} key={t._id} className="home__card">
-                    <div className="home__card-player">{t.title}</div>
-                    <div className="home__card-variant">{new Date(t.startDate).toLocaleDateString()}</div>
-                    <div className="home__card-waiting">{t.participants?.length || 0} players signed up</div>
-                  </Link>
+              <ul className="home__grid">
+                {data.tournaments.map((tournament) => (
+                  <li key={tournament._id}>
+                    <Link to={`/tournament/${tournament._id}`} className={`home__card home__card--${tournament.status} card stack-s`}>
+                      <h3>{tournament.title}</h3>
+                      <p className="home__card-variant">
+                        {new Date(tournament.startDate).toLocaleDateString("en-GB")}
+                      </p>
+                      {tournament.category && (
+                        <p className="home__card-variant">
+                          Best of {tournament.category.rounds}, {tournament.category.timeControl}s{tournament.category.straightsAllowed ? ", Straights" : ", No straights"}, {tournament.category.buyIn || 1}pt buy-in
+                        </p>
+                      )}
+                      {tournament.numberOfRounds && (
+                        <p className="home__card-variant">{tournament.numberOfRounds} tournament rounds</p>
+                      )}
+                      <p className="home__card-waiting">{tournament.participants?.length || 0} players signed up</p>
+                    </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
+            <Link to="/tournaments" className="home__see-all btn--link">See all tournaments</Link>
           </section>
         </>
       )}

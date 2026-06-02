@@ -1,0 +1,95 @@
+@use '../../styles/variables.scss' as *;
+
+.home {
+  &__hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: $space-xl;
+    padding: $space-xl;
+    border: 1px solid $color-border;
+    border-radius: $radius-large;
+    background-color: $color-inner;
+  }
+
+  &__hero-accent {
+    color: $color-yellow;
+  }
+
+  &__hero-description {
+    max-inline-size: 50ch;
+  }
+
+  &__hero-img {
+    max-inline-size: 100%;
+    max-block-size: 280px;
+    object-fit: contain;
+    border-radius: $radius-large;
+    transform: rotate(4deg);
+    box-shadow: 0 16px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  &__activity-value { font-weight: bold; }
+
+  &__activity-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-m $space-xl;
+    list-style: none;
+  }
+
+  &__see-all { display: block; }
+
+  &__status { color: $color-text-dim; }
+  &__error  { color: $color-red; }
+
+  &__empty {
+    font-style: italic;
+    color: $color-text-dim;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: $space-m;
+    list-style: none;
+
+    > li {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  &__card {
+    display: block;
+    flex: 1;
+    border-inline-start: 3px solid $color-border;
+  }
+
+  &__card-player { font-weight: bold; }
+  &__card-variant { color: $color-text-dim; }
+  &__card-elo     { color: $color-text-dim; }
+  &__card-waiting { color: $color-yellow; }
+
+  &__card--upcoming    { border-inline-start-color: $color-yellow; }
+  &__card--waiting     { border-inline-start-color: $color-yellow; }
+  &__card--in-progress { border-inline-start-color: #58a6ff; }
+  &__card--completed   { border-inline-start-color: $color-green; }
+  &__card--cancelled   { border-inline-start-color: $color-red; }
+
+  &__card-status {
+    &--in-progress { color: $color-green; }
+    &--completed   { color: $color-text-dim; }
+    &--waiting     { color: $color-yellow; }
+  }
+}
+
+@media (max-width: 700px) {
+  .home__hero {
+    grid-template-columns: 1fr;
+  }
+
+  .home__hero-img {
+    margin-block-start: $space-m;
+  }
+}

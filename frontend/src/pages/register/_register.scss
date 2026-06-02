@@ -1,0 +1,56 @@
+@use '../../styles/variables.scss' as *;
+
+.register {
+  display: flex;
+  justify-content: center;
+
+  &__card {
+    width: 100%;
+    max-width: 420px;
+    padding: $space-m;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background-color: $color-inner;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+
+    label { color: $color-text-dim; }
+
+    input {
+      padding: $space-s;
+      border: 1px solid $color-border;
+      border-radius: $radius;
+      color: $color-text;
+      background-color: $color-frame;
+
+      &:focus {
+        outline: none;
+        border-color: $color-yellow;
+      }
+    }
+  }
+
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    gap: $space-s;
+    color: $color-text-dim;
+  }
+
+  &__submit {
+    width: 100%;
+    justify-content: center;
+  }
+
+  &__success { color: $color-green; }
+  &__error   { color: $color-red; }
+
+  &__login {
+    text-align: center;
+    color: $color-text-dim;
+  }
+}
