@@ -17,7 +17,7 @@ npm install
 
 ## 2. Set up environment variables
 
-The backend requires a .env.dev file. It is included in this .zip for convenience so the project works out of the box. In a real scenario we would not expose secrets this way, instead we would provide a .env.example with blank values and share the actual secrets through a secure channel.
+The backend requires a .env file. It is included in the delivery .zip for convenience so the project works out of the box. In a real scenario we would not expose secrets this way, instead we would provide a .env.example with blank values and share the actual secrets through a secure channel.
 
 ## 3. Seed the database 
 
@@ -27,7 +27,7 @@ npm run seed
 ```
 This populates the db with mock data. Login credentials you can test:
 * **Admin** admin@pokerdados.com / Admin123! 
-* **Regular user:** blitzKrieg@test.com / Blitz4ever!
+* **Regular user:** blitz@test.com / Blitz4ever!
 
 ## 4. Run the application 
 Open two terminal windows. One for backend and one for frontend.
