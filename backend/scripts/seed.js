@@ -23,56 +23,55 @@ await Session.deleteMany({});
 await SecurityIncident.deleteMany({});
 console.log("Cleared all collections");
 
-// Shared hashed password, all seed users use "Password123!"
-const hashedPassword = hashPassword("Password123!");
+
 const verified = { isVerified: true };
 
 // ---- Users ----
 await User.insertMany([
-{ username: "admin", email: "admin@test.com", password: hashedPassword, ...verified, age: 23, role: "admin", eloRating: { tc10: 2000, tc30: 1900, tc90: 1800 }, points: 200, isBanned: false },
-{ username: "thea", email: "thea@test.com", password: hashedPassword, ...verified, age: 23, eloRating: { tc10: 2000, tc30: 1900, tc90: 1800 }, points: 200, isBanned: true, bio: "My name is Thea, and i think this platform is awesome" },
-  { username: "magnuscr", email: "magnus@test.com", password: hashedPassword, ...verified, age: 34, eloRating: { tc10: 2850, tc30: 2870, tc90: 2830 }, points: 14200, isBanned: false, bio: "Rolling dice since before I could count. Don't challenge me." },
-  { username: "rookierook", email: "rookie@test.com", password: hashedPassword, ...verified, age: 18, eloRating: { tc10: 800, tc30: 900, tc90: 850 }, points: 30, isBanned: false, bio: "Just discovered poker dice last month. Still learning the hands!" },
-  { username: "queenGambit99", email: "queengambit@test.com", password: hashedPassword, ...verified, age: 27, eloRating: { tc10: 1650, tc30: 1700, tc90: 1720 }, points: 890, isBanned: false, bio: "Full house is my comfort zone. Anything less and I reroll." },
-  { username: "blitzKrieg", email: "blitz@test.com", password: hashedPassword, ...verified, age: 21, eloRating: { tc10: 2100, tc30: 1750, tc90: 1500 }, points: 3100, isBanned: false, bio: "Fast games only. I make my decisions in two seconds flat." },
-  { username: "endgameguru", email: "endgame@test.com", password: hashedPassword, ...verified, age: 45, eloRating: { tc10: 1400, tc30: 1900, tc90: 2150 }, points: 5600, isBanned: false, bio: "Patience and probability. That's all poker dice is about." },
-  { username: "patzerPete", email: "pete@test.com", password: hashedPassword, ...verified, age: 38, eloRating: { tc10: 1050, tc30: 1100, tc90: 1080 }, points: 210, isBanned: false, bio: "I always keep the wrong dice. It's a gift." },
-  { username: "siciliandragon", email: "dragon@test.com", password: hashedPassword, ...verified, age: 29, eloRating: { tc10: 1820, tc30: 1880, tc90: 1860 }, points: 2750, isBanned: false, bio: "Five of a kind or bust. Go big or go home." },
-  { username: "diceNinja42", email: "ninja42@test.com", password: hashedPassword, ...verified, age: 19, eloRating: { tc10: 1550, tc30: 1480, tc90: 1420 }, points: 670, isBanned: false, bio: "I've memorized every probability table. Still lose to luck." },
-  { username: "positionalPam", email: "pam@test.com", password: hashedPassword, ...verified, age: 52, eloRating: { tc10: 1300, tc30: 1750, tc90: 1980 }, points: 4300, isBanned: false, bio: "Slow and steady. I think through every reroll like my life depends on it." },
-  { username: "toxicbishop", email: "toxicbishop@test.com", password: hashedPassword, ...verified, age: 25, eloRating: { tc10: 1900, tc30: 1850, tc90: 1780 }, points: 1500, isBanned: true, bio: "Banned for trash talking but my straights still hit different." },
-  { username: "cafeplayer", email: "cafe@test.com", password: hashedPassword, ...verified, age: 61, eloRating: { tc10: 1200, tc30: 1350, tc90: 1500 }, points: 980, isBanned: false, bio: "Been rolling dice in bars for 40 years. Finally found an online home." },
-  { username: "luckyRoller", email: "lucky@test.com", password: hashedPassword, ...verified, age: 31, eloRating: { tc10: 1680, tc30: 1640, tc90: 1600 }, points: 1120, isBanned: false, bio: "No strategy, just vibes. The dice love me." },
-  { username: "scholarsMate", email: "scholar@test.com", password: hashedPassword, ...verified, age: 18, eloRating: { tc10: 600, tc30: 620, tc90: 580 }, points: 10, isBanned: false, bio: "I keep forgetting which hands beat which. Working on it." },
-  { username: "GrandmasterFlash", email: "gmflash@test.com", password: hashedPassword, ...verified, age: 28, eloRating: { tc10: 2400, tc30: 2350, tc90: 2280 }, points: 9800, isBanned: false, bio: "Top 100 on the leaderboard. Grinding for number one." },
-  { username: "fullHouseFreya", email: "freya@test.com", password: hashedPassword, ...verified, age: 33, eloRating: { tc10: 1450, tc30: 1500, tc90: 1520 }, points: 760, isBanned: false, bio: "I get more full houses than anyone I know. It's my signature hand." },
-  { username: "pairStorm", email: "pairstorm@test.com", password: hashedPassword, ...verified, age: 22, eloRating: { tc10: 1750, tc30: 1700, tc90: 1680 }, points: 1850, isBanned: false, bio: "Two pair is underrated. Fight me." },
-  { username: "ZugzwangZoe", email: "zoe@test.com", password: hashedPassword, ...verified, age: 26, eloRating: { tc10: 2050, tc30: 2100, tc90: 2080 }, points: 4100, isBanned: false, bio: "I love forcing opponents into bad rerolls. Mind games matter." },
-  { username: "fianchettofred", email: "fred@test.com", password: hashedPassword, ...verified, age: 40, eloRating: { tc10: 1580, tc30: 1620, tc90: 1650 }, points: 1340, isBanned: false, bio: "Three of a kind, hold, pray. Works 60% of the time, every time." },
-  { username: "BongcloudKing", email: "bongcloud@test.com", password: hashedPassword, ...verified, age: 20, eloRating: { tc10: 1950, tc30: 1200, tc90: 1100 }, points: 2200, isBanned: false, bio: "I reroll everything every time. Chaos is a strategy." },
-  { username: "oddsivan", email: "ivan@test.com", password: hashedPassword, ...verified, age: 36, eloRating: { tc10: 1700, tc30: 1780, tc90: 1820 }, points: 2050, isBanned: false, bio: "I calculate the exact odds before every decision. Yes, it annoys people." },
-  { username: "perpetualRoll", email: "perpetual@test.com", password: hashedPassword, ...verified, age: 30, eloRating: { tc10: 1380, tc30: 1350, tc90: 1300 }, points: 540, isBanned: false, bio: "If I can't win, I'll make sure it takes forever." },
-  { username: "OTBonly", email: "otb@test.com", password: hashedPassword, ...verified, age: 55, eloRating: { tc10: 1100, tc30: 1400, tc90: 1700 }, points: 390, isBanned: false, bio: "Real dice on a real table. Online is just practice." },
-  { username: "butterfingersmike", email: "mike@test.com", password: hashedPassword, ...verified, age: 24, eloRating: { tc10: 1600, tc30: 1650, tc90: 1670 }, points: 1010, isBanned: false, bio: "I swear I meant to keep that die." },
-  { username: "straightDana", email: "dana@test.com", password: hashedPassword, ...verified, age: 32, eloRating: { tc10: 1850, tc30: 1900, tc90: 1870 }, points: 3200, isBanned: false, bio: "I go for the straight every single time. Predictable? Maybe. Effective? Also maybe." },
-  { username: "theorynerd", email: "theory@test.com", password: hashedPassword, ...verified, age: 18, eloRating: { tc10: 1920, tc30: 2000, tc90: 2050 }, points: 3700, isBanned: false, bio: "I've read every poker dice strategy guide. Still choke under pressure." },
-  { username: "noPairNate", email: "nate@test.com", password: hashedPassword, ...verified, age: 41, eloRating: { tc10: 1250, tc30: 1280, tc90: 1300 }, points: 440, isBanned: false, bio: "My specialty is rolling five completely unrelated dice. Consistently." },
-  { username: "rerollkaren", email: "karen@test.com", password: hashedPassword, ...verified, age: 35, eloRating: { tc10: 1500, tc30: 1600, tc90: 1680 }, points: 1560, isBanned: false, bio: "Conservative rerolls, safe plays, steady climb. Boring but it works." },
-  { username: "tempothief", email: "tempo@test.com", password: hashedPassword, ...verified, age: 19, eloRating: { tc10: 2200, tc30: 2050, tc90: 1900 }, points: 5200, isBanned: false, bio: "Youngest player on the leaderboard and climbing fast." },
-  { username: "neverfold", email: "neverfold@test.com", password: hashedPassword, ...verified, age: 44, eloRating: { tc10: 1150, tc30: 1200, tc90: 1180 }, points: 280, isBanned: false, bio: "I never give up on a hand. You'll have to beat me." },
-  { username: "eldadoloco", email: "dadoloco@test.com", password: hashedPassword, ...verified, age: 23, eloRating: { tc10: 1720, tc30: 1680, tc90: 1650 }, points: 1400, isBanned: false, bio: "Spanish dice runs in my blood. Vamos!" },
-  { username: "rollingthunder", email: "thunder@test.com", password: hashedPassword, ...verified, age: 28, eloRating: { tc10: 1780, tc30: 1820, tc90: 1750 }, points: 2400, isBanned: false, bio: "When the dice hit the table, you better cover your ears." },
-  { username: "snakeeyes", email: "snakeeyes@test.com", password: hashedPassword, ...verified, age: 33, eloRating: { tc10: 1350, tc30: 1400, tc90: 1380 }, points: 620, isBanned: false, bio: "I roll ones more than anyone on this platform. It's statistical." },
-  { username: "highroller88", email: "highroller@test.com", password: hashedPassword, ...verified, age: 42, eloRating: { tc10: 2100, tc30: 2050, tc90: 2000 }, points: 7100, isBanned: false, bio: "Big buy-ins only. Low stakes bore me to death." },
-  { username: "pokerface", email: "pokerface@test.com", password: hashedPassword, ...verified, age: 26, eloRating: { tc10: 1620, tc30: 1590, tc90: 1550 }, points: 1200, isBanned: false, bio: "You can't read my dice strategy. I barely have one." },
-  { username: "doubleSixes", email: "doublesixes@test.com", password: hashedPassword, ...verified, age: 19, eloRating: { tc10: 1480, tc30: 1510, tc90: 1530 }, points: 830, isBanned: false, bio: "My friends call me double sixes. It happened once and they never let it go." },
-  { username: "ladyluck", email: "ladyluck@test.com", password: hashedPassword, ...verified, age: 30, eloRating: { tc10: 1900, tc30: 1850, tc90: 1820 }, points: 3500, isBanned: false, bio: "Luck is a skill if you believe hard enough." },
-  { username: "aceOfDice", email: "aceofdice@test.com", password: hashedPassword, ...verified, age: 37, eloRating: { tc10: 1550, tc30: 1600, tc90: 1640 }, points: 1050, isBanned: false, bio: "Former poker player. Dice are more honest than cards." },
-  { username: "yatzyKing", email: "yatzy@test.com", password: hashedPassword, ...verified, age: 48, eloRating: { tc10: 1700, tc30: 1750, tc90: 1800 }, points: 2800, isBanned: false, bio: "Grew up on Yatzy, graduated to poker dice. Same love, higher stakes." },
-  { username: "shakeNroll", email: "shakenroll@test.com", password: hashedPassword, ...verified, age: 22, eloRating: { tc10: 1150, tc30: 1200, tc90: 1180 }, points: 150, isBanned: false, bio: "Shake it like you mean it. Every roll counts." },
-  { username: "midnightroller", email: "midnight@test.com", password: hashedPassword, ...verified, age: 29, eloRating: { tc10: 1830, tc30: 1870, tc90: 1890 }, points: 3100, isBanned: false, bio: "I only play after midnight. That's when the real games happen." },
-  { username: "boxcars", email: "boxcars@test.com", password: hashedPassword, ...verified, age: 35, eloRating: { tc10: 1420, tc30: 1460, tc90: 1440 }, points: 710, isBanned: false, bio: "Named after the best roll in the game. Still waiting to live up to it." },
-  { username: "NoMercy", email: "nomercy@test.com", password: hashedPassword, ...verified, age: 25, eloRating: { tc10: 2250, tc30: 2200, tc90: 2150 }, points: 6400, isBanned: false, bio: "I don't do friendly games. Every match is war." },
+{ username: "admin", email: "admin@pokerdados.com", password: hashPassword("Admin123!"), ...verified, age: 23, role: "admin", eloRating: { tc10: 2000, tc30: 1900, tc90: 1800 }, points: 200, isBanned: false },
+{ username: "thea", email: "thea@test.com", password: hashPassword("Thea1234!"), ...verified, age: 23, eloRating: { tc10: 2000, tc30: 1900, tc90: 1800 }, points: 200, isBanned: true, bio: "My name is Thea, and i think this platform is awesome" },
+{ username: "magnuscr", email: "magnus@test.com", password: hashPassword("Magnus99!"), ...verified, age: 34, eloRating: { tc10: 2850, tc30: 2870, tc90: 2830 }, points: 14200, isBanned: false, bio: "Rolling dice since before I could count. Don't challenge me." },
+{ username: "rookierook", email: "rookie@test.com", password: hashPassword("Rookie2026!"), ...verified, age: 18, eloRating: { tc10: 800, tc30: 900, tc90: 850 }, points: 30, isBanned: false, bio: "Just discovered poker dice last month. Still learning the hands!" },
+{ username: "queenGambit99", email: "queengambit@test.com", password: hashPassword("Queen1999!"), ...verified, age: 27, eloRating: { tc10: 1650, tc30: 1700, tc90: 1720 }, points: 890, isBanned: false, bio: "Full house is my comfort zone. Anything less and I reroll." },
+{ username: "blitzKrieg", email: "blitz@test.com", password: hashPassword("Blitz4ever!"), ...verified, age: 21, eloRating: { tc10: 2100, tc30: 1750, tc90: 1500 }, points: 3100, isBanned: false, bio: "Fast games only. I make my decisions in two seconds flat." },
+{ username: "endgameguru", email: "endgame@test.com", password: hashPassword("Endgame45!"), ...verified, age: 45, eloRating: { tc10: 1400, tc30: 1900, tc90: 2150 }, points: 5600, isBanned: false, bio: "Patience and probability. That's all poker dice is about." },
+{ username: "patzerPete", email: "pete@test.com", password: hashPassword("Patzer38!"), ...verified, age: 38, eloRating: { tc10: 1050, tc30: 1100, tc90: 1080 }, points: 210, isBanned: false, bio: "I always keep the wrong dice. It's a gift." },
+{ username: "siciliandragon", email: "dragon@test.com", password: hashPassword("Dragon29!"), ...verified, age: 29, eloRating: { tc10: 1820, tc30: 1880, tc90: 1860 }, points: 2750, isBanned: false, bio: "Five of a kind or bust. Go big or go home." },
+{ username: "diceNinja42", email: "ninja42@test.com", password: hashPassword("Ninja42!!"), ...verified, age: 19, eloRating: { tc10: 1550, tc30: 1480, tc90: 1420 }, points: 670, isBanned: false, bio: "I've memorized every probability table. Still lose to luck." },
+{ username: "positionalPam", email: "pam@test.com", password: hashPassword("PamSlow52!"), ...verified, age: 52, eloRating: { tc10: 1300, tc30: 1750, tc90: 1980 }, points: 4300, isBanned: false, bio: "Slow and steady. I think through every reroll like my life depends on it." },
+{ username: "toxicbishop", email: "toxicbishop@test.com", password: hashPassword("Toxic025!"), ...verified, age: 25, eloRating: { tc10: 1900, tc30: 1850, tc90: 1780 }, points: 1500, isBanned: true, bio: "Banned for trash talking but my straights still hit different." },
+{ username: "cafeplayer", email: "cafe@test.com", password: hashPassword("Cafe1965!"), ...verified, age: 61, eloRating: { tc10: 1200, tc30: 1350, tc90: 1500 }, points: 980, isBanned: false, bio: "Been rolling dice in bars for 40 years. Finally found an online home." },
+{ username: "luckyRoller", email: "lucky@test.com", password: hashPassword("LuckyRoll31!"), ...verified, age: 31, eloRating: { tc10: 1680, tc30: 1640, tc90: 1600 }, points: 1120, isBanned: false, bio: "No strategy, just vibes. The dice love me." },
+{ username: "scholarsMate", email: "scholar@test.com", password: hashPassword("Scholar14!"), ...verified, age: 18, eloRating: { tc10: 600, tc30: 620, tc90: 580 }, points: 10, isBanned: false, bio: "I keep forgetting which hands beat which. Working on it." },
+{ username: "GrandmasterFlash", email: "gmflash@test.com", password: hashPassword("GmFlash28!"), ...verified, age: 28, eloRating: { tc10: 2400, tc30: 2350, tc90: 2280 }, points: 9800, isBanned: false, bio: "Top 100 on the leaderboard. Grinding for number one." },
+{ username: "fullHouseFreya", email: "freya@test.com", password: hashPassword("Freya033!"), ...verified, age: 33, eloRating: { tc10: 1450, tc30: 1500, tc90: 1520 }, points: 760, isBanned: false, bio: "I get more full houses than anyone I know. It's my signature hand." },
+{ username: "pairStorm", email: "pairstorm@test.com", password: hashPassword("Pairs022!"), ...verified, age: 22, eloRating: { tc10: 1750, tc30: 1700, tc90: 1680 }, points: 1850, isBanned: false, bio: "Two pair is underrated. Fight me." },
+{ username: "ZugzwangZoe", email: "zoe@test.com", password: hashPassword("Zoe20260!"), ...verified, age: 26, eloRating: { tc10: 2050, tc30: 2100, tc90: 2080 }, points: 4100, isBanned: false, bio: "I love forcing opponents into bad rerolls. Mind games matter." },
+{ username: "fianchettofred", email: "fred@test.com", password: hashPassword("Freddy40!"), ...verified, age: 40, eloRating: { tc10: 1580, tc30: 1620, tc90: 1650 }, points: 1340, isBanned: false, bio: "Three of a kind, hold, pray. Works 60% of the time, every time." },
+{ username: "BongcloudKing", email: "bongcloud@test.com", password: hashPassword("Bongcl20!"), ...verified, age: 20, eloRating: { tc10: 1950, tc30: 1200, tc90: 1100 }, points: 2200, isBanned: false, bio: "I reroll everything every time. Chaos is a strategy." },
+{ username: "oddsivan", email: "ivan@test.com", password: hashPassword("IvanOdd36!"), ...verified, age: 36, eloRating: { tc10: 1700, tc30: 1780, tc90: 1820 }, points: 2050, isBanned: false, bio: "I calculate the exact odds before every decision. Yes, it annoys people." },
+{ username: "perpetualRoll", email: "perpetual@test.com", password: hashPassword("Perpetu30!"), ...verified, age: 30, eloRating: { tc10: 1380, tc30: 1350, tc90: 1300 }, points: 540, isBanned: false, bio: "If I can't win, I'll make sure it takes forever." },
+{ username: "OTBonly", email: "otb@test.com", password: hashPassword("Otb1971!!"), ...verified, age: 55, eloRating: { tc10: 1100, tc30: 1400, tc90: 1700 }, points: 390, isBanned: false, bio: "Real dice on a real table. Online is just practice." },
+{ username: "butterfingsmike", email: "mike@test.com", password: hashPassword("Mikey024!"), ...verified, age: 24, eloRating: { tc10: 1600, tc30: 1650, tc90: 1670 }, points: 1010, isBanned: false, bio: "I swear I meant to keep that die." },
+{ username: "straightDana", email: "dana@test.com", password: hashPassword("DanaDice32!"), ...verified, age: 32, eloRating: { tc10: 1850, tc30: 1900, tc90: 1870 }, points: 3200, isBanned: false, bio: "I go for the straight every single time. Predictable? Maybe. Effective? Also maybe." },
+{ username: "theorynerd", email: "theory@test.com", password: hashPassword("Theory18!"), ...verified, age: 18, eloRating: { tc10: 1920, tc30: 2000, tc90: 2050 }, points: 3700, isBanned: false, bio: "I've read every poker dice strategy guide. Still choke under pressure." },
+{ username: "noPairNate", email: "nate@test.com", password: hashPassword("NatePair41!"), ...verified, age: 41, eloRating: { tc10: 1250, tc30: 1280, tc90: 1300 }, points: 440, isBanned: false, bio: "My specialty is rolling five completely unrelated dice. Consistently." },
+{ username: "rerollkaren", email: "karen@test.com", password: hashPassword("Karen035!"), ...verified, age: 35, eloRating: { tc10: 1500, tc30: 1600, tc90: 1680 }, points: 1560, isBanned: false, bio: "Conservative rerolls, safe plays, steady climb. Boring but it works." },
+{ username: "tempothief", email: "tempo@test.com", password: hashPassword("Tempo017!"), ...verified, age: 19, eloRating: { tc10: 2200, tc30: 2050, tc90: 1900 }, points: 5200, isBanned: false, bio: "Youngest player on the leaderboard and climbing fast." },
+{ username: "neverfold", email: "neverfold@test.com", password: hashPassword("Never044!"), ...verified, age: 44, eloRating: { tc10: 1150, tc30: 1200, tc90: 1180 }, points: 280, isBanned: false, bio: "I never give up on a hand. You'll have to beat me." },
+{ username: "eldadoloco", email: "dadoloco@test.com", password: hashPassword("DadoLoco23!"), ...verified, age: 23, eloRating: { tc10: 1720, tc30: 1680, tc90: 1650 }, points: 1400, isBanned: false, bio: "Spanish dice runs in my blood. Vamos!" },
+{ username: "rollingthunder", email: "thunder@test.com", password: hashPassword("Thunder28!"), ...verified, age: 28, eloRating: { tc10: 1780, tc30: 1820, tc90: 1750 }, points: 2400, isBanned: false, bio: "When the dice hit the table, you better cover your ears." },
+{ username: "snakeeyes", email: "snakeeyes@test.com", password: hashPassword("SnakeEye33!"), ...verified, age: 33, eloRating: { tc10: 1350, tc30: 1400, tc90: 1380 }, points: 620, isBanned: false, bio: "I roll ones more than anyone on this platform. It's statistical." },
+{ username: "highroller88", email: "highroller@test.com", password: hashPassword("Highroll42!"), ...verified, age: 42, eloRating: { tc10: 2100, tc30: 2050, tc90: 2000 }, points: 7100, isBanned: false, bio: "Big buy-ins only. Low stakes bore me to death." },
+{ username: "pokerface", email: "pokerface@test.com", password: hashPassword("Poker026!"), ...verified, age: 26, eloRating: { tc10: 1620, tc30: 1590, tc90: 1550 }, points: 1200, isBanned: false, bio: "You can't read my dice strategy. I barely have one." },
+{ username: "doubleSixes", email: "doublesixes@test.com", password: hashPassword("Double19!"), ...verified, age: 19, eloRating: { tc10: 1480, tc30: 1510, tc90: 1530 }, points: 830, isBanned: false, bio: "My friends call me double sixes. It happened once and they never let it go." },
+{ username: "ladyluck", email: "ladyluck@test.com", password: hashPassword("LadyLuck30!"), ...verified, age: 30, eloRating: { tc10: 1900, tc30: 1850, tc90: 1820 }, points: 3500, isBanned: false, bio: "Luck is a skill if you believe hard enough." },
+{ username: "aceOfDice", email: "aceofdice@test.com", password: hashPassword("AceDice37!"), ...verified, age: 37, eloRating: { tc10: 1550, tc30: 1600, tc90: 1640 }, points: 1050, isBanned: false, bio: "Former poker player. Dice are more honest than cards." },
+{ username: "yatzyKing", email: "yatzy@test.com", password: hashPassword("Yatzy048!"), ...verified, age: 48, eloRating: { tc10: 1700, tc30: 1750, tc90: 1800 }, points: 2800, isBanned: false, bio: "Grew up on Yatzy, graduated to poker dice. Same love, higher stakes." },
+{ username: "shakeNroll", email: "shakenroll@test.com", password: hashPassword("Shake022!"), ...verified, age: 22, eloRating: { tc10: 1150, tc30: 1200, tc90: 1180 }, points: 150, isBanned: false, bio: "Shake it like you mean it. Every roll counts." },
+{ username: "midnightroller", email: "midnight@test.com", password: hashPassword("Midnight29!"), ...verified, age: 29, eloRating: { tc10: 1830, tc30: 1870, tc90: 1890 }, points: 3100, isBanned: false, bio: "I only play after midnight. That's when the real games happen." },
+{ username: "boxcars", email: "boxcars@test.com", password: hashPassword("Boxcar35!"), ...verified, age: 35, eloRating: { tc10: 1420, tc30: 1460, tc90: 1440 }, points: 710, isBanned: false, bio: "Named after the best roll in the game. Still waiting to live up to it." },
+{ username: "NoMercy", email: "nomercy@test.com", password: hashPassword("Mercy025!"), ...verified, age: 25, eloRating: { tc10: 2250, tc30: 2200, tc90: 2150 }, points: 6400, isBanned: false, bio: "I don't do friendly games. Every match is war." },
 ]);
 const users = await User.find({});
 console.log(`Created ${users.length} users`);
@@ -245,7 +244,7 @@ const completedMatches = await Match.insertMany([
     endedAt: new Date("2026-04-30T15:10:00Z"),
   },
   {
-    players: [{ userId: u("queenGambit99")._id }, { userId: u("butterfingersmike")._id }],
+    players: [{ userId: u("queenGambit99")._id }, { userId: u("butterfingsmike")._id }],
     maxPlayers: 2,
     category: { rounds: 5, straightsAllowed: true, timeControl: 30 },
     status: "completed",
@@ -353,7 +352,7 @@ const completedMatches = await Match.insertMany([
     endedAt: new Date("2026-05-18T22:12:00Z"),
   },
   {
-    players: [{ userId: u("eldadoloco")._id }, { userId: u("butterfingersmike")._id }, { userId: u("rookierook")._id }],
+    players: [{ userId: u("eldadoloco")._id }, { userId: u("butterfingsmike")._id }, { userId: u("rookierook")._id }],
     maxPlayers: 3,
     category: { rounds: 3, straightsAllowed: true, timeControl: 30 },
     status: "completed",
@@ -502,7 +501,7 @@ const ongoingMatches = await Match.insertMany([
     startedAt: new Date("2026-05-30T14:10:00Z"),
   },
   {
-    players: [{ userId: u("butterfingersmike")._id }, { userId: u("rookierook")._id }],
+    players: [{ userId: u("butterfingsmike")._id }, { userId: u("rookierook")._id }],
     maxPlayers: 2,
     category: { rounds: 5, straightsAllowed: true, timeControl: 10 },
     status: "in-progress",
@@ -785,36 +784,96 @@ console.log("Created 5 cancelled tournaments");
 
 
 // ---- Comments ----
-// await Comment.insertMany([
-//   { authorId: u("nicolai")._id, text: "Great match! Really intense finish.", targetType: "Match", targetId: completedMatches[0]._id },
-//   { authorId: u("adrian")._id, text: "That was so close, well played both!", targetType: "Match", targetId: completedMatches[0]._id },
-//   { authorId: u("emil")._id, text: "Sara is just too good at this game.", targetType: "Match", targetId: completedMatches[2]._id },
-//   { authorId: u("sara")._id, text: "GG! Better luck next time!", targetType: "Match", targetId: completedMatches[2]._id },
-//   { authorId: u("hanna")._id, text: "Can't wait for the Spring Championship!", targetType: "Tournament", targetId: tournament1._id },
-//   { authorId: u("max")._id, text: "I'm coming for that trophy!", targetType: "Tournament", targetId: tournament1._id },
-//   { authorId: u("tobias")._id, text: "Beginner friendly is perfect for me", targetType: "Tournament", targetId: tournament3._id },
-//   { authorId: u("kristian")._id, text: "Let's go! Ready to compete!", targetType: "Tournament", targetId: tournament3._id },
-//   { authorId: u("mira")._id, text: "This was such a fun tournament last year", targetType: "Tournament", targetId: tournament4._id },
-// ]);
-// console.log("Created comments");
+await Comment.insertMany([
+  // Comments on completed matches
+  { authorId: u("fullHouseFreya")._id, text: "Great match! Really intense finish.", targetType: "Match", targetId: completedMatches[0]._id },
+  { authorId: u("magnuscr")._id, text: "That was over before it started, sorry blitz!", targetType: "Match", targetId: completedMatches[1]._id },
+  { authorId: u("blitzKrieg")._id, text: "I'll get you next time magnuscr. Count on it.", targetType: "Match", targetId: completedMatches[1]._id },
+  { authorId: u("pairStorm")._id, text: "Zoe is just too good at mind games.", targetType: "Match", targetId: completedMatches[2]._id },
+  { authorId: u("ZugzwangZoe")._id, text: "GG! You had me sweating on that last round though.", targetType: "Match", targetId: completedMatches[2]._id },
+  { authorId: u("tempothief")._id, text: "Can't believe I took down magnuscr. Best day on this platform.", targetType: "Match", targetId: completedMatches[31]._id },
+  { authorId: u("GrandmasterFlash")._id, text: "That 5 player match was absolute chaos. Loved every second.", targetType: "Match", targetId: completedMatches[9]._id },
+  { authorId: u("cafeplayer")._id, text: "Old man still got it. Four player lobby and I walked away with the W.", targetType: "Match", targetId: completedMatches[27]._id },
+  { authorId: u("noPairNate")._id, text: "I rolled five completely different dice three rounds in a row. Classic me.", targetType: "Match", targetId: completedMatches[19]._id },
+  { authorId: u("rookierook")._id, text: "My first ever win on the platform! Let's go!", targetType: "Match", targetId: completedMatches[11]._id },
+  { authorId: u("BongcloudKing")._id, text: "Chaos strategy actually worked for once lmao", targetType: "Match", targetId: completedMatches[24]._id },
+
+  // Comments on upcoming tournaments
+  { authorId: u("magnuscr")._id, text: "I'm coming for that trophy!", targetType: "Tournament", targetId: upcomingTournament1._id },
+  { authorId: u("GrandmasterFlash")._id, text: "Summer Showdown is going to be intense. See you all there.", targetType: "Tournament", targetId: upcomingTournament1._id },
+  { authorId: u("midnightroller")._id, text: "A tournament at night? This was made for me.", targetType: "Tournament", targetId: upcomingTournament2._id },
+  { authorId: u("rookierook")._id, text: "Rookie Rumble is perfect for me. Finally my time to shine!", targetType: "Tournament", targetId: upcomingTournament4._id },
+  { authorId: u("straightDana")._id, text: "No straights allowed and I still signed up. I like pain.", targetType: "Tournament", targetId: upcomingTournament5._id },
+
+  // Comments on completed tournaments
+  { authorId: u("magnuscr")._id, text: "Autumn Classic was a great way to end the year. Thanks everyone!", targetType: "Tournament", targetId: completedTournament1._id },
+  { authorId: u("ladyluck")._id, text: "Valentine's trophy is the best thing I've ever won. Lucky in dice, lucky in love.", targetType: "Tournament", targetId: completedTournament4._id },
+  { authorId: u("blitzKrieg")._id, text: "New Year Blitz was my kind of tournament. Fast and deadly.", targetType: "Tournament", targetId: completedTournament3._id },
+
+  // Comment on cancelled tournament
+  { authorId: u("highroller88")._id, text: "I was the only one who signed up?? Come on people, live a little.", targetType: "Tournament", targetId: cancelledTournament2._id },
+]);
+console.log("Created 20 comments");
 
 // ---- Award trophy to last year's winner ----
-// await User.findByIdAndUpdate(u("sara")._id, {
-//   $push: {
-//     trophies: {
-//       title: "Autumn Champion Trophy",
-//       imageUrl: "/uploads/trophy.jpg",
-//       wonAt: new Date("2025-10-15"),
-//     },
-//   },
-// });
-// console.log("Awarded trophy to sara");
+await User.findByIdAndUpdate(u("magnuscr")._id, {
+  $push: {
+    trophies: {
+      title: "Autumn Champion Trophy",
+      imageUrl: "/uploads/trophy.jpg",
+      wonAt: new Date("2025-10-03"),
+    },
+  },
+});
+console.log("Awarded trophy to magnuscr");
+
+await User.findByIdAndUpdate(u("NoMercy")._id, {
+  $push: {
+    trophies: {
+      title: "Winter Freeze Trophy",
+      imageUrl: "/uploads/trophy.jpg",
+      wonAt: new Date("2025-12-17"),
+    },
+  },
+});
+console.log("Awarded trophy to NoMercy");
+
+await User.findByIdAndUpdate(u("blitzKrieg")._id, {
+  $push: {
+    trophies: {
+      title: "New Year Blitz Trophy",
+      imageUrl: "/uploads/trophy.jpg",
+      wonAt: new Date("2026-01-04"),
+    },
+  },
+});
+console.log("Awarded trophy to blitzKrieg");
+
+await User.findByIdAndUpdate(u("ladyluck")._id, {
+  $push: {
+    trophies: {
+      title: "Valentine's Dice Trophy",
+      imageUrl: "/uploads/trophy.jpg",
+      wonAt: new Date("2026-02-16"),
+    },
+  },
+});
+console.log("Awarded trophy to ladyluck");
+
+await User.findByIdAndUpdate(u("cafeplayer")._id, {
+  $push: {
+    trophies: {
+      title: "March Madness Trophy",
+      imageUrl: "/uploads/trophy.jpg",
+      wonAt: new Date("2026-03-22"),
+    },
+  },
+});
 
 console.log("\nSeed complete!");
 console.log(`   ${users.length} users (login with any email + 'password123')`);
 console.log(`   Admin: admin@test.com / password123`);
 console.log(`   ${completedMatches.length + ongoingMatches.length + waitingMatches.length} matches`);
-console.log(`   5 tournaments`);
 
 await mongoose.disconnect();
 process.exit(0);

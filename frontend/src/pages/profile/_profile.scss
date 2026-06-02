@@ -6,10 +6,12 @@
   &__error   { color: $color-red; }
   &__success { color: $color-green; }
 
+
   &__identity {
     display: flex;
     align-items: center;
     gap: $space-m;
+    flex-wrap: wrap;
   }
 
   &__label {
