@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { requestResetPassword } from "../../services/auth-service.js";
 
+const EMAIL_FORMAT = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
@@ -12,6 +14,17 @@ export default function ForgotPassword() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+
+    if (!email) {
+      setError("Email is required.");
+      return;
+    }
+
+    if (!EMAIL_FORMAT.test(email)) {
+      setError("Must be a valid email address, e.g. user@mail.com.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const data = await requestResetPassword(email);
@@ -26,10 +39,9 @@ export default function ForgotPassword() {
   return (
     <div className="forgot-password">
       <div className="forgot-password__card stack-m">
-        <form className="forgot-password__form stack-m" onSubmit={handleSubmit}>
+        <form noValidate className="forgot-password__form stack-m" onSubmit={handleSubmit}>
           <h1>Forgot password</h1>
           {success && <p className="forgot-password__success">{success}</p>}
-          {error && <p className="forgot-password__error">{error}</p>}
           <div className="forgot-password__field">
             <label htmlFor="email">Email</label>
             <input
@@ -38,9 +50,9 @@ export default function ForgotPassword() {
               value={email}
               onChange={(e) => { setEmail(e.target.value); }}
               placeholder="name@example.com"
-              required
             />
           </div>
+          {error && <p className="forgot-password__error">{error}</p>}
           <button type="submit" className="btn btn--primary forgot-password__submit" disabled={isSubmitting}>
             {isSubmitting ? "Sending..." : "Send reset link"}
           </button>
