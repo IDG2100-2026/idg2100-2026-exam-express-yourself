@@ -51,7 +51,7 @@ export default function Game() {
     return () => window.removeEventListener("board:matchOver", handleMatchOver);
   }, [navigate]);
 
-  // Sound effects — gated by appearance.sound setting
+  // Sound effects, gated by appearance.sound setting
   useEffect(() => {
     if (!appearance.sound) return;
     const play = (fn) => () => fn();
