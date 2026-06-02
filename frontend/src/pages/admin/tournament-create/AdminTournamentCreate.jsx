@@ -28,7 +28,7 @@ export default function AdminTournamentCreate() {
   const isEdit = Boolean(id);
   const navigate = useNavigate();
 
-  const [form, setForm] = useState(EMPTY_FORM);
+  const [formData, setFormData] = useState(EMPTY_FORM);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmModal, setConfirmModal] = useState(null);
@@ -82,7 +82,7 @@ export default function AdminTournamentCreate() {
         if (tournament.trophy?.title) {
           trophyTitle = tournament.trophy.title;
         }
-        setForm({
+        setFormData({
           title,
           description,
           startDate,
@@ -110,15 +110,15 @@ export default function AdminTournamentCreate() {
       if (files[0]) {
         imageFile = files[0];
       }
-      setForm((prev) => {
+      setFormData((prev) => {
         return { ...prev, trophyImage: imageFile };
       });
     } else if (type === "checkbox") {
-      setForm((prev) => {
+      setFormData((prev) => {
         return { ...prev, [name]: checked };
       });
     } else {
-      setForm((prev) => {
+      setFormData((prev) => {
         return { ...prev, [name]: value };
       });
     }
@@ -130,44 +130,44 @@ export default function AdminTournamentCreate() {
     try {
       if (isEdit) {
         await updateTournament(id, {
-          title: form.title,
-          description: form.description,
-          startDate: form.startDate,
-          numberOfRounds: form.numberOfRounds,
-          buyIn: form.buyIn,
-          trophyTitle: form.trophyTitle,
+          title: formData.title,
+          description: formData.description,
+          startDate: formData.startDate,
+          numberOfRounds: formData.numberOfRounds,
+          buyIn: formData.buyIn,
+          trophyTitle: formData.trophyTitle,
           category: {
-            rounds: form.rounds,
-            timeControl: form.timeControl,
-            straightsAllowed: form.straightsAllowed,
-            buyIn: form.categoryBuyIn,
+            rounds: formData.rounds,
+            timeControl: formData.timeControl,
+            straightsAllowed: formData.straightsAllowed,
+            buyIn: formData.categoryBuyIn,
           },
           eloRange: {
-            min: form.eloMin,
-            max: form.eloMax,
+            min: formData.eloMin,
+            max: formData.eloMax,
           },
         });
         navigate(`/tournament/${id}`);
       } else {
-        const formData = new FormData();
-        formData.append("title", form.title);
-        formData.append("description", form.description);
-        formData.append("startDate", form.startDate);
-        formData.append("numberOfRounds", form.numberOfRounds);
-        formData.append("category[rounds]", form.rounds);
-        formData.append("category[timeControl]", form.timeControl);
-        formData.append("category[straightsAllowed]", form.straightsAllowed);
-        formData.append("category[buyIn]", form.categoryBuyIn);
-        formData.append("buyIn", form.buyIn);
-        formData.append("eloRange[min]", form.eloMin);
-        formData.append("eloRange[max]", form.eloMax);
-        if (form.trophyTitle) {
-          formData.append("trophyTitle", form.trophyTitle);
+        const tournamentData = new FormData();
+        tournamentData.append("title", formData.title);
+        tournamentData.append("description", formData.description);
+        tournamentData.append("startDate", formData.startDate);
+        tournamentData.append("numberOfRounds", formData.numberOfRounds);
+        tournamentData.append("category[rounds]", formData.rounds);
+        tournamentData.append("category[timeControl]", formData.timeControl);
+        tournamentData.append("category[straightsAllowed]", formData.straightsAllowed);
+        tournamentData.append("category[buyIn]", formData.categoryBuyIn);
+        tournamentData.append("buyIn", formData.buyIn);
+        tournamentData.append("eloRange[min]", formData.eloMin);
+        tournamentData.append("eloRange[max]", formData.eloMax);
+        if (formData.trophyTitle) {
+          tournamentData.append("trophyTitle", formData.trophyTitle);
         }
-        if (form.trophyImage) {
-          formData.append("trophyImage", form.trophyImage);
+        if (formData.trophyImage) {
+          tournamentData.append("trophyImage", formData.trophyImage);
         }
-        const { tournament } = await createTournament(formData);
+        const { tournament } = await createTournament(tournamentData);
         navigate(`/tournament/${tournament._id}`);
       }
     } catch (err) {
@@ -179,6 +179,68 @@ export default function AdminTournamentCreate() {
 
   function handleSubmit(event) {
     event.preventDefault();
+    setError(null);
+
+    if (!formData.title) {
+      setError("Title is required.");
+      return;
+    }
+
+    if (formData.title.length < 3 || formData.title.length > 64) {
+      setError("Title must be between 3 and 64 characters.");
+      return;
+    }
+
+    if (formData.description && (formData.description.length < 4 || formData.description.length > 500)) {
+      setError("Description must be between 4 and 500 characters.");
+      return;
+    }
+
+    if (!formData.startDate) {
+      setError("Start date is required.");
+      return;
+    }
+
+    const startDateObj = new Date(formData.startDate);
+
+    if (startDateObj <= new Date()) {
+      setError("Tournament's cannot be created with a start date back in time!");
+      return;
+    }
+
+    const oneYearFromNow = new Date();
+    oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+
+    if (startDateObj > oneYearFromNow) {
+      setError("Tournament's cannot be created longer than one year in advance");
+      return;
+    }
+
+    if (!formData.numberOfRounds || Number(formData.numberOfRounds) < 1) {
+      setError("Number of rounds must be a positive integer.");
+      return;
+    }
+
+    if (Number(formData.eloMin) < 0) {
+      setError("Elo range minimum must be a non-negative integer.");
+      return;
+    }
+
+    if (Number(formData.eloMax) < 0) {
+      setError("Elo range maximum must be a non-negative integer.");
+      return;
+    }
+
+    if (Number(formData.eloMax) < Number(formData.eloMin)) {
+      setError("Elo max must be greater than or equal to elo min.");
+      return;
+    }
+
+    if (formData.trophyTitle && formData.trophyTitle.trim() === "") {
+      setError("Trophy title cannot be empty.");
+      return;
+    }
+
     if (isEdit) {
       doSubmit();
     } else {
@@ -208,18 +270,15 @@ export default function AdminTournamentCreate() {
     <div className="admin-tc stack-l">
       <h1>{pageTitle}</h1>
 
-      {error && <p className="admin-tc__error">{error}</p>}
-
-      <form className="admin-tc__form stack-m" onSubmit={handleSubmit}>
+      <form noValidate className="admin-tc__form stack-m" onSubmit={handleSubmit}>
         <div className="admin-tc__field">
           <label htmlFor="title">Title *</label>
           <input
             id="title"
             name="title"
             type="text"
-            value={form.title}
+            value={formData.title}
             onChange={handleChange}
-            required
           />
         </div>
 
@@ -229,7 +288,7 @@ export default function AdminTournamentCreate() {
             id="description"
             name="description"
             rows={3}
-            value={form.description}
+            value={formData.description}
             onChange={handleChange}
           />
         </div>
@@ -240,9 +299,8 @@ export default function AdminTournamentCreate() {
             id="startDate"
             name="startDate"
             type="datetime-local"
-            value={form.startDate}
+            value={formData.startDate}
             onChange={handleChange}
-            required
           />
         </div>
 
@@ -252,11 +310,8 @@ export default function AdminTournamentCreate() {
             id="numberOfRounds"
             name="numberOfRounds"
             type="number"
-            min={1}
-            max={10}
-            value={form.numberOfRounds}
+            value={formData.numberOfRounds}
             onChange={handleChange}
-            required
           />
         </div>
 
@@ -266,7 +321,7 @@ export default function AdminTournamentCreate() {
             <select
               id="rounds"
               name="rounds"
-              value={form.rounds}
+              value={formData.rounds}
               onChange={handleChange}
             >
               <option value={3}>Best of 3</option>
@@ -279,7 +334,7 @@ export default function AdminTournamentCreate() {
             <select
               id="timeControl"
               name="timeControl"
-              value={form.timeControl}
+              value={formData.timeControl}
               onChange={handleChange}
             >
               <option value={10}>10 seconds</option>
@@ -294,7 +349,7 @@ export default function AdminTournamentCreate() {
             id="straightsAllowed"
             name="straightsAllowed"
             type="checkbox"
-            checked={form.straightsAllowed}
+            checked={formData.straightsAllowed}
             onChange={handleChange}
           />
           <label htmlFor="straightsAllowed">Straights allowed</label>
@@ -308,7 +363,7 @@ export default function AdminTournamentCreate() {
             <select
               id="categoryBuyIn"
               name="categoryBuyIn"
-              value={form.categoryBuyIn}
+              value={formData.categoryBuyIn}
               onChange={handleChange}
             >
               <option value={1}>1 point</option>
@@ -321,7 +376,7 @@ export default function AdminTournamentCreate() {
             <select
               id="buyIn"
               name="buyIn"
-              value={form.buyIn}
+              value={formData.buyIn}
               onChange={handleChange}
             >
               <option value={0}>Free</option>
@@ -339,8 +394,7 @@ export default function AdminTournamentCreate() {
               id="eloMin"
               name="eloMin"
               type="number"
-              min={0}
-              value={form.eloMin}
+              value={formData.eloMin}
               onChange={handleChange}
             />
           </div>
@@ -350,8 +404,7 @@ export default function AdminTournamentCreate() {
               id="eloMax"
               name="eloMax"
               type="number"
-              min={0}
-              value={form.eloMax}
+              value={formData.eloMax}
               onChange={handleChange}
             />
           </div>
@@ -364,7 +417,7 @@ export default function AdminTournamentCreate() {
               id="trophyTitle"
               name="trophyTitle"
               type="text"
-              value={form.trophyTitle}
+              value={formData.trophyTitle}
               onChange={handleChange}
             />
           </div>
@@ -382,6 +435,7 @@ export default function AdminTournamentCreate() {
           )}
         </div>
 
+        {error && <p className="admin-tc__error">{error}</p>}
         <button
           type="submit"
           className="btn btn--primary"

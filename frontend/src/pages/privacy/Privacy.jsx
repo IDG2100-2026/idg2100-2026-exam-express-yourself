@@ -2,7 +2,6 @@ export default function Privacy() {
   return (
     <div className="privacy stack-l">
       <h1>Privacy policy</h1>
-      <p className="privacy__updated">Last updated: April 2026</p>
       <section className="privacy__section stack-s">
         <h2>1. What we collect</h2>
         <p>
@@ -39,6 +38,7 @@ export default function Privacy() {
         <h2>6. Contact</h2>
         <p>Questions? Contact us at <a href="mailto:pokerdados2026@gmail.com" className="btn--link">pokerdados2026@gmail.com</a></p>
       </section>
+      <p className="privacy__updated">Last updated: June 2026</p>
     </div>
   );
 }
