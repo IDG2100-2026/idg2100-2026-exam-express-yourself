@@ -18,6 +18,7 @@ import {
   MAX_USER_BIO_LENGTH,
   ALLOWED_USERNAME_FORMAT,
   ALLOWED_USER_EMAIL_FORMAT,
+  ALLOWED_USER_BIO_FORMAT,
 } from "../config/constants.js";
 import { hashPassword } from "../utils/password-hash.js";
 
@@ -130,6 +131,10 @@ const userSchema = new mongoose.Schema(
       maxLength: [
         MAX_USER_BIO_LENGTH,
         `Bio cannot be longer than ${MAX_USER_BIO_LENGTH} characters. [schema]`,
+      ],
+      match: [
+        ALLOWED_USER_BIO_FORMAT,
+        "Bio can only contain letters, numbers, spaces, and basic punctuation. [schema]",
       ],
     },
     profileImageUrl: {

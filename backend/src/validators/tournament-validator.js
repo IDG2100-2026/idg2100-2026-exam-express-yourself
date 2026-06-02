@@ -4,6 +4,7 @@ import {
   MAX_TOURNAMENT_TITLE_LENGTH,
   MIN_TOURNAMENT_DESCRIPTION_LENGTH,
   MAX_TOURNAMENT_DESCRIPTION_LENGTH,
+  ALLOWED_TOURNAMENT_DESCRIPTION_FORMAT,
   MIN_TOURNAMENT_BUY_IN,
   TOURNAMENT_STATUSES,
   VALID_ROUNDS,
@@ -55,7 +56,8 @@ export function validateCreateTournament() {
     body("description")
       .optional()
       .trim()
-      .escape()
+      .matches(ALLOWED_TOURNAMENT_DESCRIPTION_FORMAT)
+      .withMessage("Description can only contain letters, numbers, spaces, and basic punctuation.")
       .isLength({ min: MIN_TOURNAMENT_DESCRIPTION_LENGTH, max: MAX_TOURNAMENT_DESCRIPTION_LENGTH })
       .withMessage(`Description must be between ${MIN_TOURNAMENT_DESCRIPTION_LENGTH} and ${MAX_TOURNAMENT_DESCRIPTION_LENGTH} characters.`),
     body("startDate")
@@ -136,7 +138,8 @@ export function validateUpdateTournament() {
     body("description")
       .optional()
       .trim()
-      .escape()
+      .matches(ALLOWED_TOURNAMENT_DESCRIPTION_FORMAT)
+      .withMessage("Description can only contain letters, numbers, spaces, and basic punctuation.")
       .isLength({ min: MIN_TOURNAMENT_DESCRIPTION_LENGTH, max: MAX_TOURNAMENT_DESCRIPTION_LENGTH })
       .withMessage(`Description must be between ${MIN_TOURNAMENT_DESCRIPTION_LENGTH} and ${MAX_TOURNAMENT_DESCRIPTION_LENGTH} characters.`),
     body("startDate")

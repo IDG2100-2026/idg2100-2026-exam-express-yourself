@@ -6,6 +6,11 @@ import { updateUser, uploadAvatar } from "../../services/users-service.js";
 import { getPlayerMatches } from "../../services/matches-service.js";
 import Avatar from "../../components/avatar/Avatar.jsx";
 
+const EMAIL_FORMAT = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const USERNAME_FORMAT = /^[a-zA-Z0-9]+$/;
+const PASSWORD_STRENGTH = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])/;
+const BIO_FORMAT = /^[a-zA-Z0-9 .,\-!?'"():;\n\r]*$/;
+
 export default function Profile() {
   const { id } = useParams();
   const { key } = useLocation();
@@ -80,7 +85,9 @@ export default function Profile() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      return { ...prev, [name]: value };
+    });
   }
 
   async function handleSave(e) {
@@ -88,8 +95,50 @@ export default function Profile() {
     setSaveError(null);
     setSaveSuccess(null);
 
+    if (formData.username && formData.username.length > 16) {
+      setSaveError("Username must be between 1 and 16 characters.");
+      return;
+    }
+
+    if (formData.username && !USERNAME_FORMAT.test(formData.username)) {
+      setSaveError("Username can only contain letters and numbers.");
+      return;
+    }
+
+    if (formData.email && formData.email.length > 254) {
+      setSaveError("Email cannot be longer than 254 characters.");
+      return;
+    }
+
+    if (formData.email && !EMAIL_FORMAT.test(formData.email)) {
+      setSaveError("Must be a valid email address, e.g. user@mail.com.");
+      return;
+    }
+
+    if (formData.bio && !BIO_FORMAT.test(formData.bio)) {
+      setSaveError("Bio can only contain letters, numbers, spaces, and basic punctuation.");
+      return;
+    }
+
+    if (formData.newPassword && !formData.password) {
+      setSaveError("Old password is required.");
+      return;
+    }
+
+    if (formData.newPassword && (formData.newPassword.length < 8 || formData.newPassword.length > 72)) {
+      setSaveError("Password must be between 8 and 72 characters.");
+      return;
+    }
+
+    if (formData.newPassword && !PASSWORD_STRENGTH.test(formData.newPassword)) {
+      setSaveError("Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.");
+      return;
+    }
+
     if (formData.newPassword && formData.password === formData.newPassword) {
-      return setSaveError("New password must differ from old password."); // of the old and new password are identical, we show this
+      // old and new password must be different
+      setSaveError("New password must differ from old password.");
+      return;
     }
 
     try {
@@ -125,13 +174,15 @@ export default function Profile() {
         });
       }
 
-      setUser((prev) => ({
-        ...prev,
-        username: formData.username || prev.username,
-        email: formData.email || prev.email,
-        bio: formData.bio || prev.bio,
-        ...(profileImageUrl && { profileImageUrl }),
-      }));
+      setUser((prev) => {
+        return {
+          ...prev,
+          username: formData.username || prev.username,
+          email: formData.email || prev.email,
+          bio: formData.bio || prev.bio,
+          ...(profileImageUrl && { profileImageUrl }),
+        };
+      });
     } catch (err) {
       setSaveError(err.message);
     }
@@ -174,7 +225,7 @@ export default function Profile() {
       </div>
 
       {editing && (
-        <form className="profile__form stack-m" onSubmit={handleSave}>
+        <form noValidate className="profile__form stack-m" onSubmit={handleSave}>
           <h2>Edit profile</h2>
           <div className="profile__form-inner stack-m">
           <div className="profile__field">
@@ -200,7 +251,7 @@ export default function Profile() {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => setAvatarFile(e.target.files[0] || null)}
+              onChange={(e) => { setAvatarFile(e.target.files[0] || null); }}
             />
           </div>
           <div className="profile__field">

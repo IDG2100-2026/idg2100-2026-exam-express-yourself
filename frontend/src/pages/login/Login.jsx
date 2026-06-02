@@ -4,6 +4,8 @@ import { loginUser, verifyEmail, resendVerifyEmail } from "../../services/auth-s
 import { useAuth } from "../../hooks/useAuth.js";
 import { useAppearance } from "../../hooks/useAppearance.js";
 
+const EMAIL_FORMAT = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
@@ -49,6 +51,22 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+
+    if (!formData.email) {
+      setError("Email is required.");
+      return;
+    }
+
+    if (!EMAIL_FORMAT.test(formData.email)) {
+      setError("Must be a valid email address, e.g. user@mail.com.");
+      return;
+    }
+
+    if (!formData.password) {
+      setError("Password is required.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const result = await loginUser(formData);
@@ -69,6 +87,17 @@ export default function Login() {
     event.preventDefault();
     setResendError(null);
     setResendSuccess(null);
+
+    if (!resendEmail) {
+      setResendError("Email is required.");
+      return;
+    }
+
+    if (!EMAIL_FORMAT.test(resendEmail)) {
+      setResendError("Must be a valid email address, e.g. user@mail.com.");
+      return;
+    }
+
     setIsResending(true);
     try {
       const data = await resendVerifyEmail(resendEmail);
@@ -93,7 +122,7 @@ export default function Login() {
   return (
     <div className="login">
       <div className="login__card stack-m">
-        <form className="login__form stack-m" onSubmit={handleSubmit}>
+        <form noValidate className="login__form stack-m" onSubmit={handleSubmit}>
           <h1>Log in</h1>
           {success && <p className="login__success">{success}</p>}
           <div className="login__field">
@@ -105,7 +134,6 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               placeholder="name@example.com"
-              required
             />
           </div>
           <div className="login__field">
@@ -117,7 +145,6 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               placeholder="********"
-              required
             />
           </div>
           {error && <p className="login__error">{error}</p>}
@@ -133,7 +160,7 @@ export default function Login() {
         </p>
 
         {verificationFailed && (
-          <form className="login__form stack-m" onSubmit={handleResend}>
+          <form noValidate className="login__form stack-m" onSubmit={handleResend}>
             <p className="login__status">Enter your email to receive a new verification link.</p>
             {resendError && <p className="login__error">{resendError}</p>}
             {resendSuccess && <p className="login__success">{resendSuccess}</p>}
@@ -145,7 +172,6 @@ export default function Login() {
                 value={resendEmail}
                 onChange={(e) => { setResendEmail(e.target.value); }}
                 placeholder="name@example.com"
-                required
               />
             </div>
             <button type="submit" className="btn btn--secondary login__submit" disabled={isResending}>

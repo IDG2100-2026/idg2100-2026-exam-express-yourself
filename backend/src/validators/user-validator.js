@@ -10,6 +10,7 @@ import {
   MIN_USER_AGE,
   MAX_USER_AGE,
   MAX_USER_BIO_LENGTH,
+  ALLOWED_USER_BIO_FORMAT,
   USER_THEMES,
 } from "../config/constants.js";
 import {
@@ -152,7 +153,8 @@ export function validateUpdateUser() {
     body("bio")
       .optional()
       .trim()
-      .escape()
+      .matches(ALLOWED_USER_BIO_FORMAT)
+      .withMessage("Bio can only contain letters, numbers, spaces, and basic punctuation.")
       .isLength({ max: MAX_USER_BIO_LENGTH })
       .withMessage(
         `Bio cannot be longer than ${MAX_USER_BIO_LENGTH} characters.`,
