@@ -27,7 +27,7 @@ npm run seed
 ```
 This populates the db with mock data. Login credentials you can test:
 * **Admin** admin@pokerdados.com / Admin123! 
-* **Regular user:** blitzKrieg@test.com / Blitz4ever!
+* **Regular user:** blitz@test.com / Blitz4ever!
 
 ## 4. Run the application 
 Open two terminal windows. One for backend and one for frontend.
