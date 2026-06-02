@@ -70,6 +70,7 @@ export default function Home() {
 
   return (
     <div className="home stack-l">
+      <title>Homepage</title>
       <section className="home__hero">
         <div className="home__hero-content stack-m">
           <h1>PokerDados</h1>

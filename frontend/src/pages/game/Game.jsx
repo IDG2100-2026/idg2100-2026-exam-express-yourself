@@ -129,6 +129,7 @@ export default function Game() {
 
   return (
     <div className="game">
+      <title>Match</title>
       <div className="game__layout">
         <div className="game__board">
 

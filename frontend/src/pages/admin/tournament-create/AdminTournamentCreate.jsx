@@ -275,6 +275,7 @@ export default function AdminTournamentCreate() {
 
   return (
     <div className="admin-tc stack-l">
+      <title>Create Tournament</title>
       <h1>{pageTitle}</h1>
 
       <form noValidate className="admin-tc__form stack-m" onSubmit={handleSubmit}>

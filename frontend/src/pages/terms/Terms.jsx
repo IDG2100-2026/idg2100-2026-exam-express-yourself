@@ -1,6 +1,7 @@
 export default function Terms() {
   return (
     <div className="terms stack-l">
+      <title>Terms & conditions</title>
       <h1>Terms & conditions</h1>
       <section className="terms__section stack-s">
         <h2>1. Acceptance</h2>

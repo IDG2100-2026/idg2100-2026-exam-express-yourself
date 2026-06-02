@@ -93,6 +93,7 @@ export default function Lobby() {
 
   return (
     <div className="lobby stack-l">
+      <title>Lobby</title>
       <div className="lobby__header">
         <h1>Lobby</h1>
         <Link to="/create-game" className="btn btn--primary">Create game</Link>

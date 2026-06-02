@@ -20,6 +20,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-dashboard stack-l">
+      <title>Admin Dashboard</title>
       <h1>Dashboard</h1>
 
       {error && <p className="admin-dashboard__error">{error}</p>}

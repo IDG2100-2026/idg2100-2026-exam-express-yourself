@@ -1,6 +1,7 @@
 export default function AboutGame() {
   return (
     <div className="about-game stack-l">
+      <title>About Game</title>
       <h1>About Spanish Poker Dice</h1>
       <section className="about-game__section stack-s">
         <h2>What is it?</h2>

@@ -1,6 +1,7 @@
 export default function AboutUs() {
   return (
     <div className="about-us stack-l">
+      <title>About Us</title>
       <h1>About us</h1>
       <section className="about-us__section stack-s">
         <h2>Our story</h2>

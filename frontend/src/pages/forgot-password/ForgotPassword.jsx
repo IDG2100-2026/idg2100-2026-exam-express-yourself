@@ -38,6 +38,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="forgot-password">
+      <title>Forgot Password</title>
       <div className="forgot-password__card stack-m">
         <form noValidate className="forgot-password__form stack-m" onSubmit={handleSubmit}>
           <h1>Forgot password</h1>

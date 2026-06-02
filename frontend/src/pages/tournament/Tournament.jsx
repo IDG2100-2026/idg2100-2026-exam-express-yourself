@@ -238,6 +238,7 @@ export default function Tournament() {
 
   return (
     <div className="tournament stack-l">
+      <title>Tournaments</title>
       <div className="tournament__header">
         <h1>{tournament.title}</h1>
         <span
