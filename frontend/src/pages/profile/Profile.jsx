@@ -77,7 +77,7 @@ export default function Profile() {
       password: "",
       newPassword: "",
     });
-    // setAvatarFile(null); // TODO: needed?
+    setAvatarFile(null);
     setEditing(true);
     setSaveError(null);
     setSaveSuccess(null);
