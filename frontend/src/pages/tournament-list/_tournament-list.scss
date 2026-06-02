@@ -60,7 +60,7 @@
     border-inline-start: 3px solid $color-border;
 
     &--upcoming    { border-inline-start-color: $color-yellow; }
-    &--in-progress { border-inline-start-color: #58a6ff; }
+    &--in-progress { border-inline-start-color: $color-blue; }
     &--completed   { border-inline-start-color: $color-green; }
     &--cancelled   { border-inline-start-color: $color-red; }
   }
@@ -71,7 +71,7 @@
     letter-spacing: 0.05em;
 
     &--upcoming    { color: $color-yellow; }
-    &--in-progress { color: #58a6ff; }
+    &--in-progress { color: $color-blue; }
     &--completed   { color: $color-green; }
     &--cancelled   { color: $color-red; }
   }

@@ -6,7 +6,7 @@ import { getAccessToken } from "../services/token-manager.js";
 
 const defaultAppearance = {
   theme: "dark",
-  boardColor: "#1c2130",
+  boardColor: "#1e3a5c",
   sound: true,
   lobbySize: 5,
 };

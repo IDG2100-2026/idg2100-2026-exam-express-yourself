@@ -3,11 +3,11 @@ import { useAppearance } from "../../hooks/useAppearance.js";
 import GearIcon from "../../assets/icons/GearIcon.jsx";
 
 const BOARD_COLORS = [
-  { label: "Navy", value: "#1c2130" },
-  { label: "Green", value: "#1a3a2a" },
-  { label: "Red", value: "#3a1a1a" },
-  { label: "Purple", value: "#2a1a3a" },
-  { label: "Grey", value: "#2a2a2a" },
+  { label: "Navy", value: "#1e3a5c" },
+  { label: "Green", value: "#1a4d2e" },
+  { label: "Red", value: "#6b1a1a" },
+  { label: "Purple", value: "#3d1a6b" },
+  { label: "Charcoal", value: "#2e2e2e" },
 ];
 
 function AppearanceMenu() {
