@@ -1,5 +1,4 @@
 # How to launch this project
-
 ## Prerequisites
 * `Node.js` installed.
 * `MongoDB` running locally.
@@ -44,4 +43,3 @@ npm run dev
 ```
 **Backend API available at:** http://localhost:3000/api  
 **Frontend available at:** http://localhost:5173
-
