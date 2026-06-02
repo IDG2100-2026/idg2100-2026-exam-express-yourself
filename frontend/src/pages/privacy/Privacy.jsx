@@ -1,6 +1,7 @@
 export default function Privacy() {
   return (
     <div className="privacy stack-l">
+      <title>Privacy Policy</title>
       <h1>Privacy policy</h1>
       <section className="privacy__section stack-s">
         <h2>1. What we collect</h2>

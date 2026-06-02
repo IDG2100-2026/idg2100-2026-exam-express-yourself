@@ -61,6 +61,7 @@ export default function CreateGame() {
 
   return (
     <div className="create stack-m">
+      <title>Create Game</title>
       <h1>Create a new game</h1>
 
       <form className="create__form stack-m" onSubmit={handleSubmit}>

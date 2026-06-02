@@ -197,6 +197,7 @@ export default function Profile() {
 
   return (
     <div className="profile stack-l">
+      <title>Profile Page</title>
       <div className="profile__header stack-m">
         <div className="profile__identity">
           <Avatar imageUrl={user.profileImageUrl} username={user.username} size={80} />

@@ -124,6 +124,7 @@ export default function AdminUsers() {
 
   return (
     <div className="admin-users stack-l">
+      <title>Admin Users</title>
       <h1>Manage users</h1>
 
       <div className="admin-users__toolbar">

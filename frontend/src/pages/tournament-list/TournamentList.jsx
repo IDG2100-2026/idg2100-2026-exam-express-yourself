@@ -108,6 +108,7 @@ export default function TournamentList() {
 
   return (
     <div className="tournaments stack-l">
+      <title>Tournaments</title>
       <h1>Tournaments</h1>
 
       <div className="tournaments__controls">

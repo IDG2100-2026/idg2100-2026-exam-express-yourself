@@ -121,6 +121,7 @@ export default function Login() {
 
   return (
     <div className="login">
+      <title>Login</title>
       <div className="login__card stack-m">
         <form noValidate className="login__form stack-m" onSubmit={handleSubmit}>
           <h1>Log in</h1>

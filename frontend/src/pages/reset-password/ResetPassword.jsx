@@ -56,6 +56,7 @@ export default function ResetPassword() {
 
   return (
     <div className="reset-password">
+      <title>Reset Password</title>
       <div className="reset-password__card stack-m">
         {invalidLink ? (
           <p className="reset-password__error">{invalidLink}</p>

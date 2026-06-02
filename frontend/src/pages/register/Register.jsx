@@ -149,6 +149,7 @@ export default function Register() {
 
   return (
     <div className="register">
+      <title>Register</title>
       <div className="register__card stack-m">
         <form noValidate className="register__form stack-m" onSubmit={handleSubmit}>
           <h1>Create account</h1>
